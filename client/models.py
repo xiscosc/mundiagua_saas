@@ -22,4 +22,11 @@ class Address(models.Model):
     client = models.ForeignKey(Client)
     latitude = models.CharField(max_length=25, blank=True)
     longitude = models.CharField(max_length=25, blank=True)
-    default_zone = models.ForeignKey('intervention.Zone', blank=True)
+    default_zone = models.ForeignKey('intervention.Zone', null=True)
+
+    def get_url_gmaps(self):
+
+        if self.latitude and self.longitude:
+            return "https://maps.google.com/maps?q=loc:"+self.latitude+","+self.longitude
+        else:
+            return False

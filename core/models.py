@@ -2,10 +2,13 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
+from django.db.models.signals import post_save
+
+from core.utils import send_data_to_user
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, username, full_name, email, pb_token=None, password=None):
+    def create_user(self, username, email, full_name, pb_token=None, password=None):
 
         if not email or not username or not full_name:
             raise ValueError('Users must have an email address, username, full_name')
@@ -21,7 +24,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, full_name, email, pb_token=None, password=None):
+    def create_superuser(self, username, email=None, full_name=None, pb_token=None, password=None):
 
         user = self.model(
             email=self.normalize_email(email),
@@ -37,14 +40,16 @@ class MyUserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     username = models.CharField(max_length=254, unique=True)
-    full_name = models.CharField(max_length=100, blank=False)
+    full_name = models.CharField(max_length=100, blank=False, null=False)
     email = models.EmailField(unique=True)
-    pb_token = models.CharField(max_length=254, blank=True)
+    pb_token = models.CharField(max_length=254, null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    objects = MyUserManager()
+
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['full_name, email']
+    REQUIRED_FIELDS = ['email', 'full_name']
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -77,8 +82,19 @@ class User(AbstractBaseUser):
 class Message(models.Model):
     read = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
-    from_user = models.ForeignKey('core.User', blank=False, related_name='%(class)s_from')
-    to_user = models.ForeignKey('core.User', blank=False, related_name='%(class)s_to')
+    from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from')
+    to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to')
     subject = models.CharField(max_length=200, blank=False)
     body = models.TextField(blank=False)
 
+
+# SIGNALS
+
+def post_save_message(sender, **kwargs):
+    if kwargs['created']:
+        ins = kwargs['instance']
+        body = ins.body+"\n\n"+ins.from_user.full_name
+        send_data_to_user(ins.to_user, ins.subject, body)
+
+
+post_save.connect(post_save_message, sender='core.Message')

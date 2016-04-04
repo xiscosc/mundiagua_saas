@@ -41,6 +41,7 @@ DJANGO_APPS = [
 
 OTHER_APPS = [
     'colorfield',
+    'polymorphic'
 ]
 
 MY_APPS = [
@@ -48,6 +49,7 @@ MY_APPS = [
     'client',
     'intervention',
     'budget',
+    'repair',
 ]
 
 
