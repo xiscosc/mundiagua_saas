@@ -13,3 +13,5 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+BOWER_COMPONENTS_ROOT = '/Users/xiscosastre/PycharmProjects/mundiagua_python/components/'
