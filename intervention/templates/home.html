@@ -1,12 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load staticfiles %}
 {% block content %}
-<div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-3 col-md-6">
@@ -541,4 +536,10 @@
             </div>
             <!-- /.row -->
 
+{% endblock %}
+{% block chartjs %}
+    <!-- Morris Charts JavaScript -->
+    <script src="{%  static 'raphael/raphael-min.js' %}"></script>
+    <script src="{%  static 'morrisjs/morris.min.js' %}"></script>
+    <script src="{%  static 'base/js/morris-data.js' %}"></script>
 {% endblock %}

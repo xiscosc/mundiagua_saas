@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Nuevo cliente{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-12">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:33%"></div>
+            </div>
+        </div>
+    </div>
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-lg-12">
+        <form action="" method="post">{% csrf_token %}
+            {{ form|bootstrap }}
+        {% include 'submmit.html' %}
+    </form>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -46,6 +46,7 @@ OTHER_APPS = [
     'colorfield',
     'polymorphic',
     'djangobower',
+    'bootstrapform',
 ]
 
 MY_APPS = [
@@ -136,10 +137,13 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'core.User'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.BaseFinder',
     'djangobower.finders.BowerFinder',
 ]
 

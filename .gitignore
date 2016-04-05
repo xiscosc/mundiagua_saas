@@ -65,3 +65,6 @@ migrations/
 .idea/
 
 components/
+settings_linux.py
+settings_mac.py
+settings_prod.py

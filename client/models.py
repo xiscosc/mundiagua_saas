@@ -1,13 +1,17 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
 
 
 class Client(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, verbose_name="Nombre")
     email = models.EmailField(blank=True)
-    intern_code = models.CharField(max_length=20, blank=True)
-    dni = models.CharField(max_length=20, blank=True)
+    intern_code = models.CharField(max_length=20, blank=True, verbose_name="COD Interno")
+    dni = models.CharField(max_length=20, blank=True, verbose_name="DNI/CIF")
+
+    def __str__(self):
+        return self.name
 
 
 class Phone(models.Model):
@@ -18,7 +22,7 @@ class Phone(models.Model):
 
 class Address(models.Model):
     alias = models.CharField(max_length=30)
-    address = models.TextField(blank=False)
+    address = models.TextField(verbose_name="Dirección")
     client = models.ForeignKey(Client)
     latitude = models.CharField(max_length=25, blank=True)
     longitude = models.CharField(max_length=25, blank=True)
