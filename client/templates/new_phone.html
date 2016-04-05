@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Dirección{% endblock %}
+{% block page_title %}Teléfono{% endblock %}
 {% block content %}
+
 
 <div class="row">
     <div class="col-md-12 col-xs-12 col-lg-12">
         <form action="" method="post">{% csrf_token %}
             {{ form|bootstrap }}
-            <div class="form-group">
+         <div class="form-group">
          <button type="submit" class="btn btn-primary">Guardar</button>
+         <a href="{% url 'client-client' client.pk %}" class="btn btn-warning">Omitir</a>
         </div>
-        </form>
-
+    </form>
     </div>
 </div>
 

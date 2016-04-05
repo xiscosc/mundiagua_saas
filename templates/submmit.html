@@ -1,3 +1,6 @@
  <div class="form-group">
          <button type="submit" class="btn btn-primary">Guardar</button>
+             {% if skip %}
+                <a href="{{ url }}" class="btn btn-warning">Omitir</a>
+        {% endif %}
 </div>

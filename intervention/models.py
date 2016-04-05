@@ -21,13 +21,13 @@ class Intervention(models.Model):
     zone = models.ForeignKey(Zone, default=1)
     status = models.ForeignKey(InterventionStatus, default=1)
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
-    assigned = models.ForeignKey('core.User', blank=True, related_name='%(class)s_assigned')
-    note = models.TextField(blank=True)
+    assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
+    note = models.TextField(null=True)
 
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    note = models.TextField(blank=True)
+    note = models.TextField(null=True)
     created_by = models.ForeignKey('core.User')
     intervention = models.ForeignKey(Intervention)
 
