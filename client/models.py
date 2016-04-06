@@ -13,6 +13,10 @@ class Client(models.Model):
     def __str__(self):
         return self.name
 
+    def get_first_address(self):
+        return Address.objects.filter(client=self).first()
+
+
 
 class Phone(models.Model):
     alias = models.CharField(max_length=30)
@@ -34,3 +38,6 @@ class Address(models.Model):
             return "https://maps.google.com/maps?q=loc:"+self.latitude+","+self.longitude
         else:
             return False
+
+    def __str__(self):
+        return self.address

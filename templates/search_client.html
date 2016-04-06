@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nuevo Cliente</h3>
+                </div>
+                <div class="panel-body">
+                    <a href="{% url 'client-client-new' %}" class="btn btn-block btn-success">Crear Cliente</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Buscar cliente existente</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" name="search" placeholder="Texto a buscar"
+                                       required/>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="submit" class="btn btn-block btn-primary" value="Buscar"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="results" style="padding-top: 20px">
+                            {% if show_results == 0 %}
+                                <strong style="color: crimson">No hay sesultados que mostrar</strong>
+                            {% elif show_results > 0 %}
+                                <table class="table table-bordered table-hover table-striped">
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Dirección
+                                            <small>(Puede tener otras)</small>
+                                        </th>
+                                        <th></th>
+
+                                    </tr>
+
+                                    {% for client in clients %}
+                                    <tr>
+                                        <td>
+                                            C{{ client.pk }}
+                                        </td>
+                                        <td>
+                                            {{ client.name }}
+                                        </td>
+                                        <td>
+                                            {{ client.get_first_address|linebreaks }}
+                                        </td>
+                                        <td>
+                                            <a href="{% url new_url client.pk %}"
+                                               class="btn btn-block {{ btn_class }}">{{ btn_text }}</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
