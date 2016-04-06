@@ -11,11 +11,10 @@ class Client(models.Model):
     dni = models.CharField(max_length=20, null=True, verbose_name="DNI/CIF")
 
     def __str__(self):
-        return self.name
+        return self.name.encode('utf8')
 
     def get_first_address(self):
         return Address.objects.filter(client=self).first()
-
 
 
 class Phone(models.Model):
@@ -40,4 +39,4 @@ class Address(models.Model):
             return False
 
     def __str__(self):
-        return self.address
+        return self.address.encode('utf8')

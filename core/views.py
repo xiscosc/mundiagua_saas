@@ -3,8 +3,9 @@ from django.shortcuts import render, render_to_response
 # Create your views here.
 from django.template import RequestContext
 from django.views.generic import TemplateView
+from django.views.generic.edit import CreateView
 
-from client.models import Client
+from client.models import Client, Address, Phone
 
 
 class SearchClientBaseView(TemplateView):
@@ -21,3 +22,22 @@ class SearchClientBaseView(TemplateView):
         context = super(SearchClientBaseView, self).get_context_data(**kwargs)
         context['show_results'] = -1
         return context
+
+
+class CreateBaseView(CreateView):
+
+    def get_form(self, form_class=None):
+        form = super(CreateBaseView, self).get_form(form_class=form_class)
+        form.fields['address'].queryset = Address.objects.filter(client=self.kwargs['id'])
+        return form
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateBaseView, self).get_context_data(**kwargs)
+        context['client'] = Client.objects.get(pk=self.kwargs['id'])
+        context['phones'] = Phone.objects.filter(client=self.kwargs['id'])
+        return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.created_by = self.request.user
+        return super(CreateBaseView, self).form_valid(form)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
@@ -13,12 +14,15 @@ class Zone(models.Model):
     name = models.CharField(max_length=50)
     color = ColorField(default='#FF0000')
 
+    def __str__(self):
+        return self.name.encode('utf8')
+
 
 class Intervention(models.Model):
-    description = models.TextField()
-    address = models.ForeignKey('client.Address')
+    description = models.TextField(verbose_name="Descripción")
+    address = models.ForeignKey('client.Address', verbose_name="Dirección")
     date = models.DateTimeField(auto_now_add=True)
-    zone = models.ForeignKey(Zone, default=1)
+    zone = models.ForeignKey(Zone, default=1, verbose_name="Zona")
     status = models.ForeignKey(InterventionStatus, default=1)
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
@@ -38,7 +42,6 @@ class InterventionLog(models.Model):
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
     status = models.ForeignKey(InterventionStatus)
     intervention = models.ForeignKey(Intervention)
-
 
 
 def post_save_intervention(sender, **kwargs):

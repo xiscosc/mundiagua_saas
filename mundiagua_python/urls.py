@@ -20,5 +20,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^intervention/', include('intervention.urls')),
     url(r'^client/', include('client.urls')),
+    url(r'^budget/', include('budget.urls')),
+    url(r'^repair/', include('repair.urls')),
 ]
 

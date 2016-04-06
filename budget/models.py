@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+
 class Budget(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('core.User')
@@ -25,7 +26,6 @@ class BudgetRepair(models.Model):
     conditions = models.TextField()
     content = models.TextField()
     tax = models.IntegerField(default=21)
-    address = models.ForeignKey('client.Address')
     idegis_repair = models.OneToOneField('repair.IdegisRepair', null=True)
     ath_repair = models.OneToOneField('repair.AthRepair', null=True)
 

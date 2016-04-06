@@ -50,6 +50,7 @@
                                             <small>(Puede tener otras)</small>
                                         </th>
                                         <th></th>
+                                        {% if new_url2 %}<th></th>{% endif %}
 
                                     </tr>
 
@@ -62,12 +63,16 @@
                                             {{ client.name }}
                                         </td>
                                         <td>
-                                            {{ client.get_first_address|linebreaks }}
+                                            {{ client.get_first_address }}
                                         </td>
                                         <td>
                                             <a href="{% url new_url client.pk %}"
                                                class="btn btn-block {{ btn_class }}">{{ btn_text }}</a>
                                         </td>
+                                    {% if new_url2 %}<td>
+                                            <a href="{% url new_url2 client.pk %}"
+                                               class="btn btn-block {{ btn_class2 }}">{{ btn_text2 }}</a>
+                                        </td>{% endif %}
                                     </tr>
                                     {% endfor %}
                                 </table>
