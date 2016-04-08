@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 
+from client.models import Phone
 from core.views import SearchClientBaseView, CreateBaseView
 from intervention.models import Intervention
 
@@ -24,4 +25,10 @@ class CreateInterventionView(CreateBaseView):
     model = Intervention
     fields = ['address', 'description', 'zone']
     template_name = "new_intervention.html"
+
+
+class InterventionView(DetailView):
+    model = Intervention
+    context_object_name = "intervention"
+    template_name = "detail_intervention.html"
 

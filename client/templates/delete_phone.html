@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Borrar teléfono{% endblock %}
+{% block content %}
+
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-lg-12">
+        <form action="" method="post">{% csrf_token %}
+             <div class="alert alert-danger" role="alert"><strong>Alerta!</strong> ¿Esta seguro que desea eliminar el teléfono {{ phone }} de {{ phone.client }}? Esto afectará a todas las averías, reparaciones y presupuestos.</div>
+         <div class="form-group">
+         <button class="btn btn-danger" type="submit">Borrar</button>
+         <a href="{% url 'client-client' phone.client.pk %}" class="btn btn-primary">No quiero borrarlo</a>
+        </div>
+    </form>
+    </div>
+</div>
+
+{% endblock %}

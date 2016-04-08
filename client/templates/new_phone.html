@@ -7,10 +7,12 @@
 
 <div class="row">
     <div class="col-md-12 col-xs-12 col-lg-12">
-        <form action="" method="post">{% csrf_token %}
+        <form action="" method="post" id="new_form">{% csrf_token %}
             {{ form|bootstrap }}
          <div class="form-group">
-         <button type="submit" class="btn btn-primary">Guardar</button>
+         <input type="hidden" id="other" name="other" value="0"/>
+         <button class="btn btn-success" id="btn_other">Guardar y añadir otro</button>
+         <button type="submit" class="btn btn-primary">Guardar y continuar</button>
          <a href="{% url 'client-client' client.pk %}" class="btn btn-warning">Omitir</a>
         </div>
     </form>
@@ -18,4 +20,7 @@
 </div>
 
 
+{% endblock %}
+{% block extrajs %}
+    <script src="{% static 'base/js/client/new_phone_address.js' %}"></script>
 {% endblock %}

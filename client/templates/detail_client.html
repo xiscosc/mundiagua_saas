@@ -11,7 +11,7 @@
                     <h3 class="panel-title">Datos del cliente</h3>
                 </div>
                 <div class="panel-body">
-                    {% include 'client_data.html' with client=client phones=phones edit=True sms=True %}
+                    {% include 'client_data.html' with client=client edit=True sms=True %}
                     <div class="row">
     <div class="col-lg-12 col-md-12 col-xs-12">
         <h3>Direcciones <a class="btn btn-success" href="{% url 'client-address-add' client.pk %}">Añadir</a></h3>
@@ -22,8 +22,9 @@
                             <th>Zona frecuente</th>
                             <th></th>
                             <th></th>
+                            <th></th>
                         </tr>
-                        {% for address in addresses %}
+                        {% for address in client.get_addresses %}
                             <tr>
                                 <td>
                                     {{ address.alias }}
@@ -51,8 +52,12 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a class="btn btn-block btn-warning editModal"
+                                    <a class="btn btn-block btn-warning"
                                        href="{% url 'client-address-edit' address.pk %}">Editar</a>
+                                </td>
+                                 <td>
+                                    <a class="btn btn-block btn-danger"
+                                       href="{% url 'client-address-delete' address.pk %}">Eliminar</a>
                                 </td>
                             </tr>
                         {% endfor %}

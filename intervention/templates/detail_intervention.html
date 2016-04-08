@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Avería <small>{{ intervention }}</small>{% endblock %}
+{% block content %}
+
+
+    {% if intervention.get_modifications|length > 0 %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Modificaciones de la avería</h3>
+                </div>
+                <div class="panel-body" id="body_modificaciones">
+
+                    <table class="table table-bordered table-hover table-striped">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th>Modificación</th>
+                        </tr>
+
+                        {% for mod in intervention.get_modifications %}
+                        <tr>
+                            <td>
+                                {{ mod.date }}
+                            </td>
+                            <td>
+                                {{ mod.created_by.get_full_name }}
+                            </td>
+                            <td>
+                                {{ mod.note }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% include 'client_data.html' with client=intervention.address.client sms=True address=intervention.address %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Historial de la avería</h3>
+                </div>
+                <div class="panel-body" id="body_modificaciones">
+                    {% if intervention.get_history|length > 0 %}
+                        <table class="table table-bordered table-hover table-striped">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Estado</th>
+                                <th>Operario asignado</th>
+                            </tr>
+                            {% for h in intervention.get_history %}
+                                <tr>
+                                    <td>
+                                        {{ h.date }}
+                                    </td>
+                                    <td>
+                                        {{ h.created_by.get_full_name }}
+                                    </td>
+                                    <td>
+                                        {{ h.status }}
+                                    </td>
+                                    <td>
+                                        {% if h.assigned %}{{ h.assigned }}{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <h5>No hay historial disponible para mostrar</h5>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Datos de la avería</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <tr>
+                            <td style="width: 15%">
+                                <strong>Fecha</strong>
+                            </td>
+                            <td>
+                                {{ intervention.date }}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Zona</strong>
+                            </td>
+                            <td>
+                                {{ intervention.zone }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Creada por</strong>
+                            </td>
+                            <td>
+                                {{ intervention.created_by.get_full_name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Estado</strong>
+                            </td>
+                            <td>
+                                {{ intervention.status }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Descripción</strong>
+                            </td>
+                            <td>
+                                {{ intervention.description|linebreaks }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

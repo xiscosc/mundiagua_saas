@@ -9,6 +9,9 @@ from django.db.models.signals import post_save
 class InterventionStatus(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name.encode('utf8')
+
 
 class Zone(models.Model):
     name = models.CharField(max_length=50)
@@ -27,6 +30,15 @@ class Intervention(models.Model):
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
     note = models.TextField(null=True)
+
+    def __str__(self):
+        return "V"+str(self.pk)
+
+    def get_history(self):
+        return InterventionLog.objects.filter(intervention=self)
+
+    def get_modifications(self):
+        return InterventionModification.objects.filter(intervention=self)
 
 
 class InterventionModification(models.Model):

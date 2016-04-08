@@ -34,7 +34,6 @@ class CreateBaseView(CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateBaseView, self).get_context_data(**kwargs)
         context['client'] = Client.objects.get(pk=self.kwargs['id'])
-        context['phones'] = Phone.objects.filter(client=self.kwargs['id'])
         return context
 
     def form_valid(self, form):
