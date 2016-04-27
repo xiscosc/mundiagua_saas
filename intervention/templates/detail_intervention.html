@@ -43,13 +43,117 @@
 
     {% include 'client_data.html' with client=intervention.address.client sms=True address=intervention.address %}
 
+    <div class="row level">
+              <div class="col-md-12">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <h3 class="panel-title">Realizar cambios</h3>
+                      </div>
+                      <div class="panel-body" id="body_averia">
+                        <div class="row" id="forms">
+                            <form method="post" class="form_averia" data-montes="1" action="modifiers/cambioEstadoAveria.php" data-r="1">
+                                <input type="hidden" name="a_id" value="<?= $ida ?>" />
+                                <div class="col-md-4">
+                                    <select class="form-control" name="a_e_id" id="selectEstado">
+                                        <?php
+                                            foreach($estados as $estado) {
+                                                $selected ="";
+                                                if($estado['e_id']==2) {
+                                                    $selected=" selected";
+                                                }
+                                                ?>
+                                                <option value="<?= $estado['e_id'] ?>"<?= $selected?> ><?= $estado['e_nombre'] ?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                    <select class="form-control" name="a_asignado_id"  id="selectUsuario">
+                                        <?php
+                                        foreach($usuarios as $u) {
+                                            ?>
+                                            <option value="<?= $u['u_id'] ?>">Asignar a <?= $u['u_nombrecompleto'] ?></option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-block btn-danger" >
+                                        <span class="fa fa-flash"></span> Cambiar estado
+                                    </button>
+                                </div>
+                            </form>
+                            <form method="post" class="form_averia" action="modifiers/nuevaModificacionAveria.php">
+                                {% csrf_token %}
+                                <input type="hidden" name="internention_id" value="<?= $ida ?>" />
+                                <div class="col-md-4">
+                                    <textarea class="form-control" name="m_modificacion" rows="3" placeholder="Escribe aquí una modificación" required></textarea>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-block btn-warning">
+                                        <span class="fa fa-plus"></span> Añadir modificación
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                          <div class="row" style="padding-top: 10px">
+                                <form method="post" class="form_averia" action="modifiers/actualizarAveria.php">
+                                {% csrf_token %}
+                                    <div class="col-md-1">
+                                        <button class="btn btn-block" id="btn-color" style="color:white; background-color:{{ intervention.zone.color }}">Color</button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select name="a_z_id" class="form-control" id="selector-color">
+                                            {% for zone in zones %}
+                                                {% if zone.pk == intervention.zone.pk %}
+                                                    <option value="{{ zone.pk }}" data-color="{{ zone.color }}" selected>{{ zone.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ zone.pk }}" data-color="{{ zone.color }}">{{ zone.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-block btn-success" >
+                                            Cambiar Zona
+                                        </button>
+                                    </div>
+                                </form>
+                              <form action="modifiers/enviarMailAveria.php" method="post" class="form_averia" data-r="0">
+                                  <input type="hidden" name="id" value="<?= $ida ?>" />
+                              <div class="col-md-4">
+                                  <select class="form-control" name="email" >
+                                      <?php
+                                      foreach($usuarios as $u) {
+                                          ?>
+                                          <option value="<?= $u['u_email'] ?>"><?= $u['u_nombrecompleto'] ?></option>
+                                      <?php
+                                      }
+                                      ?>
+                                  </select>
+                              </div>
+                              <div class="col-md-2">
+                                  <button type="submit" class="btn btn-default btn-block">
+                                      <span class="fa fa-envelope"></span> Enviar por correo
+                                  </button>
+                              </div>
+                              </form>
+                          </div>
+                          <div class="row" style="padding-top: 10px">
+                              <div class="col-md-12" style="text-align: center" id="notification"></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Historial de la avería</h3>
                 </div>
-                <div class="panel-body" id="body_modificaciones">
+                <div class="panel-body">
                     {% if intervention.get_history|length > 0 %}
                         <table class="table table-bordered table-hover table-striped">
                             <tr>
@@ -140,4 +244,7 @@
     </div>
 
 
+{% endblock %}
+{% block extrajs %}
+    <script src="{% static 'base/js/intervention/detail.js' %}"></script>
 {% endblock %}

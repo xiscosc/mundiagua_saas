@@ -3,7 +3,7 @@ from django.views.generic import TemplateView, DetailView
 
 from client.models import Phone
 from core.views import SearchClientBaseView, CreateBaseView
-from intervention.models import Intervention
+from intervention.models import Intervention, Zone
 
 
 class HomeView(TemplateView):
@@ -31,4 +31,9 @@ class InterventionView(DetailView):
     model = Intervention
     context_object_name = "intervention"
     template_name = "detail_intervention.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(InterventionView, self).get_context_data(**kwargs)
+        context['zones'] = Zone.objects.all()
+        return context
 
