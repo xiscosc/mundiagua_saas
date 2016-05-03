@@ -135,6 +135,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+DOMAIN = "https://in.mundiaguabalear.com"
+ASSIGNED_STATUS = 2
+
 AUTH_USER_MODEL = 'core.User'
 
 STATICFILES_DIRS = [

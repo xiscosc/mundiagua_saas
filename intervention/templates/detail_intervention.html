@@ -51,30 +51,22 @@
                       </div>
                       <div class="panel-body" id="body_averia">
                         <div class="row" id="forms">
-                            <form method="post" class="form_averia" data-montes="1" action="modifiers/cambioEstadoAveria.php" data-r="1">
-                                <input type="hidden" name="a_id" value="<?= $ida ?>" />
+                            <form method="post" action="{% url 'intervention-edit' intervention.pk %}" >
+                                {% csrf_token %}
                                 <div class="col-md-4">
-                                    <select class="form-control" name="a_e_id" id="selectEstado">
-                                        <?php
-                                            foreach($estados as $estado) {
-                                                $selected ="";
-                                                if($estado['e_id']==2) {
-                                                    $selected=" selected";
-                                                }
-                                                ?>
-                                                <option value="<?= $estado['e_id'] ?>"<?= $selected?> ><?= $estado['e_nombre'] ?></option>
-                                        <?php
-                                            }
-                                        ?>
+                                    <select class="form-control" name="intervention_status" id="intervention_status">
+                                        {% for st in status %}
+                                                {% if st.pk == 2 %}
+                                                    <option value="{{ st.pk }}"  selected>{{ st.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ st.pk }}">{{ st.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
                                     </select>
-                                    <select class="form-control" name="a_asignado_id"  id="selectUsuario">
-                                        <?php
-                                        foreach($usuarios as $u) {
-                                            ?>
-                                            <option value="<?= $u['u_id'] ?>">Asignar a <?= $u['u_nombrecompleto'] ?></option>
-                                        <?php
-                                        }
-                                        ?>
+                                    <select class="form-control" name="intervention_assigned" id="intervention_assigned">
+                                        {% for u in users %}
+                                            <option value="{{ u.pk }}">Asignar a {{ u.get_full_name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -83,11 +75,10 @@
                                     </button>
                                 </div>
                             </form>
-                            <form method="post" class="form_averia" action="modifiers/nuevaModificacionAveria.php">
+                            <form method="post" action="{% url 'intervention-edit' intervention.pk %}">
                                 {% csrf_token %}
-                                <input type="hidden" name="internention_id" value="<?= $ida ?>" />
                                 <div class="col-md-4">
-                                    <textarea class="form-control" name="m_modificacion" rows="3" placeholder="Escribe aquí una modificación" required></textarea>
+                                    <textarea class="form-control" name="intervention_modification" rows="3" placeholder="Escribe aquí una modificación" required></textarea>
                                 </div>
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-block btn-warning">
@@ -97,13 +88,13 @@
                             </form>
                         </div>
                           <div class="row" style="padding-top: 10px">
-                                <form method="post" class="form_averia" action="modifiers/actualizarAveria.php">
+                                <form method="post" action="{% url 'intervention-edit' intervention.pk %}">
                                 {% csrf_token %}
                                     <div class="col-md-1">
                                         <button class="btn btn-block" id="btn-color" style="color:white; background-color:{{ intervention.zone.color }}">Color</button>
                                     </div>
                                     <div class="col-md-3">
-                                        <select name="a_z_id" class="form-control" id="selector-color">
+                                        <select name="intervention_zone" class="form-control" id="selector_color">
                                             {% for zone in zones %}
                                                 {% if zone.pk == intervention.zone.pk %}
                                                     <option value="{{ zone.pk }}" data-color="{{ zone.color }}" selected>{{ zone.name }}</option>
@@ -123,13 +114,9 @@
                                   <input type="hidden" name="id" value="<?= $ida ?>" />
                               <div class="col-md-4">
                                   <select class="form-control" name="email" >
-                                      <?php
-                                      foreach($usuarios as $u) {
-                                          ?>
-                                          <option value="<?= $u['u_email'] ?>"><?= $u['u_nombrecompleto'] ?></option>
-                                      <?php
-                                      }
-                                      ?>
+                                      {% for u in users %}
+                                            <option value="{{ u.pk }}">Enviar a {{ u.get_full_name }}</option>
+                                        {% endfor %}
                                   </select>
                               </div>
                               <div class="col-md-2">
@@ -174,7 +161,7 @@
                                         {{ h.status }}
                                     </td>
                                     <td>
-                                        {% if h.assigned %}{{ h.assigned }}{% endif %}
+                                        {% if h.assigned %}{{ h.assigned.get_full_name }}{% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from colorfield.fields import ColorField
 from django.db.models.signals import post_save
+from django.conf import settings
+
+
+
+from core.utils import send_data_to_user
 
 
 class InterventionStatus(models.Model):
@@ -40,6 +46,13 @@ class Intervention(models.Model):
     def get_modifications(self):
         return InterventionModification.objects.filter(intervention=self)
 
+    def generate_url(self):
+        intern_url = reverse_lazy('intervention-intervention', kwargs={'pk': self.pk})
+        return settings.DOMAIN+intern_url
+
+    def send_to_user(self, user):
+        send_data_to_user(is_link=True, body=self.generate_url(), user=user)
+
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -57,11 +70,14 @@ class InterventionLog(models.Model):
 
 
 def post_save_intervention(sender, **kwargs):
+    ins = kwargs['instance']
     if kwargs['created']:
-        ins = kwargs['instance']
         log = InterventionLog(created_by=ins.created_by, status=ins.status, intervention=ins)
         log.save()
     else:
-        pass
+        if ins.status == settings.ASSIGNED_STATUS:
+            ins.send_to_user(ins.assigned)
+
+
 
 post_save.connect(post_save_intervention, sender=Intervention)
