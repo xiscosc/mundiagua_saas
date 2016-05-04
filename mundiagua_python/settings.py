@@ -47,6 +47,7 @@ OTHER_APPS = [
     'polymorphic',
     'djangobower',
     'bootstrapform',
+    'sendsms'
 ]
 
 MY_APPS = [
@@ -173,3 +174,5 @@ TEMPLATES = [
         },
     },
 ]
+
+SENDSMS_BACKEND = 'sendsms.backends.esendex.SmsBackend'

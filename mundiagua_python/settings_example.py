@@ -16,5 +16,7 @@ DATABASES = {
     }
 }
 
-ESENDEX_USER = "mail@mundiaguabalear.com"
-ESENDEX_PASSWORD = "password"
+ESENDEX_USERNAME = 'yourusername'
+ESENDEX_PASSWORD = 'mysecretpassword'
+ESENDEX_ACCOUNT = 'account-key-provided-by-esendex'
+ESENDEX_SANDBOX = False # True if yo like test first
