@@ -3,7 +3,7 @@ django-bootstrap-form==3.2
 django-bower==5.1.0
 django-colorfield==0.1.10
 django-polymorphic==0.9.1
-django-sendsms==0.2.2
+https://github.com/xiscosc/django-sendsms/archive/developer.zip
 psycopg2==2.6.1
 pushbullet.py==0.10.0
 python-magic==0.4.11
