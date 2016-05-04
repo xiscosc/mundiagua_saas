@@ -7,8 +7,6 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 
-
-
 from core.utils import send_data_to_user
 
 
@@ -38,7 +36,7 @@ class Intervention(models.Model):
     note = models.TextField(null=True)
 
     def __str__(self):
-        return "V"+str(self.pk)
+        return "V" + str(self.pk)
 
     def get_history(self):
         return InterventionLog.objects.filter(intervention=self)
@@ -47,12 +45,12 @@ class Intervention(models.Model):
         return InterventionModification.objects.filter(intervention=self)
 
     def generate_url(self):
-        intern_url = reverse_lazy('intervention-intervention', kwargs={'pk': self.pk})
-        return settings.DOMAIN+intern_url
+        intern_url = str(reverse_lazy('intervention-intervention', kwargs={'pk': self.pk}))
+        return settings.DOMAIN + intern_url
 
     def send_to_user(self, user):
-        send_data_to_user(is_link=True, body=self.generate_url(), user=user)
-
+        send_data_to_user(is_link=True, body=self.generate_url(), user=user,
+                          subject=str(self) + " - " + self.address.client.name)
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -75,9 +73,8 @@ def post_save_intervention(sender, **kwargs):
         log = InterventionLog(created_by=ins.created_by, status=ins.status, intervention=ins)
         log.save()
     else:
-        if ins.status == settings.ASSIGNED_STATUS:
+        if "status" in kwargs['update_fields'] and ins.status_id == settings.ASSIGNED_STATUS:
             ins.send_to_user(ins.assigned)
-
 
 
 post_save.connect(post_save_intervention, sender=Intervention)

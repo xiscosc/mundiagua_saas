@@ -14,3 +14,8 @@ $('#intervention_status').on('change', function() {
         $('#intervention_assigned').fadeOut('slow');
     }
 });
+
+$('.form_modify').on('submit', function () {
+   $('.forms_content').hide('slow');
+   $('.forms_progress').show('slow');
+});
