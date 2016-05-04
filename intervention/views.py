@@ -55,10 +55,17 @@ class UpdateInterventionView(View):
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         intervention = Intervention.objects.get(pk=kwargs['pk'])
+        intervention._old_status_id = intervention.status_id
+        intervention._old_assigned_id = intervention.assigned_id
         intervention_save = True
+
+        try:
+            intervention.status_id = int(params.getlist('intervention_status')[0])
+        except IndexError:
+            pass
+
         try:
             intervention.zone_id = int(params.getlist('intervention_zone')[0])
-            uf = ["zone"]
         except IndexError:
             pass
 
@@ -78,22 +85,9 @@ class UpdateInterventionView(View):
         except IndexError:
             pass
 
-        try:
-            intervention.status_id = int(params.getlist('intervention_status')[0])
-            log = InterventionLog(status_id=intervention.status_id, created_by=request.user, intervention=intervention)
-            uf = ["status"]
-            if intervention.status_id == settings.ASSIGNED_STATUS:
-                uf = ["status", "assigned"]
-                intervention.assigned_id = int(params.getlist('intervention_assigned')[0])
-                log.assigned_id = intervention.assigned_id
-            log_save = True
-        except IndexError:
-            log_save = False
-
         if intervention_save:
-            intervention.save(update_fields=uf)
-            if log_save:
-                log.save()
+            intervention._current_user = request.user
+            intervention.save()
 
         return HttpResponseRedirect(reverse_lazy('intervention-intervention-edited',
                                                  kwargs={'pk': intervention.pk, 'edited': 1}))

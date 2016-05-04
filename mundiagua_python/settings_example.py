@@ -15,3 +15,6 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+ESENDEX_USER = "mail@mundiaguabalear.com"
+ESENDEX_PASSWORD = "password"

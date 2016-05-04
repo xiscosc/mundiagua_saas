@@ -52,6 +52,7 @@ class Intervention(models.Model):
         send_data_to_user(is_link=True, body=self.generate_url(), user=user,
                           subject=str(self) + " - " + self.address.client.name)
 
+
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     note = models.TextField(null=True)
@@ -68,13 +69,18 @@ class InterventionLog(models.Model):
 
 
 def post_save_intervention(sender, **kwargs):
-    ins = kwargs['instance']
+    intervention = kwargs['instance']
     if kwargs['created']:
-        log = InterventionLog(created_by=ins.created_by, status=ins.status, intervention=ins)
+        log = InterventionLog(created_by=intervention.created_by, status=intervention.status, intervention=intervention)
         log.save()
     else:
-        if "status" in kwargs['update_fields'] and ins.status_id == settings.ASSIGNED_STATUS:
-            ins.send_to_user(ins.assigned)
+        if intervention._old_status_id != intervention.status_id or intervention._old_assigned_id != intervention.assigned_id:
+            log = InterventionLog(status_id=intervention.status_id, created_by=intervention._current_user,
+                                  intervention=intervention)
+            if intervention.status_id == settings.ASSIGNED_STATUS:
+                log.assigned = intervention.assigned
+                intervention.send_to_user(intervention.assigned)
+            log.save()
 
 
 post_save.connect(post_save_intervention, sender=Intervention)

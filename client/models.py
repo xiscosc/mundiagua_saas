@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from core.models import User
+
 
 class Client(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nombre")
@@ -50,3 +52,11 @@ class Address(models.Model):
 
     def __str__(self):
         return ("(" + self.alias + ") - " + self.address).encode('utf8')
+
+
+class SMS(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey(User)
+    body = models.TextField(max_length=160)
+    sent = models.BooleanField(default=False)
+    phone = models.ForeignKey(Phone)
