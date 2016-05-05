@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.http import HttpResponseRedirect
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View
 
-from client.models import Client, Address, Phone
+from client.models import Client, Address, Phone, SMS
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import Budget
@@ -123,7 +124,6 @@ class DeletePhoneView(DeleteView):
         return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
 
 
-
 class DeleteAddresView(DeleteView):
     model = Address
     context_object_name = "address"
@@ -144,6 +144,7 @@ class DeleteAddresView(DeleteView):
         r_aths = AthRepair.objects.filter(address=int(self.kwargs['pk']))
         r_idegis = IdegisRepair.objects.filter(address=int(self.kwargs['pk']))
         budgets = Budget.objects.filter(address=int(self.kwargs['pk']))
+
         self.change_address(interventions + r_aths + r_idegis + budgets, new_address_id)
         return super(DeleteAddresView, self).delete(request, *args, **kwargs)
 
@@ -151,3 +152,12 @@ class DeleteAddresView(DeleteView):
         for i in set_data:
             i.address_id = new_address_id
             i.save()
+
+
+class SendSMSView(View):
+
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        sms = SMS(sender=request.user, body=params.getlist('sms_body')[0], phone_id=int(params.getlist('phone_pk')[0]))
+        sms.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

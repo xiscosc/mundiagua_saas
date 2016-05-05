@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+
+from async_messages import message_user, constants
 
 from core.models import User
 
@@ -58,5 +62,31 @@ class SMS(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User)
     body = models.TextField(max_length=160)
-    sent = models.BooleanField(default=False)
+    sent_status = models.IntegerField(default=0) # 0 pending, 1 sent, 2 fail
     phone = models.ForeignKey(Phone)
+
+
+def post_save_sms(sender, **kwargs):
+    sms = kwargs['instance']
+    if kwargs['created']:
+        phone_processed = sms.phone.phone.replace(" ", "")
+        phone_processed = '34'+phone_processed.replace(".", "")
+        if len(phone_processed) == 11:
+            from sendsms.message import SmsMessage
+            message = SmsMessage(
+                body=sms.body,
+                from_phone=settings.SMS_SENDER,
+                to=[phone_processed]
+            )
+            result = message.send()
+            if result == 1:
+                sms.sent_status = 1
+                message_user(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente", constants.SUCCESS)
+            else:
+                sms.sent_status = 2
+                message_user(sms.sender, "Error enviando SMS a " + sms.phone.client.name + ", puede ser un error temporal o que no hay crédito de SMS", constants.ERROR)
+            sms.save()
+
+
+
+post_save.connect(post_save_sms, sender=SMS)

@@ -13,57 +13,61 @@
                 <div class="panel-body">
                     {% include 'client_data.html' with client=client edit=True sms=True %}
                     <div class="row">
-    <div class="col-lg-12 col-md-12 col-xs-12">
-        <h3>Direcciones <a class="btn btn-success" href="{% url 'client-address-add' client.pk %}">Añadir</a></h3>
-        <table class="table table-bordered table-hover table-striped">
-                        <tr>
-                            <th>Alias</th>
-                            <th>Dirección</th>
-                            <th>Zona frecuente</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        {% for address in client.get_addresses %}
-                            <tr>
-                                <td>
-                                    {{ address.alias }}
-                                </td>
-                                <td>
-                                    {{ address.address|linebreaksbr }}
-                                </td>
-                                <td>
-                                    {% if address.default_zone %}
-                                        <div style="background-color: {{ address.default_zone.color }}"
-                                             class="zona">{{ address.default_zone.name }}</div>
-                                    {% else %}
-                                        Sin datos
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if address.get_url_gmaps %}
-                                        <a href="{{ address.get_url_gmaps }}" type="button" class="btn btn-success">
-                                            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-                                        </a>
-                                    {% else %}
-                                        <a href="#" type="button" class="btn" disabled>
-                                            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-                                        </a>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a class="btn btn-block btn-warning"
-                                       href="{% url 'client-address-edit' address.pk %}">Editar</a>
-                                </td>
-                                 <td>
-                                    <a class="btn btn-block btn-danger"
-                                       href="{% url 'client-address-delete' address.pk %}">Eliminar</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-        </div>
-    </diV>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <h3>Direcciones <a class="btn btn-success" href="{% url 'client-address-add' client.pk %}">Añadir</a>
+                            </h3>
+                            <table class="table table-bordered table-hover table-striped">
+                                <tr>
+                                    <th>Alias</th>
+                                    <th>Dirección</th>
+                                    <th>Zona frecuente</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                {% for address in client.get_addresses %}
+                                    <tr>
+                                        <td>
+                                            {{ address.alias }}
+                                        </td>
+                                        <td>
+                                            {{ address.address|linebreaksbr }}
+                                        </td>
+                                        <td>
+                                            {% if address.default_zone %}
+                                                <div style="background-color: {{ address.default_zone.color }}"
+                                                     class="zona">{{ address.default_zone.name }}</div>
+                                            {% else %}
+                                                Sin datos
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if address.get_url_gmaps %}
+                                                <a href="{{ address.get_url_gmaps }}" type="button"
+                                                   class="btn btn-success">
+                                                    <span class="glyphicon glyphicon-map-marker"
+                                                          aria-hidden="true"></span>
+                                                </a>
+                                            {% else %}
+                                                <a href="#" type="button" class="btn" disabled>
+                                                    <span class="glyphicon glyphicon-map-marker"
+                                                          aria-hidden="true"></span>
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-block btn-warning"
+                                               href="{% url 'client-address-edit' address.pk %}">Editar</a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-block btn-danger"
+                                               href="{% url 'client-address-delete' address.pk %}">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </diV>
                 </div>
             </div>
         </div>

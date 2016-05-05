@@ -47,7 +47,8 @@ OTHER_APPS = [
     'polymorphic',
     'djangobower',
     'bootstrapform',
-    'sendsms'
+    'sendsms',
+
 ]
 
 MY_APPS = [
@@ -56,6 +57,7 @@ MY_APPS = [
     'intervention',
     'budget',
     'repair',
+    'async_messages'
 ]
 
 
@@ -73,6 +75,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'async_messages.middleware.AsyncMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -176,3 +179,6 @@ TEMPLATES = [
 ]
 
 SENDSMS_BACKEND = 'sendsms.backends.esendex.SmsBackend'
+SMS_SENDER = 'MUNDIAGUASL'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
