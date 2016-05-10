@@ -51,18 +51,6 @@
                     <h3 class="panel-title">Realizar cambios</h3>
                 </div>
                 <div class="panel-body">
-                    {% if edited %}
-                    <div class="row forms_content">
-                        <div class="col-md-12">
-                            <div class="alert alert-success alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <strong>La operación se ha completado correctamente.</strong>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
                     <div class="row forms_content">
                         <form method="post" class="form_modify" action="{% url 'intervention-edit' intervention.pk %}">
                             {% csrf_token %}

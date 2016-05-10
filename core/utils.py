@@ -10,9 +10,10 @@ def send_data_to_user(user, subject, body, is_link=False):
             push = pb.push_link(title=subject, url=body)
         else:
             push = pb.push_note(subject, body)
+        return push
     else:
         # send email
-        pass
+        return False
 
 
 def generate_md5_id(char, id):

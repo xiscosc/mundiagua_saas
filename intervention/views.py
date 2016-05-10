@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
+from async_messages import message_user, constants
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, DetailView, View
@@ -43,10 +43,6 @@ class InterventionView(DetailView):
         context['zones'] = Zone.objects.all()
         context['users'] = User.objects.all()
         context['status'] = InterventionStatus.objects.all()
-        try:
-            context['edited'] = self.kwargs['edited']
-        except KeyError:
-            pass
         return context
 
 
@@ -89,5 +85,5 @@ class UpdateInterventionView(View):
             intervention._current_user = request.user
             intervention.save()
 
-        return HttpResponseRedirect(reverse_lazy('intervention-intervention-edited',
-                                                 kwargs={'pk': intervention.pk, 'edited': 1}))
+        message_user(request.user, "Modificación realizada correctamente", constants.SUCCESS)
+        return HttpResponseRedirect(reverse_lazy('intervention-intervention', kwargs={'pk': intervention.pk}))

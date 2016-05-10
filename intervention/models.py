@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from async_messages import message_user, constants
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from colorfield.fields import ColorField
@@ -49,7 +50,7 @@ class Intervention(models.Model):
         return settings.DOMAIN + intern_url
 
     def send_to_user(self, user):
-        send_data_to_user(is_link=True, body=self.generate_url(), user=user,
+        return send_data_to_user(is_link=True, body=self.generate_url(), user=user,
                           subject=str(self) + " - " + self.address.client.name)
 
 
@@ -79,7 +80,11 @@ def post_save_intervention(sender, **kwargs):
                                   intervention=intervention)
             if intervention.status_id == settings.ASSIGNED_STATUS:
                 log.assigned = intervention.assigned
-                intervention.send_to_user(intervention.assigned)
+                result_send = intervention.send_to_user(intervention.assigned)
+                if not result_send:
+                    message_user(intervention._current_user,
+                                 "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name(),
+                                 constants.ERROR)
             log.save()
 
 
