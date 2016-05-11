@@ -62,7 +62,7 @@ class SMS(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User)
     body = models.TextField(max_length=160)
-    sent_status = models.IntegerField(default=0) # 0 pending, 1 sent, 2 fail
+    sent_status = models.IntegerField(default=0)  # 0 pending, 1 sent, 2 fail, 3 invalid
     phone = models.ForeignKey(Phone)
 
 
@@ -70,7 +70,7 @@ def post_save_sms(sender, **kwargs):
     sms = kwargs['instance']
     if kwargs['created']:
         phone_processed = sms.phone.phone.replace(" ", "")
-        phone_processed = '34'+phone_processed.replace(".", "")
+        phone_processed = '34' + phone_processed.replace(".", "")
         if len(phone_processed) == 11:
             from sendsms.message import SmsMessage
             message = SmsMessage(
@@ -84,9 +84,15 @@ def post_save_sms(sender, **kwargs):
                 message_user(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente", constants.SUCCESS)
             else:
                 sms.sent_status = 2
-                message_user(sms.sender, "Error enviando SMS a " + sms.phone.client.name + ", puede ser un error temporal o que no hay crédito de SMS", constants.ERROR)
-            sms.save()
-
+                message_user(sms.sender,
+                             "Error enviando SMS a " + sms.phone.client.name + ", puede ser un error temporal o que no hay crédito de SMS",
+                             constants.ERROR)
+        else:
+            sms.sent_status = 3
+            message_user(sms.sender,
+                         "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato (" + phone_processed + ")",
+                         constants.ERROR)
+        sms.save()
 
 
 post_save.connect(post_save_sms, sender=SMS)

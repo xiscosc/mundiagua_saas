@@ -46,7 +46,7 @@ class Intervention(models.Model):
         return InterventionModification.objects.filter(intervention=self)
 
     def generate_url(self):
-        intern_url = str(reverse_lazy('intervention-intervention', kwargs={'pk': self.pk}))
+        intern_url = str(reverse_lazy('intervention-view', kwargs={'pk': self.pk}))
         return settings.DOMAIN + intern_url
 
     def send_to_user(self, user):
