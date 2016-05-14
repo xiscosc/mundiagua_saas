@@ -1,11 +1,17 @@
+# -*- coding: utf-8 -*-
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 
 from client.models import Client, Address, Phone, SMS
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import Budget
+
+
+class HomeClientView(TemplateView):
+    template_name = "home_client.html"
 
 
 class CreateClientView(CreateView):
@@ -43,7 +49,7 @@ class CreateAddressView(CreateView):
             if self.request.resolver_match.url_name == "client-address-new":
                 return reverse_lazy('client-phone-new', kwargs={'id': self.object.client.pk})
             else:
-                return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
+                return reverse_lazy('client-view', kwargs={'pk': self.object.client.pk})
         else:
             return reverse_lazy('client-address-new', kwargs={'id': self.object.client.pk})
 
@@ -67,7 +73,7 @@ class CreatePhoneView(CreateView):
     def get_success_url(self):
         other = int(self.request.POST.getlist('other')[0])
         if other == 0:
-            return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
+            return reverse_lazy('client-view', kwargs={'pk': self.object.client.pk})
         else:
             return reverse_lazy('client-phone-new', kwargs={'id': self.object.client.pk})
 
@@ -89,7 +95,7 @@ class EditClientView(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('client-client', kwargs={'pk': self.object.pk})
+        return reverse_lazy('client-view', kwargs={'pk': self.object.pk})
 
 
 class EditPhoneView(UpdateView):
@@ -98,7 +104,7 @@ class EditPhoneView(UpdateView):
     fields = ["alias", "phone"]
 
     def get_success_url(self):
-        return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
+        return reverse_lazy('client-view', kwargs={'pk': self.object.client.pk})
 
     def get_context_data(self, **kwargs):
         context = super(EditPhoneView, self).get_context_data(**kwargs)
@@ -112,7 +118,7 @@ class EditAddressView(UpdateView):
     fields = ["alias", "address", "latitude", "longitude"]
 
     def get_success_url(self):
-        return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
+        return reverse_lazy('client-view', kwargs={'pk': self.object.client.pk})
 
 
 class DeletePhoneView(DeleteView):
@@ -121,7 +127,7 @@ class DeletePhoneView(DeleteView):
     template_name = 'delete_phone.html'
 
     def get_success_url(self):
-        return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
+        return reverse_lazy('client-view', kwargs={'pk': self.object.client.pk})
 
 
 class DeleteAddresView(DeleteView):
@@ -136,7 +142,7 @@ class DeleteAddresView(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('client-client', kwargs={'pk': self.object.client.pk})
+        return reverse_lazy('client-view', kwargs={'pk': self.object.client.pk})
 
     def delete(self, request, *args, **kwargs):
         new_address_id = int(self.request.POST.getlist('new_address')[0])
@@ -161,3 +167,48 @@ class SendSMSView(View):
         sms = SMS(sender=request.user, body=params.getlist('sms_body')[0], phone_id=int(params.getlist('phone_pk')[0]))
         sms.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+class AllClientsView(TemplateView):
+    template_name = "list_client.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AllClientsView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        clients = Client.objects.all()
+        context['title'] = "Todos los clientes"
+        paginator = Paginator(clients, 18)
+        context['clients'] = paginator.page(page)
+        return context
+
+
+class PreSearchClientView(View):
+
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        search_text = params.getlist('search_text')[0]
+        clients = Client.objects.filter(name__icontains=search_text)
+        addresses = Address.objects.filter(address__icontains=search_text)
+        pk_list = []
+        for i in clients:
+            pk_list.append(i.pk)
+        for a in addresses:
+            pk_list.append(a.client_id)
+        request.session['search_clients'] = list(set(pk_list))
+        request.session['search_clients_text'] = search_text
+        return HttpResponseRedirect(reverse_lazy('client-search'))
+
+
+class SearchClientView(TemplateView):
+    template_name = "list_client.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchClientView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        search_text = str(self.request.session.get('search_clients_text', ""))
+        context['title'] = "Búsqueda - " + search_text
+        clients_pk = self.request.session.get('search_clients', list())
+        clients = Client.objects.filter(pk__in=clients_pk)
+        paginator = Paginator(clients, 18)
+        context['clients'] = paginator.page(page)
+        return context

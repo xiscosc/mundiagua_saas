@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+    {% include 'paginator.html' with obj=clients %}
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover table-striped">
+                <tbody>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Dirección
+                        <small>(Puede tener otras)</small>
+                    </th>
+                    <th></th>
+                </tr>
+
+                {% for client in clients %}
+                    <tr>
+                        <td>
+                            C{{ client.pk }}
+                        </td>
+                        <td>
+                            {{ client.name }}
+                        </td>
+                        <td>
+                            {{ client.get_first_address }}
+                        </td>
+                        <td>
+                            <a href="{% url 'client-view' client.pk %}" class="btn btn-block btn-primary">Ver
+                                cliente</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% include 'paginator.html' with obj=clients %}
+{% endblock %}

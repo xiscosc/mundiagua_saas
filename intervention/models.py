@@ -53,6 +53,9 @@ class Intervention(models.Model):
         return send_data_to_user(is_link=True, body=self.generate_url(), user=user,
                           subject=str(self) + " - " + self.address.client.name)
 
+    def get_num_modifications(self):
+        return InterventionModification.objects.filter(intervention=self).count()
+
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)

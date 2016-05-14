@@ -28,7 +28,7 @@
     <div class="col-md-12">
     <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Datos del cliente <a href="{% url 'client-client' client.pk %}" class="btn btn-default">Modificar
+        <h3 class="panel-title">Datos del cliente <a href="{% url 'client-view' client.pk %}" class="btn btn-default">Modificar
             datos</a></h3>
     </div>
     <div class="panel-body">
@@ -37,7 +37,7 @@
     <div class="col-md-7">
         <h3>Datos personales
             {% if edit %}
-                <a class="btn btn-warning" href="{% url 'client-client-edit' client.pk %}">Editar</a>
+                <a class="btn btn-warning" href="{% url 'client-edit' client.pk %}">Editar</a>
                 <!-- Single button -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"

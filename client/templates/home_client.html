@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Clientes{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-3">
+            <a href="{% url 'client-new' %}" class="btn btn-success btn-block">Nuevo cliente</a>
+        </div>
+        <div class="col-lg-3">
+            <a href="{% url 'client-all' %}" class="btn btn-default btn-block">Ver todos</a>
+        </div>
+        <form method="post" action="{% url 'client-psearch' %}">
+            {% csrf_token %}
+            <div class="col-lg-3">
+                <input type="text" class="form-control" placeholder="Texto a buscar" name="search_text" required>
+            </div>
+            <div class="col-lg-3">
+                <input type="submit" class="btn btn-block btn-primary" value="Buscar">
+            </div>
+        </form>
+    </div>
+{% endblock %}

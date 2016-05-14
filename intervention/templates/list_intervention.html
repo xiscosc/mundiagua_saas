@@ -1,64 +1,136 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Listado de averías{% endblock %}
+{% block page_title %}{% if title %}{{ title }}{% else %}Listado de averías{% endif %}{% endblock %}
 {% block content %}
 
+    {% if list_navigation %}
+        <div class="row">
+            <div class="col-lg-12">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#">Filtros</a>
+                        </div>
 
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Filtro operario {% if search_user %}
+                                        <strong>({{ search_user.get_full_name }})</strong>{% endif %} <span
+                                            class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'intervention-list' intervention_status 0 zone_assigned %}">Desactivar
+                                            filtro</a></li>
+                                        {% for user in users %}
+                                            <li>
+                                                <a href="{% url 'intervention-list' intervention_status user.pk zone_assigned %}">{{ user.get_full_name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Filtro zona {% if search_zone %}
+                                        <div style="background-color: {{ search_zone.color }}"
+                                             class="zone">{{ search_zone }}</div>{% endif %} <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'intervention-list' intervention_status user_assigned 0 %}">Desactivar
+                                            filtro</a></li>
+                                        {% for zone in zones %}
+                                            <li>
+                                                <a href="{% url 'intervention-list' intervention_status user_assigned zone.pk %}">
+                                                    <div style="background-color: {{ zone.color }}"
+                                                         class="zone">{{ zone }}</div>
+                                                </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                                {% if user_assigned != "0" or zone_assigned != "0" %}
+                                    <li><a href="{% url 'intervention-list' intervention_status 0 0 %}">Deactivar
+                                        todos
+                                        los filtros</a></li>
+                                {% endif %}
+                            </ul>
+                        </div><!-- /.navbar-collapse -->
+                    </div><!-- /.container-fluid -->
+                </nav>
+            </div>
+        </div>
+    {% endif %}
+    {% include 'paginator.html' with obj=interventions %}
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
             {% for intervention in interventions %}
                 <table class="table table-bordered table-hover table-striped">
-                <tr>
-                    <td style="width: 15%">
-                        <a href="{% url 'intervention-view' intervention.pk %}" class="btn btn-danger btn-block">{{ intervention }}</a>
-                    </td>
-                    <td>
-                        {% if search_status.pk < 3 %}
-                        <a href="{% url 'intervention-terminate' intervention.pk %}" class="btn btn-default">Terminar Avería</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Fecha</strong>
-                    </td>
-                    <td>
-                       {{ intervention.date }}
-                    </td>
+                    <tr>
+                        <td style="width: 15%">
+                            <a href="{% url 'intervention-view' intervention.pk %}"
+                               class="btn btn-danger btn-block">{{ intervention }}</a>
+                        </td>
+                        <td>
+                            {% if search_status.pk < 3 %}
+                                <a href="{% url 'intervention-terminate' intervention.pk %}" class="btn btn-default">Terminar
+                                    Avería</a>
+                            {% endif %}
+                            <a href="#"
+                               class="btn btn-warning modifications-intervention">Modificaciones: <strong>{{ intervention.get_num_modifications }}</strong></a>
 
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Zona</strong>
-                    </td>
-                    <td >
-                        <div style="background-color: {{ intervention.zone.color }}" class="zone">{{ intervention.zone }}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Estado</strong>
-                    </td>
-                    <td>
-                        {{ intervention.status }}{% if intervention.status_id == 2 %} - {{ intervention.assigned.get_full_name }} {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Cliente</strong>
-                    </td>
-                    <td>
-                        {{ intervention.address.client }}
-                    </td>
-                </tr>
-            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Fecha</strong>
+                        </td>
+                        <td>
+                            {{ intervention.date }}
+                        </td>
 
-
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Zona</strong>
+                        </td>
+                        <td>
+                            <div style="background-color: {{ intervention.zone.color }}"
+                                 class="zone">{{ intervention.zone }}</div>
+                            {{ intervention.address }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Estado</strong>
+                        </td>
+                        <td>
+                            {{ intervention.status }}{% if intervention.status_id == 2 %} -
+                                {{ intervention.assigned.get_full_name }} {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Cliente</strong>
+                        </td>
+                        <td>
+                            {{ intervention.address.client }}
+                        </td>
+                    </tr>
+                </table>
             {% endfor %}
-
         </div>
     </div>
+    {% include 'paginator.html' with obj=interventions %}
 
 
 {% endblock %}

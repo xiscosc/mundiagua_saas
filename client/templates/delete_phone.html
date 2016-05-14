@@ -11,7 +11,7 @@
              <div class="alert alert-danger" role="alert"><strong>Alerta!</strong> ¿Esta seguro que desea eliminar el teléfono {{ phone }} de {{ phone.client }}? Esto afectará a todas las averías, reparaciones y presupuestos.</div>
          <div class="form-group">
          <button class="btn btn-danger" type="submit">Borrar</button>
-         <a href="{% url 'client-client' phone.client.pk %}" class="btn btn-primary">No quiero borrarlo</a>
+         <a href="{% url 'client-view' phone.client.pk %}" class="btn btn-primary">No quiero borrarlo</a>
         </div>
     </form>
     </div>
