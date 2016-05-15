@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Nueva avería{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
 {% block content %}
 
     {% include 'client_data.html' with client=client %}
@@ -9,13 +9,11 @@
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
             <form action="" method="post">{% csrf_token %}
-
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Datos de la avería</h3>
+                                <h3 class="panel-title">{{ subtitle }}</h3>
                             </div>
                             <div class="panel-body">
                                 {{ form|bootstrap }}
@@ -30,6 +28,4 @@
 
         </div>
     </div>
-
-
 {% endblock %}

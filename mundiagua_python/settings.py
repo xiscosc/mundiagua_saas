@@ -186,3 +186,5 @@ SMS_SENDER = 'MUNDIAGUASL'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 DEFAULT_NUM_PAGINATOR = 5
+
+EMAIL_BACKEND = "sgbackend.SendGridBackend"

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Reparación
+    <small>{{ repair }}</small> {% endblock %}
+{% block content %}
+
+
+    {% include 'client_data.html' with client=repair.address.client sms=True address=repair.address %}
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Información de la reparación</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <tr>
+                            <td style="width: 15%">
+                                <strong>Fecha</strong>
+                            </td>
+                            <td>
+                                {{ repair.date }}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Creada por</strong>
+                            </td>
+                            <td>
+                                {{ repair.created_by.get_full_name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>ID Online</strong>
+                            </td>
+                            <td>
+                                {{ repair.online_id }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Estado actual</strong>
+                            </td>
+                            <td>
+                                {{ repair.status }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Historial</strong>
+                            </td>
+                            <td>
+                                {% for log in repair.get_logs %}
+                                    {{ log }}<br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <h3 class="panel-title">Realizar cambios de estado</h3>
+                      </div>
+                      <div class="panel-body" id="body_averia">
+                        <div class="row" id="forms">
+                            <form method="post" action="{% url 'repair-update-status' repair.pk %}">
+                                <input type="hidden" name="type_repair" value="{{ repair.is_ath }}" />
+                                {% csrf_token %}
+                                <div class="col-md-9">
+                                    <select class="form-control" name="status_repair" >
+                                        {% for s in status %}
+                                           <option value="{{ s.pk }}">{{ s }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-block btn-danger">
+                                        <span class="fa fa-flash"></span> Cambiar estado
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                      </div>
+                  </div>
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Datos y modificaciones de la reparación</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form action="" method="post">{% csrf_token %}
+                                {{ form|bootstrap }}
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-warning"><span class="fa fa-save"></span> Modificar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block extrajs %}
+    <script src="{% static 'base/js/client/sms.js' %}"></script>
+{% endblock %}

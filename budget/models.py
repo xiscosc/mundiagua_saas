@@ -12,9 +12,15 @@ class Budget(models.Model):
     address = models.ForeignKey('client.Address')
     invalid = models.BooleanField(default=False)
 
+    class Meta:
+        abstract = True
+
+
+class BudgetStandard(Budget):
+
     def get_id(self):
         year = str(self.date.year)[-2:]
-        return "PM"+year+"-"+str(self.pk)
+        return "PM" + year + "-" + str(self.pk)
 
 
 class BudgetRepair(Budget):
@@ -36,4 +42,14 @@ class BudgetLine(models.Model):
     unit_price = models.CharField(max_length=8)
     quantity = models.FloatField()
     discount = models.IntegerField(default=0)
-    budget = models.ForeignKey(Budget)
+
+    class Meta:
+        abstract = True
+
+
+class BudgetLineStandard(BudgetLine):
+    budget = models.ForeignKey(BudgetStandard)
+
+
+class BudgetLineRepair(BudgetLine):
+    budget = models.ForeignKey(BudgetRepair)

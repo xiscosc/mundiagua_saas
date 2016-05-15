@@ -1,6 +1,7 @@
 # UTILS
 import hashlib, re, time
 from pushbullet import Pushbullet
+from django.core.mail import send_mail
 
 
 def send_data_to_user(user, subject, body, is_link=False):
@@ -13,7 +14,12 @@ def send_data_to_user(user, subject, body, is_link=False):
         return push
     else:
         # send email
-        return False
+        ex_body = ""
+        if is_link:
+            ex_body = "Consulta el siguiente enlace: "
+
+        send_mail(subject=subject, message=ex_body + body,
+                      from_email="intranet@mundiaguabalear.com", recipient_list=[user.email])
 
 
 def generate_md5_id(char, id):

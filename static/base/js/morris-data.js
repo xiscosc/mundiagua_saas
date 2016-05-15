@@ -1,54 +1,25 @@
-$(function() {
+$(function () {
 
-    Morris.Area({
-        element: 'morris-area-chart',
-        data: [{
-            period: '2016-05-01',
-            2015: Math.floor((Math.random() * 10) + 1),
-            2016: Math.floor((Math.random() * 10) + 1),
-        },{
-            period: '2016-05-02',
-            2015: Math.floor((Math.random() * 10) + 1),
-            2016: Math.floor((Math.random() * 10) + 1),
-        },{
-            period: '2016-05-03',
-            2015: Math.floor((Math.random() * 10) + 1),
-            2016: Math.floor((Math.random() * 10) + 1),
-        },{
-            period: '2016-05-04',
-            2015: Math.floor((Math.random() * 10) + 1),
-            2016: Math.floor((Math.random() * 10) + 1),
-        },{
-            period: '2016-05-05',
-            2015: Math.floor((Math.random() * 10) + 1),
-            2016: Math.floor((Math.random() * 10) + 1),
-        },{
-            period: '2016-05-06',
-            2015: Math.floor((Math.random() * 10) + 1),
-            2016: Math.floor((Math.random() * 10) + 1),
-        },],
-        xkey: 'period',
-        ykeys: ['2015', '2016'],
-        labels: ['Año 2015', 'Año 2016'],
-        pointSize: 2,
-        hideHover: 'auto',
-        resize: true
+    $.get("/intervention/morris/input/", function (data) {
+        Morris.Line({
+            element: 'morris-line-chart',
+            data: data,
+            xkey: 'y',
+            ykeys: ['t'],
+            labels: ['Total diario'],
+            resize: true
+        });
     });
 
-    Morris.Donut({
-        element: 'morris-donut-chart',
-        data: [{
-            label: "Download Sales",
-            value: 12
-        }, {
-            label: "In-Store Sales",
-            value: 30
-        }, {
-            label: "Mail-Order Sales",
-            value: 20
-        }],
-        resize: true
+
+    $.get("/intervention/morris/assigned/", function (data) {
+        Morris.Donut({
+            element: 'morris-donut-chart',
+            data: data,
+            resize: true
+        });
     });
+
 
     Morris.Bar({
         element: 'morris-bar-chart',
@@ -87,5 +58,5 @@ $(function() {
         hideHover: 'auto',
         resize: true
     });
-    
+
 });

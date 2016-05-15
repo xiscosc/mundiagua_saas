@@ -25,6 +25,7 @@ class SearchClientBaseView(TemplateView):
 
 
 class CreateBaseView(CreateView):
+    template_name = "new_base.html"
 
     def get_form(self, form_class=None):
         form = super(CreateBaseView, self).get_form(form_class=form_class)

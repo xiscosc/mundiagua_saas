@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Lista de modificaciones{% endblock %}
+{% block content %}
+    {% include 'paginator.html' with obj=modifications %}
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover table-striped">
+                <tbody>
+                <tr>
+                    <th>Avería</th>
+                    <th>Cliente</th>
+                    <th>Creada por</th>
+                    <th>Tiempo</th>
+                    <th></th>
+                </tr>
+
+                {% for mod in modifications %}
+                    <tr>
+                        <td>
+                            {{ mod.intervention }}
+                        </td>
+                        <td>
+                            {{ mod.intervention.address.client.name }}
+                        </td>
+                        <td>
+                            {{ mod.created_by.full_name }}
+                        </td>
+                        <td>
+                            hace {{ mod.date|timesince }}
+                        </td>
+                        <td>
+                            <a href="{% url 'intervention-view' mod.intervention_id %}" class="btn btn-block btn-danger">Ver
+                                avería</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% include 'paginator.html' with obj=modifications %}
+{% endblock %}

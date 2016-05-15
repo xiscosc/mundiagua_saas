@@ -20,3 +20,5 @@ ESENDEX_USERNAME = 'yourusername'
 ESENDEX_PASSWORD = 'mysecretpassword'
 ESENDEX_ACCOUNT = 'account-key-provided-by-esendex'
 ESENDEX_SANDBOX = False # True if yo like test first
+SENDGRID_USER = "user"
+SENDGRID_PASSWORD = "pass"

@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
+import calendar
+from datetime import date
+
 from async_messages import message_user, constants
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, DetailView, View
 from django.core.paginator import Paginator
 from django.db.models import Q
 
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView
-from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification
+from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionLog
 
 
 class HomeView(TemplateView):
@@ -21,11 +24,12 @@ class HomeView(TemplateView):
         context['status_assigned'] = Intervention.objects.filter(status=2).count()
         context['status_terminated'] = Intervention.objects.filter(status=3).count()
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
+        context['modifications'] = InterventionModification.objects.all().order_by("-date")[:10]
+
         return context
 
 
 class SearchClientView(SearchClientBaseView):
-
     def get_context_data(self, **kwargs):
         context = super(SearchClientView, self).get_context_data(**kwargs)
         context['title'] = "Nueva Avería"
@@ -38,7 +42,12 @@ class SearchClientView(SearchClientBaseView):
 class CreateInterventionView(CreateBaseView):
     model = Intervention
     fields = ['address', 'description', 'zone']
-    template_name = "new_intervention.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateInterventionView, self).get_context_data(**kwargs)
+        context['title'] = "Nueva avería"
+        context['subtitle'] = "Datos de la avería"
+        return context
 
     def get_success_url(self):
         return reverse_lazy('intervention-view', kwargs={'pk': self.object.pk})
@@ -58,7 +67,6 @@ class InterventionView(DetailView):
 
 
 class UpdateInterventionView(View):
-
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         intervention = Intervention.objects.get(pk=kwargs['pk'])
@@ -172,16 +180,18 @@ class TerminateIntervention(TemplateView):
         zone_id = request.session.get('list_zone_id', 0)
         page = request.session.get('list_page', 1)
 
-        return HttpResponseRedirect(reverse_lazy('intervention-list', kwargs={'intervention_status': status_id, 'zone': zone_id, 'user': user_id, }) + "?page=" + str(page))
+        return HttpResponseRedirect(reverse_lazy('intervention-list',
+                                                 kwargs={'intervention_status': status_id, 'zone': zone_id,
+                                                         'user': user_id,}) + "?page=" + str(page))
 
 
 class PreSearchInterventionView(View):
-
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
         interventions = Intervention.objects.filter(Q(description__icontains=search_text) |
-                               Q(address__client__name__icontains=search_text) | Q(address__address__icontains=search_text))
+                                                    Q(address__client__name__icontains=search_text) | Q(
+            address__address__icontains=search_text))
         pk_list = []
         for i in interventions:
             pk_list.append(i.pk)
@@ -203,3 +213,46 @@ class SearchInterventionView(TemplateView):
         paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
         context['interventions'] = paginator.page(page)
         return context
+
+
+class ListModificationView(TemplateView):
+    template_name = "list_modifications.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ListModificationView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        modifications = InterventionModification.objects.all().order_by("-date")
+        paginator = Paginator(modifications, 18)
+        context['modifications'] = paginator.page(page)
+        return context
+
+
+class MorrisView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            raise Http404("This is an ajax view, friend.")
+        return super(MorrisView, self).dispatch(request, *args, **kwargs)
+
+
+class MorrisInterventionAssigned(MorrisView):
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        data = []
+        for u in users:
+            logs = InterventionLog.objects.filter(assigned=u, date__month=date.today().month,
+                                                  date__year=date.today().year).count()
+            if logs > 0:
+                data.append({"label": u.get_full_name(), "value": logs})
+        return JsonResponse(data=data, safe=False)
+
+
+class MorrisInterventionInput(MorrisView):
+    def get(self, request, *args, **kwargs):
+        data = []
+        max_num = calendar.monthrange(date.today().year, date.today().month)[1].real
+        for i in range(max_num):
+            day = i + 1
+            d = date(date.today().year, date.today().month, day)
+            total = Intervention.objects.filter(date__day=day, date__year=d.year.real, date__month=d.month.real).count()
+            data.append({'t': total, 'y': d.strftime("%Y-%m-%d")})
+        return JsonResponse(data=data, safe=False)
