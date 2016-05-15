@@ -12,3 +12,4 @@ six==1.10.0
 websocket-client==0.35.0
 django-async-messages
 sendgrid-django
+django-bootstrap-pagination
