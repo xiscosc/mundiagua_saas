@@ -117,5 +117,8 @@
 
 {% endblock %}
 {% block extrajs %}
+    <script type="application/javascript">
+        var default_sms = "Su reparación {{ repair }} se ha compleado. Puede venir a recoger su producto de 8h a 18h";
+    </script>
     <script src="{% static 'base/js/client/sms.js' %}"></script>
 {% endblock %}

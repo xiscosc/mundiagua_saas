@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 
-from client.models import Client, Address, Phone
+from client.models import Client, Address
 
 
 class SearchClientBaseView(TemplateView):
@@ -41,3 +41,5 @@ class CreateBaseView(CreateView):
         obj = form.save(commit=False)
         obj.created_by = self.request.user
         return super(CreateBaseView, self).form_valid(form)
+
+

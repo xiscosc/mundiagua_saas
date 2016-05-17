@@ -3,13 +3,18 @@
  */
 
 $('#sms_body').keyup(function () {
-   var val = $(this).val();
-    $('#sms_count').html((160-val.length));
+    var val = $(this).val();
+    $('#sms_count').html((160 - val.length));
 });
 
 $('.btn_sms').on('click', function () {
-   $('#phone_pk').val($(this).data('phone'));
-   $('#modal_sms').modal('show');
+    try {
+        $('#sms_body').val(default_sms);
+        $('#sms_count').html((160 - default_sms.length));
+    } catch (err) {
+    }
+    $('#phone_pk').val($(this).data('phone'));
+    $('#modal_sms').modal('show');
 });
 
 $('.sms_close').on('click', function () {

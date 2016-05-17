@@ -8,15 +8,14 @@ from core.utils import send_data_to_user
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, username, email, full_name, pb_token=None, password=None):
+    def create_user(self, email, full_name, pb_token=None, password=None):
 
-        if not email or not username or not full_name:
+        if not email or not full_name:
             raise ValueError('Users must have an email address, username, full_name')
 
         user = self.model(
             email=self.normalize_email(email),
             full_name=full_name,
-            username=username,
             pb_token=pb_token
         )
 
@@ -24,12 +23,11 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email=None, full_name=None, pb_token=None, password=None):
+    def create_superuser(self, email=None, full_name=None, pb_token=None, password=None):
 
         user = self.model(
             email=self.normalize_email(email),
             full_name=full_name,
-            username=username,
             pb_token=pb_token
         )
         user.set_password(password)
@@ -39,7 +37,6 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=254, unique=True)
     full_name = models.CharField(max_length=100, blank=False, null=False)
     email = models.EmailField(unique=True)
     pb_token = models.CharField(max_length=254, null=True)
@@ -48,8 +45,8 @@ class User(AbstractBaseUser):
 
     objects = MyUserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'full_name']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['full_name']
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -57,7 +54,7 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.username
+        return self.full_name
 
     def __str__(self):  # __unicode__ on Python 2
         return self.full_name
