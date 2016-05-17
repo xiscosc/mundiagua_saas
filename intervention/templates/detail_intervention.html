@@ -52,7 +52,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="row forms_content">
-                        <form method="post" class="form_modify" action="{% url 'intervention-edit' intervention.pk %}">
+                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
                             {% csrf_token %}
                             <div class="col-md-4">
                                 <select class="form-control" name="intervention_status" id="intervention_status">
@@ -76,7 +76,7 @@
                                 </button>
                             </div>
                         </form>
-                        <form method="post" class="form_modify" action="{% url 'intervention-edit' intervention.pk %}">
+                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
                             {% csrf_token %}
                             <div class="col-md-4">
                                 <textarea class="form-control" name="intervention_modification" rows="3"
@@ -90,7 +90,7 @@
                         </form>
                     </div>
                     <div class="row forms_content" style="padding-top: 10px">
-                        <form method="post" class="form_modify" action="{% url 'intervention-edit' intervention.pk %}">
+                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
                             {% csrf_token %}
                             <div class="col-md-1">
                                 <button class="btn btn-block" id="btn-color"
@@ -116,7 +116,7 @@
                                 </button>
                             </div>
                         </form>
-                        <form method="post" class="form_modify" action="{% url 'intervention-edit' intervention.pk %}">
+                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
                             {% csrf_token %}
                             <div class="col-md-4">
                                 <select class="form-control" name="user_to_send">

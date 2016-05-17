@@ -289,19 +289,19 @@
                         <!-- /input-group -->
                     </li>
                     <li>
-                        <a href="{% url 'intervention-home' %}"><i class="fa fa-dashboard fa-fw"></i> Averías</a>
+                        <a href="{% url 'intervention:intervention-home' %}"><i class="fa fa-dashboard fa-fw"></i> Averías</a>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="{% url 'repair-search-client' %}" >Nueva reparación</a>
+                                <a href="{% url 'repair:repair-search-client' %}" >Nueva reparación</a>
                             </li>
                             <li>
-                                <a href="{% url 'repair-list' 0 %}" >Todas las reparaciones</a>
+                                <a href="{% url 'repair:repair-list' 0 %}" >Todas las reparaciones</a>
                             </li>
                             <li class="sidebar-search">
-                                <form method="post" action="{% url 'repair-psearch' %}">
+                                <form method="post" action="{% url 'repair:repair-psearch' %}">
                                     {% csrf_token %}
                                     <div class="input-group custom-search-form">
                                         <input type="text" class="form-control" placeholder="Buscar reparación"
@@ -321,13 +321,13 @@
                         <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="{% url 'client-new' %}" >Nuevo cliente</a>
+                                <a href="{% url 'client:client-new' %}" >Nuevo cliente</a>
                             </li>
                             <li>
-                                <a href="{% url 'client-all' %}" >Todos los clientes</a>
+                                <a href="{% url 'client:client-all' %}" >Todos los clientes</a>
                             </li>
                             <li class="sidebar-search">
-                                <form method="post" action="{% url 'client-psearch' %}">
+                                <form method="post" action="{% url 'client:client-psearch' %}">
                                     {% csrf_token %}
                                     <div class="input-group custom-search-form">
                                         <input type="text" class="form-control" placeholder="Buscar clientes"

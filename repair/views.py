@@ -18,10 +18,10 @@ class SearchClientView(SearchClientBaseView):
     def get_context_data(self, **kwargs):
         context = super(SearchClientView, self).get_context_data(**kwargs)
         context['title'] = "Nueva reparación"
-        context['new_url'] = "repair-ath-new"
+        context['new_url'] = "repair:repair-ath-new"
         context['btn_text'] = "Crear reparación ATH"
         context['btn_class'] = "btn-primary"
-        context['new_url2'] = "repair-idegis-new"
+        context['new_url2'] = "repair:repair-idegis-new"
         context['btn_text2'] = "Crear reparación Idegis"
         context['btn_class2'] = "btn-default"
         return context
@@ -39,7 +39,7 @@ class CreateAthRepairView(CreateBaseView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('repair-ath-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('repair:repair-ath-view', kwargs={'pk': self.object.pk})
 
 
 class CreateIdegisRepairView(CreateBaseView):
@@ -54,7 +54,7 @@ class CreateIdegisRepairView(CreateBaseView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('repair-idegis-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('repair:repair-idegis-view', kwargs={'pk': self.object.pk})
 
 
 class RepairView(UpdateView):
@@ -77,7 +77,7 @@ class AthRepairView(RepairView):
               'intern_description', 'warranty', "bypass", "connector", "transformer"]
 
     def get_success_url(self):
-        return reverse_lazy('repair-ath-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('repair:repair-ath-view', kwargs={'pk': self.object.pk})
 
 
 class IdegisRepairView(RepairView):
@@ -86,7 +86,7 @@ class IdegisRepairView(RepairView):
               'intern_description', 'warranty', "ph", "orp", "electrode"]
 
     def get_success_url(self):
-        return reverse_lazy('repair-idegis-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('repair:repair-idegis-view', kwargs={'pk': self.object.pk})
 
 
 class UpdateStatusRepair(View):
@@ -98,11 +98,11 @@ class UpdateStatusRepair(View):
         if type == 1:
             repair = AthRepair.objects.get(pk=kwargs['pk'])
             log = AthRepairLog(status_id=st_id, repair_id=kwargs['pk'])
-            url = 'repair-ath-view'
+            url = 'repair:repair-ath-view'
         else:
             repair = IdegisRepair.objects.get(pk=kwargs['pk'])
             log = IdegisRepairLog(status_id=st_id, repair_id=kwargs['pk'])
-            url = 'repair-idegis-view'
+            url = 'repair:repair-idegis-view'
         repair.status_id = st_id
         repair.save()
         log.save()
@@ -153,7 +153,7 @@ class PreSearchRepairView(View):
         request.session['search_repair_ath'] = pk_list_ath
         request.session['search_repair_idegis'] = pk_list_idegis
         request.session['search_repair_text'] = search_text
-        return HttpResponseRedirect(reverse_lazy('repair-search', kwargs={'type': 0}))
+        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': 0}))
 
 
 class SearchRepairView(TemplateView):

@@ -16,14 +16,16 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import login, logout
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^intervention/', include('intervention.urls')),
-    url(r'^client/', login_required(include('client.urls'))),
-    url(r'^budget/', include('budget.urls')),
-    url(r'^repair/', include('repair.urls')),
-    url(r'^login/$', 'django.contrib.auth.views.login', name='login', kwargs={'template_name': 'login.html'}),
+    url(r'^intervention/', include('intervention.urls', namespace="intervention")),
+    url(r'^client/', include('client.urls', namespace="client")),
+    url(r'^budget/', include('budget.urls', namespace="budget")),
+    url(r'^repair/', include('repair.urls', namespace="repair")),
+    url(r'^login/$', login, name='login', kwargs={'template_name': 'login.html'}),
+    url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
 ]
 

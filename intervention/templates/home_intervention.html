@@ -18,7 +18,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{% url 'intervention-list' 1 0 0 %}">
+                        <a href="{% url 'intervention:intervention-list' 1 0 0 %}">
                             <div class="panel-footer">
                                 <span class="pull-left">Ver Listado</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{% url 'intervention-list' 2 0 0 %}">
+                        <a href="{% url 'intervention:intervention-list' 2 0 0 %}">
                             <div class="panel-footer">
                                 <span class="pull-left">Ver listado</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{% url 'intervention-list' 4 0 0 %}">
+                        <a href="{% url 'intervention:intervention-list' 4 0 0 %}">
                             <div class="panel-footer">
                                 <span class="pull-left">Ver listado</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -84,7 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{% url 'intervention-list' 3 0 0 %}">
+                        <a href="{% url 'intervention:intervention-list' 3 0 0 %}">
                             <div class="panel-footer">
                                 <span class="pull-left">Ver listado</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -97,9 +97,9 @@
 
             <div class="row">
                 <div class="col-lg-3">
-                    <a href="{% url 'intervention-search-client' %}" class="btn btn-success btn-block">Nueva avería</a>
+                    <a href="{% url 'intervention:intervention-search-client' %}" class="btn btn-success btn-block">Nueva avería</a>
                 </div>
-                <form method="post" action="{% url 'intervention-psearch' %}">
+                <form method="post" action="{% url 'intervention:intervention-psearch' %}">
                     {% csrf_token %}
                     <div class="col-lg-6">
                         <input type="text" class="form-control" placeholder="Texto a buscar" name="search_text" required>
@@ -349,7 +349,7 @@
                         <div class="panel-body">
                             <div class="list-group">
                                 {% for mod in modifications %}
-                                    <a href="{% url 'intervention-view' mod.intervention_id %}" class="list-group-item">
+                                    <a href="{% url 'intervention:intervention-view' mod.intervention_id %}" class="list-group-item">
                                     {{ mod.intervention.address.client }} ({{ mod.intervention }})
                                     <span class="pull-right text-muted small"><em>hace {{ mod.date|timesince }}</em>
                                     </span>
@@ -357,7 +357,7 @@
                                 {% endfor %}
                             </div>
                             <!-- /.list-group -->
-                            <a href="{% url 'intervention-modifications' %}" class="btn btn-default btn-block">Ver todas las modificaciones</a>
+                            <a href="{% url 'intervention:intervention-modifications' %}" class="btn btn-default btn-block">Ver todas las modificaciones</a>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -498,7 +498,7 @@
 {% endblock %}
 {% block chartjs %}
     <!-- Morris Charts JavaScript -->
-    <script src="{%  static 'raphael/raphael-min.js' %}"></script>
+    <script src="{%  static 'raphael/raphael.min.js' %}"></script>
     <script src="{%  static 'morrisjs/morris.min.js' %}"></script>
     <script src="{%  static 'base/js/morris-data.js' %}"></script>
 {% endblock %}

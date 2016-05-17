@@ -25,13 +25,13 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav">
                             {% if list_navigation %}
-                                <li {% if type == "0" %}class="active"{% endif %}><a href="{% url 'repair-list' 0 %}">Todos los tipos</a></li>
-                                <li {% if type == "1" %}class="active"{% endif %}><a href="{% url 'repair-list' 1 %}">Sólo ATH</a></li>
-                                <li {% if type == "2" %}class="active"{% endif %}><a href="{% url 'repair-list' 2 %}">Sólo Idegis</a></li>
+                                <li {% if type == "0" %}class="active"{% endif %}><a href="{% url 'repair:repair-list' 0 %}">Todos los tipos</a></li>
+                                <li {% if type == "1" %}class="active"{% endif %}><a href="{% url 'repair:repair-list' 1 %}">Sólo ATH</a></li>
+                                <li {% if type == "2" %}class="active"{% endif %}><a href="{% url 'repair:repair-list' 2 %}">Sólo Idegis</a></li>
                             {% else %}
-                                <li {% if type == "0" %}class="active"{% endif %}><a href="{% url 'repair-search' 0 %}">Todos los tipos</a></li>
-                                <li {% if type == "1" %}class="active"{% endif %}><a href="{% url 'repair-search' 1 %}">Sólo ATH</a></li>
-                                <li {% if type == "2" %}class="active"{% endif %}><a href="{% url 'repair-search' 2 %}">Sólo Idegis</a></li>
+                                <li {% if type == "0" %}class="active"{% endif %}><a href="{% url 'repair:repair-search' 0 %}">Todos los tipos</a></li>
+                                <li {% if type == "1" %}class="active"{% endif %}><a href="{% url 'repair:repair-search' 1 %}">Sólo ATH</a></li>
+                                <li {% if type == "2" %}class="active"{% endif %}><a href="{% url 'repair:repair-search' 2 %}">Sólo Idegis</a></li>
                             {% endif %}
                             </ul>
                         </div><!-- /.navbar-collapse -->
@@ -48,10 +48,10 @@
                     <tr>
                         <td style="width: 15%">
                             {% if repair.is_ath == 1 %}
-                                 <a href="{% url 'repair-ath-view' repair.pk %}"
+                                 <a href="{% url 'repair:repair-ath-view' repair.pk %}"
                                class="btn btn-primary btn-block">{{ repair }}</a>
                             {% else %}
-                                 <a href="{% url 'repair-idegis-view' repair.pk %}"
+                                 <a href="{% url 'repair:repair-idegis-view' repair.pk %}"
                                class="btn btn-default btn-block">{{ repair }}</a>
                             {% endif %}
                         </td>

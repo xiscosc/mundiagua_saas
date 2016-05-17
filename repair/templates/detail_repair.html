@@ -71,7 +71,7 @@
                       </div>
                       <div class="panel-body" id="body_averia">
                         <div class="row" id="forms">
-                            <form method="post" action="{% url 'repair-update-status' repair.pk %}">
+                            <form method="post" action="{% url 'repair:repair-update-status' repair.pk %}">
                                 <input type="hidden" name="type_repair" value="{{ repair.is_ath }}" />
                                 {% csrf_token %}
                                 <div class="col-md-9">

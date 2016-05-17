@@ -28,7 +28,7 @@
                     </div>
                     <div class="form-group">
                         <button class="btn btn-danger" type="submit">Borrar y asignar nueva dirección</button>
-                        <a href="{% url 'client-view' address.client.pk %}" class="btn btn-primary">No quiero
+                        <a href="{% url 'client:client-view' address.client.pk %}" class="btn btn-primary">No quiero
                             borrarla</a>
                     </div>
                 </form>
@@ -38,7 +38,7 @@
                     borrada debido a que es la única de este cliente.
                 </div>
                 <div class="form-group">
-                    <a href="{% url 'client-view' address.client.pk %}" class="btn btn-primary">Volver</a>
+                    <a href="{% url 'client:client-view' address.client.pk %}" class="btn btn-primary">Volver</a>
                 </div>
             {% endif %}
         </div>

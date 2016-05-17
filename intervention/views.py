@@ -33,7 +33,7 @@ class SearchClientView(SearchClientBaseView):
     def get_context_data(self, **kwargs):
         context = super(SearchClientView, self).get_context_data(**kwargs)
         context['title'] = "Nueva Avería"
-        context['new_url'] = "intervention-new"
+        context['new_url'] = "intervention:intervention-new"
         context['btn_text'] = "Crear avería"
         context['btn_class'] = "btn-danger"
         return context
@@ -50,7 +50,7 @@ class CreateInterventionView(CreateBaseView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('intervention-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.object.pk})
 
 
 class InterventionView(DetailView):
@@ -109,7 +109,7 @@ class UpdateInterventionView(View):
             intervention.save()
 
         message_user(request.user, "Modificación realizada correctamente", constants.SUCCESS)
-        return HttpResponseRedirect(reverse_lazy('intervention-view', kwargs={'pk': intervention.pk}))
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': intervention.pk}))
 
 
 class ListInterventionView(TemplateView):
@@ -180,7 +180,7 @@ class TerminateIntervention(TemplateView):
         zone_id = request.session.get('list_zone_id', 0)
         page = request.session.get('list_page', 1)
 
-        return HttpResponseRedirect(reverse_lazy('intervention-list',
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-list',
                                                  kwargs={'intervention_status': status_id, 'zone': zone_id,
                                                          'user': user_id,}) + "?page=" + str(page))
 
@@ -197,7 +197,7 @@ class PreSearchInterventionView(View):
             pk_list.append(i.pk)
         request.session['search_intervention'] = pk_list
         request.session['search_intervention_text'] = search_text
-        return HttpResponseRedirect(reverse_lazy('intervention-search'))
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-search'))
 
 
 class SearchInterventionView(TemplateView):

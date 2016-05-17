@@ -1,0 +1,6 @@
+{% extends 'log_base.html' %}
+{% load bootstrap %}
+{% block title %}Sesión finalizada{% endblock %}
+{% block content %}
+    <a href="{% url 'login' %}" class="btn btn-lg btn-success btn-block">Volver a iniciar sesión</a>
+{% endblock %}

@@ -7,7 +7,7 @@
                     <h4 class="modal-title" id="myModalLabel">Envío de SMS</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="form_sms" method="post" action="{% url 'client-sms-send' %}">
+                    <form id="form_sms" method="post" action="{% url 'client:client-sms-send' %}">
                         {% csrf_token %}
                         <textarea maxlength="160" class="form-control" placeholder="Escribe aquí tu SMS" name="sms_body" id="sms_body"></textarea>
                         <input type="hidden" id="phone_pk" name="phone_pk">
@@ -28,7 +28,7 @@
     <div class="col-md-12">
     <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Datos del cliente <a href="{% url 'client-view' client.pk %}" class="btn btn-default">Modificar
+        <h3 class="panel-title">Datos del cliente <a href="{% url 'client:client-view' client.pk %}" class="btn btn-default">Modificar
             datos</a></h3>
     </div>
     <div class="panel-body">
@@ -37,7 +37,7 @@
     <div class="col-md-7">
         <h3>Datos personales
             {% if edit %}
-                <a class="btn btn-warning" href="{% url 'client-edit' client.pk %}">Editar</a>
+                <a class="btn btn-warning" href="{% url 'client:client-edit' client.pk %}">Editar</a>
                 <!-- Single button -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -45,10 +45,10 @@
                         Crear <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="{% url 'intervention-new' client.pk %}">Avería</a></li>
-                        <li><a href="{% url 'repair-ath-new' client.pk %}">Reparación ATH</a></li>
-                        <li><a href="{% url 'repair-idegis-new' client.pk %}">Reparación Idegis</a></li>
-                        <li><a href="{% url 'budget-budget-new' client.pk %}">Presupuesto</a></li>
+                        <li><a href="{% url 'intervention:intervention-new' client.pk %}">Avería</a></li>
+                        <li><a href="{% url 'repair:repair-ath-new' client.pk %}">Reparación ATH</a></li>
+                        <li><a href="{% url 'repair:repair-idegis-new' client.pk %}">Reparación Idegis</a></li>
+                        <li><a href="{% url 'budget:budget-new' client.pk %}">Presupuesto</a></li>
                     </ul>
                 </div>
             {% endif %}
@@ -125,7 +125,7 @@
     </div>
     <div class="col-md-5">
         <h3>Teléfonos {% if edit %}
-            <a class="btn btn-success" href="{% url 'client-phone-new' client.pk %}">Añadir</a>{% endif %}</h3>
+            <a class="btn btn-success" href="{% url 'client:client-phone-new' client.pk %}">Añadir</a>{% endif %}</h3>
         <table class="table table-bordered table-hover table-striped">
             <tr>
                 <th>Alias</th>
@@ -144,9 +144,9 @@
                     <td>{{ phone.phone }}</td>
                     {% if edit %}
                         <td><a class="btn btn-block btn-warning"
-                               href="{% url 'client-phone-edit' phone.pk %}">Editar</a></td>
+                               href="{% url 'client:client-phone-edit' phone.pk %}">Editar</a></td>
                         <td><a class="btn btn-danger btn-block"
-                               href="{% url 'client-phone-delete' phone.pk %}">Eliminar</a></td>
+                               href="{% url 'client:client-phone-delete' phone.pk %}">Eliminar</a></td>
                     {% endif %}
                     {% if sms %}
                         <td><button class="btn btn-primary btn-block btn_sms" data-phone="{{ phone.pk }}">SMS</button>
