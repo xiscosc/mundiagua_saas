@@ -18,5 +18,4 @@ urlpatterns = [
     url(r'^all/$', AllClientsView.as_view(), name="client-all"),
     url(r'^psearch/$', PreSearchClientView.as_view(), name="client-psearch"),
     url(r'^search/$', SearchClientView.as_view(), name="client-search"),
-    url(r'^home/$', HomeClientView.as_view(), name="client-home"),
 ]

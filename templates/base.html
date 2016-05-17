@@ -292,16 +292,63 @@
                         <a href="{% url 'intervention-home' %}"><i class="fa fa-dashboard fa-fw"></i> Averías</a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones</a>
+                        <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'repair-search-client' %}" >Nueva reparación</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'repair-list' 0 %}" >Todas las reparaciones</a>
+                            </li>
+                            <li class="sidebar-search">
+                                <form method="post" action="{% url 'repair-psearch' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group custom-search-form">
+                                        <input type="text" class="form-control" placeholder="Buscar reparación"
+                                               name="search_text" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                    </div>
+                                </form>
+
+                                <!-- /input-group -->
+                            </li>
+
+                        </ul>
                     </li>
                     <li>
-                        <a href="{% url 'client-home' %}"><i class="fa fa-user fa-fw"></i> Clientes</a>
+                        <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'client-new' %}" >Nuevo cliente</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'client-all' %}" >Todos los clientes</a>
+                            </li>
+                            <li class="sidebar-search">
+                                <form method="post" action="{% url 'client-psearch' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group custom-search-form">
+                                        <input type="text" class="form-control" placeholder="Buscar clientes"
+                                               name="search_text" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                    </div>
+                                </form>
+
+                                <!-- /input-group -->
+                            </li>
+
+                        </ul>
                     </li>
                     <li>
                         <a href="forms.html"><i class="fa fa-th fa-fw"></i> Presupuestos</a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-download fa-fw"></i> Conexiones externas<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-download fa-fw"></i> Conexiones externas<span
+                                class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="http://app.mundiaguabalear.com" target="_blank">Sistema antiguo</a>

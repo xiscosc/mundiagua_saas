@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
+from itertools import chain
+from operator import attrgetter
+
 from async_messages import message_user, constants
+from django.conf import settings
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, View
 
-from core.views import SearchClientBaseView, CreateBaseView
+from core.views import SearchClientBaseView, CreateBaseView, TemplateView
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
 
 
@@ -84,7 +90,6 @@ class IdegisRepairView(RepairView):
 
 
 class UpdateStatusRepair(View):
-
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         st_id = int(params.getlist('status_repair')[0])
@@ -103,3 +108,74 @@ class UpdateStatusRepair(View):
         log.save()
         message_user(self.request.user, "Cambio de estado realizado correctamente.", constants.SUCCESS)
         return HttpResponseRedirect(reverse_lazy(url, kwargs={'pk': kwargs['pk']}))
+
+
+class ListRepairView(TemplateView):
+    template_name = "list_repair.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ListRepairView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        context['list_navigation'] = True
+        type = int(kwargs['type'])
+
+        if type == 0:
+            repairs_ath = AthRepair.objects.all()
+            repairs_idegis = IdegisRepair.objects.all()
+            repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
+        elif type == 1:
+            repairs = AthRepair.objects.all().order_by("-date")
+        else:
+            repairs = IdegisRepair.objects.all().order_by("-date")
+
+        paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
+        context['repairs'] = paginator.page(page)
+        return context
+
+
+class PreSearchRepairView(View):
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        search_text = params.getlist('search_text')[0]
+
+        repairs_ath = AthRepair.objects.filter(Q(description__icontains=search_text) |
+                                               Q(address__client__name__icontains=search_text) | Q(
+            address__address__icontains=search_text))
+        repairs_idegis = IdegisRepair.objects.filter(Q(description__icontains=search_text) |
+                                                     Q(address__client__name__icontains=search_text) | Q(
+            address__address__icontains=search_text))
+        pk_list_ath = []
+        pk_list_idegis = []
+        for i in repairs_ath:
+            pk_list_ath.append(i.pk)
+        for i in repairs_idegis:
+            pk_list_idegis.append(i.pk)
+        request.session['search_repair_ath'] = pk_list_ath
+        request.session['search_repair_idegis'] = pk_list_idegis
+        request.session['search_repair_text'] = search_text
+        return HttpResponseRedirect(reverse_lazy('repair-search', kwargs={'type': 0}))
+
+
+class SearchRepairView(TemplateView):
+    template_name = "list_repair.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchRepairView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        search_text = str(self.request.session.get('search_repair_text', ""))
+        context['title'] = "Búsqueda - " + search_text
+        repairs_ath_pk = self.request.session.get('search_repair_ath', list())
+        repairs_idegis_pk = self.request.session.get('search_repair_idegis', list())
+        type = int(kwargs['type'])
+
+        if type == 0:
+            repairs_ath = AthRepair.objects.filter(pk__in=repairs_ath_pk)
+            repairs_idegis = IdegisRepair.objects.filter(pk__in=repairs_idegis_pk)
+            repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
+        elif type == 1:
+            repairs = AthRepair.objects.filter(pk__in=repairs_ath_pk).order_by("-date")
+        else:
+            repairs = IdegisRepair.objects.filter(pk__in=repairs_idegis_pk).order_by("-date")
+        paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
+        context['repairs'] = paginator.page(page)
+        return context
