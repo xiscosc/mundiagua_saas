@@ -30,8 +30,6 @@
                                         <strong>({{ search_user.get_full_name }})</strong>{% endif %} <span
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned %}">Desactivar
-                                            filtro</a></li>
                                         {% for user in users %}
                                             <li>
                                                 <a href="{% url 'intervention:intervention-list' intervention_status user.pk zone_assigned %}">{{ user.get_full_name }}</a>
@@ -46,8 +44,6 @@
                                         <div style="background-color: {{ search_zone.color }}"
                                              class="zone">{{ search_zone }}</div>{% endif %} <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 %}">Desactivar
-                                            filtro</a></li>
                                         {% for zone in zones %}
                                             <li>
                                                 <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk %}">

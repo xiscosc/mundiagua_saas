@@ -80,9 +80,9 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from')
-    to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to')
-    subject = models.CharField(max_length=200, blank=False)
-    body = models.TextField(blank=False)
+    to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to', verbose_name="Destinatario")
+    subject = models.CharField(max_length=200, blank=False, verbose_name="Asunto")
+    body = models.TextField(blank=False, verbose_name="Cuerpo del mensaje")
 
 
 # SIGNALS

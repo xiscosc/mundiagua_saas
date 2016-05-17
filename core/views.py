@@ -1,11 +1,15 @@
+from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 
 # Create your views here.
 from django.template import RequestContext
 from django.views.generic import TemplateView
+from django.views.generic.base import View
 from django.views.generic.edit import CreateView
 
 from client.models import Client, Address
+from core.models import User, Message
 
 
 class SearchClientBaseView(TemplateView):
@@ -43,3 +47,27 @@ class CreateBaseView(CreateView):
         return super(CreateBaseView, self).form_valid(form)
 
 
+class IndexView(View):
+
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated() and request.user.is_active:
+            return HttpResponseRedirect(reverse_lazy('intervention:intervention-home'))
+        else:
+            return HttpResponseRedirect(reverse_lazy('login'))
+
+
+class NewMessageView(CreateView):
+    template_name = "new_message.html"
+    model = Message
+    fields = ['to_user', 'subject', 'body']
+
+    def get_form(self, form_class=None):
+        form = super(NewMessageView, self).get_form(form_class=form_class)
+        form.fields['to_user'].queryset = User.objects.all().exclude(pk=self.request.user.pk)
+        return form
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.from_user = self.request.user
+        return super(NewMessageView, self).form_valid(form)

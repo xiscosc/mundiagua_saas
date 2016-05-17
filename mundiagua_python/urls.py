@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import login, logout
 
+from core.views import IndexView, NewMessageView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,5 +28,7 @@ urlpatterns = [
     url(r'^repair/', include('repair.urls', namespace="repair")),
     url(r'^login/$', login, name='login', kwargs={'template_name': 'login.html'}),
     url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
+    url(r'^$', IndexView.as_view(), name='home'),
+    url(r'^message/new/$', NewMessageView.as_view(), name="message-new")
 ]
 

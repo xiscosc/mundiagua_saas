@@ -78,7 +78,13 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'async_messages.middleware.AsyncMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.login.EnforceLoginMiddleware',
 ]
+
+PUBLIC_URLS = (
+    r'login/',
+    r'logout/',
+)
 
 ROOT_URLCONF = 'mundiagua_python.urls'
 
