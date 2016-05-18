@@ -103,9 +103,16 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a class="text-center" href="#">
+                        <a class="text-center" href="{% url 'message-inbox' %}">
                             <strong>Ver todos los mensajes</strong>
                             <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                     <li class="divider"></li>
+                    <li>
+                        <a class="text-center" href="{% url 'message-new' %}">
+                            <i class="fa fa-plus"></i>
+                            <strong>Nuevo mensaje</strong>
                         </a>
                     </li>
                 </ul>

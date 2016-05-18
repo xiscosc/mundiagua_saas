@@ -44,12 +44,11 @@ DJANGO_APPS = [
 
 OTHER_APPS = [
     'colorfield',
-    'polymorphic',
     'djangobower',
     'bootstrapform',
     'sendsms',
     'bootstrap_pagination',
-
+    'async_messages',
 ]
 
 MY_APPS = [
@@ -58,7 +57,6 @@ MY_APPS = [
     'intervention',
     'budget',
     'repair',
-    'async_messages'
 ]
 
 
@@ -66,6 +64,7 @@ INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 
 BOWER_INSTALLED_APPS = (
     'startbootstrap-sb-admin-2',
+    'material-avatar'
 )
 
 MIDDLEWARE_CLASSES = [

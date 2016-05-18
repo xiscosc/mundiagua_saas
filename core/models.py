@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from async_messages import message_user, constants
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.db.models.signals import post_save
@@ -37,9 +38,10 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    full_name = models.CharField(max_length=100, blank=False, null=False)
+    first_name = models.CharField(max_length=100, blank=False, null=False)
+    last_name = models.CharField(max_length=100, blank=False, null=False)
     email = models.EmailField(unique=True)
-    pb_token = models.CharField(max_length=254, null=True)
+    pb_token = models.CharField(max_length=254, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -50,14 +52,14 @@ class User(AbstractBaseUser):
 
     def get_full_name(self):
         # The user is identified by their email address
-        return self.full_name
+        return self.first_name + " " + self.last_name
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.full_name
+        return self.first_name
 
     def __str__(self):  # __unicode__ on Python 2
-        return self.full_name
+        return self.get_full_name()
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -77,7 +79,6 @@ class User(AbstractBaseUser):
 
 
 class Message(models.Model):
-    read = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from')
     to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to', verbose_name="Destinatario")
@@ -90,8 +91,11 @@ class Message(models.Model):
 def post_save_message(sender, **kwargs):
     if kwargs['created']:
         ins = kwargs['instance']
-        body = ins.body+"\n\n"+ins.from_user.full_name
-        send_data_to_user(ins.to_user, ins.subject, body)
-
+        body = ins.body+"\n\n"+ins.from_user.get_full_name()
+        result = send_data_to_user(ins.to_user, ins.subject, body)
+        if result:
+            message_user(ins.from_user, "Mensaje enviado correctamente", constants.SUCCESS)
+        else:
+            message_user(ins.from_user, "No se ha podido enviar el mensaje", constants.ERROR)
 
 post_save.connect(post_save_message, sender='core.Message')

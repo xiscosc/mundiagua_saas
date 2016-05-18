@@ -1,6 +1,7 @@
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response
+from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.shortcuts import render_to_response
 
 # Create your views here.
 from django.template import RequestContext
@@ -61,6 +62,7 @@ class NewMessageView(CreateView):
     template_name = "new_message.html"
     model = Message
     fields = ['to_user', 'subject', 'body']
+    success_url = reverse_lazy('message-sent')
 
     def get_form(self, form_class=None):
         form = super(NewMessageView, self).get_form(form_class=form_class)
@@ -71,3 +73,30 @@ class NewMessageView(CreateView):
         obj = form.save(commit=False)
         obj.from_user = self.request.user
         return super(NewMessageView, self).form_valid(form)
+
+
+class MessageListBaseView(TemplateView):
+    template_name = "list_message.html"
+
+    def get_data(self):
+        pass
+
+    def get_context_data(self, **kwargs):
+        context = super(MessageListBaseView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        messages = self.get_data()
+        paginator = Paginator(messages, 10)
+        context['messages_mundiagua'] = paginator.page(page)
+        return context
+
+
+class MessagesListView(MessageListBaseView):
+
+    def get_data(self):
+        return Message.objects.filter(to_user=self.request.user).order_by("-date")
+
+
+class MessagesSentListView(MessageListBaseView):
+
+    def get_data(self):
+        return Message.objects.filter(from_user=self.request.user).order_by("-date")
