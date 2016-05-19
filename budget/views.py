@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# Create your views here.
-from budget.models import Budget
+from django.views.generic import TemplateView
+
+from budget.models import BudgetStandard, BudgetLineStandard
 from core.views import SearchClientBaseView, CreateBaseView
 
 
@@ -16,6 +17,15 @@ class SearchClientView(SearchClientBaseView):
 
 
 class CreateBudgetView(CreateBaseView):
-    model = Budget
-    fields = ['address', 'description', 'zone']
-    template_name = "new_budget.html"
+    model = BudgetStandard
+    fields = ['address', 'introduction', 'conditions', 'tax']
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateBudgetView, self).get_context_data(**kwargs)
+        context['title'] = "Nuevo presupuesto"
+        context['subtitle'] = "Datos del presupuesto"
+        return context
+
+
+class CreateLineBudgetView(TemplateView):
+    template_name = "lines_budget.html"

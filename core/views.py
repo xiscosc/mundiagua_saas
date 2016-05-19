@@ -100,3 +100,12 @@ class MessagesSentListView(MessageListBaseView):
 
     def get_data(self):
         return Message.objects.filter(from_user=self.request.user).order_by("-date")
+
+
+class MessagesAjaxView(TemplateView):
+    template_name = "ajax_messages.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(MessagesAjaxView, self).get_context_data(**kwargs)
+        context['messages_mundiagua'] = Message.objects.filter(to_user=self.request.user).order_by("-date")[:3]
+        return context

@@ -9,14 +9,15 @@ from core.utils import send_data_to_user
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, full_name, pb_token=None, password=None):
+    def create_user(self, email, first_name, last_name, pb_token=None, password=None):
 
-        if not email or not full_name:
+        if not email or not first_name or not last_name:
             raise ValueError('Users must have an email address, username, full_name')
 
         user = self.model(
             email=self.normalize_email(email),
-            full_name=full_name,
+            first_name=first_name,
+            last_name= last_name,
             pb_token=pb_token
         )
 
@@ -24,11 +25,12 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email=None, full_name=None, pb_token=None, password=None):
+    def create_superuser(self, email=None, first_name=None, last_name=None, pb_token=None, password=None):
 
         user = self.model(
             email=self.normalize_email(email),
-            full_name=full_name,
+            first_name=first_name,
+            last_name=last_name,
             pb_token=pb_token
         )
         user.set_password(password)
@@ -48,7 +50,7 @@ class User(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def get_full_name(self):
         # The user is identified by their email address

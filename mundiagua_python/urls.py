@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import login, logout
 
-from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView
+from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^$', IndexView.as_view(), name='home'),
     url(r'^message/new/$', NewMessageView.as_view(), name="message-new"),
     url(r'^message/inbox/$', MessagesListView.as_view(), name="message-inbox"),
-    url(r'^message/sent/$', MessagesSentListView.as_view(), name="message-sent")
+    url(r'^message/sent/$', MessagesSentListView.as_view(), name="message-sent"),
+    url(r'^message/ajax/$', MessagesAjaxView.as_view(), name="message-ajax")
 ]
 

@@ -56,7 +56,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">Intranet 6.0</a>
+            <a class="navbar-brand" href="/">Intranet 6.0</a>
         </div>
         <!-- /.navbar-header -->
 
@@ -65,50 +65,14 @@
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
+                <ul class="dropdown-menu dropdown-messages" id="message-ajax">
                     <li>
                         <a class="text-center" href="{% url 'message-inbox' %}">
                             <strong>Ver todos los mensajes</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
                     </li>
-                     <li class="divider"></li>
+                    <li class="divider"></li>
                     <li>
                         <a class="text-center" href="{% url 'message-new' %}">
                             <i class="fa fa-plus"></i>
@@ -140,28 +104,40 @@
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li class="sidebar-search">
-                        <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                    </li>
                     <li>
-                        <a href="{% url 'intervention:intervention-home' %}"><i class="fa fa-dashboard fa-fw"></i> Averías</a>
+                        <a href="#"><i class="fa fa-dashboard fa-fw"></i> Averías<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'intervention:intervention-home' %}">Inicio</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'intervention:intervention-search-client'%}">Nueva avería</a>
+                            </li>
+                            <li class="sidebar-search">
+                                <form method="post" action="{% url 'intervention:intervention-psearch' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group custom-search-form">
+                                        <input type="text" class="form-control" placeholder="Buscar avería"
+                                               name="search_text" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                    </div>
+                                </form>
+
+                                <!-- /input-group -->
+                            </li>
+
+                        </ul>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="{% url 'repair:repair-search-client' %}" >Nueva reparación</a>
+                                <a href="{% url 'repair:repair-search-client' %}">Nueva reparación</a>
                             </li>
                             <li>
-                                <a href="{% url 'repair:repair-list' 0 %}" >Todas las reparaciones</a>
+                                <a href="{% url 'repair:repair-list' 0 %}">Todas las reparaciones</a>
                             </li>
                             <li class="sidebar-search">
                                 <form method="post" action="{% url 'repair:repair-psearch' %}">
@@ -184,10 +160,10 @@
                         <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="{% url 'client:client-new' %}" >Nuevo cliente</a>
+                                <a href="{% url 'client:client-new' %}">Nuevo cliente</a>
                             </li>
                             <li>
-                                <a href="{% url 'client:client-all' %}" >Todos los clientes</a>
+                                <a href="{% url 'client:client-all' %}">Todos los clientes</a>
                             </li>
                             <li class="sidebar-search">
                                 <form method="post" action="{% url 'client:client-psearch' %}">
@@ -207,7 +183,31 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="forms.html"><i class="fa fa-th fa-fw"></i> Presupuestos</a>
+                        <a href="#"><i class="fa fa-th fa-fw"></i> Presupuestos<span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'budget:budget-search-client' %}">Nuevo presupuesto</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'client:client-all' %}">Todos los presupuestos</a>
+                            </li>
+                            <li class="sidebar-search">
+                                <form method="post" action="{% url 'client:client-psearch' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group custom-search-form">
+                                        <input type="text" class="form-control" placeholder="Buscar presupuesto"
+                                               name="search_text" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                    </div>
+                                </form>
+
+                                <!-- /input-group -->
+                            </li>
+
+                        </ul>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-download fa-fw"></i> Conexiones externas<span
@@ -276,6 +276,8 @@
 
 <!-- Custom Theme JavaScript -->
 <script src="{% static 'startbootstrap-sb-admin-2/dist/js/sb-admin-2.js' %}"></script>
+
+<script src="{% static 'base/js/core/message-ajax.js' %}"></script>
 
 {% block extrajs %} {% endblock %}
 

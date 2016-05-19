@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Añanadir contenido al presupuesto{% endblock %}
+{% block content %}
+
+    <div class="row">
+              <div class="col-md-12">
+                  <div class="panel panel-default" name="pres">
+                      <div class="panel-heading">
+                          <h3 class="panel-title">Presupuesto <button class="btn" onclick="nuevalinea()">Nueva línea</button>  <small>Para indicar decimales usar punto</small></h3>
+                      </div>
+                      <div class="panel-body">
+                                                    <div class="row">
+                              <div class="col-md-12">
+                                  <form class="form_presupuesto" method="post" action="modifiers/actualizarPresupuestoDetalle.php">
+                                      <input type="hidden" name="id" value="3976">
+                                  <table class="table table-bordered" id="tablapresupuesto">
+                                   <tr>
+                                          <td><strong></strong></td>
+                                          <td><strong>Descripción</strong></td>
+                                          <td><strong>Precio</strong></td>
+                                          <td><strong>Unidades</strong></td>
+                                          <td><strong>Dto</strong></td>
+                                      </tr>
+                                                                                <tr>
+                                              <td><a class="btn btn-danger delete-line" href="#"><i class="fa fa-eraser"></i></a></td>
+                                              <td><textarea class="form-control" rows="3" name="product[]" required></textarea></td>
+                                              <td><input type="text" class="form-control"  name="price[]" required></td>
+                                              <td><input type="text" class="form-control" name="quantity[]" required=></td>
+                                              <td><input type="text" class="form-control"  name="dto[]" required></td>
+                                          </tr>
+                                                                                <tr>
+                                              <td><a class="btn btn-danger borrar" href="#">X</a></td>
+                                              <td><textarea class="form-control" rows="3" name="product[]" required="">UNIDAD DE MATERIAL ELÉCTRICO, CONEXIÓN Y ADAPTACIÓN </textarea></td>
+                                              <td><input type="text" class="form-control" value="80" name="price[]" required=""></td>
+                                              <td><input type="text" class="form-control" value="1" name="quantity[]" required=""></td>
+                                              <td><input type="text" class="form-control" value="0" name="dto[]" required=""></td>
+                                          </tr>
+                                                                                <tr>
+                                              <td><a class="btn btn-danger borrar" href="#">X</a></td>
+                                              <td><textarea class="form-control" rows="3" name="product[]" required="">MANO DE OBRA MONTAJE CUADRO, PROGRAMAR Y DEJAR EN MARCHA </textarea></td>
+                                              <td><input type="text" class="form-control" value="240" name="price[]" required=""></td>
+                                              <td><input type="text" class="form-control" value="1" name="quantity[]" required=""></td>
+                                              <td><input type="text" class="form-control" value="15" name="dto[]" required=""></td>
+                                          </tr>
+                                  </table>
+                                  <input type="submit" class="btn btn-warning" value="Guardar cambios">
+                                      </form>
+                              </div>
+                          </div>
+
+
+                  </div>
+              </div>
+          </div>
+      </div>
+
+{% endblock %}
