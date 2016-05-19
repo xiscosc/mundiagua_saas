@@ -190,10 +190,10 @@
                                 <a href="{% url 'budget:budget-search-client' %}">Nuevo presupuesto</a>
                             </li>
                             <li>
-                                <a href="{% url 'client:client-all' %}">Todos los presupuestos</a>
+                                <a href="{% url 'budget:budget-all' %}">Todos los presupuestos</a>
                             </li>
                             <li class="sidebar-search">
-                                <form method="post" action="{% url 'client:client-psearch' %}">
+                                <form method="post" action="{% url 'budget:budget-psearch' %}">
                                     {% csrf_token %}
                                     <div class="input-group custom-search-form">
                                         <input type="text" class="form-control" placeholder="Buscar presupuesto"

@@ -222,7 +222,7 @@ class ListModificationView(TemplateView):
         context = super(ListModificationView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
         modifications = InterventionModification.objects.all().order_by("-date")
-        paginator = Paginator(modifications, 18)
+        paginator = Paginator(modifications, settings.DEFAULT_MODIFICATIONS_PAGINATOR)
         context['modifications'] = paginator.page(page)
         return context
 

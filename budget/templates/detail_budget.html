@@ -1,10 +1,141 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Presupuesto
+    <small>{{ budget }}</small> {% if budget.invalid %}<button type="button" class="btn btn-default" style="color: #d44950;" disabled="">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> NULO
+                        </button>{% endif %}{% endblock %}
+{% block content %}
 
-</body>
-</html>
+    {% include 'client_data.html' with client=budget.address.client sms=True address=budget.address %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Información del presupuesto</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <tr>
+                            <td style="width: 15%">
+                                <strong>Fecha</strong>
+                            </td>
+                            <td>
+                                {{ budget.date }}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Creado por</strong>
+                            </td>
+                            <td>
+                                {{ budget.created_by.get_full_name }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Datos y modificaciones del presupuesto</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form action="" method="post">{% csrf_token %}
+                                {{ form|bootstrap }}
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-warning btn-block"><span
+                                            class="fa fa-save"></span> Modificar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default" name="pres">
+            <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Líneas de presupuesto
+                    <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
+                    </a>
+                </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="text-center"><strong>Descripción</strong></td>
+                                <td class="text-center"><strong>Precio unitario</strong></td>
+                                <td class="text-center"><strong>Unidades</strong></td>
+                                {% if budget.has_discount %}
+                                    <td class="text-center"><strong>Subtotal</strong></td>
+                                    <td class="discount text-center"><strong>Descuento</strong></td>
+                                {% endif %}
+                                <td class="text-center"><strong>Total</strong></td>
+                            </tr>
+                            {% for line in budget.budgetlinestandard_set.all %}
+                                <tr>
+                                    <td>{{ line.product|linebreaks }}</td>
+                                    <td class="text-right">{{ line.unit_price|floatformat:2 }}€</td>
+                                    <td class="text-right">{{ line.quantity|floatformat:2 }}</td>
+
+                                    {% if budget.has_discount %}
+                                        <td class="text-right">{{ line.total_line_without_discount|floatformat:2 }}€</td>
+                                        <td class="discount text-right">
+                                            {% if line.discount > 0 %}
+                                                <div class="pull-left">
+                                                    <em>
+                                                        <small>{{ line.discount|floatformat:2 }}%</small>
+                                                    </em>
+                                                </div>
+                                                -{{ line.total_discount|floatformat:2 }}€
+                                            {% endif %}</td>
+                                    {% endif %}
+                                    <td class="text-right">{{ line.total_line|floatformat:2 }}€</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="{% if budget.has_discount %}4{% else %}2{% endif %}" rowspan="3"></td>
+                                <td class="text-center"><em><strong>SUBTOTAL</strong></em></td>
+                                <td class="text-right">
+                                    <em><strong>{{ budget.get_subtotal|floatformat:2 }}€</strong></em></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center"><em><strong>IVA {{ budget.tax|floatformat:2 }}%</strong></em>
+                                </td>
+                                <td class="text-right">
+                                    <em><strong>{{ budget.get_tax_import|floatformat:2 }}€</strong></em></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-center"><em><strong>TOTAL</strong></em></td>
+                                <td class="text-right"><em><strong>{{ budget.get_total|floatformat:2 }}€</strong></em>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block extrajs %}
+    <script src="{% static 'base/js/client/sms.js' %}"></script>
+{% endblock %}

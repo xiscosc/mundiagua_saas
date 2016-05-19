@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -177,7 +178,7 @@ class AllClientsView(TemplateView):
         page = int(self.request.GET.get('page', 1))
         clients = Client.objects.all()
         context['title'] = "Todos los clientes"
-        paginator = Paginator(clients, 18)
+        paginator = Paginator(clients, settings.DEFAULT_CLIENTS_PAGINATOR)
         context['clients'] = paginator.page(page)
         return context
 
@@ -209,6 +210,6 @@ class SearchClientView(TemplateView):
         context['title'] = "Búsqueda - " + search_text
         clients_pk = self.request.session.get('search_clients', list())
         clients = Client.objects.filter(pk__in=clients_pk)
-        paginator = Paginator(clients, 18)
+        paginator = Paginator(clients, settings.DEFAULT_CLIENTS_PAGINATOR)
         context['clients'] = paginator.page(page)
         return context

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Añanadir contenido al presupuesto {{ budget }}{% endblock %}
+{% block page_title %}Modificar contenido del presupuesto {{ budget }}{% endblock %}
 {% block content %}
 
     <div class="row">
@@ -26,6 +26,27 @@
                                         <td><strong>Unidades</strong></td>
                                         <td><strong>Dto</strong></td>
                                     </tr>
+                                    {% for line in budget.budgetlinestandard_set.all %}
+
+                                        <tr>
+                                        <input type="hidden" value="{{ line.pk }}" name="pk_line" />
+                                            <td>
+                                                <button class="btn btn-danger btn-delete-line"><i
+                                                        class="fa fa-remove"></i></button>
+                                            </td>
+                                            <td><textarea class="form-control txt-typeahead" rows="3" name="product"
+                                                          required="" >{{ line.product }}</textarea></td>
+                                            <td><input type="text" class="form-control" name="price" required=""
+                                                       autocomplete="off" value="{{ line.unit_price }}" /></td>
+                                            <td><input type="text" class="form-control" name="quantity" required=""
+                                                       autocomplete="off"  value="{{ line.quantity }}" /></td>
+                                            <td><input type="text" class="form-control" name="dto" required=""
+                                                       autocomplete="off" value="{{ line.discount }}" /></td>
+                                        </tr>
+
+                                    {% endfor %}
+
+
                                 </table>
                                 <button type="submit" class="btn btn-warning"><i class="fa fa-save fa-fw"></i> Guardar y
                                     continuar
@@ -43,5 +64,5 @@
 
 {% block extrajs %}
     <script src="{% static 'bootstrap3-typeahead/bootstrap3-typeahead.min.js' %}"></script>
-    <script src="{% static 'base/js/budget/budget-lines.js' %}"></script>
+    <script src="{% static 'base/js/budget/budget-lines-edit.js' %}"></script>
 {% endblock %}

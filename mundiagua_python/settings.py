@@ -64,7 +64,8 @@ INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 
 BOWER_INSTALLED_APPS = (
     'startbootstrap-sb-admin-2',
-    'material-avatar'
+    'material-avatar',
+    'bootstrap3-typeahead'
 )
 
 MIDDLEWARE_CLASSES = [
@@ -191,6 +192,9 @@ SMS_SENDER = 'MUNDIAGUASL'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 DEFAULT_NUM_PAGINATOR = 5
+DEFAULT_BUDGETS_PAGINATOR = 7
+DEFAULT_CLIENTS_PAGINATOR = 18
+DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
