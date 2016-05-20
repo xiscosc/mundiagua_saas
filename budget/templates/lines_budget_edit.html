@@ -26,7 +26,7 @@
                                         <td><strong>Unidades</strong></td>
                                         <td><strong>Dto</strong></td>
                                     </tr>
-                                    {% for line in budget.budgetlinestandard_set.all %}
+                                    {% for line in budget.get_lines %}
 
                                         <tr>
                                         <input type="hidden" value="{{ line.pk }}" name="pk_line" />

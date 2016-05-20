@@ -272,6 +272,7 @@ class BudgetRepairDetailView(BudgetDetailBase):
         context['repair'] = self.object.get_repair()
         return context
 
+
 class EditLineBudgetRepairView(TemplateView):
     template_name = "lines_budget_edit.html"
 
