@@ -4,7 +4,11 @@
 {% block page_title %}{{ title }}{% endblock %}
 {% block content %}
 
-    {% include 'client_data.html' with client=client %}
+    {% if is_budget_repair %}
+        {% include 'client_data.html' with client=repair.address.client address=repair.address %}
+    {% else %}
+        {% include 'client_data.html' with client=client %}
+    {% endif %}
 
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
@@ -29,3 +33,9 @@
         </div>
     </div>
 {% endblock %}
+
+{% if is_budget_repair %}
+{% block extrajs %}
+        <script src="{% static 'base/js/budget/budget-repair-new.js' %}"></script>
+{% endblock %}
+{% endif %}

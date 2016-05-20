@@ -34,12 +34,18 @@ class CreateBaseView(CreateView):
 
     def get_form(self, form_class=None):
         form = super(CreateBaseView, self).get_form(form_class=form_class)
-        form.fields['address'].queryset = Address.objects.filter(client=self.kwargs['id'])
+        try:
+            form.fields['address'].queryset = Address.objects.filter(client=self.kwargs['id'])
+        except:
+            pass
         return form
 
     def get_context_data(self, **kwargs):
         context = super(CreateBaseView, self).get_context_data(**kwargs)
-        context['client'] = Client.objects.get(pk=self.kwargs['id'])
+        try:
+            context['client'] = Client.objects.get(pk=self.kwargs['id'])
+        except:
+            pass
         return context
 
     def form_valid(self, form):

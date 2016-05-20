@@ -55,11 +55,31 @@
                                 <strong>Historial</strong>
                             </td>
                             <td>
-                                {% for log in repair.get_logs %}
-                                    {{ log }}<br>
-                                {% endfor %}
+                                {%  if repair.is_ath %}
+                                    {% for log in repair.athrepairlog_set.all %}
+                                        {{ log }}<br>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for log in repair.idegisrepairlog_set.all %}
+                                        {{ log }}<br>
+                                    {% endfor %}
+                                {% endif %}
                             </td>
                         </tr>
+                    <tr>
+                        <td><strong>Presupuestos</strong></td>
+                        <td>
+                            {% if repair.budget %}
+                                <a class="btn btn-info" href="{% url 'budget:budget-view' repair.budget.pk %}"><span class="fa fa-bar-chart"></span> Ver Presupuesto (Formato PM)</a>
+                            {% endif %}
+                                {% if repair.is_ath == 1 %}
+                                    <a class="btn btn-info" href="{% url 'budget:budget-repair-list' 0 repair.pk  %}"><span class="fa fa-folder"></span> Ver Presupuestos</a>
+                                {% else %}
+                                    <a class="btn btn-info" href="{% url 'budget:budget-repair-list' 1 repair.pk  %}"><span class="fa fa-folder"></span> Ver Presupuestos</a>
+                                {% endif %}
+
+                        </td>
+                    </tr>
                     </table>
                 </div>
             </div>

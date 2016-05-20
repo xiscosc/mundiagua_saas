@@ -18,8 +18,11 @@ class Budget(models.Model):
     class Meta:
         abstract = True
 
+    def get_lines(self):
+        pass
+
     def get_subtotal(self):
-        lines = BudgetLineStandard.objects.filter(budget=self)
+        lines = self.get_lines()
         stotal = Decimal(0.00)
         for l in lines:
             stotal = stotal + l.total_line()
@@ -33,7 +36,7 @@ class Budget(models.Model):
         return Decimal(self.get_subtotal()) + Decimal(self.get_tax_import())
 
     def has_discount(self):
-        lines = BudgetLineStandard.objects.filter(budget=self)
+        lines = self.get_lines()
         dto = Decimal(0.00)
         for l in lines:
             dto = dto + l.discount
@@ -47,10 +50,14 @@ class BudgetStandard(Budget):
         year = str(self.date.year)[-2:]
         return "PM" + year + "-" + str(self.pk)
 
+    def get_lines(self):
+        return BudgetLineStandard.objects.filter(budget_id=self.pk)
+
 
 class BudgetRepair(Budget):
-    idegis_repair = models.OneToOneField('repair.IdegisRepair', null=True)
-    ath_repair = models.OneToOneField('repair.AthRepair', null=True)
+    idegis_repair = models.ForeignKey('repair.IdegisRepair', null=True)
+    ath_repair = models.ForeignKey('repair.AthRepair', null=True)
+    intern_id = models.IntegerField(default=1)
 
     def get_repair(self):
         if self.idegis_repair is not None:
@@ -59,7 +66,10 @@ class BudgetRepair(Budget):
             return self.ath_repair
 
     def __str__(self):
-        return "P" + self.get_repair().get_id()
+        return "P" + str(self.get_repair()) + "-" + str(self.intern_id)
+
+    def get_lines(self):
+        return BudgetLineRepair.objects.filter(budget_id=self.pk)
 
 
 class BudgetLine(models.Model):

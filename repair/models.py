@@ -26,7 +26,7 @@ class Repair(models.Model):
     year = models.CharField(max_length=25, null=True, blank=True, verbose_name="Año")
     serial_number = models.CharField(max_length=100, null=True, blank=True, verbose_name="Número de serie")
     notice_maker_number = models.CharField(max_length=50, null=True, blank=True, verbose_name="Nº Aviso del fabricante")
-    budget = models.ForeignKey('budget.BudgetRepair', null=True)
+    budget = models.ForeignKey('budget.BudgetStandard', null=True)
     description = models.TextField(verbose_name="Descripción")
     intern_description = models.TextField(null=True, blank=True, verbose_name="Descripción interna")
     warranty = models.BooleanField(default=False, verbose_name="Garantía")
@@ -42,18 +42,6 @@ class AthRepair(Repair):
 
     def __str__(self):
         return "A"+str(self.pk)
-
-    def get_budget(self):
-        if self.budget is not None:
-            return self.budget
-        else:
-            try:
-                return BudgetRepair.objects.get(ath_repair=self)
-            except BudgetRepair.DoesNotExist:
-                return None
-
-    def get_logs(self):
-        return AthRepairLog.objects.filter(repair=self)
 
     def is_ath(self):
         return 1
@@ -75,9 +63,6 @@ class IdegisRepair(Repair):
                 return BudgetRepair.objects.get(idegis_repair=self)
             except BudgetRepair.DoesNotExist:
                 return None
-
-    def get_logs(self):
-        return IdegisRepairLog.objects.filter(repair=self)
 
     def is_ath(self):
         return 0

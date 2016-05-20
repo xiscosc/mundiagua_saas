@@ -40,6 +40,71 @@
         </div>
     </div>
 
+    {% if repair %}
+        <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                   Información de la reparación {{ repair }}
+                   {% if repair.is_ath %}
+                       <a class="btn btn-xs btn-left btn-primary" href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                    </a>
+                      {% else %}
+                       <a class="btn btn-xs btn-left btn-primary" href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                    </a>
+                       {% endif %}
+
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <tr>
+                            <td style="width: 15%">
+                                <strong>Fecha</strong>
+                            </td>
+                            <td>
+                                {{ repair.date }}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Modelo</strong>
+                            </td>
+                            <td>
+                                {{ repair.model }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Número de serie</strong>
+                            </td>
+                            <td>
+                                {{ repair.serial_number }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Año del equipo</strong>
+                            </td>
+                            <td>
+                                {{ repair.year }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Descripción</strong>
+                            </td>
+                            <td>
+                                {{ repair.description|linebreaks }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
             <div class="row">
@@ -69,8 +134,14 @@
         <div class="panel panel-default" name="pres">
             <div class="panel-heading">
                     <i class="fa fa-bar-chart-o fa-fw"></i> Líneas de presupuesto
-                    <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
+                    {% if repair %}
+                 <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-repair-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
                     </a>
+                    {% else %}
+                 <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
+                    </a>
+                    {% endif %}
+
                 </div>
             <div class="panel-body">
                 <div class="row">
@@ -86,7 +157,7 @@
                                 {% endif %}
                                 <td class="text-center"><strong>Total</strong></td>
                             </tr>
-                            {% for line in budget.budgetlinestandard_set.all %}
+                            {% for line in budget.get_lines %}
                                 <tr>
                                     <td>{{ line.product|linebreaks }}</td>
                                     <td class="text-right">{{ line.unit_price|floatformat:2 }}€</td>
