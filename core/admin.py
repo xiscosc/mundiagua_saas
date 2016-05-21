@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 import django.forms as forms
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
+from hijack_admin.admin import HijackUserAdminMixin
 
 from core.models import Message, User
 
@@ -53,7 +53,7 @@ class UserChangeForm(forms.ModelForm):
             return self.initial["password"]
 
 
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(BaseUserAdmin, HijackUserAdminMixin):
     # The forms to add and change user instances
     form = UserChangeForm
     add_form = UserCreationForm
@@ -61,7 +61,7 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_admin', 'is_active', 'pb_token')
+    list_display = ('email', 'first_name', 'last_name', 'is_admin', 'is_active', 'pb_token', 'hijack_field')
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),

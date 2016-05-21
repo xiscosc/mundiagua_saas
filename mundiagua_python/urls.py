@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^message/new/$', NewMessageView.as_view(), name="message-new"),
     url(r'^message/inbox/$', MessagesListView.as_view(), name="message-inbox"),
     url(r'^message/sent/$', MessagesSentListView.as_view(), name="message-sent"),
-    url(r'^message/ajax/$', MessagesAjaxView.as_view(), name="message-ajax")
+    url(r'^message/ajax/$', MessagesAjaxView.as_view(), name="message-ajax"),
+    url(r'^hijack/', include('hijack.urls')),
 ]
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from async_messages import message_user, constants
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from colorfield.fields import ColorField
@@ -9,6 +8,7 @@ from django.db.models.signals import post_save
 from django.conf import settings
 
 from core.utils import send_data_to_user
+from intervention.tasks import send_intervention_assigned
 
 
 class InterventionStatus(models.Model):
@@ -83,11 +83,7 @@ def post_save_intervention(sender, **kwargs):
                                   intervention=intervention)
             if intervention.status_id == settings.ASSIGNED_STATUS:
                 log.assigned = intervention.assigned
-                result_send = intervention.send_to_user(intervention.assigned)
-                if not result_send:
-                    message_user(intervention._current_user,
-                                 "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name(),
-                                 constants.ERROR)
+                send_intervention_assigned.delay(intervention)
             log.save()
 
 

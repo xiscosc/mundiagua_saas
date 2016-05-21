@@ -12,3 +12,7 @@ websocket-client==0.35.0
 django-async-messages
 sendgrid-django
 django-bootstrap-pagination
+django-hijack
+django-hijack-admin
+celery
+python-memcached

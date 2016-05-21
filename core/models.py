@@ -1,11 +1,10 @@
 from __future__ import unicode_literals
 
-from async_messages import message_user, constants
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.db.models.signals import post_save
 
-from core.utils import send_data_to_user
+from core.tasks import send_message
 
 
 class MyUserManager(BaseUserManager):
@@ -35,6 +34,7 @@ class MyUserManager(BaseUserManager):
         )
         user.set_password(password)
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -46,6 +46,7 @@ class User(AbstractBaseUser):
     pb_token = models.CharField(max_length=254, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -94,10 +95,7 @@ def post_save_message(sender, **kwargs):
     if kwargs['created']:
         ins = kwargs['instance']
         body = ins.body+"\n\n"+ins.from_user.get_full_name()
-        result = send_data_to_user(ins.to_user, ins.subject, body)
-        if result:
-            message_user(ins.from_user, "Mensaje enviado correctamente", constants.SUCCESS)
-        else:
-            message_user(ins.from_user, "No se ha podido enviar el mensaje", constants.ERROR)
+        send_message.delay(ins, body)
+
 
 post_save.connect(post_save_message, sender='core.Message')
