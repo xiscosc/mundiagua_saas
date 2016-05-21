@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 
-from async_messages import message_user, constants
+from async_messages import messages
 
+from client.tasks import send_sms
 from core.models import User
 
 
@@ -72,27 +72,12 @@ def post_save_sms(sender, **kwargs):
         phone_processed = sms.phone.phone.replace(" ", "")
         phone_processed = '34' + phone_processed.replace(".", "")
         if len(phone_processed) == 11:
-            from sendsms.message import SmsMessage
-            message = SmsMessage(
-                body=sms.body,
-                from_phone=settings.SMS_SENDER,
-                to=[phone_processed]
-            )
-            result = message.send()
-            if result == 1:
-                sms.sent_status = 1
-                message_user(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente", constants.SUCCESS)
-            else:
-                sms.sent_status = 2
-                message_user(sms.sender,
-                             "Error enviando SMS a " + sms.phone.client.name + ", puede ser un error temporal o que no hay crédito de SMS",
-                             constants.ERROR)
+            send_sms.delay(sms, phone_processed)
         else:
             sms.sent_status = 3
-            message_user(sms.sender,
-                         "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato (" + phone_processed + ")",
-                         constants.ERROR)
-        sms.save()
+            messages.warning(sms.sender,
+                         "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato (" + phone_processed + ")")
+            sms.save()
 
 
 post_save.connect(post_save_sms, sender=SMS)
