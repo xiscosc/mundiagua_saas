@@ -1,0 +1,53 @@
+<table class="table table-bordered">
+                            <tr>
+                                <td class="text-center"><strong>Descripción</strong></td>
+                                <td class="text-center"><strong>Precio unitario</strong></td>
+                                <td class="text-center"><strong>Unidades</strong></td>
+                                {% if budget.has_discount %}
+                                    <td class="text-center"><strong>Subtotal</strong></td>
+                                    <td class="discount text-center"><strong>Descuento</strong></td>
+                                {% endif %}
+                                <td class="text-center"><strong>Total</strong></td>
+                            </tr>
+                            {% for line in budget.get_lines %}
+                                <tr>
+                                    <td>{{ line.product|linebreaks }}</td>
+                                    <td class="text-right">{{ line.unit_price|floatformat:2 }}€</td>
+                                    <td class="text-right">{{ line.quantity|floatformat:2 }}</td>
+
+                                    {% if budget.has_discount %}
+                                        <td class="text-right">{{ line.total_line_without_discount|floatformat:2 }}€</td>
+                                        <td class="discount text-right">
+                                            {% if line.discount > 0 %}
+                                                <div class="pull-left">
+                                                    <em>
+                                                        <small>{{ line.discount|floatformat:2 }}%</small>
+                                                    </em>
+                                                </div>
+                                                -{{ line.total_discount|floatformat:2 }}€
+                                            {% endif %}</td>
+                                    {% endif %}
+                                    <td class="text-right">{{ line.total_line|floatformat:2 }}€</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="{% if budget.has_discount %}4{% else %}2{% endif %}" rowspan="3">
+                                    {{ budget.conditions|linebreaks }}
+                                </td>
+                                <td class="text-center"><em><strong>SUBTOTAL</strong></em></td>
+                                <td class="text-right">
+                                    <em><strong>{{ budget.get_subtotal|floatformat:2 }}€</strong></em></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center"><em><strong>IVA {{ budget.tax|floatformat:2 }}%</strong></em>
+                                </td>
+                                <td class="text-right">
+                                    <em><strong>{{ budget.get_tax_import|floatformat:2 }}€</strong></em></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-center"><em><strong>TOTAL</strong></em></td>
+                                <td class="text-right"><em><strong>{{ budget.get_total|floatformat:2 }}€</strong></em>
+                                </td>
+                            </tr>
+                        </table>

@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <meta charset="UTF-8">
+</head>
+<body>
+{% if logo == "1" %}
+    <table width="745" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="336" style="text-align: left"><img src="{% static 'base/img/logo_black_big.png' %}" width="334" height="108" /></td>
+        {% if type == "0" %}
+            <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/ath.png' %}" /></p><p>SAT Oficial</p></td>
+        {% elif type == "1" %}
+            <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/idegis.png' %}" /></p><p>SAT Oficial</p></td>
+        {% endif %}
+        <td width="182"><p style="font-size: 13px; text-align: right;">www.mundiaguabalear.com<br />
+                C/General Weyler 58<br />
+                07141 ES PLA DE NA TESA<br />
+                TLF: 971 79 51 77<br />
+                FAX: 971 60 83 34<br />
+                CIF: B07687692</p></td>
+    </tr>
+</table>
+{% else %}
+        <p><br />
+    </p>
+    <p><br />
+    </p>
+    <p>
+        <br />
+        <br />
+    </p>
+{% endif %}
+<h4>{% block title %}{% endblock %}</h4>
+{% block content %}{% endblock %}
+<!-- jQuery -->
+<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'base/js/core/print.js' %}"></script>
+</body>
+</html>

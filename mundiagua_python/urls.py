@@ -21,7 +21,8 @@ from django.contrib.auth.views import login, logout
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    url(r'^spectrum/', include(admin.site.urls)),
     url(r'^intervention/', include('intervention.urls', namespace="intervention")),
     url(r'^client/', include('client.urls', namespace="client")),
     url(r'^budget/', include('budget.urls', namespace="budget")),

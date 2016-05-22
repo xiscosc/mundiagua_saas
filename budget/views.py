@@ -225,7 +225,7 @@ class CreateBudgetRepairView(CreateBaseView):
             except:
                 pass
         else:
-            repair = AthRepair.objects.get(pk=self.kwargs['pk'])
+            repair = IdegisRepair.objects.get(pk=self.kwargs['pk'])
             obj.idegis_repair = repair
             try:
                 other_b = BudgetRepair.objects.filter(idegis_repair=self.kwargs['pk']).order_by("-date")[:1]
@@ -311,3 +311,27 @@ class EditLineBudgetRepairView(TemplateView):
 
         message_user(request.user, "Contenido del presupuesto actualizado correctamente.", constants.SUCCESS)
         return HttpResponseRedirect(reverse_lazy("budget:budget-repair-view", kwargs={'pk': kwargs['pk']}))
+
+
+class BudgetPrintBase(TemplateView):
+    template_name = 'print_budget.html'
+
+    def get_data(self):
+        return None
+
+    def get_context_data(self, **kwargs):
+        context = super(BudgetPrintBase, self).get_context_data(**kwargs)
+        context['budget'] = self.get_data()
+        return context
+
+
+class BudgetPrintView(BudgetPrintBase):
+
+    def get_data(self):
+        return BudgetStandard.objects.get(pk=self.kwargs['pk'])
+
+
+class BudgetRepairPrintView(BudgetPrintBase):
+
+    def get_data(self):
+        return BudgetRepair.objects.get(pk=self.kwargs['pk'])

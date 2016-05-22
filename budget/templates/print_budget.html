@@ -1,0 +1,54 @@
+{% extends 'print_base.html' %}
+{% load static %}
+{% block title %}Presupuesto {{ budget }}{% endblock %}
+{% block content %}
+
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td><strong>Cliente</strong></td>
+            <td>{{ budget.address.client }}</td>
+        </tr>
+        <tr>
+            <td><strong>DNI/CIF</strong></td>
+            <td>{{ budget.address.client.dni }}</td>
+        </tr>
+        <tr>
+            <td><strong>Dirección</strong></td>
+            <td>{{ budget.address }}</td>
+        </tr>
+        <tr>
+            <td><strong>Teléfonos</strong></td>
+            <td>
+                {% for phone in  budget.address.client.get_phones %}
+                    {{ phone }},
+                {% endfor %}</td>
+        </tr>
+        <tr>
+            <td><strong>Email</strong></td>
+            <td>{{ budget.address.client.email }}</td>
+        </tr>
+
+        {% if type == '0' or type == '1' %}
+            <tr>
+                <td><strong>Modelo</strong></td>
+                <td>{{ budget.get_repair.model }}</td>
+            </tr>
+            <tr>
+                <td><strong>Número de serie</strong></td>
+                <td>{{ budget.get_repair.serial_number }}</td>
+            </tr>
+
+        {% endif %}
+    </table>
+
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td>{{ budget.introduction|linebreaks }}</td>
+        </tr>
+    </table>
+
+    {% include 'lines_budget_include.html' with budget=budget %}
+
+    <p STYLE="text-align: right">Firma / Nombre / DNI</p>
+    <p STYLE="text-align: right">CONFORME CLIENTE</p>
+{% endblock %}

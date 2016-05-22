@@ -52,6 +52,7 @@ OTHER_APPS = [
     'hijack',
     'compat',
     'hijack_admin',
+    'admin_honeypot'
 ]
 
 MY_APPS = [
@@ -87,6 +88,7 @@ MIDDLEWARE_CLASSES = [
 PUBLIC_URLS = (
     r'login/',
     r'logout/',
+    r'admin/'
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'
