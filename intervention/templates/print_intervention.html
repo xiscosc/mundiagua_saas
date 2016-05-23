@@ -1,0 +1,109 @@
+{% extends 'print_base.html' %}
+{% block title %}Avería {{ intervention }}: {{ intervention.address.client }}{% endblock %}
+{% block content %}
+    <table class="table table-bordered">
+        <tr>
+            <td>
+                <strong>Nombre</strong>
+            </td>
+            <td>
+                {{ intervention.address.client }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Email</strong>
+            </td>
+            <td>
+                {{ intervention.address.client.email }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Cod Cliente</strong>
+            </td>
+            <td>
+                {{ intervention.address.client.intern_code }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>DNI/CIF</strong>
+            </td>
+            <td>
+                {{ intervention.address.client.dni }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Teléfonos</strong>
+            </td>
+            <td>
+                {% for phone in intervention.address.client.get_phones %}
+                    {{ phone }},
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Dirección</strong>
+            </td>
+            <td>
+                {{ intervention.address }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Fecha</strong>
+            </td>
+            <td>
+                {{ intervention.date }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Creada</strong>
+            </td>
+            <td>
+                {{ intervention.created_by.get_full_name }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Zona</strong>
+            </td>
+            <td>
+                {{ intervention.zone }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Nota</strong>
+            </td>
+            <td>
+                {{ intervention.note|linebreaks }}
+            </td>
+        </tr>
+    </table>
+
+    {% if intervention.get_modifications|length > 0 %}
+    <h5>Modificaciones</h5>
+        <table class="table table-bordered">
+            <tr>
+            <td><strong>Nombre</strong></td>
+            <td><strong>Fecha</strong></td>
+            <td><strong>Nota</strong></td>
+        </tr>
+
+        {% for mod in intervention.get_modifications %}
+        <tr>
+                <td>{{ mod.created_by.get_full_name }}</td>
+                <td>{{ mod.date }}</td>
+                <td>{{ mod.note|linebreaks }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </table>
+    {% endif %}
+{% endblock %}

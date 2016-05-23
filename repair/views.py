@@ -119,11 +119,11 @@ class ListRepairView(TemplateView):
         context['list_navigation'] = True
         type = int(kwargs['type'])
 
-        if type == 0:
+        if type == 1:
             repairs_ath = AthRepair.objects.all()
             repairs_idegis = IdegisRepair.objects.all()
             repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
-        elif type == 1:
+        elif type == 0:
             repairs = AthRepair.objects.all().order_by("-date")
         else:
             repairs = IdegisRepair.objects.all().order_by("-date")
@@ -178,4 +178,16 @@ class SearchRepairView(TemplateView):
             repairs = IdegisRepair.objects.filter(pk__in=repairs_idegis_pk).order_by("-date")
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
         context['repairs'] = paginator.page(page)
+        return context
+
+
+class PrintRepairView(TemplateView):
+    template_name = "print_repair.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(PrintRepairView, self).get_context_data(**kwargs)
+        if int(kwargs['type']) == 1:
+            context['repair'] = AthRepair.objects.get(pk=kwargs['pk'])
+        else:
+            context['repair'] = IdegisRepair.objects.get(pk=kwargs['pk'])
         return context

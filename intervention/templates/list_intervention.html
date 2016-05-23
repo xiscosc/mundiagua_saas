@@ -59,6 +59,8 @@
                                         todos
                                         los filtros</a></li>
                                 {% endif %}
+
+                            <li><a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned %}?page={{ page }}"><i class="fa fa-print"></i> Imprimir</a></li>
                             </ul>
                         </div><!-- /.navbar-collapse -->
                     </div><!-- /.container-fluid -->
@@ -67,65 +69,7 @@
         </div>
     {% endif %}
     {% include 'paginator.html' with obj=interventions %}
-    <div class="row">
-        <div class="col-md-12 col-xs-12 col-lg-12">
-            {% for intervention in interventions %}
-                <table class="table table-bordered table-hover table-striped">
-                    <tr>
-                        <td style="width: 15%">
-                            <a href="{% url 'intervention:intervention-view' intervention.pk %}"
-                               class="btn btn-danger btn-block">{{ intervention }}</a>
-                        </td>
-                        <td>
-                            {% if search_status.pk < 3 %}
-                                <a href="{% url 'intervention:intervention-terminate' intervention.pk %}" class="btn btn-default">Terminar
-                                    Avería</a>
-                            {% endif %}
-                            <a href="#"
-                               class="btn btn-warning btn-left">Modificaciones: <strong>{{ intervention.get_num_modifications }}</strong></a>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Fecha</strong>
-                        </td>
-                        <td>
-                            {{ intervention.date }}
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Zona</strong>
-                        </td>
-                        <td>
-                            <div style="background-color: {{ intervention.zone.color }}"
-                                 class="zone">{{ intervention.zone }}</div>
-                            {{ intervention.address }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Estado</strong>
-                        </td>
-                        <td>
-                            {{ intervention.status }}{% if intervention.status_id == 2 %} -
-                                {{ intervention.assigned.get_full_name }} {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Cliente</strong>
-                        </td>
-                        <td>
-                            {{ intervention.address.client }}
-                        </td>
-                    </tr>
-                </table>
-            {% endfor %}
-        </div>
-    </div>
+    {% include 'list_intervention_include.html' with interventions=interventions %}
     {% include 'paginator.html' with obj=interventions %}
 
 

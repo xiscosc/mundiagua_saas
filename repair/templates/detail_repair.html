@@ -13,7 +13,12 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Información de la reparación</h3>
+                    Información de la reparación
+                    <div class="pull-right">
+                        <a class="btn btn-xs btn-primary" href="{% url 'repair:repair-print' 1 repair.is_ath repair.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir con logo</a>
+                        <a class="btn btn-xs btn-primary" href="{% url 'repair:repair-print' 0 repair.is_ath repair.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir sin logo</a>
+                        <a class="btn btn-xs btn-primary" href="{% url 'repair:repair-print' 2 repair.is_ath repair.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir interno</a>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped">
@@ -72,12 +77,7 @@
                             {% if repair.budget %}
                                 <a class="btn btn-info" href="{% url 'budget:budget-view' repair.budget.pk %}"><span class="fa fa-bar-chart"></span> Ver Presupuesto (Formato PM)</a>
                             {% endif %}
-                                {% if repair.is_ath == 1 %}
-                                    <a class="btn btn-info" href="{% url 'budget:budget-repair-list' 0 repair.pk  %}"><span class="fa fa-folder"></span> Ver Presupuestos</a>
-                                {% else %}
-                                    <a class="btn btn-info" href="{% url 'budget:budget-repair-list' 1 repair.pk  %}"><span class="fa fa-folder"></span> Ver Presupuestos</a>
-                                {% endif %}
-
+                                    <a class="btn btn-info" href="{% url 'budget:budget-repair-list' repair.is_ath repair.pk  %}"><span class="fa fa-folder"></span> Ver Presupuestos</a>
                         </td>
                     </tr>
                     </table>

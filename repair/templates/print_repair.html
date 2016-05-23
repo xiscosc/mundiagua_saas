@@ -1,0 +1,117 @@
+{% extends 'print_base.html' %}
+{% load static %}
+{% block title %}Reparación {{ repair }}{% endblock %}
+{% block content %}
+
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td><strong>Cliente</strong></td>
+            <td>{{ repair.address.client }}</td>
+        </tr>
+        <tr>
+            <td><strong>DNI/CIF</strong></td>
+            <td>{{ repair.address.client.dni }}</td>
+        </tr>
+        <tr>
+            <td><strong>Dirección</strong></td>
+            <td>{{ repair.address }}</td>
+        </tr>
+        <tr>
+            <td><strong>Teléfonos</strong></td>
+            <td>
+                {% for phone in  repair.address.client.get_phones %}
+                    {{ phone }},
+                {% endfor %}</td>
+        </tr>
+        <tr>
+            <td><strong>Email</strong></td>
+            <td>{{ repair.address.client.email }}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td><strong>Aceptación</strong></td>
+            <td>{{ repair.date }}</td>
+            <td><strong>Año del equipo</strong></td>
+            <td>{{ repair.year }}</td>
+        </tr>
+        <tr>
+            <td><strong>Modelo</strong></td>
+            <td>{{ repair.model }}</td>
+            <td><strong>SN</strong></td>
+            <td>{{ repair.serial_number }}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td><strong>Garantía</strong></td>
+            <td class="tc">{{ repair.warranty|yesno:"Sí,No" }}</td>
+            {% if repair.is_ath %}
+                <td><strong>Bypass</strong></td>
+                <td class="tc">{{ repair.bypass|yesno:"Sí,No" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Conector 1"</strong></td>
+                    <td class="tc">{{ repair.connector|yesno:"Sí,No" }}</td>
+                    <td><strong>Transformador</strong></td>
+                    <td class="tc">{{ repair.transformer|yesno:"Sí,No" }}</td>
+                </tr>
+            {% else %}
+                <td><strong>Electrodo</strong></td>
+                <td class="tc">{{ repair.electrode|yesno:"Sí,No" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Sonda ORP</strong></td>
+                    <td class="tc">{{ repair.orp|yesno:"Sí,No" }}</td>
+                    <td><strong>Sonda PH</strong></td>
+                    <td class="tc">{{ repair.ph|yesno:"Sí,No"}}</td>
+                </tr>
+            {% endif %}
+    </table>
+
+    <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>{{ repair.description|linebreaks }}</td>
+            </tr>
+        </table>
+
+    {% if logo == '1' or logo == '0' %}
+
+        <table class="table" border="0">
+            <tr>
+                <td>
+                    <ul style="font-size: 12px;">
+                        <li>Los equipos bajo periodo de garantía que no presenten avería en el producto recibido tendrán
+                            un cargo de 22,00 €.
+                        </li>
+                        <li>De no recibirse autorización en el plazo de 20 días habrá un cargo de 25,00 € / mes por
+                            almacenaje.
+                        </li>
+                        <li>En el caso de no autorización, el cliente acepta la devolución del equipo sin montar.</li>
+                        <li>Todos los presupuestos solicitados tienen un coste de 22,00€. IVA INCLUIDO. Si la maquina es
+                            reparada,el precio del presupuesto sera descontado del importe total de la reparación.
+                        </li>
+                        <li>No nos responsabilizamos de los equipos que permanezcan mas de 4 meses en nuestras
+                            instalaciones a la espera de una respuesta del cliente.
+                        </li>
+                        <li>Puede consultar el estado de su reparación en mundiaguabalear.com con el siguiente número:
+                            <strong>{{ repair.online_id }}</strong></li>
+                        <li>Con la firma del cliente acepta las condiciones expuestas en este documento.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+        <p STYLE="text-align: right">Firma / Nombre / DNI</p>
+        <p STYLE="text-align: right">CONFORME CLIENTE</p>
+
+    {% else %}
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <td>{{ repair.intern_description|linebreaks }}</td>
+            </tr>
+        </table>
+    {% endif %}
+{% endblock %}

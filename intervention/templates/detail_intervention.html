@@ -194,7 +194,11 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Datos de la avería</h3>
+                    Datos de la avería
+
+                    <div class="pull-right">
+                        <a class="btn btn-xs btn-primary" href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir</a>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped">

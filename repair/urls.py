@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from .views import SearchClientView, CreateAthRepairView, CreateIdegisRepairView, AthRepairView, IdegisRepairView, \
-    UpdateStatusRepair, ListRepairView, PreSearchRepairView, SearchRepairView
+    UpdateStatusRepair, ListRepairView, PreSearchRepairView, SearchRepairView, PrintRepairView
 
 urlpatterns = [
     url(r'^search-client/$', SearchClientView.as_view(), name="repair-search-client"),
@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'^list/(?P<type>\d+)/$', ListRepairView.as_view(), name="repair-list"),
     url(r'^psearch/$', PreSearchRepairView.as_view(), name="repair-psearch"),
     url(r'^search/(?P<type>\d+)/$', SearchRepairView.as_view(), name="repair-search"),
+    url(r'^print/(?P<logo>\d+)/(?P<type>\d+)/(?P<pk>\d+)/$', PrintRepairView.as_view(), name="repair-print"),
 
 ]

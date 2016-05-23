@@ -13,7 +13,16 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Información del presupuesto</h3>
+                    Información del presupuesto
+                    <div class="pull-right">
+                        {% if repair %}
+                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-repair-print' 1 repair.is_ath budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir con logo</a>
+                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-repair-print' 0 repair.is_ath budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir sin logo</a>
+                        {% else %}
+                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-print' 1 budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir con logo</a>
+                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-print' 0 budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir sin logo</a>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped">
@@ -47,10 +56,10 @@
                 <div class="panel-heading">
                    Información de la reparación {{ repair }}
                    {% if repair.is_ath %}
-                       <a class="btn btn-xs btn-left btn-primary" href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                       <a class="btn btn-xs btn-left btn-warning" href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
                     </a>
                       {% else %}
-                       <a class="btn btn-xs btn-left btn-primary" href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                       <a class="btn btn-xs btn-left btn-warning" href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
                     </a>
                        {% endif %}
 

@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse, Http404
-from django.views.generic import TemplateView, View, UpdateView
+from django.views.generic import TemplateView, View, UpdateView, DetailView
 
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
 from core.views import SearchClientBaseView, CreateBaseView
@@ -182,7 +182,7 @@ class ListBudgetRepairView(TemplateView):
         context = super(ListBudgetRepairView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
 
-        if int(kwargs['type']) == 0:
+        if int(kwargs['type']) == 1:
             context['title'] = "Presupuestos de  A" + kwargs['pk']
             budgets = BudgetRepair.objects.filter(ath_repair_id=kwargs['pk']).order_by("-intern_id")
         else:
@@ -201,7 +201,7 @@ class CreateBudgetRepairView(CreateBaseView):
     def get_context_data(self, **kwargs):
         context = super(CreateBudgetRepairView, self).get_context_data(**kwargs)
         context['is_budget_repair'] = True
-        if int(self.kwargs['type']) == 0:
+        if int(self.kwargs['type']) == 1:
             context['title'] = "Crear presupuesto de  A" + self.kwargs['pk']
             context['repair'] = AthRepair.objects.get(pk=self.kwargs['pk'])
         else:
@@ -215,7 +215,7 @@ class CreateBudgetRepairView(CreateBaseView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        if int(self.kwargs['type']) == 0:
+        if int(self.kwargs['type']) == 1:
             repair = AthRepair.objects.get(pk=self.kwargs['pk'])
             obj.ath_repair = repair
             try:
@@ -313,25 +313,14 @@ class EditLineBudgetRepairView(TemplateView):
         return HttpResponseRedirect(reverse_lazy("budget:budget-repair-view", kwargs={'pk': kwargs['pk']}))
 
 
-class BudgetPrintBase(TemplateView):
+class BudgetPrintBase(DetailView):
     template_name = 'print_budget.html'
-
-    def get_data(self):
-        return None
-
-    def get_context_data(self, **kwargs):
-        context = super(BudgetPrintBase, self).get_context_data(**kwargs)
-        context['budget'] = self.get_data()
-        return context
+    context_object_name = 'budget'
 
 
 class BudgetPrintView(BudgetPrintBase):
-
-    def get_data(self):
-        return BudgetStandard.objects.get(pk=self.kwargs['pk'])
+    model = BudgetStandard
 
 
 class BudgetRepairPrintView(BudgetPrintBase):
-
-    def get_data(self):
-        return BudgetRepair.objects.get(pk=self.kwargs['pk'])
+    model = BudgetRepair

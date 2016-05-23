@@ -126,6 +126,7 @@ class ListInterventionView(TemplateView):
         context['users'] = User.objects.all()
         context['zones'] = Zone.objects.all()
         context['list_navigation'] = True
+        context['page'] = page
 
         self.request.session['list_status_id'] = status_id
         self.request.session['list_user_id'] = user_id
@@ -256,3 +257,13 @@ class MorrisInterventionInput(MorrisView):
             total = Intervention.objects.filter(date__day=day, date__year=d.year.real, date__month=d.month.real).count()
             data.append({'t': total, 'y': d.strftime("%Y-%m-%d")})
         return JsonResponse(data=data, safe=False)
+
+
+class PrintInterventionView(DetailView):
+    template_name = 'print_intervention.html'
+    context_object_name = 'intervention'
+    model = Intervention
+
+
+class PrintListInterventionView(ListInterventionView):
+    template_name = 'print_list_intervention.html'

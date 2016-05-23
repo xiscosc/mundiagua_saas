@@ -10,9 +10,9 @@
     <table width="745" border="0" cellpadding="0" cellspacing="0">
     <tr>
         <td width="336" style="text-align: left"><img src="{% static 'base/img/logo_black_big.png' %}" width="334" height="108" /></td>
-        {% if type == "0" %}
+        {% if type == "1" %}
             <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/ath.png' %}" /></p><p>SAT Oficial</p></td>
-        {% elif type == "1" %}
+        {% elif type == "0" %}
             <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/idegis.png' %}" /></p><p>SAT Oficial</p></td>
         {% endif %}
         <td width="182"><p style="font-size: 13px; text-align: right;">www.mundiaguabalear.com<br />
@@ -23,7 +23,7 @@
                 CIF: B07687692</p></td>
     </tr>
 </table>
-{% else %}
+{% elif logo == "0" %}
         <p><br />
     </p>
     <p><br />

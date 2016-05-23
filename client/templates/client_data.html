@@ -27,9 +27,10 @@
     <div class="row">
     <div class="col-md-12">
     <div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Datos del cliente <a href="{% url 'client:client-view' client.pk %}" class="btn btn-default">Modificar
-            datos</a></h3>
+    <div class="panel-heading">Datos del cliente
+    <div class="pull-right">
+                        <a class="btn btn-xs btn-default" href="{% url 'client:client-view' client.pk %}"><i class="fa fa-edit"></i> Modificar datos</a>
+    </div>
     </div>
     <div class="panel-body">
 {% endif %}
