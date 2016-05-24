@@ -119,11 +119,11 @@ class ListRepairView(TemplateView):
         context['list_navigation'] = True
         type = int(kwargs['type'])
 
-        if type == 1:
+        if type == 0:
             repairs_ath = AthRepair.objects.all()
             repairs_idegis = IdegisRepair.objects.all()
             repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
-        elif type == 0:
+        elif type == 1:
             repairs = AthRepair.objects.all().order_by("-date")
         else:
             repairs = IdegisRepair.objects.all().order_by("-date")

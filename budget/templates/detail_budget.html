@@ -2,9 +2,10 @@
 {% load static %}
 {% load bootstrap %}
 {% block page_title %}Presupuesto
-    <small>{{ budget }}</small> {% if budget.invalid %}<button type="button" class="btn btn-default" style="color: #d44950;" disabled="">
-                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> NULO
-                        </button>{% endif %}{% endblock %}
+    <small>{{ budget }}</small>{% if budget.invalid %}
+    <button type="button" class="btn btn-default" style="color: #d44950;" disabled="">
+        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> NULO
+    </button>{% endif %}{% endblock %}
 {% block content %}
 
     {% include 'client_data.html' with client=budget.address.client sms=True address=budget.address %}
@@ -14,14 +15,33 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Información del presupuesto
+
                     <div class="pull-right">
-                        {% if repair %}
-                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-repair-print' 1 repair.is_ath budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir con logo</a>
-                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-repair-print' 0 repair.is_ath budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir sin logo</a>
-                        {% else %}
-                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-print' 1 budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir con logo</a>
-                        <a class="btn btn-xs btn-primary" href="{% url 'budget:budget-print' 0 budget.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir sin logo</a>
-                        {% endif %}
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-print"></i> Imprimir
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                {% if repair %}
+                                    <li><a href="{% url 'budget:budget-repair-print' 1 repair.is_ath budget.pk %}"
+                                           target="_blank">Con
+                                        logo</a>
+                                    </li>
+                                    <li><a href="{% url 'budget:budget-repair-print' 0 repair.is_ath budget.pk %}"
+                                           target="_blank">Sin
+                                        logo</a>
+                                    </li>
+                                {% else %}
+                                    <li><a href="{% url 'budget:budget-print' 1 budget.pk %}" target="_blank">Con
+                                        logo</a>
+                                    </li>
+                                    <li><a href="{% url 'budget:budget-print' 0 budget.pk %}" target="_blank">Sin
+                                        logo</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -51,67 +71,69 @@
 
     {% if repair %}
         <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                   Información de la reparación {{ repair }}
-                   {% if repair.is_ath %}
-                       <a class="btn btn-xs btn-left btn-warning" href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
-                    </a>
-                      {% else %}
-                       <a class="btn btn-xs btn-left btn-warning" href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
-                    </a>
-                       {% endif %}
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Información de la reparación {{ repair }}
+                        {% if repair.is_ath %}
+                            <a class="btn btn-xs btn-left btn-warning"
+                               href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                            </a>
+                        {% else %}
+                            <a class="btn btn-xs btn-left btn-warning"
+                               href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                            </a>
+                        {% endif %}
 
-                </div>
-                <div class="panel-body">
-                    <table class="table table-bordered table-hover table-striped">
-                        <tr>
-                            <td style="width: 15%">
-                                <strong>Fecha</strong>
-                            </td>
-                            <td>
-                                {{ repair.date }}
-                            </td>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered table-hover table-striped">
+                            <tr>
+                                <td style="width: 15%">
+                                    <strong>Fecha</strong>
+                                </td>
+                                <td>
+                                    {{ repair.date }}
+                                </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Modelo</strong>
-                            </td>
-                            <td>
-                                {{ repair.model }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Número de serie</strong>
-                            </td>
-                            <td>
-                                {{ repair.serial_number }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Año del equipo</strong>
-                            </td>
-                            <td>
-                                {{ repair.year }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Descripción</strong>
-                            </td>
-                            <td>
-                                {{ repair.description|linebreaks }}
-                            </td>
-                        </tr>
-                    </table>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Modelo</strong>
+                                </td>
+                                <td>
+                                    {{ repair.model }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Número de serie</strong>
+                                </td>
+                                <td>
+                                    {{ repair.serial_number }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Año del equipo</strong>
+                                </td>
+                                <td>
+                                    {{ repair.year }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Descripción</strong>
+                                </td>
+                                <td>
+                                    {{ repair.description|linebreaks }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     {% endif %}
 
     <div class="row">
@@ -142,16 +164,18 @@
     <div class="col-md-12">
         <div class="panel panel-default" name="pres">
             <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Líneas de presupuesto
-                    {% if repair %}
-                 <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-repair-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
+                <i class="fa fa-bar-chart-o fa-fw"></i> Líneas de presupuesto
+                {% if repair %}
+                    <a class="btn btn-xs btn-left btn-primary"
+                       href="{% url 'budget:budget-repair-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
                     </a>
-                    {% else %}
-                 <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
+                {% else %}
+                    <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i
+                            class="fa fa-edit"></i> Editar
                     </a>
-                    {% endif %}
+                {% endif %}
 
-                </div>
+            </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-12">

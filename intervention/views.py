@@ -259,6 +259,26 @@ class MorrisInterventionInput(MorrisView):
         return JsonResponse(data=data, safe=False)
 
 
+months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octube", "Noviembre", "Diciembre"]
+
+class MorrisYearVs(MorrisView):
+    def get(self, request, *args, **kwargs):
+        data = []
+        year = date.today().year.real
+        last_year = year - 1
+        for x in range(12):
+            month = x + 1
+            month_str = months[x]
+            current_year_count = Intervention.objects.filter(date__year=year, date__month=month).count()
+            last_year_count = Intervention.objects.filter(date__year=last_year, date__month=month).count()
+            data.append({"y": month_str, "a": current_year_count, "b": last_year_count})
+
+        labels = ["Año "+str(year), "Año "+str(last_year)]
+        data_to_send = {"d": data, "labels": labels}
+
+        return JsonResponse(data=data_to_send, safe=False)
+
+
 class PrintInterventionView(DetailView):
     template_name = 'print_intervention.html'
     context_object_name = 'intervention'

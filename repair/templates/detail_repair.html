@@ -15,9 +15,23 @@
                 <div class="panel-heading">
                     Información de la reparación
                     <div class="pull-right">
-                        <a class="btn btn-xs btn-primary" href="{% url 'repair:repair-print' 1 repair.is_ath repair.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir con logo</a>
-                        <a class="btn btn-xs btn-primary" href="{% url 'repair:repair-print' 0 repair.is_ath repair.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir sin logo</a>
-                        <a class="btn btn-xs btn-primary" href="{% url 'repair:repair-print' 2 repair.is_ath repair.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir interno</a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-print"></i> Imprimir
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="{% url 'repair:repair-print' 1 repair.is_ath repair.pk %}" target="_blank">Con
+                                    logo</a>
+                                </li>
+                                <li><a href="{% url 'repair:repair-print' 0 repair.is_ath repair.pk %}" target="_blank">Sin
+                                    logo</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="{% url 'repair:repair-print' 2 repair.is_ath repair.pk %}" target="_blank">Interno</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -60,7 +74,7 @@
                                 <strong>Historial</strong>
                             </td>
                             <td>
-                                {%  if repair.is_ath %}
+                                {% if repair.is_ath %}
                                     {% for log in repair.athrepairlog_set.all %}
                                         {{ log }}<br>
                                     {% endfor %}
@@ -71,46 +85,49 @@
                                 {% endif %}
                             </td>
                         </tr>
-                    <tr>
-                        <td><strong>Presupuestos</strong></td>
-                        <td>
-                            {% if repair.budget %}
-                                <a class="btn btn-info" href="{% url 'budget:budget-view' repair.budget.pk %}"><span class="fa fa-bar-chart"></span> Ver Presupuesto (Formato PM)</a>
-                            {% endif %}
-                                    <a class="btn btn-info" href="{% url 'budget:budget-repair-list' repair.is_ath repair.pk  %}"><span class="fa fa-folder"></span> Ver Presupuestos</a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td><strong>Presupuestos</strong></td>
+                            <td>
+                                {% if repair.budget %}
+                                    <a class="btn btn-info" href="{% url 'budget:budget-view' repair.budget.pk %}"><span
+                                            class="fa fa-bar-chart"></span> Ver Presupuesto (Formato PM)</a>
+                                {% endif %}
+                                <a class="btn btn-info"
+                                   href="{% url 'budget:budget-repair-list' repair.is_ath repair.pk %}"><span
+                                        class="fa fa-folder"></span> Ver Presupuestos</a>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <h3 class="panel-title">Realizar cambios de estado</h3>
-                      </div>
-                      <div class="panel-body" id="body_averia">
-                        <div class="row" id="forms">
-                            <form method="post" action="{% url 'repair:repair-update-status' repair.pk %}">
-                                <input type="hidden" name="type_repair" value="{{ repair.is_ath }}" />
-                                {% csrf_token %}
-                                <div class="col-md-9">
-                                    <select class="form-control" name="status_repair" >
-                                        {% for s in status %}
-                                           <option value="{{ s.pk }}">{{ s }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn btn-block btn-danger">
-                                        <span class="fa fa-flash"></span> Cambiar estado
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">Realizar cambios de estado</h3>
+        </div>
+        <div class="panel-body" id="body_averia">
+            <div class="row" id="forms">
+                <form method="post" action="{% url 'repair:repair-update-status' repair.pk %}">
+                    <input type="hidden" name="type_repair" value="{{ repair.is_ath }}"/>
+                    {% csrf_token %}
+                    <div class="col-md-9">
+                        <select class="form-control" name="status_repair">
+                            {% for s in status %}
+                                <option value="{{ s.pk }}">{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-block btn-danger">
+                            <span class="fa fa-flash"></span> Cambiar estado
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-                      </div>
-                  </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
@@ -124,7 +141,9 @@
                             <form action="" method="post">{% csrf_token %}
                                 {{ form|bootstrap }}
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-warning btn-block"><span class="fa fa-save"></span> Modificar</button>
+                                    <button type="submit" class="btn btn-warning btn-block"><span
+                                            class="fa fa-save"></span> Modificar
+                                    </button>
                                 </div>
                             </form>
                         </div>

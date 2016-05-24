@@ -313,14 +313,19 @@ class EditLineBudgetRepairView(TemplateView):
         return HttpResponseRedirect(reverse_lazy("budget:budget-repair-view", kwargs={'pk': kwargs['pk']}))
 
 
-class BudgetPrintBase(DetailView):
+class BudgetPrintView(TemplateView):
     template_name = 'print_budget.html'
-    context_object_name = 'budget'
+
+    def get_context_data(self, **kwargs):
+        context = super(BudgetPrintView, self).get_context_data(**kwargs)
+        context['budget'] = BudgetRepair.objects.get(pk=kwargs['pk'])
+        return context
 
 
-class BudgetPrintView(BudgetPrintBase):
-    model = BudgetStandard
+class BudgetRepairPrintView(TemplateView):
+    template_name = 'print_budget.html'
 
-
-class BudgetRepairPrintView(BudgetPrintBase):
-    model = BudgetRepair
+    def get_context_data(self, **kwargs):
+        context = super(BudgetRepairPrintView, self).get_context_data(**kwargs)
+        context['budget'] = BudgetRepair.objects.get(pk=kwargs['pk'])
+        return context
