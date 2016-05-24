@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 
 from client.models import Client, Address, Phone, SMS
@@ -10,9 +10,6 @@ from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import Budget
 
-
-class HomeClientView(TemplateView):
-    template_name = "home_client.html"
 
 
 class CreateClientView(CreateView):
@@ -213,3 +210,14 @@ class SearchClientView(TemplateView):
         paginator = Paginator(clients, settings.DEFAULT_CLIENTS_PAGINATOR)
         context['clients'] = paginator.page(page)
         return context
+
+
+class AddressGeoUpdateView(View):
+
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        address = Address.objects.get(pk=kwargs['pk'])
+        address.latitude = params['lat']
+        address.longitude = params['lon']
+        address.save()
+        return HttpResponse('OK')

@@ -23,6 +23,22 @@
     </div>
 
 
+    <div class="modal fade" id="modal_geo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Servicio de localización</h4>
+                </div>
+                <div class="modal-body" id="modal_body_geo">
+                    <h4>Ubicando...</h4>
+                    {% include 'progress_bar.html' with w=100 %}
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% if not edit %}
     <div class="row">
     <div class="col-md-12">
@@ -108,14 +124,18 @@
                     <td>
                         <strong>Localización</strong>
                     </td>
-                    <td>
+                    <td id="space_geo">
                         {% if address.get_url_gmaps %}
                             <a href="{{ address.get_url_gmaps }}" type="button" target="_blank"
                                class="btn btn-success">
                                 <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
                             </a>
                         {% else %}
-                            Sin ubicación disponible
+                            <button class="btn btn-primary" id="btn_geo">Grabar ubicación</button>
+                                <form method="post" action="{% url 'client:client-address-edit-geo' address.pk %}" id="form_geo">
+                                    {% csrf_token %}
+                                </form>
+
                         {% endif %}
                     </td>
                 </tr>
