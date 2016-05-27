@@ -11,7 +11,7 @@ NUM_WORKERS=1                          # How many worker processes
                                        # should Gunicorn spawn?
 DJANGO_WSGI_MODULE=config.wsgi         # WSGI module name
 # Which settings file should Django use?
-DJANGO_SETTINGS_MODULE=mundiagua_py.settings_prod
+DJANGO_SETTINGS_MODULE=mundiagua_python.settings_prod
 
 echo "Starting $NAME as `whoami`"
 
