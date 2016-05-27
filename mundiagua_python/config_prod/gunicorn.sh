@@ -2,7 +2,7 @@
 
 # This script is only for production purposes
 
-NAME="mundiagua_py"                          # Name of the application
+NAME="mundiagua_python"                          # Name of the application
 DJANGODIR=/root/mundiagua_saas          # Django project directory
 VENVDIR=/root/.virtualenvs/mundiagua_py  	   # Virtual Ennvironment directory
 USER=root                              # The user to run as
