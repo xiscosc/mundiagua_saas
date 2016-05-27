@@ -9,7 +9,7 @@ USER=root                              # The user to run as
 GROUP=root                             # The group to run as
 NUM_WORKERS=1                          # How many worker processes
                                        # should Gunicorn spawn?
-DJANGO_WSGI_MODULE=config.wsgi         # WSGI module name
+DJANGO_WSGI_MODULE=mundiagua_python.wsgi         # WSGI module name
 # Which settings file should Django use?
 DJANGO_SETTINGS_MODULE=mundiagua_python.settings_prod
 
