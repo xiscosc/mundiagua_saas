@@ -67,8 +67,11 @@ class TypeAheadBudgetView(View):
 
     def get(self, request, *args, **kwargs):
         data = []
-        lines = BudgetLineStandard.objects.all()
+        lines = BudgetLineStandard.objects.extra(where=["CHAR_LENGTH(product) < 140"])
         for l in lines:
+            data.append(l.product)
+        lines2 = BudgetLineRepair.objects.extra(where=["CHAR_LENGTH(product) < 140"])
+        for l in lines2:
             data.append(l.product)
         return JsonResponse(data=list(set(data)), safe=False)
 
