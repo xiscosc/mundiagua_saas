@@ -56,11 +56,11 @@ class User(AbstractBaseUser):
 
     def get_full_name(self):
         # The user is identified by their email address
-        return self.first_name + " " + self.last_name
+        return (self.first_name + " " + self.last_name).encode('utf8')
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.first_name
+        return self.first_name.encode('utf8')
 
     def __str__(self):  # __unicode__ on Python 2
         return self.get_full_name()
