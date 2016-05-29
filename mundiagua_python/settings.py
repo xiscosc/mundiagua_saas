@@ -231,4 +231,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'intervention-list-own',
                    'intervention-view',
                    'client-address-edit-geo',
-                   'home')
+                   'home',
+                   'logout',
+                   'login',
+                   'release_hijack')
