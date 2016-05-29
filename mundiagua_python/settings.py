@@ -230,4 +230,5 @@ NON_STAFF_VIEWS = ('message-new',
                    'message-ajax',
                    'intervention-list-own',
                    'intervention-view',
-                   'client-address-edit-geo')
+                   'client-address-edit-geo',
+                   'home')
