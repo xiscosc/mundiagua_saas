@@ -1,0 +1,1 @@
+[{"model": "intervention.interventionstatus", "pk": 1, "fields": {"name": "PENDIENTE"}}, {"model": "intervention.interventionstatus", "pk": 2, "fields": {"name": "ASIGNADA"}}, {"model": "intervention.interventionstatus", "pk": 3, "fields": {"name": "TERMINADA"}}, {"model": "intervention.interventionstatus", "pk": 4, "fields": {"name": "ANULADA"}}]
