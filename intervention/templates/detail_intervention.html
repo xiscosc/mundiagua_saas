@@ -42,8 +42,9 @@
         </div>
     {% endif %}
 
-    {% include 'client_data.html' with client=intervention.address.client sms=True address=intervention.address %}
+    {% include 'client_data.html' with client=intervention.address.client sms=request.user.is_staff address=intervention.address %}
 
+    {% if request.user.is_staff %}
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -148,6 +149,8 @@
             </div>
         </div>
     </div>
+
+    {% endif %}
 
     <div class="row">
         <div class="col-md-12">

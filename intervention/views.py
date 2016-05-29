@@ -261,6 +261,7 @@ class MorrisInterventionInput(MorrisView):
 
 months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octube", "Noviembre", "Diciembre"]
 
+
 class MorrisYearVs(MorrisView):
     def get(self, request, *args, **kwargs):
         data = []
@@ -287,3 +288,17 @@ class PrintInterventionView(DetailView):
 
 class PrintListInterventionView(ListInterventionView):
     template_name = 'print_list_intervention.html'
+
+
+class OwnListInterventionView(TemplateView):
+    template_name = 'list_intervention.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OwnListInterventionView, self).get_context_data(**kwargs)
+        page = int(self.request.GET.get('page', 1))
+        context['page'] = page
+        interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS, assigned=self.request.user).order_by("-date")
+        paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
+        context['interventions'] = paginator.page(page)
+
+        return context

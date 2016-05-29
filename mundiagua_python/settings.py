@@ -83,6 +83,7 @@ MIDDLEWARE_CLASSES = [
     'async_messages.middleware.AsyncMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.login.EnforceLoginMiddleware',
+    'core.middleware.staff.StaffMiddleware',
 ]
 
 PUBLIC_URLS = (
@@ -223,3 +224,10 @@ CACHES = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
+NON_STAFF_VIEWS = ('message-new',
+                   'message-inbox',
+                   'message-sent',
+                   'message-ajax',
+                   'intervention-list-own',
+                   'intervention-view',
+                   'client-address-edit-geo')

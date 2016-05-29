@@ -44,9 +44,11 @@
     <div class="col-md-12">
     <div class="panel panel-default">
     <div class="panel-heading">Datos del cliente
+        {% if request.user.is_staff %}
     <div class="pull-right">
                         <a class="btn btn-xs btn-default" href="{% url 'client:client-view' client.pk %}"><i class="fa fa-edit"></i> Modificar datos</a>
     </div>
+            {% endif %}
     </div>
     <div class="panel-body">
 {% endif %}

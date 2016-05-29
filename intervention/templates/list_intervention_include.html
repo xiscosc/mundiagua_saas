@@ -12,7 +12,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if not nolinks and search_status.pk < 3 %}
+                        {% if request.user.is_staff and not nolinks and search_status.pk < 3 %}
                             <a href="{% url 'intervention:intervention-terminate' intervention.pk %}"
                                class="btn btn-default">Terminar
                                 Avería</a>

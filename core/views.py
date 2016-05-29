@@ -59,9 +59,14 @@ class IndexView(View):
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated() and request.user.is_active:
-            return HttpResponseRedirect(reverse_lazy('intervention:intervention-home'))
+            if request.user.is_staff:
+                response = 'intervention:intervention-home'
+            else:
+                response = 'intervention:intervention-list-own'
         else:
-            return HttpResponseRedirect(reverse_lazy('login'))
+            response = 'login'
+
+        return HttpResponseRedirect(reverse_lazy(response))
 
 
 class NewMessageView(CreateView):
