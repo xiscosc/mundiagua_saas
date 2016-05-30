@@ -20,7 +20,7 @@ class StaffMiddleware(object):
         """
         Redirect anonymous users to login_url from non public urls
         """
-        if request.user.is_authenticated() and not request.user.is_staff:
+        if request.user.is_authenticated() and not request.user.is_officer:
             current_url = resolve(request.path_info).url_name
             if current_url not in self.non_staff_urls:
                 return HttpResponseForbidden()

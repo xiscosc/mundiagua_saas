@@ -111,7 +111,7 @@
                     <li>
                         <a href="#"><i class="fa fa-dashboard fa-fw"></i> Averías<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            {% if request.user.is_staff %}
+                            {% if request.user.is_officer %}
                             <li>
                                 <a href="{% url 'intervention:intervention-home' %}">Inicio</a>
                             </li>
@@ -122,7 +122,7 @@
                             <li>
                                 <a href="{% url 'intervention:intervention-list-own'%}">Mis averías asignadas</a>
                             </li>
-                            {% if request.user.is_staff %}
+                            {% if request.user.is_officer %}
                             <li class="sidebar-search">
                                 <form method="post" action="{% url 'intervention:intervention-psearch' %}">
                                     {% csrf_token %}
@@ -141,7 +141,7 @@
 
                         </ul>
                     </li>
-                    {% if request.user.is_staff %}
+                    {% if request.user.is_officer %}
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

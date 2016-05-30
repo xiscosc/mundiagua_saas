@@ -59,7 +59,7 @@ class IndexView(View):
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated() and request.user.is_active:
-            if request.user.is_staff:
+            if request.user.is_officer:
                 response = 'intervention:intervention-home'
             else:
                 response = 'intervention:intervention-list-own'
@@ -77,7 +77,7 @@ class NewMessageView(CreateView):
 
     def get_form(self, form_class=None):
         form = super(NewMessageView, self).get_form(form_class=form_class)
-        form.fields['to_user'].queryset = User.objects.all().exclude(pk=self.request.user.pk)
+        form.fields['to_user'].queryset = User.objects.filter(is_active=True).exclude(pk=self.request.user.pk)
         return form
 
     def form_valid(self, form):
