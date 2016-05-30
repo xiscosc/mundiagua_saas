@@ -40,6 +40,8 @@ for (c_id, c_nombre, c_email, c_cod, c_dni) in cursor:
     cursor2.execute(add_client_sql, data_client)
     db2.commit()
 
+cursor.close()
+cursor = db.cursor()
 cursor.execute(select_phone_sql)
 
 for (t_id, t_alias, t_telefono, t_c_id) in cursor:
@@ -51,6 +53,8 @@ for (t_id, t_alias, t_telefono, t_c_id) in cursor:
     cursor2.execute(add_phone_sql, data_phone)
     db2.commit()
 
+cursor.close()
+cursor = db.cursor()
 cursor.execute(select_address_sql)
 
 for (d_id, d_direccion, d_c_id, d_alias, d_latitud, d_longitud, d_z_id) in cursor:

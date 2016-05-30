@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.db.models.signals import post_save
 
@@ -33,22 +34,18 @@ class MyUserManager(BaseUserManager):
             pb_token=pb_token
         )
         user.set_password(password)
-        user.is_admin = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=False, null=False)
     last_name = models.CharField(max_length=100, blank=False, null=False)
     email = models.EmailField(unique=True)
     pb_token = models.CharField(max_length=254, null=True, blank=True)
     order = models.IntegerField(default=9)
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
     is_officer = models.BooleanField(default=True)
-    is_superuser = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -66,18 +63,8 @@ class User(AbstractBaseUser):
     def __str__(self):  # __unicode__ on Python 2
         return self.get_full_name()
 
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-
     def is_staff(self):
-        return self.is_admin
+        return self.is_superuser
 
 
 class Message(models.Model):
