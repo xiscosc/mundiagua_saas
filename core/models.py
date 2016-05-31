@@ -46,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     pb_token = models.CharField(max_length=254, null=True, blank=True)
     order = models.IntegerField(default=9)
     is_officer = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     objects = MyUserManager()
 
