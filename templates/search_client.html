@@ -28,12 +28,14 @@
                     <div class="row">
                         <form method="post">
                             {% csrf_token %}
-                            <div class="col-md-8">
-                                <input class="form-control" type="text" name="search" placeholder="Texto a buscar"
-                                       required/>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="submit" class="btn btn-block btn-primary" value="Buscar"/>
+                            <div class="col-md-12">
+                                <div class="input-group custom-search-form">
+                                        <input type="text" class="form-control" placeholder="Texto a buscar"
+                                               name="search" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                    </div>
                             </div>
                         </form>
                     </div>
