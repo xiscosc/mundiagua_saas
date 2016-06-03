@@ -164,6 +164,19 @@ class SendSMSView(View):
         params = request.POST.copy()
         sms = SMS(sender=request.user, body=params.getlist('sms_body')[0], phone_id=int(params.getlist('phone_pk')[0]))
         sms.save()
+        try:
+            model = params.getlist('from_model')[0]
+            id_model = params.getlist('from_model_id')[0]
+            if model == "intervention":
+                obj = Intervention.objects.get(pk=id_model)
+            elif model == "repair-ath":
+                obj = AthRepair.objects.get(pk=id_model)
+            else:
+                obj = IdegisRepair.objects.get(pk=id_model)
+            obj.sms.add(sms)
+        except:
+            pass
+
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 

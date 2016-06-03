@@ -102,32 +102,40 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Realizar cambios de estado</h3>
-        </div>
-        <div class="panel-body" id="body_averia">
-            <div class="row" id="forms">
-                <form method="post" action="{% url 'repair:repair-update-status' repair.pk %}">
-                    <input type="hidden" name="type_repair" value="{{ repair.is_ath }}"/>
-                    {% csrf_token %}
-                    <div class="col-md-9">
-                        <select class="form-control" name="status_repair">
-                            {% for s in status %}
-                                <option value="{{ s.pk }}">{{ s }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-block btn-danger">
-                            <span class="fa fa-flash"></span> Cambiar estado
-                        </button>
-                    </div>
-                </form>
-            </div>
 
+    {% include 'sms_include.html' with obj=repair title="SMS de la reparación" %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Realizar cambios de estado</h3>
+                </div>
+                <div class="panel-body" id="body_averia">
+                    <div class="row" id="forms">
+                        <form method="post" action="{% url 'repair:repair-update-status' repair.pk %}">
+                            <input type="hidden" name="type_repair" value="{{ repair.is_ath }}"/>
+                            {% csrf_token %}
+                            <div class="col-md-9">
+                                <select class="form-control" name="status_repair">
+                                    {% for s in status %}
+                                        <option value="{{ s.pk }}">{{ s }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-block btn-danger">
+                                    <span class="fa fa-flash"></span> Cambiar estado
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
+
 
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
@@ -158,7 +166,9 @@
 {% block extrajs %}
     <script type="application/javascript">
         var default_sms = "Su reparación {{ repair }} se ha compleado. Puede venir a recoger su producto de 8h a 18h";
+        var from_model_val = {% if repair.is_ath %}"repair-ath"{% else %}"repair-idegis"{% endif %};
+        var from_model_id_val = {{ repair.pk }};
     </script>
-        <script src="{% static 'base/js/client/sms.js' %}"></script>
+    <script src="{% static 'base/js/client/sms.js' %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}"></script>
 {% endblock %}

@@ -7,6 +7,7 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 
+from client.models import SMS
 from core.utils import send_data_to_user
 from intervention.tasks import send_intervention_assigned
 
@@ -35,6 +36,7 @@ class Intervention(models.Model):
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
     note = models.TextField(null=True)
+    sms = models.ManyToManyField(SMS)
 
     def __str__(self):
         return "V" + str(self.pk)

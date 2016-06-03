@@ -22,3 +22,7 @@ ESENDEX_ACCOUNT = 'account-key-provided-by-esendex'
 ESENDEX_SANDBOX = False # True if yo like test first
 SENDGRID_USER = "user"
 SENDGRID_PASSWORD = "pass"
+
+DEBUG = True
+DOMAIN = "https://www.example.com"
+ALLOWED_HOSTS = ['.example.com']

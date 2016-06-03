@@ -193,6 +193,8 @@
         </div>
     </div>
 
+    {% include 'sms_include.html' with obj=intervention title="SMS de la avería" %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -257,6 +259,8 @@
 {% block extrajs %}
     <script type="application/javascript">
         var default_sms = "Recibido aviso de ATH por su solicitud de servicio tecnico. Nos pondremos en contacto con usted en breve";
+        var from_model_val = "intervention";
+        var from_model_id_val = {{ intervention.pk }};
     </script>
     <script src="{% static 'base/js/intervention/detail.js' %}"></script>
         <script src="{% static 'base/js/client/sms.js' %}"></script>     <script src="{% static 'base/js/client/geolocation.js' %}"></script>

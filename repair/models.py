@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 from budget.models import BudgetRepair
+from client.models import SMS
 from core.utils import generate_md5_id
 
 
@@ -30,6 +31,7 @@ class Repair(models.Model):
     description = models.TextField(verbose_name="Descripción")
     intern_description = models.TextField(null=True, blank=True, verbose_name="Descripción interna")
     warranty = models.BooleanField(default=False, verbose_name="Garantía")
+    sms = models.ManyToManyField(SMS)
 
     class Meta:
         abstract = True

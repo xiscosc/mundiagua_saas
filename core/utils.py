@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 
 
 def send_data_to_user(user, subject, body, is_link=False):
-    token = user.pb_token
     if user.pb_token is not None and user.pb_token is not u"" and user.pb_token is not "":
         try:
             pb = Pushbullet(user.pb_token)

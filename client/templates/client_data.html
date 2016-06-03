@@ -10,7 +10,9 @@
                     <form id="form_sms" method="post" action="{% url 'client:client-sms-send' %}">
                         {% csrf_token %}
                         <textarea maxlength="160" class="form-control" placeholder="Escribe aquí tu SMS" name="sms_body" id="sms_body"></textarea>
-                        <input type="hidden" id="phone_pk" name="phone_pk">
+                        <input type="hidden" id="phone_pk" name="phone_pk" />
+                        <input type="hidden" id="from_model" name="from_model" />
+                        <input type="hidden" id="from_model_id" name="from_model_id" />
                     </form>
                 </div>
                 <div class="modal-footer">

@@ -14,10 +14,10 @@ def send_sms(sms, phone_processed):
     )
     result = message.send()
     if result == 1:
-        sms.sent_status = 1
+        sms.sent_status_id = 2
         messages.success(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente")
     else:
-        sms.sent_status = 2
+        sms.sent_status_id = 3
         messages.warning(sms.sender,
                          "Error enviando SMS a " + sms.phone.client.name + ", puede ser un error " +
                                                                            "temporal o que no hay crédito de SMS")

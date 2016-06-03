@@ -58,25 +58,39 @@ class Address(models.Model):
         return ("(" + self.alias + ") - " + self.address).encode('utf8')
 
 
+class SMSStatus(models.Model):
+    name = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+
 class SMS(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User)
     body = models.TextField(max_length=160)
-    sent_status = models.IntegerField(default=0)  # 0 pending, 1 sent, 2 fail, 3 invalid
+    sent_status = models.ForeignKey(SMSStatus, default=1)
     phone = models.ForeignKey(Phone)
+
+    def process_phone(self):
+        phone_processed = self.phone.phone.replace(" ", "")
+        phone_processed = '34' + phone_processed.replace(".", "")
+        if len(phone_processed) == 11:
+            return phone_processed
+        else:
+            return False
 
 
 def post_save_sms(sender, **kwargs):
     sms = kwargs['instance']
     if kwargs['created']:
-        phone_processed = sms.phone.phone.replace(" ", "")
-        phone_processed = '34' + phone_processed.replace(".", "")
-        if len(phone_processed) == 11:
+        phone_processed = sms.process_phone()
+        if phone_processed:
             send_sms.delay(sms, phone_processed)
         else:
-            sms.sent_status = 3
+            sms.sent_status_id = 4
             messages.warning(sms.sender,
-                         "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato (" + phone_processed + ")")
+                         "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato")
             sms.save()
 
 

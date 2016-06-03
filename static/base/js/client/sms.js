@@ -13,6 +13,14 @@ $('.btn_sms').on('click', function () {
         $('#sms_count').html((160 - default_sms.length));
     } catch (err) {
     }
+    try {
+       $('#from_model').val(from_model_val);
+       $('#from_model_id').val(from_model_id_val);
+    } catch (err) {
+       $('#from_model').remove();
+       $('#from_model_id').remove();
+    }
+
     $('#phone_pk').val($(this).data('phone'));
     $('#modal_sms').modal('show');
 });
