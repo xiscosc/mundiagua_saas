@@ -45,98 +45,124 @@
     {% include 'client_data.html' with client=intervention.address.client sms=request.user.is_officer address=intervention.address %}
 
     {% if request.user.is_officer %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Realizar cambios</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="row forms_content">
-                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
-                            {% csrf_token %}
-                            <div class="col-md-4">
-                                <select class="form-control" name="intervention_status" id="intervention_status">
-                                    {% for st in status %}
-                                        {% if st.pk == 2 %}
-                                            <option value="{{ st.pk }}" selected>{{ st.name }}</option>
-                                        {% else %}
-                                            <option value="{{ st.pk }}">{{ st.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                                <select class="form-control" name="intervention_assigned" id="intervention_assigned">
-                                    {% for u in users %}
-                                        <option value="{{ u.pk }}">Asignar a {{ u.get_full_name }}</option>
-                                    {% endfor %}
-                                </select>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Realizar cambios</h3>
+                    </div>
+                    <div class="panel-body forms_content">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <form method="post" class="form_modify"
+                                      action="{% url 'intervention:intervention-edit' intervention.pk %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-8">
+                                            <select class="form-control" name="intervention_status"
+                                                    id="intervention_status">
+                                                {% for st in status %}
+                                                    {% if st.pk == 2 %}
+                                                        <option value="{{ st.pk }}" selected>{{ st.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ st.pk }}">{{ st.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <select class="form-control" name="intervention_assigned"
+                                                    id="intervention_assigned">
+                                                {% for u in users %}
+                                                    <option value="{{ u.pk }}">Asignar a {{ u.get_full_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-12 col-md-4">
+                                            <button type="submit" class="btn btn-block btn-danger">
+                                                <span class="fa fa-flash"></span> Cambiar estado
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            <hr>
                             </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-block btn-danger">
-                                    <span class="fa fa-flash"></span> Cambiar estado
-                                </button>
-                            </div>
-                        </form>
-                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
-                            {% csrf_token %}
-                            <div class="col-md-4">
+                            <div class="col-xs-12 col-md-6">
+                                <form method="post" class="form_modify"
+                                      action="{% url 'intervention:intervention-edit' intervention.pk %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-8">
                                 <textarea class="form-control" name="intervention_modification" rows="3"
                                           placeholder="Escribe aquí una modificación" required></textarea>
+                                        </div>
+                                        <div class="col-xs-12 col-md-4">
+                                            <button type="submit" class="btn btn-block btn-warning">
+                                                <span class="fa fa-plus"></span> Añadir modificación
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr>
                             </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-block btn-warning">
-                                    <span class="fa fa-plus"></span> Añadir modificación
-                                </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <form method="post" class="form_modify"
+                                      action="{% url 'intervention:intervention-edit' intervention.pk %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-2">
+                                            <button class="btn btn-block" id="btn-color"
+                                                    style="color:white; background-color:{{ intervention.zone.color }}">
+                                                Color
+                                            </button>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-6">
+                                            <select name="intervention_zone" class="form-control" id="selector_color">
+                                                {% for zone in zones %}
+                                                    {% if zone.pk == intervention.zone.pk %}
+                                                        <option value="{{ zone.pk }}" data-color="{{ zone.color }}"
+                                                                selected>{{ zone.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ zone.pk }}"
+                                                                data-color="{{ zone.color }}">{{ zone.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-12 col-md-4">
+                                            <button type="submit" class="btn btn-block btn-success">
+                                                <span class="fa fa-map-marker"></span> Cambiar Zona
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr>
                             </div>
-                        </form>
+                            <div class="col-xs-12 col-md-6">
+                                <form method="post" class="form_modify"
+                                      action="{% url 'intervention:intervention-edit' intervention.pk %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-8">
+                                            <select class="form-control" name="user_to_send">
+                                                {% for u in users %}
+                                                    <option value="{{ u.pk }}">Enviar a {{ u.get_full_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-12 col-md-4">
+                                            <button type="submit" class="btn btn-default btn-block">
+                                                <span class="fa fa-envelope"></span> Enviar a dispositivo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row forms_content" style="padding-top: 10px">
-                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
-                            {% csrf_token %}
-                            <div class="col-md-1">
-                                <button class="btn btn-block" id="btn-color"
-                                        style="color:white; background-color:{{ intervention.zone.color }}">Color
-                                </button>
-                            </div>
-                            <div class="col-md-3">
-                                <select name="intervention_zone" class="form-control" id="selector_color">
-                                    {% for zone in zones %}
-                                        {% if zone.pk == intervention.zone.pk %}
-                                            <option value="{{ zone.pk }}" data-color="{{ zone.color }}"
-                                                    selected>{{ zone.name }}</option>
-                                        {% else %}
-                                            <option value="{{ zone.pk }}"
-                                                    data-color="{{ zone.color }}">{{ zone.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-block btn-success">
-                                    Cambiar Zona
-                                </button>
-                            </div>
-                        </form>
-                        <form method="post" class="form_modify" action="{% url 'intervention:intervention-edit' intervention.pk %}">
-                            {% csrf_token %}
-                            <div class="col-md-4">
-                                <select class="form-control" name="user_to_send">
-                                    {% for u in users %}
-                                        <option value="{{ u.pk }}">Enviar a {{ u.get_full_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-default btn-block">
-                                    <span class="fa fa-envelope"></span> Enviar por correo
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="row forms_content" style="padding-top: 10px">
-                        <div class="col-md-12" style="text-align: center" id="notification"></div>
-                    </div>
-                    <div class="row forms_progress" style="display: none">
+                    <div class="panel-body forms_progress" style="display: none">
                         <div class="col-md-12">
                             <div class="progress">
                                 <div class="progress-bar progress-bar-striped active" role="progressbar"
@@ -148,8 +174,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
     {% endif %}
 
     <div class="row">
@@ -202,7 +226,9 @@
                     Datos de la avería
 
                     <div class="pull-right">
-                        <a class="btn btn-xs btn-primary" href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i class="fa fa-print"></i> Imprimir</a>
+                        <a class="btn btn-xs btn-primary"
+                           href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i
+                                class="fa fa-print"></i> Imprimir</a>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -221,7 +247,8 @@
                                 <strong>Zona</strong>
                             </td>
                             <td>
-                                <div style="background-color: {{ intervention.zone.color }}" class="zone">{{ intervention.zone }}</div>
+                                <div style="background-color: {{ intervention.zone.color }}"
+                                     class="zone">{{ intervention.zone }}</div>
                             </td>
                         </tr>
                         <tr>
@@ -263,5 +290,9 @@
         var from_model_id_val = {{ intervention.pk }};
     </script>
     <script src="{% static 'base/js/intervention/detail.js' %}"></script>
-        <script src="{% static 'base/js/client/sms.js' %}"></script>     <script src="{% static 'base/js/client/geolocation.js' %}"></script>
+    <script src="{% static 'base/js/client/sms.js' %}"></script>
+    <script src="{% static 'base/js/client/geolocation.js' %}"></script>
+{% endblock %}
+{% block extracss %}
+    <link href="{% static 'base/css/intervention/detail.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}

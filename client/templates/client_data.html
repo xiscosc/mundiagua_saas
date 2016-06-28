@@ -17,7 +17,7 @@
                 </div>
                 <div class="modal-footer">
                     <div style="float:left;color:#737373;font-style:italic">Carácteres restantes: <strong id="sms_count">160</strong></div>
-                    <button type="button" class="btn btn-default sms_close" data-dismiss="modal" >Close</button>
+                    <button type="button" class="btn btn-default sms_close" data-dismiss="modal" >Descartar</button>
                     <button type="button" class="btn btn-primary" id="sms_send">Enviar</button>
                 </div>
             </div>
@@ -166,7 +166,7 @@
             {% for phone in client.get_phones %}
                 <tr>
                     <td>{{ phone.alias }}</td>
-                    <td>{{ phone.phone }}</td>
+                    <td><a href="tel:{{ phone.phone }}">{{ phone.phone }}</a></td>
                     {% if edit %}
                         <td><a class="btn btn-block btn-warning"
                                href="{% url 'client:client-phone-edit' phone.pk %}">Editar</a></td>
