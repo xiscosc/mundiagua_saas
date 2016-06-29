@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import calendar
-from datetime import date
-
-from async_messages import message_user, constants
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404
@@ -12,7 +8,9 @@ from django.db.models import Q
 
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView
-from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionLog
+from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification
+from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
+    generate_data_intervention_assigned, terminate_intervention, get_intervention_list
 
 
 class HomeView(TemplateView):
@@ -67,49 +65,10 @@ class InterventionView(DetailView):
 
 
 class UpdateInterventionView(View):
+
     def post(self, request, *args, **kwargs):
-        params = request.POST.copy()
-        intervention = Intervention.objects.get(pk=kwargs['pk'])
-        intervention._old_status_id = intervention.status_id
-        intervention._old_assigned_id = intervention.assigned_id
-        intervention_save = True
-
-        try:
-            intervention.status_id = int(params.getlist('intervention_status')[0])
-            if int(params.getlist('intervention_status')[0]) != settings.ASSIGNED_STATUS:
-                intervention.assigned = None
-            else:
-                intervention.assigned_id = int(params.getlist('intervention_assigned')[0])
-        except IndexError:
-            pass
-
-        try:
-            intervention.zone_id = int(params.getlist('intervention_zone')[0])
-        except IndexError:
-            pass
-
-        try:
-            modification_text = params.getlist('intervention_modification')[0]
-            modification = InterventionModification(intervention=intervention, note=modification_text,
-                                                    created_by=request.user)
-            modification.save()
-            intervention_save = False
-        except IndexError:
-            pass
-
-        try:
-            user_to_send = User.objects.get(pk=int(params.getlist('user_to_send')[0]))
-            intervention.send_to_user(user_to_send)
-            intervention_save = False
-        except IndexError:
-            pass
-
-        if intervention_save:
-            intervention._current_user = request.user
-            intervention.save()
-
-        message_user(request.user, "Modificación realizada correctamente", constants.SUCCESS)
-        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': intervention.pk}))
+        update_intervention(kwargs['pk'], request)
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': kwargs['pk']}))
 
 
 class ListInterventionView(TemplateView):
@@ -133,25 +92,12 @@ class ListInterventionView(TemplateView):
         self.request.session['list_zone_id'] = zone_id
         self.request.session['list_page'] = page
 
-        interventions = Intervention.objects.filter(status=status_id).order_by("-date")
-        try:
-            context['search_status'] = InterventionStatus.objects.get(pk=status_id)
-        except InterventionStatus.DoesNotExist:
-            pass
-        if user_id != 0:
-            interventions = interventions.filter(assigned=user_id)
-            try:
-                context['search_user'] = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                pass
-        if zone_id != 0:
-            interventions = interventions.filter(zone=zone_id)
-            try:
-                context['search_zone'] = Zone.objects.get(pk=zone_id)
-            except Zone.DoesNotExist:
-                pass
+        list_data = get_intervention_list(status_id, user_id, zone_id)
+        context['search_status'] = list_data['search_status']
+        context['search_user'] = list_data['search_user']
+        context['search_zone'] = list_data['search_zone']
 
-        paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
+        paginator = Paginator(list_data['interventions'], settings.DEFAULT_NUM_PAGINATOR)
 
         context['interventions'] = paginator.page(page)
 
@@ -167,23 +113,15 @@ class TerminateIntervention(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        intervention = Intervention.objects.get(pk=kwargs['pk'])
-        intervention._old_status_id = intervention.status_id
-        intervention._old_assigned_id = intervention.assigned_id
-        intervention._current_user = request.user
-        intervention.assigned = None
-        intervention.status_id = 3
-        intervention.save()
-        message_user(request.user, "Avería " + str(intervention) + " marcada como terminada", constants.SUCCESS)
-
+        terminate_intervention(kwargs['pk'], request)
         status_id = request.session.get('list_status_id', 1)
         user_id = request.session.get('list_user_id', 0)
         zone_id = request.session.get('list_zone_id', 0)
         page = request.session.get('list_page', 1)
 
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-list',
-                                                 kwargs={'intervention_status': status_id, 'zone': zone_id,
-                                                         'user': user_id,}) + "?page=" + str(page))
+                                                 kwargs={'intervention_status': status_id, 'zone_assigned': zone_id,
+                                                         'user_assigned': user_id}) + "?page=" + str(page))
 
 
 class PreSearchInterventionView(View):
@@ -236,48 +174,21 @@ class MorrisView(View):
 
 
 class MorrisInterventionAssigned(MorrisView):
+
     def get(self, request, *args, **kwargs):
-        users = User.objects.all()
-        data = []
-        for u in users:
-            logs = InterventionLog.objects.filter(assigned=u, date__month=date.today().month,
-                                                  date__year=date.today().year).count()
-            if logs > 0:
-                data.append({"label": u.get_full_name(), "value": logs})
-        return JsonResponse(data=data, safe=False)
+        return JsonResponse(data=generate_data_intervention_assigned(), safe=False)
 
 
 class MorrisInterventionInput(MorrisView):
+
     def get(self, request, *args, **kwargs):
-        data = []
-        max_num = calendar.monthrange(date.today().year, date.today().month)[1].real
-        for i in range(max_num):
-            day = i + 1
-            d = date(date.today().year, date.today().month, day)
-            total = Intervention.objects.filter(date__day=day, date__year=d.year.real, date__month=d.month.real).count()
-            data.append({'t': total, 'y': d.strftime("%Y-%m-%d")})
-        return JsonResponse(data=data, safe=False)
-
-
-months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octube", "Noviembre", "Diciembre"]
+        return JsonResponse(data=generate_data_intervention_input(), safe=False)
 
 
 class MorrisYearVs(MorrisView):
+
     def get(self, request, *args, **kwargs):
-        data = []
-        year = date.today().year.real
-        last_year = year - 1
-        for x in range(12):
-            month = x + 1
-            month_str = months[x]
-            current_year_count = Intervention.objects.filter(date__year=year, date__month=month).count()
-            last_year_count = Intervention.objects.filter(date__year=last_year, date__month=month).count()
-            data.append({"y": month_str, "a": current_year_count, "b": last_year_count})
-
-        labels = ["Año "+str(year), "Año "+str(last_year)]
-        data_to_send = {"d": data, "labels": labels}
-
-        return JsonResponse(data=data_to_send, safe=False)
+        return JsonResponse(data=generate_data_year_vs(), safe=False)
 
 
 class PrintInterventionView(DetailView):
