@@ -42,7 +42,7 @@ class Intervention(models.Model):
         return "V" + str(self.pk)
 
     def get_history(self):
-        return InterventionLog.objects.filter(intervention=self)
+        return InterventionLog.objects.filter(intervention=self).order_by("date")
 
     def get_modifications(self):
         return InterventionModification.objects.filter(intervention=self)

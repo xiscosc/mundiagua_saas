@@ -264,7 +264,7 @@
                                 <strong>Estado</strong>
                             </td>
                             <td>
-                                {{ intervention.status }}
+                                {{ intervention.status }} {% if intervention.status_id == 2 %} - {{ intervention.assigned.get_full_name }} {% endif %}
                             </td>
                         </tr>
                         <tr>
