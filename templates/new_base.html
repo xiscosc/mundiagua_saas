@@ -34,8 +34,9 @@
     </div>
 {% endblock %}
 
-{% if is_budget_repair %}
+
 {% block extrajs %}
+    {% if is_budget_repair %}
         <script src="{% static 'base/js/budget/budget-repair-new.js' %}"></script>
+    {% endif %}
 {% endblock %}
-{% endif %}

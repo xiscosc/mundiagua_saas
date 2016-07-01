@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, View
 
-from core.views import SearchClientBaseView, CreateBaseView, TemplateView
+from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSearchView
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
 
 
@@ -133,17 +133,18 @@ class ListRepairView(TemplateView):
         return context
 
 
-class PreSearchRepairView(View):
-    def post(self, request, *args, **kwargs):
+class PreSearchRepairView(PreSearchView):
+
+    def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
 
         repairs_ath = AthRepair.objects.filter(Q(description__icontains=search_text) |
                                                Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text))
+            address__address__icontains=search_text)).order_by("-date")
         repairs_idegis = IdegisRepair.objects.filter(Q(description__icontains=search_text) |
                                                      Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text))
+            address__address__icontains=search_text)).order_by("-date")
         pk_list_ath = []
         pk_list_idegis = []
         for i in repairs_ath:

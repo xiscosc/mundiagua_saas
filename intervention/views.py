@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from core.models import User
-from core.views import SearchClientBaseView, CreateBaseView
+from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list
@@ -124,13 +124,14 @@ class TerminateIntervention(TemplateView):
                                                          'user_assigned': user_id}) + "?page=" + str(page))
 
 
-class PreSearchInterventionView(View):
-    def post(self, request, *args, **kwargs):
+class PreSearchInterventionView(PreSearchView):
+
+    def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
         interventions = Intervention.objects.filter(Q(description__icontains=search_text) |
                                                     Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text))
+            address__address__icontains=search_text)).order_by("-date")
         pk_list = []
         for i in interventions:
             pk_list.append(i.pk)

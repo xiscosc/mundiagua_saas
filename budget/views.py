@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, View, UpdateView, DetailView
 
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
-from core.views import SearchClientBaseView, CreateBaseView
+from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from repair.models import AthRepair, IdegisRepair
 
 
@@ -145,14 +145,15 @@ class ListBudgetView(TemplateView):
         return context
 
 
-class PreSearchBudgetView(View):
-    def post(self, request, *args, **kwargs):
+class PreSearchBudgetView(PreSearchView):
+
+    def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
 
         budgets = BudgetStandard.objects.filter(
             Q(address__client__name__icontains=search_text) | Q(
-                address__address__icontains=search_text))
+                address__address__icontains=search_text)).order_by("-date")
 
         pk_list = []
         for i in budgets:
@@ -321,7 +322,7 @@ class BudgetPrintView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BudgetPrintView, self).get_context_data(**kwargs)
-        context['budget'] = BudgetRepair.objects.get(pk=kwargs['pk'])
+        context['budget'] = BudgetStandard.objects.get(pk=kwargs['pk'])
         return context
 
 

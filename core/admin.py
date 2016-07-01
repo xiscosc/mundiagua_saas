@@ -73,7 +73,7 @@ class UserAdmin(BaseUserAdmin, HijackUserAdminMixin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'pb_token', 'order', 'is_officer' 'password1', 'password2')}
+            'fields': ('email', 'first_name', 'last_name', 'pb_token', 'order', 'is_officer', 'password1', 'password2')}
         ),
     )
     search_fields = ('email',)

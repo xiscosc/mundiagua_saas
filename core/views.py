@@ -11,6 +11,7 @@ from django.views.generic.edit import CreateView
 
 from client.models import Client, Address
 from core.models import User, Message
+from core.utils import get_return_from_id
 
 
 class SearchClientBaseView(TemplateView):
@@ -120,3 +121,18 @@ class MessagesAjaxView(TemplateView):
         context = super(MessagesAjaxView, self).get_context_data(**kwargs)
         context['messages_mundiagua'] = Message.objects.filter(to_user=self.request.user).order_by("-date")[:3]
         return context
+
+
+class PreSearchView(View):
+
+    def set_data_and_response(self, request):
+        return None
+
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        search_text = params.getlist('search_text')[0]
+        regex_data = get_return_from_id(search_text)
+        if regex_data['found']:
+            return HttpResponseRedirect(regex_data['url'])
+        else:
+            return self.set_data_and_response(request=request)

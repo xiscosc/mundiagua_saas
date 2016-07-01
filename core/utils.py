@@ -1,5 +1,7 @@
 # UTILS
 import hashlib, re, time
+
+from django.core.urlresolvers import reverse_lazy
 from pushbullet import Pushbullet
 from django.core.mail import send_mail
 
@@ -20,9 +22,9 @@ def send_data_to_user(user, subject, body, is_link=False):
 
 
 def generate_md5_id(char, id):
-    hash = hashlib.md5(str(time.time())+str(id)+char+str(time.time())).hexdigest()
+    hash = hashlib.md5(str(time.time()) + str(id) + char + str(time.time())).hexdigest()
     hash_numbers = re.sub("[^0-9]", "", hash)
-    return char+hash_numbers[:6]
+    return char + hash_numbers[:6]
 
 
 def send_mail_m(user, subject, body, is_link=False, fallback=False):
@@ -34,3 +36,36 @@ def send_mail_m(user, subject, body, is_link=False, fallback=False):
 
     return send_mail(subject=subject, message=ex_body + body,
                      from_email="intranet@mundiaguabalear.com", recipient_list=[user.email])
+
+
+def get_return_from_id(search_text):
+    intervention_r = re.compile('[v|V][0-9]+')
+    idegis_r = re.compile('[x|X][0-9]+')
+    ath_r = re.compile('[a|A][0-9]+')
+    client_r = re.compile('[c|C][0-9]+')
+
+    intervention_m = intervention_r.match(search_text)
+    if intervention_m is not None:
+        idstr = intervention_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('intervention:intervention-view', kwargs={"pk": id})}
+
+    idegis_m = idegis_r.match(search_text)
+    if idegis_m is not None:
+        idstr = idegis_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('repair:repair-idegis-view', kwargs={"pk": id})}
+
+    ath_m = ath_r.match(search_text)
+    if ath_m is not None:
+        idstr = ath_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('repair:repair-ath-view', kwargs={"pk": id})}
+
+    client_m = client_r.match(search_text)
+    if client_m is not None:
+        idstr = client_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('client:client-view', kwargs={"pk": id})}
+
+    return {"found": False, "url": None}

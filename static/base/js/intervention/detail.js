@@ -20,4 +20,13 @@ $(function () {
         $('.forms_content').hide('slow');
         $('.forms_progress').show('slow');
     });
+
+    try {
+        $('#history_table').children().first().children().last().children().each(function () {
+            $(this).html("<strong>" + $(this).html() + "</strong>")
+        })
+
+    } catch (e) {
+        //No table
+    }
 });

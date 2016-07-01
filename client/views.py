@@ -6,10 +6,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 
 from client.models import Client, Address, Phone, SMS
+from core.views import PreSearchView
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import Budget
-
 
 
 class CreateClientView(CreateView):
@@ -193,9 +193,9 @@ class AllClientsView(TemplateView):
         return context
 
 
-class PreSearchClientView(View):
+class PreSearchClientView(PreSearchView):
 
-    def post(self, request, *args, **kwargs):
+    def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
         clients = Client.objects.filter(name__icontains=search_text)
