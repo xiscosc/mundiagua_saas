@@ -16,3 +16,4 @@ django-hijack-admin
 celery
 python-memcached
 django-admin-honeypot
+django-wkhtmltopdf

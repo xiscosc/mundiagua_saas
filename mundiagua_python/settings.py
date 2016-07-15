@@ -47,7 +47,8 @@ OTHER_APPS = [
     'hijack',
     'compat',
     'hijack_admin',
-    'admin_honeypot'
+    'admin_honeypot',
+    'wkhtmltopdf'
 ]
 
 MY_APPS = [
@@ -229,3 +230,4 @@ NON_STAFF_VIEWS = ('message-new',
                    'logout',
                    'login',
                    'release_hijack')
+

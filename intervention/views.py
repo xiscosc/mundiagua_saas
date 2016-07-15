@@ -131,7 +131,7 @@ class PreSearchInterventionView(PreSearchView):
         search_text = params.getlist('search_text')[0]
         interventions = Intervention.objects.filter(Q(description__icontains=search_text) |
                                                     Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text)).order_by("-date")
+            address__address__icontains=search_text))
         pk_list = []
         for i in interventions:
             pk_list.append(i.pk)
@@ -149,7 +149,7 @@ class SearchInterventionView(TemplateView):
         search_text = str(self.request.session.get('search_intervention_text', ""))
         context['title'] = "Búsqueda - " + search_text
         interventions_pk = self.request.session.get('search_intervention', list())
-        interventions = Intervention.objects.filter(pk__in=interventions_pk)
+        interventions = Intervention.objects.filter(pk__in=interventions_pk).order_by("-date")
         paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
         context['interventions'] = paginator.page(page)
         return context

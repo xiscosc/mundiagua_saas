@@ -14,6 +14,7 @@ class Budget(models.Model):
     tax = models.DecimalField(default=21.00, verbose_name="Impuesto", decimal_places=2, max_digits=5)
     address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente")
     invalid = models.BooleanField(default=False, verbose_name="Nulo")
+    token = models.CharField(max_length=256, null=True, blank=True, default=None)
 
     class Meta:
         abstract = True

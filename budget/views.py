@@ -6,9 +6,10 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, View, UpdateView, DetailView
+from wkhtmltopdf.views import PDFTemplateView
 
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
-from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
+from core.views import SearchClientBaseView, CreateBaseView, PreSearchView, DefaultPDFView
 from repair.models import AthRepair, IdegisRepair
 
 
@@ -146,14 +147,13 @@ class ListBudgetView(TemplateView):
 
 
 class PreSearchBudgetView(PreSearchView):
-
     def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
 
         budgets = BudgetStandard.objects.filter(
             Q(address__client__name__icontains=search_text) | Q(
-                address__address__icontains=search_text)).order_by("-date")
+                address__address__icontains=search_text))
 
         pk_list = []
         for i in budgets:
@@ -173,7 +173,7 @@ class SearchBudgetView(TemplateView):
         search_text = str(self.request.session.get('search_budgets_text', ""))
         context['title'] = "Búsqueda - " + search_text
         budgets_pk = self.request.session.get('search_budgets', list())
-        budgets = BudgetStandard.objects.filter(pk__in = budgets_pk).order_by("-date")
+        budgets = BudgetStandard.objects.filter(pk__in=budgets_pk).order_by("-date")
         paginator = Paginator(budgets, settings.DEFAULT_BUDGETS_PAGINATOR)
         context['budgets'] = paginator.page(page)
         return context
@@ -259,7 +259,7 @@ class CreateLineBudgetRepairView(TemplateView):
 
         for x in range(len(products)):
             line = BudgetLineRepair(product=products[x], discount=dtos[x], quantity=quantities[x],
-                                      unit_price=prices[x], budget_id=kwargs['pk'])
+                                    unit_price=prices[x], budget_id=kwargs['pk'])
             line.save()
 
         return HttpResponseRedirect(reverse_lazy("budget:budget-repair-view", kwargs={'pk': kwargs['pk']}))

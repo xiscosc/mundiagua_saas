@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView
+from wkhtmltopdf.views import PDFTemplateView
 
 from client.models import Client, Address
 from core.models import User, Message
@@ -136,3 +137,14 @@ class PreSearchView(View):
             return HttpResponseRedirect(regex_data['url'])
         else:
             return self.set_data_and_response(request=request)
+
+
+class DefaultPDFView(PDFTemplateView):
+    cmd_options = {
+        'no-background': True,
+        'margin-top': 50,
+    }
+
+    def get_filename(self):
+        import time
+        return str(time.time())+".pdf"
