@@ -58,6 +58,9 @@ class Intervention(models.Model):
     def get_num_modifications(self):
         return InterventionModification.objects.filter(intervention=self).count()
 
+    def get_images(self):
+        return InterventionImage.objects.filter(intervention=self)
+
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -72,6 +75,12 @@ class InterventionLog(models.Model):
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
     status = models.ForeignKey(InterventionStatus)
     intervention = models.ForeignKey(Intervention)
+
+
+class InterventionImage(models.Model):
+    image = models.ImageField(verbose_name="Selecciona tu imagen para la avería", upload_to='intervention_images/%Y/%m/%d')
+    intervention = models.ForeignKey(Intervention)
+
 
 
 def post_save_intervention(sender, **kwargs):

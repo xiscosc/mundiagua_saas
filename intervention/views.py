@@ -2,15 +2,16 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404
-from django.views.generic import TemplateView, DetailView, View
+from django.views.generic import TemplateView, DetailView, View, CreateView
 from django.core.paginator import Paginator
 from django.db.models import Q
 
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
-from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification
+from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list
+from intervention.forms import ImageForm
 
 
 class HomeView(TemplateView):
@@ -22,6 +23,7 @@ class HomeView(TemplateView):
         context['status_assigned'] = Intervention.objects.filter(status=2).count()
         context['status_terminated'] = Intervention.objects.filter(status=3).count()
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
+        context['status_billing'] = Intervention.objects.filter(status=5).count()
         context['modifications'] = InterventionModification.objects.all().order_by("-date")[:10]
 
         return context
@@ -214,3 +216,27 @@ class OwnListInterventionView(TemplateView):
         context['interventions'] = paginator.page(page)
 
         return context
+
+
+class UploadImageView(TemplateView):
+    template_name = "new_image.html"
+
+    def get_success_url(self):
+        return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']})
+
+    def get_context_data(self, **kwargs):
+        context = super(UploadImageView, self).get_context_data(**kwargs)
+        context['intervention'] = "V"+self.kwargs['pk']
+        context['form'] = ImageForm()
+        context['image'] = InterventionImage.objects.get(id=1)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = InterventionImage(image=request.FILES['image'], intervention_id=self.kwargs['pk'])
+            image.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return HttpResponseRedirect(self.get_success_url())
+

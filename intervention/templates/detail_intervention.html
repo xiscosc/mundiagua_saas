@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Avería
-    <small>{{ intervention }}</small>{% endblock %}
+{% block page_title %}Avería <small>{{ intervention }}</small> <a type="button" class="btn btn-warning" aria-label="Añadir foto" href="{% url 'intervention:intervention-image-upload' intervention.pk %}">
+  <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+</a>{% endblock %}
 {% block content %}
 
 
@@ -43,6 +44,23 @@
     {% endif %}
 
     {% include 'client_data.html' with client=intervention.address.client sms=request.user.is_officer address=intervention.address %}
+
+    {% if intervention.get_images|length > 0 %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Fotos de la avería</h3>
+                    </div>
+                    <div class="panel-body" >
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     {% if request.user.is_officer %}
         <div class="row">

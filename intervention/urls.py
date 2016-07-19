@@ -2,7 +2,7 @@ from django.conf.urls import url
 from .views import HomeView, SearchClientView, CreateInterventionView, InterventionView, UpdateInterventionView, \
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
-    PrintListInterventionView, MorrisYearVs, OwnListInterventionView
+    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -24,4 +24,5 @@ urlpatterns = [
         PrintListInterventionView.as_view(), name="intervention-print-list"),
     url(r'^list/own/$',
         OwnListInterventionView.as_view(), name="intervention-list-own"),
+    url(r'^new/image/(?P<pk>\d+)/$', UploadImageView.as_view(), name="intervention-image-upload"),
 ]

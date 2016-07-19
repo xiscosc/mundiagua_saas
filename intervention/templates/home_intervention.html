@@ -3,10 +3,12 @@
 {% load staticfiles %}
 {% block page_title %}Averías{% endblock %}
 {% block content %}
-            <!-- /.row -->
+
+    <div class="row">
+        <div class="col-lg-3 col-md-12">
             <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
+                <div class="col-lg-12 col-md-12">
+                    <div class="panel panel-info">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -27,6 +29,10 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-12">
+            <div class="row">
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
@@ -72,11 +78,33 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-calculator fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">{{ status_billing }}</div>
+                                    <div>Facturar</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'intervention:intervention-list' 5 0 0 %}">
+                            <div class="panel-footer">
+                                <span class="pull-left">Ver listado</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-euro fa-5x"></i>
+                                    <i class="fa fa-check fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">{{ status_terminated }}</div>
@@ -94,83 +122,91 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- /.row -->
-            <div class="row" style="padding-top: 10px">
-                <div class="col-lg-8">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Entrada de averías
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div id="morris-line-chart"></div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading" id="bar-chart-title">
-                            <i class="fa fa-database fa-fw"></i>
 
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="row">
-                                <!-- /.col-lg-4 (nested) -->
-                                <div class="col-lg-12">
-                                    <div id="morris-bar-chart"></div>
-                                </div>
-                                <!-- /.col-lg-8 (nested) -->
-                            </div>
-                            <!-- /.row -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
+    <!-- /.row -->
+
+
+    <!-- /.row -->
+    <div class="row" style="padding-top: 10px">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Entrada de averías
                 </div>
-                <!-- /.col-lg-8 -->
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bell fa-fw"></i> Últimas modificaciones en averías
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="morris-line-chart"></div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+            <div class="panel panel-default">
+                <div class="panel-heading" id="bar-chart-title">
+                    <i class="fa fa-database fa-fw"></i>
+
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="row">
+                        <!-- /.col-lg-4 (nested) -->
+                        <div class="col-lg-12">
+                            <div id="morris-bar-chart"></div>
                         </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="list-group">
-                                {% for mod in modifications %}
-                                    <a href="{% url 'intervention:intervention-view' mod.intervention_id %}" class="list-group-item">
-                                    {{ mod.intervention.address.client }} ({{ mod.intervention }})
+                        <!-- /.col-lg-8 (nested) -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-8 -->
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Últimas modificaciones en averías
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        {% for mod in modifications %}
+                            <a href="{% url 'intervention:intervention-view' mod.intervention_id %}"
+                               class="list-group-item">
+                                {{ mod.intervention.address.client }} ({{ mod.intervention }})
                                     <span class="pull-right text-muted small"><em>hace {{ mod.date|timesince }}</em>
                                     </span>
-                                </a>
-                                {% endfor %}
-                            </div>
-                            <!-- /.list-group -->
-                            <a href="{% url 'intervention:intervention-modifications' %}" class="btn btn-default btn-block">Ver todas las modificaciones</a>
-                        </div>
-                        <!-- /.panel-body -->
+                            </a>
+                        {% endfor %}
                     </div>
-                    <!-- /.panel -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Asignaciones de averías
-                        </div>
-                        <div class="panel-body">
-                            <div id="morris-donut-chart"></div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
+                    <!-- /.list-group -->
+                    <a href="{% url 'intervention:intervention-modifications' %}" class="btn btn-default btn-block">Ver
+                        todas las modificaciones</a>
                 </div>
-                <!-- /.col-lg-4 -->
+                <!-- /.panel-body -->
             </div>
-            <!-- /.row -->
+            <!-- /.panel -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Asignaciones de averías
+                </div>
+                <div class="panel-body">
+                    <div id="morris-donut-chart"></div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-4 -->
+    </div>
+    <!-- /.row -->
 
 {% endblock %}
 {% block chartjs %}
     <!-- Morris Charts JavaScript -->
-    <script src="{%  static 'raphael/raphael.min.js' %}"></script>
-    <script src="{%  static 'morrisjs/morris.min.js' %}"></script>
-    <script src="{%  static 'base/js/intervention/morris-data.js' %}"></script>
+    <script src="{% static 'raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'morrisjs/morris.min.js' %}"></script>
+    <script src="{% static 'base/js/intervention/morris-data.js' %}"></script>
 {% endblock %}
