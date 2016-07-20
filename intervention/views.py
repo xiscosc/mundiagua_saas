@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, DetailView, View, CreateView
 from django.core.paginator import Paginator
 from django.db.models import Q
+from async_messages import messages
 
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
@@ -234,9 +235,11 @@ class UploadImageView(TemplateView):
     def post(self, request, *args, **kwargs):
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
-            image = InterventionImage(image=request.FILES['image'], intervention_id=self.kwargs['pk'])
+            image = InterventionImage(image=request.FILES['image'], intervention_id=self.kwargs['pk'], user=self.request.user)
             image.save()
-            return HttpResponseRedirect(self.get_success_url())
+            messages.success(self.request.user, "Imagen guardada correctamente")
         else:
-            return HttpResponseRedirect(self.get_success_url())
+            messages.warning(self.request.user, "Error, no se ha podido guardar la imagen")
+
+        return HttpResponseRedirect(self.get_success_url())
 

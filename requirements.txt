@@ -17,3 +17,4 @@ celery
 python-memcached
 django-admin-honeypot
 django-wkhtmltopdf
+easy-thumbnails

@@ -6,6 +6,7 @@ from django.db import models
 from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
+from easy_thumbnails.fields import ThumbnailerImageField
 
 from client.models import SMS
 from core.utils import send_data_to_user
@@ -78,9 +79,9 @@ class InterventionLog(models.Model):
 
 
 class InterventionImage(models.Model):
-    image = models.ImageField(verbose_name="Selecciona tu imagen para la avería", upload_to='intervention_images/%Y/%m/%d')
+    image = ThumbnailerImageField(upload_to='intervention_images', resize_source=dict(quality=85, size=(1620,0), upscale=False))
     intervention = models.ForeignKey(Intervention)
-
+    user = models.ForeignKey('core.User')
 
 
 def post_save_intervention(sender, **kwargs):

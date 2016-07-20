@@ -1,10 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Avería <small>{{ intervention }}</small> <a type="button" class="btn btn-warning" aria-label="Añadir foto" href="{% url 'intervention:intervention-image-upload' intervention.pk %}">
-  <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
-</a>{% endblock %}
+{% load thumbnail %}
+{% block page_title %}Avería <small>{{ intervention }}</small> {% include 'new_image_include.html' with intervention=intervention %}{% endblock %}
 {% block content %}
+
+    <!-- Modal -->
+<div class="modal fade" id="modal_image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="title_image">Foto de </h4>
+      </div>
+      <div class="modal-body">
+         <div id="body_image">
+
+         </div>
+          <div id="progress_bar_image">
+              {% include 'progress_bar.html' with w=100 %}
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
     {% if intervention.get_modifications|length > 0 %}
@@ -53,9 +72,12 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">Fotos de la avería</h3>
                     </div>
-                    <div class="panel-body" >
-
-
+                    <div class="panel-body">
+                        {% for i in intervention.get_images %}
+                            <a href="#" class="link_image" data-url="/media/{{ i.image }}" data-name="{{ i.user.get_full_name }}">
+                                <img src="{{ i.image|thumbnail_url:'intervention_th' }}" alt="" />
+                            </a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

@@ -48,7 +48,8 @@ OTHER_APPS = [
     'compat',
     'hijack_admin',
     'admin_honeypot',
-    'wkhtmltopdf'
+    'wkhtmltopdf',
+    'easy_thumbnails'
 ]
 
 MY_APPS = [
@@ -154,6 +155,7 @@ AUTH_USER_MODEL = 'core.User'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "media"),
 ]
 
 STATICFILES_FINDERS = [
@@ -231,3 +233,8 @@ NON_STAFF_VIEWS = ('message-new',
                    'login',
                    'release_hijack')
 
+THUMBNAIL_ALIASES = {
+    '': {
+        'intervention_th': {'size': (100, 100), 'crop': True},
+    },
+}

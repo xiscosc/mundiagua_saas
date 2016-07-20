@@ -29,4 +29,26 @@ $(function () {
     } catch (e) {
         //No table
     }
+
+    $('#image').on('change', function () {
+        $("#label_image").prepend("Adjuntando imagen...");
+        $('#icon_image').hide();
+        $('#form_image').submit();
+    });
+
+    $('.link_image').on('click', function () {
+        $('#body_image').html("");
+        $('#progress_bar_image').show();
+        var name = $(this).data('name');
+        var url = $(this).data('url');
+        $('#title_image').html("Foto de " + name);
+        $('#modal_image').modal("show");
+
+        var img = $("<img class='img-responsive' />").attr('src', url)
+            .on('load', function () {
+                $('#progress_bar_image').hide();
+                $("#body_image").append(img);
+            });
+
+    });
 });
