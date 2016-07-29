@@ -9,10 +9,11 @@ from async_messages import messages
 
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
-from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage
+from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
+    InterventionDocument
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list
-from intervention.forms import ImageForm
+from intervention.forms import ImageForm, DocumentForm
 
 
 class HomeView(TemplateView):
@@ -48,6 +49,7 @@ class CreateInterventionView(CreateBaseView):
         context = super(CreateInterventionView, self).get_context_data(**kwargs)
         context['title'] = "Nueva avería"
         context['subtitle'] = "Datos de la avería"
+        context['zones'] = Zone.objects.all()
         return context
 
     def get_success_url(self):
@@ -68,7 +70,6 @@ class InterventionView(DetailView):
 
 
 class UpdateInterventionView(View):
-
     def post(self, request, *args, **kwargs):
         update_intervention(kwargs['pk'], request)
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': kwargs['pk']}))
@@ -128,7 +129,6 @@ class TerminateIntervention(TemplateView):
 
 
 class PreSearchInterventionView(PreSearchView):
-
     def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
@@ -178,19 +178,16 @@ class MorrisView(View):
 
 
 class MorrisInterventionAssigned(MorrisView):
-
     def get(self, request, *args, **kwargs):
         return JsonResponse(data=generate_data_intervention_assigned(), safe=False)
 
 
 class MorrisInterventionInput(MorrisView):
-
     def get(self, request, *args, **kwargs):
         return JsonResponse(data=generate_data_intervention_input(), safe=False)
 
 
 class MorrisYearVs(MorrisView):
-
     def get(self, request, *args, **kwargs):
         return JsonResponse(data=generate_data_year_vs(), safe=False)
 
@@ -212,30 +209,23 @@ class OwnListInterventionView(TemplateView):
         context = super(OwnListInterventionView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
         context['page'] = page
-        interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS, assigned=self.request.user).order_by("-date")
+        interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS,
+                                                    assigned=self.request.user).order_by("-date")
         paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
         context['interventions'] = paginator.page(page)
 
         return context
 
 
-class UploadImageView(TemplateView):
-    template_name = "new_image.html"
-
+class UploadImageView(View):
     def get_success_url(self):
         return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']})
-
-    def get_context_data(self, **kwargs):
-        context = super(UploadImageView, self).get_context_data(**kwargs)
-        context['intervention'] = "V"+self.kwargs['pk']
-        context['form'] = ImageForm()
-        context['image'] = InterventionImage.objects.get(id=1)
-        return context
 
     def post(self, request, *args, **kwargs):
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
-            image = InterventionImage(image=request.FILES['image'], intervention_id=self.kwargs['pk'], user=self.request.user)
+            image = InterventionImage(image=request.FILES['image'], intervention_id=self.kwargs['pk'],
+                                      user=self.request.user)
             image.save()
             messages.success(self.request.user, "Imagen guardada correctamente")
         else:
@@ -243,3 +233,19 @@ class UploadImageView(TemplateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
+
+class UploadDocumentView(View):
+    def get_success_url(self):
+        return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']})
+
+    def post(self, request, *args, **kwargs):
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = InterventionDocument(document=request.FILES['document'], intervention_id=self.kwargs['pk'],
+                                            user=self.request.user)
+            document.save()
+            messages.success(self.request.user, "Documento guardado correctamente")
+        else:
+            messages.warning(self.request.user, "Error, no se ha podido guardar el documento")
+
+        return HttpResponseRedirect(self.get_success_url())

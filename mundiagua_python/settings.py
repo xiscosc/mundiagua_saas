@@ -238,3 +238,5 @@ THUMBNAIL_ALIASES = {
         'intervention_th': {'size': (100, 100), 'crop': True},
     },
 }
+
+MEDIA_URL = "/media/"

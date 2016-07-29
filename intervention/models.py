@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
+
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from colorfield.fields import ColorField
@@ -62,6 +64,9 @@ class Intervention(models.Model):
     def get_images(self):
         return InterventionImage.objects.filter(intervention=self)
 
+    def get_documents(self):
+        return InterventionDocument.objects.filter(intervention=self)
+
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -78,10 +83,24 @@ class InterventionLog(models.Model):
     intervention = models.ForeignKey(Intervention)
 
 
-class InterventionImage(models.Model):
-    image = ThumbnailerImageField(upload_to='intervention_images', resize_source=dict(quality=85, size=(1620,0), upscale=False))
+class InterventionFile(models.Model):
     intervention = models.ForeignKey(Intervention)
     user = models.ForeignKey('core.User')
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
+class InterventionImage(InterventionFile):
+    image = ThumbnailerImageField(upload_to='intervention_images', resize_source=dict(quality=85, size=(1620,0), upscale=False))
+
+
+class InterventionDocument(InterventionFile):
+    document = models.FileField(upload_to='intervention_documents')
+
+    def filename(self):
+        return os.path.basename(self.document.name)
 
 
 def post_save_intervention(sender, **kwargs):

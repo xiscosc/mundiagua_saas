@@ -35,19 +35,27 @@ $(function () {
         $('#icon_image').hide();
         $('#form_image').submit();
     });
+    
+    $('#document').on('change', function () {
+        $("#label_document").prepend("Adjuntando documento...");
+        $('#icon_document').hide();
+        $('#form_document').submit();
+    });
 
     $('.link_image').on('click', function () {
         $('#body_image').html("");
+        $("#link_original_image").attr('href', "#");
         $('#progress_bar_image').show();
-        var name = $(this).data('name');
         var url = $(this).data('url');
-        $('#title_image').html("Foto de " + name);
+        $('#title_image').html("Foto de " +  $(this).data('name'));
+        $('#date_image').html($(this).data('date'));
         $('#modal_image').modal("show");
 
         var img = $("<img class='img-responsive' />").attr('src', url)
             .on('load', function () {
                 $('#progress_bar_image').hide();
                 $("#body_image").append(img);
+                $("#link_original_image").attr('href', url);
             });
 
     });

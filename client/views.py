@@ -44,7 +44,7 @@ class CreateAddressView(CreateView):
     def get_success_url(self):
         other = int(self.request.POST.getlist('other')[0])
         if other == 0:
-            if self.request.resolver_match.url_name == "client:client-address-new":
+            if self.request.resolver_match.url_name == "client-address-new":
                 return reverse_lazy('client:client-phone-new', kwargs={'id': self.object.client.pk})
             else:
                 return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})

@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-12 col-xs-12 col-lg-12">
-        <form action="" method="post">{% csrf_token %}
+        <form action="" method="post" id="new_form">{% csrf_token %}
             {{ form|bootstrap }}
             <div class="form-group">
          <input type="hidden" id="other" name="other" value="0"/>

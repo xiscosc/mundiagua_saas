@@ -4,6 +4,7 @@ from settings import *
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 BOWER_COMPONENTS_ROOT = '/Users/xiscosastre/PycharmProjects/mundiagua_python/components/'
+MEDIA_ROOT = '/home/xiscosastre/mundiagua_saas/media/'
 
 DATABASES = {
     'default': {

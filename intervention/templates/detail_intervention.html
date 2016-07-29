@@ -2,7 +2,7 @@
 {% load static %}
 {% load bootstrap %}
 {% load thumbnail %}
-{% block page_title %}Avería <small>{{ intervention }}</small> {% include 'new_image_include.html' with intervention=intervention %}{% endblock %}
+{% block page_title %}Avería <small>{{ intervention }}</small> {% include 'new_file_include.html' with intervention=intervention %}{% endblock %}
 {% block content %}
 
     <!-- Modal -->
@@ -11,7 +11,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="title_image">Foto de </h4>
+        <h4 class="modal-title" id="title_image">Foto de </h4> <small id="date_image">date</small>  <small class="pull-right"><a id="link_original_image" href="#" target="_blank">Ver imagen completa</a> </small>
       </div>
       <div class="modal-body">
          <div id="body_image">
@@ -70,11 +70,11 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Fotos de la avería</h3>
+                        <h3 class="panel-title">Imágenes de la avería</h3>
                     </div>
                     <div class="panel-body">
                         {% for i in intervention.get_images %}
-                            <a href="#" class="link_image" data-url="/media/{{ i.image }}" data-name="{{ i.user.get_full_name }}">
+                            <a href="#" class="link_image" data-url="/media/{{ i.image }}" data-date="{{ i.date }}" data-name="{{ i.user.get_full_name }}">
                                 <img src="{{ i.image|thumbnail_url:'intervention_th' }}" alt="" />
                             </a>
                         {% endfor %}
@@ -82,6 +82,50 @@
                 </div>
             </div>
         </div>
+    {% endif %}
+
+
+    {% if request.user.is_officer and intervention.get_documents|length > 0 %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Documentos de la avería</h3>
+                </div>
+                <div class="panel-body">
+                        <table class="table table-bordered table-hover table-striped">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Documento</th>
+                                <th>Descargar</th>
+                            </tr>
+                            {% for d in intervention.get_documents %}
+                                <tr>
+                                    <td>
+                                        {{ d.date }}
+                                    </td>
+                                    <td>
+                                        {{ d.user.get_full_name }}
+                                    </td>
+                                    <td>
+                                        {{ d.filename }}
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-success btn-block" href="{{ d.document.url }}" target="_blank">
+                                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% endif %}
 
     {% if request.user.is_officer %}

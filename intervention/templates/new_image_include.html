@@ -1,7 +1,0 @@
-<form action="{% url 'intervention:intervention-image-upload' intervention.pk %}" method="post" id="form_image"
-      enctype="multipart/form-data" class="pull-right">{% csrf_token %}
-    <label class="btn btn-warning btn-file" id="label_image">
-        <span class="glyphicon glyphicon-camera" aria-hidden="true" id="icon_image"/> <input type="file" style="display: none;" id="image" name="image" accept="image/*">
-    </label>
-</form>
-

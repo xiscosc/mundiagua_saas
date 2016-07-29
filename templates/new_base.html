@@ -21,6 +21,14 @@
                             </div>
                             <div class="panel-body">
                                 {{ form|bootstrap }}
+                                {% if zones %}
+                                <div class="form-group">
+                                    <label class="control-label">Zona seleccionada</label>
+                                    <div class=" ">
+                                        <div class="zone" id="selected_zone">ZONA 1</div>
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -38,5 +46,15 @@
 {% block extrajs %}
     {% if is_budget_repair %}
         <script src="{% static 'base/js/budget/budget-repair-new.js' %}"></script>
+    {% endif %}
+    {% if zones %}
+        <script type="application/javascript">
+            var zones_data = {
+            {% for z in zones %}
+                {{ z.pk }}: "{{ z.color }}",
+            {% endfor %}
+            }
+        </script>
+        <script src="{% static 'base/js/intervention/new.js' %}"></script>
     {% endif %}
 {% endblock %}
