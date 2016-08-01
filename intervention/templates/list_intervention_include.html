@@ -18,12 +18,20 @@
                                 Avería</a>
                         {% endif %}
                         {% if nolinks %}
+                            {% if intervention.starred %}
+                                <strong>DESTACADA</strong>,
+                            {% endif %}
                             Modificaciones: {{ intervention.get_num_modifications }}
                         {% else %}
-                            <a href="#"
-                               class="btn btn-warning btn-left">Modificaciones:
-                                <strong>{{ intervention.get_num_modifications }}</strong></a>
-
+                            <button disabled
+                                    class="btn btn-warning pull-right">
+                                <strong>{{ intervention.get_num_modifications }}</strong></button>
+                            {% if intervention.starred %}
+                                <button type="button" class="btn btn-danger pull-right" disabled
+                                        style="margin-right: 5px">
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                </button>
+                            {% endif %}
                         {% endif %}
 
                     </td>

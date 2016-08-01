@@ -1,0 +1,7 @@
+{% if request.user.is_officer %}
+<a href="{% url 'intervention:intervention-starred' intervention.pk %}"
+   class="btn {% if intervention.starred %}btn-danger{% else %}btn-default{% endif %}">
+    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>{% if not intervention.starred %} No{% endif %}
+    Prioritaria
+</a>
+{% endif %}

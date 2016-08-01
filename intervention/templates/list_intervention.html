@@ -32,7 +32,7 @@
                                     <ul class="dropdown-menu">
                                         {% for user in users %}
                                             <li>
-                                                <a href="{% url 'intervention:intervention-list' intervention_status user.pk zone_assigned %}">{{ user.get_full_name }}</a>
+                                                <a href="{% url 'intervention:intervention-list' intervention_status user.pk zone_assigned starred %}">{{ user.get_full_name }}</a>
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -46,7 +46,7 @@
                                     <ul class="dropdown-menu">
                                         {% for zone in zones %}
                                             <li>
-                                                <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk %}">
+                                                <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk starred %}">
                                                     <div style="background-color: {{ zone.color }}"
                                                          class="zone">{{ zone }}</div>
                                                 </a></li>
@@ -54,13 +54,19 @@
                                     </ul>
                                 </li>
 
-                                {% if user_assigned != "0" or zone_assigned != "0" %}
-                                    <li><a href="{% url 'intervention:intervention-list' intervention_status 0 0 %}">Deactivar
+                                <li>
+                                    <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 1 %}">
+                                        {% if starred %}<strong>Sólo prioritarias</strong>{% else %}Ver prioritarias {% endif %}
+                                    </a>
+                                </li>
+
+                                {% if user_assigned != "0" or zone_assigned != "0" or starred %}
+                                    <li><a href="{% url 'intervention:intervention-list' intervention_status 0 0 0%}">Desactivar
                                         todos
                                         los filtros</a></li>
                                 {% endif %}
 
-                            <li><a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned %}?page={{ page }}" target="_blank"><i class="fa fa-print"></i> Imprimir</a></li>
+                            <li><a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned starred %}?page={{ page }}" target="_blank"><i class="fa fa-print"></i> Imprimir</a></li>
                             </ul>
                         </div><!-- /.navbar-collapse -->
                     </div><!-- /.container-fluid -->

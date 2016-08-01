@@ -2,7 +2,8 @@ from django.conf.urls import url
 from .views import HomeView, SearchClientView, CreateInterventionView, InterventionView, UpdateInterventionView, \
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
-    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView
+    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
+    ToggleStarredInterventionView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -11,7 +12,7 @@ urlpatterns = [
     url(r'^view/(?P<pk>\d+)/$', InterventionView.as_view(), name="intervention-view"),
     url(r'^edit/(?P<pk>\d+)/$', UpdateInterventionView.as_view(), name="intervention-edit"),
     url(r'^terminate/(?P<pk>\d+)/$', TerminateIntervention.as_view(), name="intervention-terminate"),
-    url(r'^list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/$',
+    url(r'^list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/$',
         ListInterventionView.as_view(), name="intervention-list"),
     url(r'^psearch/$', PreSearchInterventionView.as_view(), name="intervention-psearch"),
     url(r'^search/$', SearchInterventionView.as_view(), name="intervention-search"),
@@ -20,10 +21,11 @@ urlpatterns = [
     url(r'^morris/input/$', MorrisInterventionInput.as_view(), name="intervention-morris-input"),
     url(r'^morris/yearvs/$', MorrisYearVs.as_view(), name="intervention-morris-yearvs"),
     url(r'^print/(?P<pk>\d+)/$', PrintInterventionView.as_view(), name="intervention-print"),
-    url(r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/$',
+    url(r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/$',
         PrintListInterventionView.as_view(), name="intervention-print-list"),
     url(r'^list/own/$',
         OwnListInterventionView.as_view(), name="intervention-list-own"),
     url(r'^new/image/(?P<pk>\d+)/$', UploadImageView.as_view(), name="intervention-image-upload"),
     url(r'^new/document/(?P<pk>\d+)/$', UploadDocumentView.as_view(), name="intervention-document-upload"),
+    url(r'^starred/(?P<pk>\d+)/$', ToggleStarredInterventionView.as_view(), name="intervention-starred"),
 ]

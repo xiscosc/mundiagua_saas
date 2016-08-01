@@ -40,6 +40,7 @@ class Intervention(models.Model):
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
     note = models.TextField(null=True)
     sms = models.ManyToManyField(SMS)
+    starred = models.BooleanField(default=False)
 
     def __str__(self):
         return "V" + str(self.pk)
@@ -109,13 +110,16 @@ def post_save_intervention(sender, **kwargs):
         log = InterventionLog(created_by=intervention.created_by, status=intervention.status, intervention=intervention)
         log.save()
     else:
-        if intervention._old_status_id != intervention.status_id or intervention._old_assigned_id != intervention.assigned_id:
-            log = InterventionLog(status_id=intervention.status_id, created_by=intervention._current_user,
-                                  intervention=intervention)
-            if intervention.status_id == settings.ASSIGNED_STATUS:
-                log.assigned = intervention.assigned
-                send_intervention_assigned.delay(intervention)
-            log.save()
+        try:
+            if intervention._old_status_id != intervention.status_id or intervention._old_assigned_id != intervention.assigned_id:
+                log = InterventionLog(status_id=intervention.status_id, created_by=intervention._current_user,
+                                      intervention=intervention)
+                if intervention.status_id == settings.ASSIGNED_STATUS:
+                    log.assigned = intervention.assigned
+                    send_intervention_assigned.delay(intervention)
+                log.save()
+        except:
+            pass
 
 
 post_save.connect(post_save_intervention, sender=Intervention)

@@ -105,7 +105,7 @@ def terminate_intervention(intervention_pk, request):
     messages.success(request.user, "Avería " + str(intervention) + " marcada como terminada")
 
 
-def get_intervention_list(status_id, user_id, zone_id):
+def get_intervention_list(status_id, user_id, zone_id, starred):
     search_user = None
     search_zone = None
 
@@ -137,6 +137,9 @@ def get_intervention_list(status_id, user_id, zone_id):
             search_zone = Zone.objects.get(pk=zone_id)
         except Zone.DoesNotExist:
             pass
+
+    if starred:
+        interventions = interventions.filter(starred=True)
 
     try:
         search_status = InterventionStatus.objects.get(pk=status_id)

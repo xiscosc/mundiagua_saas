@@ -172,6 +172,32 @@
 
                         </ul>
                     </li>
+                        <li>
+                        <a href="#"><i class="fa fa-circle-o-notch fa-fw"></i> Reparaciones de motores<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'repair:repair-search-client' %}">Nueva reparación</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'repair:repair-list' 0 %}">Todas las reparaciones</a>
+                            </li>
+                            <li class="sidebar-search">
+                                <form method="post" action="{% url 'repair:repair-psearch' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group custom-search-form">
+                                        <input type="text" class="form-control" placeholder="Buscar reparación"
+                                               name="search_text" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                    </div>
+                                </form>
+
+                                <!-- /input-group -->
+                            </li>
+
+                        </ul>
+                    </li>
                     <li>
                         <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

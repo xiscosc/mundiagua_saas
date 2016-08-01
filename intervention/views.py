@@ -83,20 +83,23 @@ class ListInterventionView(TemplateView):
         status_id = int(kwargs['intervention_status'])
         user_id = int(kwargs['user_assigned'])
         zone_id = int(kwargs['zone_assigned'])
+        starred = int(kwargs['starred'])
 
         page = int(self.request.GET.get('page', 1))
 
         context['users'] = User.objects.all()
         context['zones'] = Zone.objects.all()
         context['list_navigation'] = True
+        context['starred'] = starred
         context['page'] = page
 
         self.request.session['list_status_id'] = status_id
         self.request.session['list_user_id'] = user_id
         self.request.session['list_zone_id'] = zone_id
         self.request.session['list_page'] = page
+        self.request.session['list_starred'] = starred
 
-        list_data = get_intervention_list(status_id, user_id, zone_id)
+        list_data = get_intervention_list(status_id, user_id, zone_id, starred)
         context['search_status'] = list_data['search_status']
         context['search_user'] = list_data['search_user']
         context['search_zone'] = list_data['search_zone']
@@ -122,10 +125,11 @@ class TerminateIntervention(TemplateView):
         user_id = request.session.get('list_user_id', 0)
         zone_id = request.session.get('list_zone_id', 0)
         page = request.session.get('list_page', 1)
+        starred = request.session.get('list_starred', 0)
 
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-list',
                                                  kwargs={'intervention_status': status_id, 'zone_assigned': zone_id,
-                                                         'user_assigned': user_id}) + "?page=" + str(page))
+                                                         'user_assigned': user_id, 'starred': starred}) + "?page=" + str(page))
 
 
 class PreSearchInterventionView(PreSearchView):
@@ -235,9 +239,6 @@ class UploadImageView(View):
 
 
 class UploadDocumentView(View):
-    def get_success_url(self):
-        return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']})
-
     def post(self, request, *args, **kwargs):
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -248,4 +249,14 @@ class UploadDocumentView(View):
         else:
             messages.warning(self.request.user, "Error, no se ha podido guardar el documento")
 
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']}))
+
+
+class ToggleStarredInterventionView(View):
+
+    def get(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=self.kwargs['pk'])
+        intervention.starred = not intervention.starred
+        intervention.save()
+        messages.success(self.request.user, "Cambio realizado correctamente")
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']}))
