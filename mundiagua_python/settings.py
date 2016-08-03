@@ -48,7 +48,7 @@ OTHER_APPS = [
     'compat',
     'hijack_admin',
     'admin_honeypot',
-    'wkhtmltopdf',
+    # 'wkhtmltopdf',
     'easy_thumbnails'
 ]
 
@@ -87,7 +87,8 @@ MIDDLEWARE_CLASSES = [
 PUBLIC_URLS = (
     r'login/',
     r'logout/',
-    r'admin/'
+    r'admin/',
+    r'repair-status/(?P<online>\w+)/'
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'

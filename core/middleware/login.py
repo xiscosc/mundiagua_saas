@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 import re
 
+
 class EnforceLoginMiddleware(object):
     """
     Middlware class which requires the user to be authenticated for all urls except
@@ -15,17 +16,17 @@ class EnforceLoginMiddleware(object):
     """
 
     def __init__(self):
-        self.login_url   = getattr(settings, 'LOGIN_URL', '/accounts/login/' )
-        if hasattr(settings,'PUBLIC_URLS'):
+        self.login_url = getattr(settings, 'LOGIN_URL', '/accounts/login/')
+        if hasattr(settings, 'PUBLIC_URLS'):
             public_urls = [re.compile(url) for url in settings.PUBLIC_URLS]
         else:
-            public_urls = [(re.compile("^%s$" % ( self.login_url[1:] )))]
-        if getattr(settings, 'SERVE_STATIC_TO_PUBLIC', True ):
+            public_urls = [(re.compile("^%s$" % (self.login_url[1:])))]
+        if getattr(settings, 'SERVE_STATIC_TO_PUBLIC', True):
             root_urlconf = __import__(settings.ROOT_URLCONF)
-            public_urls.extend([ re.compile(url.regex)
-                for url in root_urlconf.urls.urlpatterns
-                if url.__dict__.get('_callback_str') == 'django.views.static.serve'
-            ])
+            public_urls.extend([re.compile(url.regex)
+                                for url in root_urlconf.urls.urlpatterns
+                                if url.__dict__.get('_callback_str') == 'django.views.static.serve'
+                                ])
         self.public_urls = tuple(public_urls)
 
     def process_request(self, request):

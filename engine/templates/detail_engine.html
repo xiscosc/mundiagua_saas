@@ -71,7 +71,7 @@
                             <td>
                                 {% if repair.budget %}
                                     <a class="btn btn-info" href="{% url 'budget:budget-view' repair.budget.pk %}"><span
-                                            class="fa fa-bar-chart"></span> Ver Presupuesto (Formato PM)</a>
+                                            class="fa fa-bar-chart"></span> Ver Presupuesto ({{ repair.budget }})</a>
                                 {% else %}
                                     <a class="btn btn-info" href="{% url 'budget:budget-new' repair.address.client_id %}?engine={{ repair.pk }}"><span
                                             class="fa fa-bar-chart"></span> Crear presupuesto (Formato PM)</a>
