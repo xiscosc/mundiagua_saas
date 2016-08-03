@@ -32,7 +32,6 @@ class Repair(models.Model):
     intern_description = models.TextField(null=True, blank=True, verbose_name="Descripción interna")
     warranty = models.BooleanField(default=False, verbose_name="Garantía")
     sms = models.ManyToManyField(SMS)
-    token = models.CharField(max_length=256, null=True, blank=True, default=None)
 
     class Meta:
         abstract = True
@@ -100,8 +99,6 @@ def post_save_ath_repair(sender, **kwargs):
         log.save()
         ins.online_id = generate_md5_id("A", ins.pk)
         ins.save()
-    else:
-        pass
 
 
 def post_save_idegis_repair(sender, **kwargs):
@@ -111,8 +108,6 @@ def post_save_idegis_repair(sender, **kwargs):
         log.save()
         ins.online_id = generate_md5_id("X", ins.pk)
         ins.save()
-    else:
-        pass
 
 post_save.connect(post_save_ath_repair, sender=AthRepair)
 post_save.connect(post_save_idegis_repair, sender=IdegisRepair)

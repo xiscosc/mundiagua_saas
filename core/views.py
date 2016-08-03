@@ -13,6 +13,7 @@ from wkhtmltopdf.views import PDFTemplateView
 from client.models import Client, Address
 from core.models import User, Message
 from core.utils import get_return_from_id
+from engine.models import EngineRepair
 
 
 class SearchClientBaseView(TemplateView):
@@ -44,6 +45,14 @@ class CreateBaseView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateBaseView, self).get_context_data(**kwargs)
+
+        engine_pk = int(self.request.GET.get('engine', 0))
+        if engine_pk is not 0:
+            self.request.session['engine_budget'] = engine_pk
+            context['engine'] = EngineRepair.objects.get(pk=engine_pk)
+        else:
+            self.request.session['engine_budget'] = 0
+
         try:
             context['client'] = Client.objects.get(pk=self.kwargs['id'])
         except:
@@ -53,6 +62,7 @@ class CreateBaseView(CreateView):
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.created_by = self.request.user
+
         return super(CreateBaseView, self).form_valid(form)
 
 

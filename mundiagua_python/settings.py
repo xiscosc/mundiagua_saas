@@ -58,6 +58,7 @@ MY_APPS = [
     'intervention',
     'budget',
     'repair',
+    'engine',
 ]
 
 
@@ -135,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'CET'
 
 USE_I18N = True
 

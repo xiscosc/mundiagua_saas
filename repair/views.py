@@ -2,7 +2,7 @@
 from itertools import chain
 from operator import attrgetter
 
-from async_messages import message_user, constants
+from async_messages import messages
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
@@ -29,7 +29,7 @@ class SearchClientView(SearchClientBaseView):
 
 class CreateAthRepairView(CreateBaseView):
     model = AthRepair
-    fields = ['address', 'description', 'model', 'year', 'serial_number', 'notice_maker_number', 'description',
+    fields = ['address', 'description', 'model', 'year', 'serial_number', 'notice_maker_number',
               'intern_description', 'warranty', "bypass", "connector", "transformer"]
 
     def get_context_data(self, **kwargs):
@@ -44,7 +44,7 @@ class CreateAthRepairView(CreateBaseView):
 
 class CreateIdegisRepairView(CreateBaseView):
     model = IdegisRepair
-    fields = ['address', 'description', 'model', 'year', 'serial_number', 'notice_maker_number', 'description',
+    fields = ['address', 'description', 'model', 'year', 'serial_number', 'notice_maker_number',
               'intern_description', 'warranty', "ph", "orp", "electrode"]
 
     def get_context_data(self, **kwargs):
@@ -67,13 +67,13 @@ class RepairView(UpdateView):
         return context
 
     def form_valid(self, form):
-        message_user(self.request.user, "Reparación actualizada correctamente.", constants.SUCCESS)
+        messages.success(self.request.user, "Reparación actualizada correctamente.")
         return super(RepairView, self).form_valid(form)
 
 
 class AthRepairView(RepairView):
     model = AthRepair
-    fields = ['description', 'model', 'year', 'serial_number', 'notice_maker_number', 'description',
+    fields = ['description', 'model', 'year', 'serial_number', 'notice_maker_number',
               'intern_description', 'warranty', "bypass", "connector", "transformer"]
 
     def get_success_url(self):
@@ -82,7 +82,7 @@ class AthRepairView(RepairView):
 
 class IdegisRepairView(RepairView):
     model = IdegisRepair
-    fields = ['description', 'model', 'year', 'serial_number', 'notice_maker_number', 'description',
+    fields = ['description', 'model', 'year', 'serial_number', 'notice_maker_number',
               'intern_description', 'warranty', "ph", "orp", "electrode"]
 
     def get_success_url(self):
@@ -106,7 +106,7 @@ class UpdateStatusRepair(View):
         repair.status_id = st_id
         repair.save()
         log.save()
-        message_user(self.request.user, "Cambio de estado realizado correctamente.", constants.SUCCESS)
+        messages.success(self.request.user, "Cambio de estado realizado correctamente.")
         return HttpResponseRedirect(reverse_lazy(url, kwargs={'pk': kwargs['pk']}))
 
 

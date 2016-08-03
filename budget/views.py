@@ -5,11 +5,11 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse, Http404
-from django.views.generic import TemplateView, View, UpdateView, DetailView
-from wkhtmltopdf.views import PDFTemplateView
+from django.views.generic import TemplateView, View, UpdateView
 
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
-from core.views import SearchClientBaseView, CreateBaseView, PreSearchView, DefaultPDFView
+from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
+from engine.models import EngineRepair
 from repair.models import AthRepair, IdegisRepair
 
 
@@ -34,6 +34,11 @@ class CreateBudgetView(CreateBaseView):
         return context
 
     def get_success_url(self):
+        engine_pk = int(self.request.session.get('engine_budget', 0))
+        if engine_pk is not 0:
+            engine = EngineRepair.objects.get(pk=engine_pk)
+            engine.budget_id = self.object.pk
+            engine.save()
         return reverse_lazy("budget:budget-new-lines", kwargs={'pk': self.object.pk})
 
 

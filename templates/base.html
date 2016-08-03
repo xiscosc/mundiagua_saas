@@ -176,13 +176,13 @@
                         <a href="#"><i class="fa fa-circle-o-notch fa-fw"></i> Reparaciones de motores<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="{% url 'repair:repair-search-client' %}">Nueva reparación</a>
+                                <a href="{% url 'engine:engine-search-client' %}">Nueva reparación</a>
                             </li>
                             <li>
-                                <a href="{% url 'repair:repair-list' 0 %}">Todas las reparaciones</a>
+                                <a href="{% url 'engine:engine-all'%}">Todas las reparaciones</a>
                             </li>
                             <li class="sidebar-search">
-                                <form method="post" action="{% url 'repair:repair-psearch' %}">
+                                <form method="post" action="{% url 'engine:engine-psearch' %}">
                                     {% csrf_token %}
                                     <div class="input-group custom-search-form">
                                         <input type="text" class="form-control" placeholder="Buscar reparación"

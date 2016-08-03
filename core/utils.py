@@ -43,6 +43,7 @@ def get_return_from_id(search_text):
     idegis_r = re.compile('[x|X][0-9]+')
     ath_r = re.compile('[a|A][0-9]+')
     client_r = re.compile('[c|C][0-9]+')
+    engine_r = re.compile('[e|E][0-9]+')
 
     intervention_m = intervention_r.match(search_text)
     if intervention_m is not None:
@@ -67,5 +68,11 @@ def get_return_from_id(search_text):
         idstr = client_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('client:client-view', kwargs={"pk": id})}
+
+    engine_m = engine_r.match(search_text)
+    if engine_m is not None:
+        idstr = engine_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('engine:engine-view', kwargs={"pk": id})}
 
     return {"found": False, "url": None}

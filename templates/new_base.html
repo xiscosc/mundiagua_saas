@@ -22,18 +22,23 @@
                             <div class="panel-body">
                                 {{ form|bootstrap }}
                                 {% if zones %}
-                                <div class="form-group">
-                                    <label class="control-label">Zona seleccionada</label>
-                                    <div class=" ">
-                                        <div class="zone" id="selected_zone">ZONA 1</div>
+                                    <div class="form-group">
+                                        <label class="control-label">Zona seleccionada</label>
+                                        <div class=" ">
+                                            <div class="zone" id="selected_zone">ZONA 1</div>
+                                        </div>
                                     </div>
-                                </div>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
+                    {% if engine %}
+                        <div class="alert alert-warning">
+                            <strong>Alerta!</strong> Este presupuesto se vinculará con la reparación de motor {{ engine }}
+                        </div>
+                    {% endif %}
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>

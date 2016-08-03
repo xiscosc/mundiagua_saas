@@ -7,6 +7,7 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView,
 
 from client.models import Client, Address, Phone, SMS
 from core.views import PreSearchView
+from engine.models import EngineRepair
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import Budget
@@ -171,8 +172,10 @@ class SendSMSView(View):
                 obj = Intervention.objects.get(pk=id_model)
             elif model == "repair-ath":
                 obj = AthRepair.objects.get(pk=id_model)
-            else:
+            elif model == "repair-idegis":
                 obj = IdegisRepair.objects.get(pk=id_model)
+            elif model == "repair-engine":
+                obj = EngineRepair.objects.get(pk=id_model)
             obj.sms.add(sms)
         except:
             pass

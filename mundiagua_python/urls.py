@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^client/', include('client.urls', namespace="client")),
     url(r'^budget/', include('budget.urls', namespace="budget")),
     url(r'^repair/', include('repair.urls', namespace="repair")),
+    url(r'^engine/', include('engine.urls', namespace="engine")),
     url(r'^login/$', login, name='login', kwargs={'template_name': 'login.html'}),
     url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
     url(r'^$', IndexView.as_view(), name='home'),
