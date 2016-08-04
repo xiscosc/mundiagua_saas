@@ -13,8 +13,8 @@ from core.models import User
 class Client(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nombre")
     email = models.EmailField(null=True, blank=True)
-    intern_code = models.CharField(max_length=20, null=True, blank=True, verbose_name="COD Interno")
-    dni = models.CharField(max_length=20, null=True, blank=True, verbose_name="DNI/CIF")
+    intern_code = models.CharField(max_length=45, null=True, blank=True, verbose_name="COD Interno")
+    dni = models.CharField(max_length=45, null=True, blank=True, verbose_name="DNI/CIF")
 
     def __str__(self):
         return self.name.encode('utf8')
@@ -30,8 +30,8 @@ class Client(models.Model):
 
 
 class Phone(models.Model):
-    alias = models.CharField(max_length=30)
-    phone = models.CharField(max_length=30, verbose_name="Teléfono")
+    alias = models.CharField(max_length=45)
+    phone = models.CharField(max_length=45, verbose_name="Teléfono")
     client = models.ForeignKey(Client)
 
     def __str__(self):
@@ -39,11 +39,11 @@ class Phone(models.Model):
 
 
 class Address(models.Model):
-    alias = models.CharField(max_length=30)
+    alias = models.CharField(max_length=45)
     address = models.TextField(verbose_name="Dirección")
     client = models.ForeignKey(Client)
-    latitude = models.CharField(max_length=25, null=True, blank=True)
-    longitude = models.CharField(max_length=25, null=True, blank=True)
+    latitude = models.CharField(max_length=45, null=True, blank=True)
+    longitude = models.CharField(max_length=45, null=True, blank=True)
     default_zone = models.ForeignKey('intervention.Zone', null=True)
 
     def get_url_gmaps(self):

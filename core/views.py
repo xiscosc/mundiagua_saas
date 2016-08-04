@@ -118,6 +118,11 @@ class MessagesListView(MessageListBaseView):
     def get_data(self):
         return Message.objects.filter(to_user=self.request.user).order_by("-date")
 
+    def get_context_data(self, **kwargs):
+        context = super(MessagesListView, self).get_context_data(**kwargs)
+        context['inbox'] = True
+        return context
+
 
 class MessagesSentListView(MessageListBaseView):
 

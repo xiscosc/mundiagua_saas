@@ -74,7 +74,7 @@ class BudgetRepair(Budget):
 
 class BudgetLine(models.Model):
     product = models.TextField()
-    unit_price = models.CharField(max_length=8)
+    unit_price = models.DecimalField(decimal_places=2, max_digits=20)
     quantity = models.DecimalField(decimal_places=2, max_digits=20)
     discount = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
 
