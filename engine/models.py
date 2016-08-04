@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 from client.models import SMS
-from core.utils import generate_md5_id
+from core.utils import generate_md5_id, get_time_zone
 
 
 class EngineStatus(models.Model):
@@ -39,7 +39,7 @@ class EngineRepairLog(models.Model):
     status = models.ForeignKey(EngineStatus)
 
     def __str__(self):
-        return self.date.strftime("%d-%m-%Y %H:%M") + " - " + str(self.status)
+        return self.date.astimezone(get_time_zone()).strftime("%d-%m-%Y %H:%M") + " - " + str(self.status)
 
 
 def post_save_engine_repair(sender, **kwargs):

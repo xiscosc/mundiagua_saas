@@ -6,7 +6,7 @@ from django.db.models.signals import post_save
 
 from budget.models import BudgetRepair
 from client.models import SMS
-from core.utils import generate_md5_id
+from core.utils import generate_md5_id, get_time_zone
 
 
 class RepairStatus(models.Model):
@@ -78,7 +78,7 @@ class RepairLog(models.Model):
         abstract = True
 
     def __str__(self):
-        return self.date.strftime("%d-%m-%Y %H:%M") + " - " + str(self.status)
+        return self.date.astimezone(get_time_zone()).strftime("%d-%m-%Y %H:%M") + " - " + str(self.status)
 
 
 class AthRepairLog(RepairLog):

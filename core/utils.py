@@ -4,6 +4,8 @@ import hashlib, re, time
 from django.core.urlresolvers import reverse_lazy
 from pushbullet import Pushbullet
 from django.core.mail import send_mail
+from pytz import timezone
+from django.conf import settings
 
 
 def send_data_to_user(user, subject, body, is_link=False):
@@ -76,3 +78,7 @@ def get_return_from_id(search_text):
         return {"found": True, "url": reverse_lazy('engine:engine-view', kwargs={"pk": id})}
 
     return {"found": False, "url": None}
+
+
+def get_time_zone():
+    return timezone(settings.TIME_ZONE)
