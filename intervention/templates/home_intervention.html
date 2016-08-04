@@ -174,8 +174,8 @@
                     <div class="list-group">
                         {% for mod in modifications %}
                             <a href="{% url 'intervention:intervention-view' mod.intervention_id %}"
-                               class="list-group-item">
-                                {{ mod.intervention.address.client }} ({{ mod.intervention }})
+                               class="list-group-item" style="font-size: x-small;">
+                                {{ mod.intervention.address.client }} {{ mod.intervention }}
                                     <span class="pull-right text-muted small"><em>hace {{ mod.date|timesince }}</em>
                                     </span>
                             </a>

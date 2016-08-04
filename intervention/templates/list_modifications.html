@@ -19,13 +19,18 @@
                 {% for mod in modifications %}
                     <tr>
                         <td>
-                            {{ mod.intervention }}
+                            {{ mod.intervention }} {% if mod.intervention.starred %}
+                                <button type="button" class="btn btn-danger pull-right" disabled
+                                        style="margin-right: 5px">
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                </button>
+                            {% endif %}
                         </td>
                         <td>
                             {{ mod.intervention.address.client.name }}
                         </td>
                         <td>
-                            {{ mod.created_by.full_name }}
+                            {{ mod.created_by.get_full_name }}
                         </td>
                         <td>
                             hace {{ mod.date|timesince }}
