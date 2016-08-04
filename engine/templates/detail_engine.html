@@ -21,10 +21,13 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
-                                <li><a href="{% url 'engine:engine-print' 1 repair.pk %}" target="_blank">Con logo</a></li>
-                                <li><a href="{% url 'engine:engine-print' 0 repair.pk %}" target="_blank">Sin logo</a></li>
+                                <li><a href="{% url 'engine:engine-print' 1 repair.pk %}" target="_blank">Con logo</a>
+                                </li>
+                                <li><a href="{% url 'engine:engine-print' 0 repair.pk %}" target="_blank">Sin logo</a>
+                                </li>
                                 <li class="divider"></li>
-                                <li><a href="{% url 'engine:engine-print' 2 repair.pk %}" target="_blank">Interno</a></li>
+                                <li><a href="{% url 'engine:engine-print' 2 repair.pk %}" target="_blank">Interno</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -50,6 +53,14 @@
                         </tr>
                         <tr>
                             <td>
+                                <strong>ID Online</strong>
+                            </td>
+                            <td>
+                                {{ repair.online_id }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <strong>Estado actual</strong>
                             </td>
                             <td>
@@ -61,9 +72,9 @@
                                 <strong>Historial</strong>
                             </td>
                             <td>
-                                    {% for log in repair.enginerepairlog_set.all %}
-                                        {{ log }}<br>
-                                    {% endfor %}
+                                {% for log in repair.enginerepairlog_set.all %}
+                                    {{ log }}<br>
+                                {% endfor %}
                             </td>
                         </tr>
                         <tr>
@@ -73,7 +84,8 @@
                                     <a class="btn btn-info" href="{% url 'budget:budget-view' repair.budget.pk %}"><span
                                             class="fa fa-bar-chart"></span> Ver Presupuesto ({{ repair.budget }})</a>
                                 {% else %}
-                                    <a class="btn btn-info" href="{% url 'budget:budget-new' repair.address.client_id %}?engine={{ repair.pk }}"><span
+                                    <a class="btn btn-info"
+                                       href="{% url 'budget:budget-new' repair.address.client_id %}?engine={{ repair.pk }}"><span
                                             class="fa fa-bar-chart"></span> Crear presupuesto (Formato PM)</a>
                                 {% endif %}
 
@@ -96,7 +108,7 @@
                 <div class="panel-body" id="body_averia">
                     <div class="row" id="forms">
                         <form method="post" action="{% url 'engine:engine-update-status' repair.pk %}">
-                        {% csrf_token %}
+                            {% csrf_token %}
                             <div class="col-md-9">
                                 <select class="form-control" name="status_repair">
                                     {% for s in status %}
