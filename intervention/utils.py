@@ -70,12 +70,18 @@ def generate_data_year_vs():
     return {"d": data, "labels": labels}
 
 
-def generate_data_intervention_input():
+def generate_data_intervention_input(month=None, year=None):
     data = []
-    max_num = calendar.monthrange(date.today().year, date.today().month)[1].real
+
+    if month is None or year is None:
+        current_date = date.today()
+    else:
+        current_date = date(year=int(year), month=int(month), day=1)
+
+    max_num = calendar.monthrange(current_date.year, current_date.month)[1].real
     for i in range(max_num):
         day = i + 1
-        d = date(date.today().year, date.today().month, day)
+        d = date(current_date.year, current_date.month, day)
         total = Intervention.objects.filter(date__day=day, date__year=d.year.real, date__month=d.month.real).count()
         data.append({'t': total, 'y': d.strftime("%Y-%m-%d")})
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import date
+
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404
@@ -27,7 +29,8 @@ class HomeView(TemplateView):
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
         context['status_billing'] = Intervention.objects.filter(status=5).count()
         context['modifications'] = InterventionModification.objects.all().order_by("-date")[:10]
-
+        context['months'] = [x for x in xrange(1, 13)]
+        context['years'] = [x for x in xrange(2014, date.today().year + 1)]
         return context
 
 
@@ -188,7 +191,15 @@ class MorrisInterventionAssigned(MorrisView):
 
 class MorrisInterventionInput(MorrisView):
     def get(self, request, *args, **kwargs):
-        return JsonResponse(data=generate_data_intervention_input(), safe=False)
+        m = int(request.GET.get('month', 0))
+        y = int(request.GET.get('year', 0))
+
+        if m > 0 and y > 0:
+            d = generate_data_intervention_input(month=m, year=y)
+        else:
+            d = generate_data_intervention_input()
+
+        return JsonResponse(data=d, safe=False)
 
 
 class MorrisYearVs(MorrisView):

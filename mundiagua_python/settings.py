@@ -233,7 +233,8 @@ NON_STAFF_VIEWS = ('message-new',
                    'home',
                    'logout',
                    'login',
-                   'release_hijack')
+                   'release_hijack',
+                   'intervention-image-upload')
 
 THUMBNAIL_ALIASES = {
     '': {

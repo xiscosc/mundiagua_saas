@@ -4,11 +4,12 @@
         <span class="glyphicon glyphicon-camera" aria-hidden="true" id="icon_image"/> <input type="file" style="display: none;" id="image" name="image" accept="image/*">
     </label>
 </form>
-
+{% if request.user.is_officer %}
 <form action="{% url 'intervention:intervention-document-upload' intervention.pk %}" method="post" id="form_document"
       enctype="multipart/form-data" class="pull-right" style="padding-right: 6px">{% csrf_token %}
     <label class="btn btn-primary btn-file" id="label_document">
         <span class="glyphicon glyphicon-file" aria-hidden="true" id="icon_document"/> <input type="file" style="display: none;" id="document" name="document">
     </label>
 </form>
+{% endif %}
 

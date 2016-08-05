@@ -135,6 +135,32 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-bar-chart-o fa-fw"></i> Entrada de averías
+
+                    <div style="display: inline"><strong id="label_chart">(Mes actual)</strong></div>
+
+                    <div class="pull-right">
+
+                        <button class="btn btn-xs btn-success"
+                           id="btn_change_chart"><i
+                                class="fa fa-chain"></i> Cambiar</button>
+                    </div>
+
+                    <div class="pull-right">
+                        <select id="month_chart" class="btn btn-default btn-mini">
+                            {% for m in months %}
+                                <option value="{{ m }}">{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="caret"></span>
+
+                        <select id="year_chart" class="btn btn-default btn-mini">
+                                {% for y in years %}
+                                <option value="{{ y }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        <span class="caret"></span>
+                    </div>
+
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
@@ -209,4 +235,7 @@
     <script src="{% static 'raphael/raphael.min.js' %}"></script>
     <script src="{% static 'morrisjs/morris.min.js' %}"></script>
     <script src="{% static 'base/js/intervention/morris-data.js' %}"></script>
+{% endblock %}
+{% block extracss %}
+    <link href="{% static 'base/css/intervention/home.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
