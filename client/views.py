@@ -7,10 +7,10 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView,
 
 from client.models import Client, Address, Phone, SMS
 from core.views import PreSearchView
-from engine.models import EngineRepair, EngineStatus
+from engine.models import EngineRepair
 from intervention.models import Intervention
-from repair.models import AthRepair, IdegisRepair, RepairStatus
-from budget.models import Budget
+from repair.models import AthRepair, IdegisRepair
+from budget.models import BudgetStandard, BudgetRepair
 
 
 class CreateClientView(CreateView):
@@ -145,12 +145,13 @@ class DeleteAddresView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         new_address_id = int(self.request.POST.getlist('new_address')[0])
-        interventions = Intervention.objects.filter(address=int(self.kwargs['pk']))
-        r_aths = AthRepair.objects.filter(address=int(self.kwargs['pk']))
-        r_idegis = IdegisRepair.objects.filter(address=int(self.kwargs['pk']))
-        budgets = Budget.objects.filter(address=int(self.kwargs['pk']))
+        Intervention.objects.filter(address=int(self.kwargs['pk'])).update(address_id=new_address_id)
+        AthRepair.objects.filter(address=int(self.kwargs['pk'])).update(address_id=new_address_id)
+        IdegisRepair.objects.filter(address=int(self.kwargs['pk'])).update(address_id=new_address_id)
+        BudgetStandard.objects.filter(address=int(self.kwargs['pk'])).update(address_id=new_address_id)
+        BudgetRepair.objects.filter(address=int(self.kwargs['pk'])).update(address_id=new_address_id)
+        EngineRepair.objects.filter(address=int(self.kwargs['pk'])).update(address_id=new_address_id)
 
-        self.change_address(interventions + r_aths + r_idegis + budgets, new_address_id)
         return super(DeleteAddresView, self).delete(request, *args, **kwargs)
 
     def change_address(self, set_data, new_address_id):
