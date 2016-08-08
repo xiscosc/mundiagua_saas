@@ -4,7 +4,7 @@ from datetime import date
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404
-from django.views.generic import TemplateView, DetailView, View, CreateView
+from django.views.generic import TemplateView, DetailView, View
 from django.core.paginator import Paginator
 from django.db.models import Q
 from async_messages import messages
@@ -14,7 +14,7 @@ from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
     InterventionDocument
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
-    generate_data_intervention_assigned, terminate_intervention, get_intervention_list
+    generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention
 from intervention.forms import ImageForm, DocumentForm
 
 
@@ -114,16 +114,18 @@ class ListInterventionView(TemplateView):
         return context
 
 
-class TerminateIntervention(TemplateView):
-    template_name = "terminate_intervention.html"
+class FastModifyIntervention(TemplateView):
 
     def get_context_data(self, **kwargs):
-        context = super(TerminateIntervention, self).get_context_data(**kwargs)
+        context = super(FastModifyIntervention, self).get_context_data(**kwargs)
         context['intervention'] = Intervention.objects.get(pk=int(kwargs['pk']))
         return context
 
+    def make_modifications(self, pk, request):
+        pass
+
     def post(self, request, *args, **kwargs):
-        terminate_intervention(kwargs['pk'], request)
+        self.make_modifications(kwargs['pk'], request)
         status_id = request.session.get('list_status_id', 1)
         user_id = request.session.get('list_user_id', 0)
         zone_id = request.session.get('list_zone_id', 0)
@@ -132,7 +134,22 @@ class TerminateIntervention(TemplateView):
 
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-list',
                                                  kwargs={'intervention_status': status_id, 'zone_assigned': zone_id,
-                                                         'user_assigned': user_id, 'starred': starred}) + "?page=" + str(page))
+                                                         'user_assigned': user_id,
+                                                         'starred': starred}) + "?page=" + str(page))
+
+
+class TerminateIntervention(FastModifyIntervention):
+    template_name = "terminate_intervention.html"
+
+    def make_modifications(self, pk, request):
+        terminate_intervention(pk, request)
+
+
+class BillIntervention(FastModifyIntervention):
+    template_name = "bill_intervention.html"
+
+    def make_modifications(self, pk, request):
+        bill_intervention(pk, request)
 
 
 class PreSearchInterventionView(PreSearchView):

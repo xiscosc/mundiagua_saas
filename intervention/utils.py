@@ -100,15 +100,25 @@ def generate_data_intervention_assigned():
     return data
 
 
-def terminate_intervention(intervention_pk, request):
+def prepare_intervention_modify(intervention_pk, request, status):
     intervention = Intervention.objects.get(pk=intervention_pk)
     intervention._old_status_id = intervention.status_id
     intervention._old_assigned_id = intervention.assigned_id
     intervention._current_user = request.user
     intervention.assigned = None
-    intervention.status_id = 3
+    intervention.status_id = status
     intervention.save()
+    return intervention
+
+
+def terminate_intervention(intervention_pk, request):
+    intervention = prepare_intervention_modify(intervention_pk, request, 3)
     messages.success(request.user, "Avería " + str(intervention) + " marcada como terminada")
+
+
+def bill_intervention(intervention_pk, request):
+    intervention = prepare_intervention_modify(intervention_pk, request, 5)
+    messages.success(request.user, "Avería " + str(intervention) + " marcada para facturar")
 
 
 def get_intervention_list(status_id, user_id, zone_id, starred):

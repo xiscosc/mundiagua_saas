@@ -10,7 +10,7 @@
         <form action="" method="post">{% csrf_token %}
              <div class="alert alert-danger" role="alert"><strong>Alerta!</strong> ¿Esta seguro que desea dar por terminida la avería {{ intervention }} de {{ intervention.address.client }}?</div>
          <div class="form-group">
-         <button class="btn btn-danger" type="submit" {% if intervention.status_id > 2 %}disabled{% endif %}>Terminar</button>
+         <button class="btn btn-danger" type="submit" >Terminar</button>
          <a href="#" class="btn btn-primary" onclick="window.history.back();">No quiero terminarla</a>
         </div>
     </form>

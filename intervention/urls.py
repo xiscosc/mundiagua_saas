@@ -3,7 +3,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
-    ToggleStarredInterventionView
+    ToggleStarredInterventionView, BillIntervention
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^view/(?P<pk>\d+)/$', InterventionView.as_view(), name="intervention-view"),
     url(r'^edit/(?P<pk>\d+)/$', UpdateInterventionView.as_view(), name="intervention-edit"),
     url(r'^terminate/(?P<pk>\d+)/$', TerminateIntervention.as_view(), name="intervention-terminate"),
+    url(r'^bill/(?P<pk>\d+)/$', BillIntervention.as_view(), name="intervention-bill"),
     url(r'^list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/$',
         ListInterventionView.as_view(), name="intervention-list"),
     url(r'^psearch/$', PreSearchInterventionView.as_view(), name="intervention-psearch"),
