@@ -67,7 +67,8 @@ INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 BOWER_INSTALLED_APPS = (
     'startbootstrap-sb-admin-2',
     'material-avatar',
-    'bootstrap3-typeahead'
+    'bootstrap3-typeahead',
+    'metisMenu'
 )
 
 MIDDLEWARE_CLASSES = [

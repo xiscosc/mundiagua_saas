@@ -36,8 +36,7 @@
                             hace {{ mod.date|timesince }}
                         </td>
                         <td>
-                            <a href="{% url 'intervention:intervention-view' mod.intervention_id %}" class="btn btn-block btn-danger">Ver
-                                avería</a>
+                            <a href="{% url 'intervention:intervention-view' mod.intervention_id %}" class="btn btn-block btn-danger">Ver</a>
                         </td>
                     </tr>
                 {% endfor %}
