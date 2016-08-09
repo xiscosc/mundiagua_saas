@@ -14,12 +14,10 @@
                     <td>
                         {% if request.user.is_officer and not nolinks and search_status.pk != 3 and search_status.pk != 4 %}
                             <a href="{% url 'intervention:intervention-terminate' intervention.pk %}"
-                               class="btn btn-primary">Terminar
-                                Avería</a>
+                               class="btn btn-primary">Terminar</a>
                             {% if search_status.pk != 5 %}
                             <a href="{% url 'intervention:intervention-bill' intervention.pk %}"
-                               class="btn btn-default">Facturar
-                                Avería</a>
+                               class="btn btn-default">Facturar</a>
                                 {% endif %}
                         {% endif %}
                         {% if nolinks %}
