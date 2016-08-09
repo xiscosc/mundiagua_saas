@@ -89,7 +89,8 @@ PUBLIC_URLS = (
     r'login/',
     r'logout/',
     r'admin/',
-    r'repair-status/(?P<online>\w+)/'
+    r'repair-status/(?P<online>\w+)/',
+    r'clientes/'
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'

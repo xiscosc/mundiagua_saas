@@ -262,3 +262,10 @@ class PublicClientView(TemplateView):
             context['error'] = True
 
         return context
+
+
+class RedirectOldClientView(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        data = request.GET.get('id', 'none')
+        return HttpResponseRedirect(reverse_lazy('public-status-repair', kwargs={'online': data}))

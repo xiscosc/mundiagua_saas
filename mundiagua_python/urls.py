@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView
-from client.views import PublicClientView
+from client.views import PublicClientView, RedirectOldClientView
 
 urlpatterns = [
     url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^message/sent/$', MessagesSentListView.as_view(), name="message-sent"),
     url(r'^message/ajax/$', MessagesAjaxView.as_view(), name="message-ajax"),
     url(r'^repair-status/(?P<online>\w+)/$', PublicClientView.as_view(), name="public-status-repair"),
+    url(r'^clientes/$', RedirectOldClientView.as_view(), name="old-status-repair"),
     url(r'^hijack/', include('hijack.urls')),
 ]
 
