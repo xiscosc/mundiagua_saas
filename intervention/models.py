@@ -22,6 +22,13 @@ class InterventionStatus(models.Model):
         return self.name.encode('utf8')
 
 
+class InterventionSubStatus(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name.encode('utf8')
+
+
 class Zone(models.Model):
     name = models.CharField(max_length=50)
     color = ColorField(default='#FF0000')
@@ -68,6 +75,9 @@ class Intervention(models.Model):
     def get_documents(self):
         return InterventionDocument.objects.filter(intervention=self)
 
+    def get_history_sub(self):
+        return InterventionLogSub.objects.filter(intervention=self).order_by("date")
+
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -81,6 +91,13 @@ class InterventionLog(models.Model):
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
     status = models.ForeignKey(InterventionStatus)
+    intervention = models.ForeignKey(Intervention)
+
+
+class InterventionLogSub(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey('core.User')
+    sub_status = models.ForeignKey(InterventionSubStatus)
     intervention = models.ForeignKey(Intervention)
 
 

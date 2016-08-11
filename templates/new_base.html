@@ -26,6 +26,7 @@
                                         <label class="control-label">Zona seleccionada</label>
                                         <div class=" ">
                                             <div class="zone" id="selected_zone">ZONA 1</div>
+                                            <h4 class="pull-right" id="label_default_zone"><strong>Zona seleccionada automáticamente</strong></h4>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -58,6 +59,13 @@
             {% for z in zones %}
                 {{ z.pk }}: "{{ z.color }}",
             {% endfor %}
+            };
+            var default_zones = {
+                {% for ad in client.get_addresses  %}
+                    {% if ad.default_zone %}
+                        {{ ad.pk }}: "{{ ad.default_zone.pk }}",
+                    {% endif %}
+                {% endfor %}
             }
         </script>
         <script src="{% static 'base/js/intervention/new.js' %}"></script>

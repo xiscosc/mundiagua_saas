@@ -44,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=100, blank=False, null=False)
     email = models.EmailField(unique=True)
     pb_token = models.CharField(max_length=254, null=True, blank=True)
-    order = models.IntegerField(default=9)
+    order_in_app = models.IntegerField(default=9)
     is_officer = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
 

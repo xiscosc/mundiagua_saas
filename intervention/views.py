@@ -12,7 +12,7 @@ from async_messages import messages
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
-    InterventionDocument
+    InterventionDocument, InterventionSubStatus, InterventionLogSub
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention
 from intervention.forms import ImageForm, DocumentForm
@@ -67,8 +67,9 @@ class InterventionView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(InterventionView, self).get_context_data(**kwargs)
         context['zones'] = Zone.objects.all()
-        context['users'] = User.objects.filter(is_active=True).order_by("order")
+        context['users'] = User.objects.filter(is_active=True).order_by('order_in_app')
         context['status'] = InterventionStatus.objects.all()
+        context['sub_status'] = InterventionSubStatus.objects.all()
         return context
 
 
@@ -115,7 +116,6 @@ class ListInterventionView(TemplateView):
 
 
 class FastModifyIntervention(TemplateView):
-
     def get_context_data(self, **kwargs):
         context = super(FastModifyIntervention, self).get_context_data(**kwargs)
         context['intervention'] = Intervention.objects.get(pk=int(kwargs['pk']))
@@ -281,10 +281,25 @@ class UploadDocumentView(View):
 
 
 class ToggleStarredInterventionView(View):
-
     def get(self, request, *args, **kwargs):
         intervention = Intervention.objects.get(pk=self.kwargs['pk'])
         intervention.starred = not intervention.starred
         intervention.save()
         messages.success(self.request.user, "Cambio realizado correctamente")
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']}))
+
+
+class AddStatusJobView(View):
+    def post(self, request, *args, **kwargs):
+        status_id = int(request.POST.get('sub_status', 0))
+        if status_id is not 0:
+            try:
+                log = InterventionLogSub(intervention_id=self.kwargs['pk'], created_by=self.request.user,
+                                         sub_status_id=status_id)
+                log.save()
+                messages.success(self.request.user, "Notificación guardada correctamente")
+            except:
+                messages.warning(self.request.user, "No se han podido guardar los datos")
+        else:
+            messages.warning(self.request.user, "No se han podido guardar los datos")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']}))

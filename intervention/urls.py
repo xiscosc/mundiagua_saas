@@ -3,7 +3,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
-    ToggleStarredInterventionView, BillIntervention
+    ToggleStarredInterventionView, BillIntervention, AddStatusJobView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^new/image/(?P<pk>\d+)/$', UploadImageView.as_view(), name="intervention-image-upload"),
     url(r'^new/document/(?P<pk>\d+)/$', UploadDocumentView.as_view(), name="intervention-document-upload"),
     url(r'^starred/(?P<pk>\d+)/$', ToggleStarredInterventionView.as_view(), name="intervention-starred"),
+    url(r'^status-job/(?P<pk>\d+)/$', AddStatusJobView.as_view(), name="intervention-status-job"),
 ]

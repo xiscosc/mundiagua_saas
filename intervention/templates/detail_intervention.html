@@ -271,6 +271,75 @@
 
     {% endif %}
 
+
+    {% if intervention.status_id == 2 %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Notificar estado del trabajo</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row" id="forms">
+                        <form method="post" action="{% url 'intervention:intervention-status-job' intervention.pk %}">
+                            {% csrf_token %}
+                            <div class="col-xs-12 col-md-9">
+                                <select class="form-control" name="sub_status">
+                                    {% for s in sub_status %}
+                                        <option value="{{ s.pk }}">{{ s }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <button type="submit" class="btn btn-block btn-danger">
+                                    <span class="fa fa-flash"></span> Notificar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if intervention.get_history_sub|length > 0 %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Historial de estado del trabajo</h3>
+                </div>
+                <div class="panel-body">
+                        <table class="table table-bordered table-hover table-striped" id="sub_history_table">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Estado</th>
+                            </tr>
+                            {% for h in intervention.get_history_sub %}
+                                <tr>
+                                    <td>
+                                        {{ h.date }}
+                                    </td>
+                                    <td>
+                                        {{ h.created_by.get_full_name }}
+                                    </td>
+                                    <td>
+                                        {{ h.sub_status }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
