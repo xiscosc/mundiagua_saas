@@ -1,23 +1,34 @@
 <h4>Productos y servicios</h4>
-{% for line in budget.get_lines %}
-    <table class="table table-bordered">
+
+<table class="table table-bordered">
+    {% for line in budget.get_lines %}
         <tr>
-            <td colspan="{% if line.discount > 0%}3{% elif line.quantity > 1 %}2{% else %}1{% endif %}">
-                {{ line.product|linebreaks }}
+            <td>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ line.product|linebreaks }}
+                        {% if line.quantity > 1  or  line.discount > 0 %}
+                            <div class="pull-left text-right">
+                                <small>{{ line.quantity|floatformat:2 }} uds a {{ line.unit_price|floatformat:2 }}€/ud
+                                </small>
+                                {% if line.discount > 0 %}
+                                    |
+                                    <small>Descuento: {{ line.discount|floatformat:2 }}%
+                                        <strong>-{{ line.total_discount|floatformat:2 }}€</strong></small>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="pull-right">Total producto/servicio:
+                            <strong>{{ line.total_line|floatformat:2 }}€</strong></div>
+                    </div>
+                </div>
+
             </td>
         </tr>
-        <tr>
-            {% if line.quantity > 1  or  line.discount > 0 %}
-                <td class="text-right"><small>{{ line.quantity|floatformat:2 }} uds a {{ line.unit_price|floatformat:2 }}€/ud</small></td>
-            {% endif %}
-            {% if line.discount > 0 %}
-                <td class="text-right"><small>Descuento: {{ line.discount|floatformat:2 }}%  <strong>-{{ line.total_discount|floatformat:2 }}€</strong></small></td>
-            {% endif %}
-            <td class="text-right">Total producto/servicio: <strong>{{ line.total_line|floatformat:2 }}€</strong></td>
-        </tr>
-    </table>
+    {% endfor %}
+</table>
 
-{% endfor %}
 
 <table class="table table-bordered">
     <tr>
@@ -29,12 +40,12 @@
             <em><strong>{{ budget.get_subtotal|floatformat:2 }}€</strong></em></td>
     </tr>
     {% if budget.tax > 0 %}
-    <tr>
-        <td class="text-center"><em><strong>IVA {{ budget.tax|floatformat:2 }}%</strong></em>
-        </td>
-        <td class="text-right">
-            <em><strong>{{ budget.get_tax_import|floatformat:2 }}€</strong></em></td>
-    </tr>
+        <tr>
+            <td class="text-center"><em><strong>IVA {{ budget.tax|floatformat:2 }}%</strong></em>
+            </td>
+            <td class="text-right">
+                <em><strong>{{ budget.get_tax_import|floatformat:2 }}€</strong></em></td>
+        </tr>
     {% endif %}
     <tr>
         <td class="text-center"><em><strong>TOTAL</strong></em></td>
