@@ -241,6 +241,7 @@ class OwnListInterventionView(TemplateView):
         context = super(OwnListInterventionView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
         context['page'] = page
+        context['title'] = "Mis averías asignadas"
         interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS,
                                                     assigned=self.request.user).order_by("-date")
         paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
