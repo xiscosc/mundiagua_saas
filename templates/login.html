@@ -7,7 +7,7 @@
         <fieldset>
             {{ form|bootstrap }}
             <input type="hidden" name="next"
-                   value="{% if next %}{{ next }}{% else %}{% url 'intervention:intervention-home' %}{% endif %}"/>
+                   value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
             <button type="submit" class="btn btn-lg btn-success btn-block">Entrar</button>
         </fieldset>
     </form>
