@@ -141,10 +141,10 @@ class PreSearchRepairView(PreSearchView):
 
         repairs_ath = AthRepair.objects.filter(Q(description__icontains=search_text) |
                                                Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text))
+            address__address__icontains=search_text)| Q(address__client__phones__phone__icontains=search_text))
         repairs_idegis = IdegisRepair.objects.filter(Q(description__icontains=search_text) |
                                                      Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text))
+            address__address__icontains=search_text)| Q(address__client__phones__phone__icontains=search_text))
         pk_list_ath = []
         pk_list_idegis = []
         for i in repairs_ath:

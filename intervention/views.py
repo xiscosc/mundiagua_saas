@@ -156,7 +156,7 @@ class PreSearchInterventionView(PreSearchView):
     def set_data_and_response(self, request):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
-        interventions = Intervention.objects.filter(Q(description__icontains=search_text) |
+        interventions = Intervention.objects.filter(Q(address__client__phones__phone__icontains=search_text) |
                                                     Q(address__client__name__icontains=search_text) | Q(
             address__address__icontains=search_text))
         pk_list = []

@@ -32,7 +32,7 @@ class Client(models.Model):
 class Phone(models.Model):
     alias = models.CharField(max_length=45)
     phone = models.CharField(max_length=45, verbose_name="Teléfono")
-    client = models.ForeignKey(Client)
+    client = models.ForeignKey(Client, related_name="phones")
 
     def __str__(self):
         return (self.alias + " - " + self.phone).encode('utf8')

@@ -46,12 +46,19 @@ def get_return_from_id(search_text):
     ath_r = re.compile('[a|A][0-9]+')
     client_r = re.compile('[c|C][0-9]+')
     engine_r = re.compile('[e|E][0-9]+')
+    budget_r = re.compile('[p|P][0-9]+')
 
     intervention_m = intervention_r.match(search_text)
     if intervention_m is not None:
         idstr = intervention_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('intervention:intervention-view', kwargs={"pk": id})}
+
+    budget_m = budget_r.match(search_text)
+    if budget_m is not None:
+        idstr = budget_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
 
     idegis_m = idegis_r.match(search_text)
     if idegis_m is not None:

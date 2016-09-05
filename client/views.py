@@ -204,11 +204,14 @@ class PreSearchClientView(PreSearchView):
         search_text = params.getlist('search_text')[0]
         clients = Client.objects.filter(name__icontains=search_text)
         addresses = Address.objects.filter(address__icontains=search_text)
+        phones = Phone.objects.filter(phone__icontains=search_text)
         pk_list = []
         for i in clients:
             pk_list.append(i.pk)
         for a in addresses:
             pk_list.append(a.client_id)
+        for p in phones:
+            pk_list.append(p.client_id)
         request.session['search_clients'] = list(set(pk_list))
         request.session['search_clients_text'] = search_text
         return HttpResponseRedirect(reverse_lazy('client:client-search'))

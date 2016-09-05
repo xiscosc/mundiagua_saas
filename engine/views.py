@@ -86,7 +86,7 @@ class PreSearchEngineRepairView(PreSearchView):
 
         repairs = EngineRepair.objects.filter(
             Q(address__client__name__icontains=search_text) | Q(
-                address__address__icontains=search_text))
+                address__address__icontains=search_text) | Q(address__client__phones__phone__icontains=search_text))
 
         pk_list = []
         for i in repairs:

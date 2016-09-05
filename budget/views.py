@@ -156,7 +156,7 @@ class PreSearchBudgetView(PreSearchView):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
 
-        budgets = BudgetStandard.objects.filter(
+        budgets = BudgetStandard.objects.filter(Q(address__client__phones__phone__icontains=search_text)|
             Q(address__client__name__icontains=search_text) | Q(
                 address__address__icontains=search_text))
 
