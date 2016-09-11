@@ -12,9 +12,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mundiagua SL - Intrantet 6.0.2</title>
+    <title>Mundiagua SL - Intrantet 6.0.3</title>
 
-    <link rel='shortcut icon' href="{% static 'base/img/favicon.ico' %}" type='image/x-icon' />
+    <link rel='shortcut icon' href="{% static 'base/img/favicon.ico' %}" type='image/x-icon'/>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -22,19 +22,17 @@
     <!-- MetisMenu CSS -->
     <link href="{% static 'metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
 
-    <!-- Timeline CSS -->
-    <link href="{% static 'startbootstrap-sb-admin-2/dist/css/timeline.css' %}" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link href="{% static 'startbootstrap-sb-admin-2/dist/css/sb-admin-2.css' %}" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="{% static 'morrisjs/morris.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}" />
+    <!-- Animate.css -->
+    <link href="{% static 'animate.css/animate.min.css' %}" rel="stylesheet" type="text/css">
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}"/>
 
     <link href="{% static 'base/css/mundiagua.css' %}" rel="stylesheet" type="text/css">
 
@@ -64,14 +62,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Intranet 6.0.2</a>
+            <a class="navbar-brand" href="/">Intranet 6.0.3</a>
         </div>
         <!-- /.navbar-header -->
 
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    <i class="fa fa-envelope fa-fw" {% if request.user.has_notification > 0 %}
+                       style="color: brown" {% endif %}></i> <i class="fa fa-caret-down"
+                        {% if request.user.has_notification > 0 %} style="color: brown" {% endif %}></i>
                 </a>
                 <ul class="dropdown-menu dropdown-messages" id="message-ajax">
                     <li>
@@ -116,155 +116,157 @@
                         <a href="#"><i class="fa fa-dashboard fa-fw"></i> Averías<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             {% if request.user.is_officer %}
-                            <li>
-                                <a href="{% url 'intervention:intervention-home' %}">Inicio</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'intervention:intervention-search-client'%}">Nueva avería</a>
-                            </li>
+                                <li>
+                                    <a href="{% url 'intervention:intervention-home' %}">Inicio</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'intervention:intervention-search-client' %}">Nueva avería</a>
+                                </li>
                             {% endif %}
                             <li>
-                                <a href="{% url 'intervention:intervention-list-own'%}">Mis averías asignadas</a>
+                                <a href="{% url 'intervention:intervention-list-own' %}">Mis averías asignadas</a>
                             </li>
                             {% if request.user.is_officer %}
-                            <li class="sidebar-search">
-                                <form method="post" action="{% url 'intervention:intervention-psearch' %}">
-                                    {% csrf_token %}
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" placeholder="Buscar avería"
-                                               name="search_text" required>
-                                <span class="input-group-btn">
+                                <li class="sidebar-search">
+                                    <form method="post" action="{% url 'intervention:intervention-psearch' %}">
+                                        {% csrf_token %}
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" class="form-control" placeholder="Buscar avería"
+                                                   name="search_text" required>
+                                            <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </span>
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
 
-                                <!-- /input-group -->
-                            </li>
-                        {% endif %}
+                                    <!-- /input-group -->
+                                </li>
+                            {% endif %}
 
                         </ul>
                     </li>
                     {% if request.user.is_officer %}
-                    <li>
-                        <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="{% url 'repair:repair-search-client' %}">Nueva reparación</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'repair:repair-list' 0 %}">Todas las reparaciones</a>
-                            </li>
-                            <li class="sidebar-search">
-                                <form method="post" action="{% url 'repair:repair-psearch' %}">
-                                    {% csrf_token %}
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" placeholder="Buscar reparación"
-                                               name="search_text" required>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                </span>
-                                    </div>
-                                </form>
-
-                                <!-- /input-group -->
-                            </li>
-
-                        </ul>
-                    </li>
                         <li>
-                        <a href="#"><i class="fa fa-circle-o-notch fa-fw"></i> Reparaciones de motores<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="{% url 'engine:engine-search-client' %}">Nueva reparación</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'engine:engine-all'%}">Todas las reparaciones</a>
-                            </li>
-                            <li class="sidebar-search">
-                                <form method="post" action="{% url 'engine:engine-psearch' %}">
-                                    {% csrf_token %}
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" placeholder="Buscar reparación"
-                                               name="search_text" required>
-                                <span class="input-group-btn">
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'repair:repair-search-client' %}">Nueva reparación</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'repair:repair-list' 0 %}">Todas las reparaciones</a>
+                                </li>
+                                <li class="sidebar-search">
+                                    <form method="post" action="{% url 'repair:repair-psearch' %}">
+                                        {% csrf_token %}
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" class="form-control" placeholder="Buscar reparación"
+                                                   name="search_text" required>
+                                            <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </span>
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
 
-                                <!-- /input-group -->
-                            </li>
+                                    <!-- /input-group -->
+                                </li>
 
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="{% url 'client:client-new' %}">Nuevo cliente</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'client:client-all' %}">Todos los clientes</a>
-                            </li>
-                            <li class="sidebar-search">
-                                <form method="post" action="{% url 'client:client-psearch' %}">
-                                    {% csrf_token %}
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" placeholder="Buscar clientes"
-                                               name="search_text" required>
-                                <span class="input-group-btn">
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-circle-o-notch fa-fw"></i> Reparaciones de motores<span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'engine:engine-search-client' %}">Nueva reparación</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'engine:engine-all' %}">Todas las reparaciones</a>
+                                </li>
+                                <li class="sidebar-search">
+                                    <form method="post" action="{% url 'engine:engine-psearch' %}">
+                                        {% csrf_token %}
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" class="form-control" placeholder="Buscar reparación"
+                                                   name="search_text" required>
+                                            <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </span>
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
 
-                                <!-- /input-group -->
-                            </li>
+                                    <!-- /input-group -->
+                                </li>
 
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-th fa-fw"></i> Presupuestos<span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="{% url 'budget:budget-search-client' %}">Nuevo presupuesto</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'budget:budget-all' %}">Todos los presupuestos</a>
-                            </li>
-                            <li class="sidebar-search">
-                                <form method="post" action="{% url 'budget:budget-psearch' %}">
-                                    {% csrf_token %}
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" placeholder="Buscar presupuesto"
-                                               name="search_text" required>
-                                <span class="input-group-btn">
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'client:client-new' %}">Nuevo cliente</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'client:client-all' %}">Todos los clientes</a>
+                                </li>
+                                <li class="sidebar-search">
+                                    <form method="post" action="{% url 'client:client-psearch' %}">
+                                        {% csrf_token %}
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" class="form-control" placeholder="Buscar clientes"
+                                                   name="search_text" required>
+                                            <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </span>
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
 
-                                <!-- /input-group -->
-                            </li>
+                                    <!-- /input-group -->
+                                </li>
 
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-download fa-fw"></i> Otros<span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="http://in4.mundiaguabalear.com" target="_blank">Sistema antiguo</a>
-                            </li>
-                            <li>
-                                <a href="https://mail.mundiaguabalear.com" target="_blank">Correo</a>
-                            </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-th fa-fw"></i> Presupuestos<span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'budget:budget-search-client' %}">Nuevo presupuesto</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'budget:budget-all' %}">Todos los presupuestos</a>
+                                </li>
+                                <li class="sidebar-search">
+                                    <form method="post" action="{% url 'budget:budget-psearch' %}">
+                                        {% csrf_token %}
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" class="form-control" placeholder="Buscar presupuesto"
+                                                   name="search_text" required>
+                                            <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                                        </div>
+                                    </form>
 
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
+                                    <!-- /input-group -->
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-download fa-fw"></i> Otros<span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="http://in4.mundiaguabalear.com" target="_blank">Sistema antiguo</a>
+                                </li>
+                                <li>
+                                    <a href="https://mail.mundiaguabalear.com" target="_blank">Correo</a>
+                                </li>
+
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
 
                     {% endif %}
 
@@ -282,20 +284,6 @@
             </div>
             <!-- /.col-lg-12 -->
         </div>
-        {% if messages %}
-            <div class="row">
-                <div class="col-lg-12">
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
         {% block content %}
 
         {% endblock %}
@@ -320,11 +308,33 @@
 
 <!-- Custom Theme JavaScript -->
 <script src="{% static 'startbootstrap-sb-admin-2/dist/js/sb-admin-2.js' %}"></script>
+
+<script src="{% static 'remarkable-bootstrap-notify/dist/bootstrap-notify.min.js' %}"></script>
+
 <script src="{% static 'base/js/core/message-ajax.js' %}"></script>
+
+<script src="{% static 'base/js/core/notifications.js' %}"></script>
 {% block extrajs %} {% endblock %}
 
 {% block extrajs_include %} {% endblock %}
 
-</body>
+{% if messages %}
+    <script type="text/javascript">
+        {% for message in messages %}
+            make_notification("{{ message }}", "{{ message.tags }}", false);
+        {% endfor %}
+    </script>
+{% endif %}
+{% if request.user.has_notification == 1 %}
+    <script type="text/javascript">
+        make_notification(
+                "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",
+                "info",
+                "{% url 'message-inbox' %}"
+        );
+    </script>
+{% endif %}
 
+
+</body>
 </html>

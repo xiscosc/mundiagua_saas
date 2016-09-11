@@ -120,6 +120,9 @@ class MessagesListView(MessageListBaseView):
     def get_context_data(self, **kwargs):
         context = super(MessagesListView, self).get_context_data(**kwargs)
         context['inbox'] = True
+        if self.request.user.has_notification > 0:
+            self.request.user.has_notification = 0
+            self.request.user.save()
         return context
 
 
@@ -135,6 +138,10 @@ class MessagesAjaxView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MessagesAjaxView, self).get_context_data(**kwargs)
         context['messages_mundiagua'] = Message.objects.filter(to_user=self.request.user).order_by("-date")[:3]
+        context['has_notification'] = self.request.user.has_notification
+        if context['has_notification'] == 1:
+            self.request.user.has_notification = 2
+            self.request.user.save()
         return context
 
 

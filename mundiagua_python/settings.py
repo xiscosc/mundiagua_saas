@@ -65,10 +65,12 @@ MY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 
 BOWER_INSTALLED_APPS = (
-    'startbootstrap-sb-admin-2',
+    'https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git',
     'material-avatar',
     'bootstrap3-typeahead',
-    'metisMenu'
+    'metisMenu',
+    'remarkable-bootstrap-notify',
+    'animate.css'
 )
 
 MIDDLEWARE_CLASSES = [

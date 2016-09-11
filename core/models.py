@@ -47,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     order_in_app = models.IntegerField(default=9)
     is_officer = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
+    has_notification = models.IntegerField(default=0)
 
     objects = MyUserManager()
 
@@ -81,8 +82,11 @@ class Message(models.Model):
 def post_save_message(sender, **kwargs):
     if kwargs['created']:
         ins = kwargs['instance']
+        ins.to_user.has_notification = 1
+        ins.to_user.save()
         body = ins.body+"\n\n"+ins.from_user.get_full_name()
         send_message.delay(ins, body)
+
 
 
 post_save.connect(post_save_message, sender='core.Message')

@@ -271,4 +271,5 @@ class RedirectOldClientView(View):
 
     def dispatch(self, request, *args, **kwargs):
         data = request.GET.get('id', 'none')
+        data = "".join(data.split())
         return HttpResponseRedirect(reverse_lazy('public-status-repair', kwargs={'online': data}))
