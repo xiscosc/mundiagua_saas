@@ -200,8 +200,7 @@ class AllClientsView(TemplateView):
 class PreSearchClientView(PreSearchView):
 
     def set_data_and_response(self, request):
-        params = request.POST.copy()
-        search_text = params.getlist('search_text')[0]
+        search_text = self.search_text
         clients = Client.objects.filter(name__icontains=search_text)
         addresses = Address.objects.filter(address__icontains=search_text)
         phones = Phone.objects.filter(phone__icontains=search_text)

@@ -136,9 +136,7 @@ class ListRepairView(TemplateView):
 class PreSearchRepairView(PreSearchView):
 
     def set_data_and_response(self, request):
-        params = request.POST.copy()
-        search_text = params.getlist('search_text')[0]
-
+        search_text = self.search_text
         repairs_ath = AthRepair.objects.filter(Q(description__icontains=search_text) |
                                                Q(address__client__name__icontains=search_text) | Q(
             address__address__icontains=search_text)| Q(address__client__phones__phone__icontains=search_text))

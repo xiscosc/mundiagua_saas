@@ -1,14 +1,20 @@
 {% extends 'log_base.html' %}
 {% load bootstrap %}
+{% load static %}
+{% load staticfiles %}
 {% block title %}Por favor, inicie sesión{% endblock %}
 {% block content %}
-    <form role="form" method="post">
+    <form role="form" method="post" id="form-log">
         {% csrf_token %}
         <fieldset>
             {{ form|bootstrap }}
             <input type="hidden" name="next"
                    value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
-            <button type="submit" class="btn btn-lg btn-success btn-block">Entrar</button>
+            <a id="btn-log" class="btn btn-lg btn-success btn-block" href="#">Entrar</a>
         </fieldset>
     </form>
+{% endblock %}
+
+{% block extrajs %}
+    <script src="{% static 'base/js/core/login.js' %}"></script>
 {% endblock %}
