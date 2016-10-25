@@ -41,7 +41,6 @@ OTHER_APPS = [
     'colorfield',
     'djangobower',
     'bootstrapform',
-    'sendsms',
     'bootstrap_pagination',
     'async_messages',
     'hijack',
@@ -195,8 +194,6 @@ TEMPLATES = [
     },
 ]
 
-SENDSMS_BACKEND = 'sendsms.backends.esendex.SmsBackend'
-SMS_SENDER = 'MUNDIAGUASL'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 

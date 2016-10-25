@@ -74,24 +74,42 @@ class SMS(models.Model):
 
     def process_phone(self):
         phone_processed = self.phone.phone.replace(" ", "")
-        phone_processed = '34' + phone_processed.replace(".", "")
-        if len(phone_processed) == 11:
+        phone_processed = '+34' + phone_processed.replace(".", "")
+        if len(phone_processed) == 12:
             return phone_processed
         else:
             return False
+
+    def send(self):
+        number = self.process_phone()
+        if number:
+            import boto3
+            from django.conf import settings
+            sns = boto3.client('sns',
+                               aws_access_key_id=settings.AWS_ACCESS_KEY,
+                               aws_secret_access_key=settings.AWS_SECRET_KEY,
+                               region_name=settings.AWS_REGION
+                               )
+            result = sns.publish(PhoneNumber=number, Message=self.body)
+            status = int(result['ResponseMetadata']['HTTPStatusCode'])
+            if status == 200:
+                self.sent_status_id = 2
+                dict = {"success": True}
+            else:
+                self.sent_status_id = 3
+                dict = {"success": False, "reason": "error"}
+        else:
+            self.sent_status_id = 4
+            dict = {"success": False, "reason": "incorrect_phone"}
+
+        self.save()
+        return dict
 
 
 def post_save_sms(sender, **kwargs):
     sms = kwargs['instance']
     if kwargs['created']:
-        phone_processed = sms.process_phone()
-        if phone_processed:
-            send_sms.delay(sms, phone_processed)
-        else:
-            sms.sent_status_id = 4
-            messages.warning(sms.sender,
-                         "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato")
-            sms.save()
+        send_sms.delay(sms)
 
 
 post_save.connect(post_save_sms, sender=SMS)
