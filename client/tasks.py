@@ -10,9 +10,9 @@ def send_sms(sms):
         messages.success(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente")
     else:
         if result['reason'] == "incorrect_phone":
-            messages.warning(sms.sender,
-                             "Error enviando SMS a " + sms.phone.client.name + ", el número no cumple el formato")
+            message_error = "Error enviando SMS a " + sms.phone.client.name + ", no cumple el formato"
+
         else:
-            messages.warning(sms.sender,
-                             "Error enviando SMS a " + sms.phone.client.name + ", puede ser un error " +
-                             "temporal o que no hay crédito de SMS")
+            message_error = "Error enviando SMS a " + sms.phone.client.name + ", contacte con el administrador"
+
+        messages.warning(sms.sender, message_error)

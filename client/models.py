@@ -85,17 +85,21 @@ class SMS(models.Model):
         if number:
             import boto3
             from django.conf import settings
-            sns = boto3.client('sns',
-                               aws_access_key_id=settings.AWS_ACCESS_KEY,
-                               aws_secret_access_key=settings.AWS_SECRET_KEY,
-                               region_name=settings.AWS_REGION
-                               )
-            result = sns.publish(PhoneNumber=number, Message=self.body)
-            status = int(result['ResponseMetadata']['HTTPStatusCode'])
-            if status == 200:
-                self.sent_status_id = 2
-                dict = {"success": True}
-            else:
+            try:
+                sns = boto3.client('sns',
+                                   aws_access_key_id=settings.AWS_ACCESS_KEY,
+                                   aws_secret_access_key=settings.AWS_SECRET_KEY,
+                                   region_name=settings.AWS_REGION
+                                   )
+                result = sns.publish(PhoneNumber=number, Message=self.body)
+                status = int(result['ResponseMetadata']['HTTPStatusCode'])
+                if status == 200:
+                    self.sent_status_id = 2
+                    dict = {"success": True}
+                else:
+                    self.sent_status_id = 3
+                    dict = {"success": False, "reason": "error"}
+            except:
                 self.sent_status_id = 3
                 dict = {"success": False, "reason": "error"}
         else:
@@ -104,6 +108,10 @@ class SMS(models.Model):
 
         self.save()
         return dict
+
+    def __str__(self):
+        return self.date.__str__() + " - " + self.sender.__str__()
+
 
 
 def post_save_sms(sender, **kwargs):

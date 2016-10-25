@@ -23,3 +23,7 @@ SENDGRID_PASSWORD = "pass"
 DEBUG = True
 DOMAIN = "https://www.example.com"
 ALLOWED_HOSTS = ['.example.com']
+
+AWS_ACCESS_KEY = ""
+AWS_SECRET_KEY = ""
+AWS_REGION = "eu-west-1"
