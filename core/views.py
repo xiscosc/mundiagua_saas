@@ -147,13 +147,16 @@ class MessagesAjaxView(TemplateView):
 
 class PreSearchView(View):
 
+    search_text = None
+
     def set_data_and_response(self, request):
         return None
 
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
-        regex_data = get_return_from_id(search_text)
+        self.search_text = search_text.encode('utf-8')
+        regex_data = get_return_from_id(self.search_text)
         if regex_data['found']:
             return HttpResponseRedirect(regex_data['url'])
         else:

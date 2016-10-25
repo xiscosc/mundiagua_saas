@@ -153,8 +153,7 @@ class ListBudgetView(TemplateView):
 
 class PreSearchBudgetView(PreSearchView):
     def set_data_and_response(self, request):
-        params = request.POST.copy()
-        search_text = params.getlist('search_text')[0]
+        search_text = self.search_text
 
         budgets = BudgetStandard.objects.filter(Q(address__client__phones__phone__icontains=search_text)|
             Q(address__client__name__icontains=search_text) | Q(
