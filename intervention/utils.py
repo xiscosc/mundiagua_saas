@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 import calendar
-from datetime import date
+from datetime import date, datetime
+import time
 
+import xlwt
 from async_messages import messages
 from django.conf import settings
+from django.http import HttpResponse
+
 from core.models import User
 from intervention.models import Intervention, InterventionModification, InterventionLog, InterventionStatus, Zone
 
@@ -164,3 +168,68 @@ def get_intervention_list(status_id, user_id, zone_id, starred):
 
     return {'interventions': interventions, 'search_status': search_status, 'search_user': search_user,
             'search_zone': search_zone}
+
+
+def generate_report(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    name = '"informe_'+str(time.time())+'.xls"'
+    response['Content-Disposition'] = 'attachment; filename='+name
+
+    interventions = Intervention.objects.all()
+    date = int(request.POST.get('date', 0))
+    worker = int(request.POST.get('worker', 0))
+    zone = int(request.POST.get('zone', 0))
+    status = int(request.POST.get('status', 0))
+
+    if zone is not 0:
+        zones = [int(x) for x in request.POST.getlist("zone_pk[]")]
+        if len(zones) is not 0:
+            interventions = interventions.filter(zone_id__in=zones)
+
+    if status is not 0:
+        statuses = [int(x) for x in request.POST.getlist("status_pk[]")]
+        if len(statuses) is not 0:
+            interventions = interventions.filter(status_id__in=statuses)
+
+    if worker is not 0:
+        workers = [int(x) for x in request.POST.getlist("worker_pk[]")]
+        if len(workers) is not 0:
+            interventions = interventions.filter(interventionlog__assigned_id__in=workers)
+
+    if date is not 0:
+        date1 = request.POST.get('date1', "")
+        date2 = request.POST.get('date2', "")
+        if date1 is not "" and date2 is not "":
+            date1 = datetime.strptime(date1, "%Y-%m-%d").date()
+            date2 = datetime.strptime(date2, "%Y-%m-%d").date()
+            interventions = interventions.filter(date__range=(date1, date2))
+
+    columns = ['ID', 'CLIENTE', 'FECHA', 'ESTADO', 'OPERARIOS', "ZONA"]
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('INFORME')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    for i in interventions:
+        logs = InterventionLog.objects.filter(intervention=i, status_id=2)
+        operarios = ""
+        for l in logs:
+            operarios = operarios + l.assigned.get_full_name() + ", "
+        row = ["V"+str(i.pk), str(i.address.client), i.date.strftime('%Y-%m-%d %H:%M') , str(i.status), operarios, str(i.zone)]
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response

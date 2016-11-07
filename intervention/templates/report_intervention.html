@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Generador de informes{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Instrucciones</h3>
+                </div>
+                <div class="panel-body">
+                    <li>Si al seleccionar un filtro específico no marca ninguna casilla se considerará que ha marcado la
+                        opción Todos
+                    </li>
+
+                    <li>Si hay muchas opciones de filtrado puede tardar unos instantes
+                    </li>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <form method="post" id="reportform">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Filtros</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" xmlns="http://www.w3.org/1999/html">
+                            <div class="col-xs-3">
+                                <h4>Operario asignado</h4>
+
+                                <ul class="list-unstyled">
+                                    <li><h5><input type="radio" name="worker" value="0" checked> Todos</h5></li>
+                                    <li><h5><input type="radio" name="worker" value="1"> Específico</h5></li>
+                                    <ul id="worker_pk" style="display: none">
+                                        {% for u in workers %}
+                                            <li><input type="checkbox" name="worker_pk[]"
+                                                       value="{{ u.pk }}"> {{ u.get_full_name }} </input>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </ul>
+
+                            </div>
+                            <div class="col-xs-3">
+                                <h4>Estado actual</h4>
+
+                                <ul class="list-unstyled">
+                                    <li><h5><input type="radio" name="status" value="0" checked> Todos</h5></li>
+                                    <li><h5><input type="radio" name="status" value="1"> Específico</h5></li>
+                                    <ul id="status_pk" style="display: none">
+                                        {% for s in statuses %}
+                                            <li><input type="checkbox" name="status_pk[]"
+                                                       value="{{ s.pk }}"> {{ s }} </input> </li>
+                                        {% endfor %}
+                                    </ul>
+                                </ul>
+
+                            </div>
+                            <div class="col-xs-3">
+                                <h4>Zona</h4>
+
+                                <ul class="list-unstyled">
+                                    <li><h5><input type="radio" name="zone" value="0" checked> Todos</h5></li>
+                                    <li><h5><input type="radio" name="zone" value="1"> Específica</h5></li>
+                                    <ul id="zone_pk" style="display: none">
+                                        {% for z in zones %}
+                                            <li class="list-unstyled"><input type="checkbox" name="zone_pk[]"
+                                                                             value="{{ z.pk }}"><label>
+                                                <div style="background-color: {{ z.color }}"
+                                                     class="zone">{{ z }}</div>
+                                            </label></li>
+                                        {% endfor %}
+                                    </ul>
+                                </ul>
+                            </div>
+
+                            <div class="col-xs-3">
+                                <h4>Fechas</h4>
+
+                                <ul class="list-unstyled">
+                                    <li><h5><input type="radio" name="date" value="0" checked> Todas</h5></li>
+                                    <li><h5><input type="radio" name="date" value="1"> Específicas</h5></li>
+                                    <ul id="date_pk" class="list-unstyled" style="display: none">
+                                        <li class="list-unstyled">Desde:<input type="date" name="date1"
+                                                                               class="form-control"></li>
+                                        <li class="list-unstyled">Hasta:<input type="date" name="date2"
+                                                                               class="form-control"></li>
+                                    </ul>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-3">
+                <input type="submit" id="reportsol" value="Solicitar informe" class="btn btn-block btn-primary">
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+
+{% block extrajs %}
+    <script src="{% static 'base/js/intervention/reports.js' %}"></script>
+{% endblock %}

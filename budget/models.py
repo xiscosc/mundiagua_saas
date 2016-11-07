@@ -51,7 +51,7 @@ class BudgetStandard(Budget):
         return "PM" + year + "-" + str(self.pk)
 
     def get_lines(self):
-        return BudgetLineStandard.objects.filter(budget_id=self.pk)
+        return BudgetLineStandard.objects.filter(budget_id=self.pk).order_by("id")
 
 
 class BudgetRepair(Budget):
@@ -69,7 +69,7 @@ class BudgetRepair(Budget):
         return "P" + str(self.get_repair()) + "-" + str(self.intern_id)
 
     def get_lines(self):
-        return BudgetLineRepair.objects.filter(budget_id=self.pk)
+        return BudgetLineRepair.objects.filter(budget_id=self.pk).order_by("id")
 
 
 class BudgetLine(models.Model):

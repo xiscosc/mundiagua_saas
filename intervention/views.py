@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import csv
 from datetime import date
 
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, DetailView, View
 from django.core.paginator import Paginator
@@ -14,7 +16,7 @@ from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
     InterventionDocument, InterventionSubStatus, InterventionLogSub
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
-    generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention
+    generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention, generate_report
 from intervention.forms import ImageForm, DocumentForm
 
 
@@ -304,3 +306,17 @@ class AddStatusJobView(View):
         else:
             messages.warning(self.request.user, "No se han podido guardar los datos")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']}))
+
+
+class ReportInterventionView(TemplateView):
+    template_name = 'report_intervention.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportInterventionView, self).get_context_data(**kwargs)
+        context['statuses'] = InterventionStatus.objects.all()
+        context['zones'] = Zone.objects.all()
+        context['workers'] = User.objects.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return generate_report(request)
