@@ -175,7 +175,7 @@ def generate_report(request):
     name = '"informe_'+str(time.time())+'.xls"'
     response['Content-Disposition'] = 'attachment; filename='+name
 
-    interventions = Intervention.objects.all()
+    interventions = Intervention.objects.all().order_by("id")
     date = int(request.POST.get('date', 0))
     worker = int(request.POST.get('worker', 0))
     zone = int(request.POST.get('zone', 0))
