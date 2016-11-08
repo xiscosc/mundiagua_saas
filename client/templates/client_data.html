@@ -1,45 +1,82 @@
-    <div class="modal fade" id="modal_sms" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Envío de SMS</h4>
-                </div>
+<div class="modal fade" id="modal_sms" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Envío de SMS</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_sms" method="post" action="{% url 'client:client-sms-send' %}">
+                    {% csrf_token %}
+                    <textarea maxlength="160" class="form-control" placeholder="Escribe aquí tu SMS" name="sms_body"
+                              id="sms_body"></textarea>
+                    <input type="hidden" id="phone_pk" name="phone_pk"/>
+                    <input type="hidden" id="from_model" name="from_model"/>
+                    <input type="hidden" id="from_model_id" name="from_model_id"/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div style="float:left;color:#737373;font-style:italic">Carácteres restantes: <strong
+                        id="sms_count">160</strong></div>
+                <button type="button" class="btn btn-default sms_close" data-dismiss="modal">Descartar</button>
+                <button type="button" class="btn btn-primary" id="sms_send">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_mail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Envío de correo electrónico</h4>
+            </div>
+            <form id="form_sms" method="post" action="{% url 'client:client-email-send' %}">
                 <div class="modal-body">
-                    <form id="form_sms" method="post" action="{% url 'client:client-sms-send' %}">
-                        {% csrf_token %}
-                        <textarea maxlength="160" class="form-control" placeholder="Escribe aquí tu SMS" name="sms_body" id="sms_body"></textarea>
-                        <input type="hidden" id="phone_pk" name="phone_pk" />
-                        <input type="hidden" id="from_model" name="from_model" />
-                        <input type="hidden" id="from_model_id" name="from_model_id" />
-                    </form>
+
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="email_field" id="email_field" placeholder="Email"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="email_subject" name="email_subject"
+                               placeholder="Asunto" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="15" placeholder="Escribe aquí tu email" name="email_body"
+                                  id="email_body" required></textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <div style="float:left;color:#737373;font-style:italic">Carácteres restantes: <strong id="sms_count">160</strong></div>
-                    <button type="button" class="btn btn-default sms_close" data-dismiss="modal" >Descartar</button>
-                    <button type="button" class="btn btn-primary" id="sms_send">Enviar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Descartar</button>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_geo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Servicio de localización</h4>
+            </div>
+            <div class="modal-body" id="modal_body_geo">
+                <h4>Ubicando...</h4>
+                {% include 'progress_bar.html' with w=100 %}
             </div>
         </div>
     </div>
-
-
-    <div class="modal fade" id="modal_geo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Servicio de localización</h4>
-                </div>
-                <div class="modal-body" id="modal_body_geo">
-                    <h4>Ubicando...</h4>
-                    {% include 'progress_bar.html' with w=100 %}
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
 {% if not edit %}
     <div class="row">
@@ -47,10 +84,11 @@
     <div class="panel panel-default">
     <div class="panel-heading">Datos del cliente
         {% if request.user.is_officer %}
-    <div class="pull-right">
-                        <a class="btn btn-xs btn-default" href="{% url 'client:client-view' client.pk %}"><i class="fa fa-edit"></i> Modificar datos</a>
-    </div>
-            {% endif %}
+            <div class="pull-right">
+                <a class="btn btn-xs btn-default" href="{% url 'client:client-view' client.pk %}"><i
+                        class="fa fa-edit"></i> Modificar datos</a>
+            </div>
+        {% endif %}
     </div>
     <div class="panel-body">
 {% endif %}
@@ -70,7 +108,7 @@
                         <li><a href="{% url 'repair:repair-ath-new' client.pk %}">Reparación ATH</a></li>
                         <li><a href="{% url 'repair:repair-idegis-new' client.pk %}">Reparación Idegis</a></li>
                         <li><a href="{% url 'budget:budget-new' client.pk %}">Presupuesto</a></li>
-                         <li><a href="{% url 'engine:engine-new' client.pk %}">Reparación de motor</a></li>
+                        <li><a href="{% url 'engine:engine-new' client.pk %}">Reparación de motor</a></li>
                     </ul>
                 </div>
             {% endif %}
@@ -89,7 +127,9 @@
                     <strong>Email</strong>
                 </td>
                 <td>
-                    {{ client.email }}
+                    <button class="btn btn-xs btn-danger btn-email" {% if not request.user.is_officer %}
+                            disabled {% endif %}>Enviar correo {{ client.email }}</button>
+                    <div class="hidden" id="email_source">{{ client.email }}</div>
                 </td>
             </tr>
             <tr>
@@ -136,10 +176,11 @@
                                 <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
                             </a>
                         {% else %}
-                            <button class="btn btn-primary" id="btn_geo">Grabar ubicación</button>
-                                <form method="post" action="{% url 'client:client-address-edit-geo' address.pk %}" id="form_geo">
-                                    {% csrf_token %}
-                                </form>
+                            <button class="btn btn-primary btn-xs" id="btn_geo">Grabar ubicación</button>
+                            <form method="post" action="{% url 'client:client-address-edit-geo' address.pk %}"
+                                  id="form_geo">
+                                {% csrf_token %}
+                            </form>
 
                         {% endif %}
                     </td>
@@ -175,7 +216,9 @@
                                href="{% url 'client:client-phone-delete' phone.pk %}">Eliminar</a></td>
                     {% endif %}
                     {% if sms %}
-                        <td><button class="btn btn-primary btn-block btn_sms" data-phone="{{ phone.pk }}">SMS</button>
+                        <td>
+                            <button class="btn btn-primary btn-block btn-xs btn-sms" data-phone="{{ phone.pk }}">SMS
+                            </button>
                         </td>
                     {% endif %}
                 </tr>

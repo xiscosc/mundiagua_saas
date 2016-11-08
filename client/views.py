@@ -11,6 +11,7 @@ from engine.models import EngineRepair
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import BudgetStandard, BudgetRepair
+from core.tasks import send_mail_client
 
 
 class CreateClientView(CreateView):
@@ -180,6 +181,23 @@ class SendSMSView(View):
             obj.sms.add(sms)
         except:
             pass
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+class SendEmailView(View):
+
+    def post(self, request, *args, **kwargs):
+        body = request.POST.get('email_body', '')
+        subject = request.POST.get('email_subject', '')
+        email = request.POST.get('email_field', '')
+
+        if email is '' :
+            email = "consultas@mundiaguabalear.com"
+            subject = "ERROR " + subject
+            body = "Error enviado este email: " + body
+
+        send_mail_client.delay(email, subject, body, request.user)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

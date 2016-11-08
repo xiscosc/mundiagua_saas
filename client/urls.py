@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import CreateClientView, CreateAddressView, CreatePhoneView, ClientView, EditClientView, EditAddressView, \
     EditPhoneView, DeletePhoneView, DeleteAddresView, SendSMSView, AllClientsView, PreSearchClientView, \
-    SearchClientView, AddressGeoUpdateView
+    SearchClientView, AddressGeoUpdateView, SendEmailView
 
 urlpatterns = [
     url(r'^new/$', CreateClientView.as_view(), name="client-new"),
@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^phone/delete/(?P<pk>\d+)/$', DeletePhoneView.as_view(), name="client-phone-delete"),
     url(r'^phone/edit/(?P<pk>\d+)/$', EditPhoneView.as_view(), name="client-phone-edit"),
     url(r'^sms/send/$', SendSMSView.as_view(), name="client-sms-send"),
+    url(r'^email/send/$', SendEmailView.as_view(), name="client-email-send"),
     url(r'^all/$', AllClientsView.as_view(), name="client-all"),
     url(r'^psearch/$', PreSearchClientView.as_view(), name="client-psearch"),
     url(r'^search/$', SearchClientView.as_view(), name="client-search"),

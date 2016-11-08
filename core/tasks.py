@@ -1,6 +1,7 @@
 from async_messages import messages
 from celery import shared_task
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 
 from core.utils import send_data_to_user
 
@@ -15,6 +16,20 @@ def send_message(ins, body):
 
 
 @shared_task
-def send_mail_client(client, subject, body):
-    return send_mail(subject=subject, message=body,
-                     from_email="consultas@mundiaguabalear.com", recipient_list=[client.email])
+def send_mail_client(address, subject, body, user):
+    email = EmailMultiAlternatives(
+        subject,
+        body,
+        'Mundiagua SL <consultas@mundiaguabalear.com>',
+        [address],
+    )
+
+    htmly = get_template('email.html')
+    html_content = htmly.render({'subject': subject, 'body': body})
+    email.attach_alternative(html_content, "text/html")
+    result = email.send()
+
+    if result:
+        messages.success(user, "Email enviado correctamente a "+ address)
+    else:
+        messages.warning(user, "Error enviando mail a " + address)

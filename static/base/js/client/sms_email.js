@@ -7,7 +7,7 @@ $('#sms_body').keyup(function () {
     $('#sms_count').html((160 - val.length));
 });
 
-$('.btn_sms').on('click', function () {
+$('.btn-sms').on('click', function () {
     try {
         $('#sms_body').val(default_sms);
         $('#sms_count').html((160 - default_sms.length));
@@ -35,4 +35,15 @@ $('.sms_close').on('click', function () {
 $('#sms_send').on('click', function () {
     $(this).prop('disabled', true).html("Enviando...");
     $('#form_sms').submit();
+});
+
+$('.btn-email').on('click', function () {
+    try {
+        $('#email_field').val($('#email_source').html());
+        $('#email_body').val(default_sms);
+        $('#email_subject').val(default_subject);
+    } catch (err) {
+        console.log(err);
+    }
+    $('#modal_mail').modal('show');
 });
