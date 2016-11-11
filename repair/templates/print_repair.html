@@ -1,6 +1,6 @@
 {% extends 'print_base.html' %}
 {% load static %}
-{% block title %}Reparación {{ repair }}{% endblock %}
+{% block title %}Reparación {{ repair }} | Consulta Online <strong>{{ repair.online_id }}</strong>{% endblock %}
 {% block content %}
 
     <table class="table table-bordered table-hover table-striped">
@@ -90,14 +90,13 @@
                             almacenaje.
                         </li>
                         <li>En el caso de no autorización, el cliente acepta la devolución del equipo sin montar.</li>
-                        <li>Todos los presupuestos solicitados tienen un coste de 22,00€. IVA INCLUIDO. Si la maquina es
-                            reparada,el precio del presupuesto sera descontado del importe total de la reparación.
+                        <li>Todos los presupuestos solicitados tienen un coste de 22,00€ IVA INCLUIDO. Si la maquina es
+                            reparada, el precio del presupuesto sera descontado del importe total de la reparación.
                         </li>
                         <li>No nos responsabilizamos de los equipos que permanezcan mas de 4 meses en nuestras
                             instalaciones a la espera de una respuesta del cliente.
                         </li>
-                        <li>Puede consultar el estado de su reparación en mundiaguabalear.com con el siguiente número:
-                            <strong>{{ repair.online_id }}</strong></li>
+                        <li>El horario de recepción y recogida de maquinaria es de <strong>8h a 16h</strong>.</li>
                         <li>Con la firma del cliente acepta las condiciones expuestas en este documento.</li>
                     </ul>
                 </td>
