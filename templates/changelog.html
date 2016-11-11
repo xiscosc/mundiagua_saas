@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Changelog{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>6.1</h3>
+            <h5>10/11/2016</h5>
+            <ul>
+                <li>Nuevo sistema de informes</li>
+                <li>Posibilidad de enviar emails a los clientes</li>
+                <li>Cambio de proveedor en los SMS (Amazon WS SNS)</li>
+                <li>Corrección de errores menores en presupuestos</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>6.0.4</h3>
+            <h5>23/09/2016</h5>
+            <ul>
+                <li>Solucionados problemas con acentos y carácteres especiales</li>
+                <li>Solucionado problema al iniciar sesión cuando se usaban mayúsculas y minúsculas</li>
+                <li>Añadido enlace a GSM Microcom</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>6.0.3</h3>
+            <h5>11/09/2016</h5>
+            <ul>
+                <li>Solucionados problemas para consultar el estado de reparación por parte de los clientes</li>
+                <li>Nueva interfaz de notificaciones</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>6.0.2</h3>
+            <h5>05/09/2016</h5>
+            <ul>
+                <li>Añadida búsqueda a través de teléfonos de clientes</li>
+                <li>Añadido acceso directo por buscador a presupuestos con ID</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>6.0.1</h3>
+            <h5>05/09/2016</h5>
+            <ul>
+                <li>Solucionados problemas con el inicio de sesión viniendo de Intranet 5</li>
+                <li>Solucionados problemas de visualización de la paginación</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>6.0</h3>
+            <h5>05/08/2016</h5>
+            <ul>
+                <li>Nueva interfaz, potenciado menú lateral</li>
+                <li>Reducido el número de vistas innecesarias</li>
+                <li>Nuevas gráficas de rendimiento mensual, anual y de asignación a trabajadores</li>
+                <li>Posibilidad de subir archivos y fotos a las averías</li>
+                <li>Nuevo sistema de listado de modificaciones en las averías</li>
+                <li>Nuevo sistema de notificación de estado de trabajo por parte de operarios en las averías</li>
+                <li>Tareas asíncronas, no se bloquea el sistema cuando se envían mensajes o emails</li>
+                <li>Nuevos filtros en listados</li>
+                <li>Registro de SMS con el estado del envío</li>
+                <li>Nuevo sistema de envío de SMS</li>
+                <li>Vista combinadas de reparaciones (IDEGIS y ATH)</li>
+                <li>Nuevas reparaciones de motores</li>
+                <li>Nuevo sistema de mensajes</li>
+                <li>Nuevo motor de búsqueda</li>
+                <li>Nuevo diseño en los presupuestos</li>
+                <li>Nuevo sistema de inicio de sesión con correo electrónico corporativo</li>
+                <li>Nuevo sistema de presupuestos en reparaciones, posibilidad de hacer más de uno por reparación</li>
+                <li>Sistema base renovado por completo</li>
+                <li>Nuevo motor de base de datos</li>
+                <li>Todos los datos de Intranet 5 migrados, posibilidad de acceder a Intranet 4 y Intranet 5 sin sincronización de datos a modo consulta</li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

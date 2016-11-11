@@ -162,3 +162,6 @@ class PreSearchView(View):
         else:
             return self.set_data_and_response(request=request)
 
+
+class ChangeLogView(TemplateView):
+    template_name = "changelog.html"
