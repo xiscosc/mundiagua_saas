@@ -27,3 +27,5 @@ ALLOWED_HOSTS = ['.example.com']
 AWS_ACCESS_KEY = ""
 AWS_SECRET_KEY = ""
 AWS_REGION = "eu-west-1"
+
+GOOGLE_API_KEY = ""

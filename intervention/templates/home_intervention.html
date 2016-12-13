@@ -141,8 +141,9 @@
                     <div class="pull-right">
 
                         <button class="btn btn-xs btn-success"
-                           id="btn_change_chart"><i
-                                class="fa fa-chain"></i> Cambiar</button>
+                                id="btn_change_chart"><i
+                                class="fa fa-chain"></i> Cambiar
+                        </button>
                     </div>
 
                     <div class="pull-right">
@@ -154,9 +155,9 @@
                         <span class="caret"></span>
 
                         <select id="year_chart" class="btn btn-default btn-mini">
-                                {% for y in years %}
+                            {% for y in years %}
                                 <option value="{{ y }}">{{ y }}</option>
-                                {% endfor %}
+                            {% endfor %}
                         </select>
                         <span class="caret"></span>
                     </div>
@@ -169,6 +170,26 @@
                 <!-- /.panel-body -->
             </div>
             <!-- /.panel -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-map-marker fa-fw"></i> Mapa de averías asignadas | <a
+                        href="{% url 'intervention:intervention-map' %}"> Ver más grande</a>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="row">
+                        <!-- /.col-lg-4 (nested) -->
+                        <div class="iframe-container" id="map">
+                            <!-- embed code here -->
+                        </div>
+                        <!-- /.col-lg-8 (nested) -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+
             <div class="panel panel-default">
                 <div class="panel-heading" id="bar-chart-title">
                     <i class="fa fa-database fa-fw"></i>
@@ -188,9 +209,21 @@
                 <!-- /.panel-body -->
             </div>
             <!-- /.panel -->
+
         </div>
         <!-- /.col-lg-8 -->
         <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Asignaciones de averías
+                </div>
+                <div class="panel-body">
+                    <div id="morris-donut-chart"></div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-bell fa-fw"></i> Últimas modificaciones en averías
@@ -202,7 +235,7 @@
                             <a href="{% url 'intervention:intervention-view' mod.intervention_id %}"
                                class="list-group-item" style="font-size: x-small;">
                                 {{ mod.intervention.address.client }} {{ mod.intervention }}
-                                    <span class="pull-right text-muted small"><em>hace {{ mod.date|timesince }}</em>
+                                <span class="pull-right text-muted small"><em>hace {{ mod.date|timesince }}</em>
                                     </span>
                             </a>
                         {% endfor %}
@@ -214,16 +247,7 @@
                 <!-- /.panel-body -->
             </div>
             <!-- /.panel -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Asignaciones de averías
-                </div>
-                <div class="panel-body">
-                    <div id="morris-donut-chart"></div>
-                </div>
-                <!-- /.panel-body -->
-            </div>
-            <!-- /.panel -->
+
         </div>
         <!-- /.col-lg-4 -->
     </div>
@@ -235,10 +259,10 @@
     <script src="{% static 'raphael/raphael.min.js' %}"></script>
     <script src="{% static 'morrisjs/morris.min.js' %}"></script>
     <script src="{% static 'base/js/intervention/morris-data.js' %}"></script>
+    {% include 'map_include.html' with interventions=interventions %}
 {% endblock %}
 {% block extracss %}
-        <!-- Morris Charts CSS -->
     <link href="{% static 'morrisjs/morris.css' %}" rel="stylesheet">
-
     <link href="{% static 'base/css/intervention/home.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'base/css/intervention/map.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}

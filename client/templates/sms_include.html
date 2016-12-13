@@ -17,7 +17,7 @@
                             {% for sms in obj.sms.all %}
                                 <tr>
                                     <td>
-                                        {{ sms.date }}
+                                        {{ sms.date|date:"d-m-Y" }} {{ sms.date|time:"H:i" }}
                                     </td>
                                     <td>
                                         {{ sms.sender.get_full_name }}

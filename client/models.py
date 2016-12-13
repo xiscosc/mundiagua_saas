@@ -54,6 +54,13 @@ class Address(models.Model):
         else:
             return False
 
+    def get_geo(self):
+        if self.latitude is not None and self.longitude is not None and self.latitude is not "" \
+                and self.longitude is not "":
+            return [self.latitude, self.longitude]
+        else:
+            return False
+
     def __str__(self):
         return ("(" + self.alias + ") - " + self.address).encode('utf8')
 

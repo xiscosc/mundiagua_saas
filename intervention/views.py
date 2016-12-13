@@ -23,6 +23,14 @@ from intervention.forms import ImageForm, DocumentForm
 class HomeView(TemplateView):
     template_name = 'home_intervention.html'
 
+    def get_interventions(self):
+        inter = Intervention.objects.filter(status_id=2)
+        inter_result = []
+        for i in inter:
+            if i.address.get_geo():
+                inter_result.append(i)
+        return inter_result
+
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['status_pending'] = Intervention.objects.filter(status=1).count()
@@ -30,9 +38,10 @@ class HomeView(TemplateView):
         context['status_terminated'] = Intervention.objects.filter(status=3).count()
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
         context['status_billing'] = Intervention.objects.filter(status=5).count()
-        context['modifications'] = InterventionModification.objects.all().order_by("-date")[:10]
+        context['modifications'] = InterventionModification.objects.all().order_by("-date")[:15]
         context['months'] = [x for x in xrange(1, 13)]
         context['years'] = [x for x in xrange(2014, date.today().year + 1)]
+        context['interventions'] = self.get_interventions()
         return context
 
 
@@ -320,3 +329,40 @@ class ReportInterventionView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         return generate_report(request)
+
+
+class MapInterventionView(TemplateView):
+    template_name = 'map_assigned.html'
+
+    def get_worker_id(self):
+        return None
+
+    def get_interventions(self):
+        inter = Intervention.objects.filter(status_id=2)
+        if self.get_worker_id():
+            inter = inter.filter(assigned_id=self.get_worker_id())
+        inter_result = []
+        for i in inter:
+            if i.address.get_geo():
+                inter_result.append(i)
+        return inter_result
+
+    def get_context_data(self, **kwargs):
+        context = super(MapInterventionView, self).get_context_data(**kwargs)
+        context['gmaps_api'] = settings.GMAPS_API_KEY
+        context['title'] = "todas las averías"
+        context['interventions'] = self.get_interventions()
+        context['users'] = User.objects.filter(is_active=True)
+        return context
+
+
+class MapAssignedInterventionView(MapInterventionView):
+
+    def get_worker_id(self):
+        return int(self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super(MapAssignedInterventionView, self).get_context_data(**kwargs)
+        worker = User.objects.get(pk=self.get_worker_id())
+        context['title'] = worker.get_full_name()
+        return context

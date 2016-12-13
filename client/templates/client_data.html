@@ -85,9 +85,12 @@
     <div class="panel-heading">Datos del cliente
         {% if request.user.is_officer %}
             <div class="pull-right">
+                        <button class="btn btn-xs btn-danger btn-email"><i
+                        class="fa fa-envelope"></i> Enviar correo</button>
                 <a class="btn btn-xs btn-default" href="{% url 'client:client-view' client.pk %}"><i
                         class="fa fa-edit"></i> Modificar datos</a>
             </div>
+
         {% endif %}
     </div>
     <div class="panel-body">
@@ -127,8 +130,7 @@
                     <strong>Email</strong>
                 </td>
                 <td>
-                    <button class="btn btn-xs btn-danger btn-email" {% if not request.user.is_officer %}
-                            disabled {% endif %}>Enviar correo {{ client.email }}</button>
+                    {{ client.email }}
                     <div class="hidden" id="email_source">{{ client.email }}</div>
                 </td>
             </tr>

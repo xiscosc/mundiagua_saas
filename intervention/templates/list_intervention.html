@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}{% if title %}{{ title }}{% else %}Listado de averías <small>{{ search_status }}</small>{% endif %}{% endblock %}
+{% block page_title %}{% if title %}{{ title }}{% else %}Listado deaverías
+    <small>{{ search_status }}  {% if search_status.pk == 2 %} |
+        <a href="{% url 'intervention:intervention-map' %}"><i class="fa fa-map-marker"> </i> Ver mapa</a>{% endif %}
+    </small> {% endif %}{% endblock %}
 {% block content %}
 
     {% if list_navigation %}
@@ -56,17 +59,20 @@
 
                                 <li>
                                     <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 1 %}">
-                                        {% if starred %}<strong>Sólo prioritarias</strong>{% else %}Ver prioritarias {% endif %}
+                                        {% if starred %}<strong>Sólo prioritarias</strong>{% else %}Ver
+                                            prioritarias {% endif %}
                                     </a>
                                 </li>
 
                                 {% if user_assigned != "0" or zone_assigned != "0" or starred %}
-                                    <li><a href="{% url 'intervention:intervention-list' intervention_status 0 0 0%}">Desactivar
+                                    <li><a href="{% url 'intervention:intervention-list' intervention_status 0 0 0 %}">Desactivar
                                         todos
                                         los filtros</a></li>
                                 {% endif %}
 
-                            <li><a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned starred %}?page={{ page }}" target="_blank"><i class="fa fa-print"></i> Imprimir</a></li>
+                                <li>
+                                    <a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned starred %}?page={{ page }}"
+                                       target="_blank"><i class="fa fa-print"></i> Imprimir</a></li>
                             </ul>
                         </div><!-- /.navbar-collapse -->
                     </div><!-- /.container-fluid -->
