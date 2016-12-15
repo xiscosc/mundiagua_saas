@@ -1,40 +1,7 @@
+<script src="https://maps.googleapis.com/maps/api/js?key={{ gmaps_api }}&callback=initMap"></script>
 <script>
-        function initMap() {
-            var mallorca = {lat: 39.6953, lng: 3.0176};
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 8,
-                center: mallorca
-            });
-
-            {% for i in interventions %}
-                var position{{ i.pk }} = {lat: {{ i.address.latitude }}, lng: {{ i.address.longitude }}};
-                var contentString{{ i.pk }} = '<div id="content">' +
-                        '<div id="siteNotice">' +
-                        '</div>' +
-                        '<h4 id="firstHeading" class="firstHeading"><small>{{ i }}</small> {{ i.address.client }}</h4>' +
-                        '<div id="bodyContent">' +
-                        '<p>{{ i.address }}</p>' +
-                        '<p>{{ i.assigned.get_full_name }}</p>' +
-                        '<p><a href="{% url 'intervention:intervention-view' i.pk %}">' +
-                        'Ver avería</p>' +
-                        '</div>' +
-                        '</div>';
-
-                var infowindow{{ i.pk }} = new google.maps.InfoWindow({
-                    content: contentString{{ i.pk }}
-                });
-
-                var marker{{ i.pk }} = new google.maps.Marker({
-                    position: position{{ i.pk }},
-                    map: map
-                });
-                marker{{ i.pk }}.addListener('click', function () {
-                    infowindow{{ i.pk }}.open(map, marker{{ i.pk }});
-                });
-
-            {% endfor %}
-        }
-    </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{ gmaps_api }}&callback=initMap">
-    </script>
+var map = initMap();
+{% for i in interventions %}
+    putMarker(map, {{ i.address.latitude }}, {{ i.address.longitude }}, "{{ i }}", "{{ i.address.client }}", "{{ i.address }}", "{{ i.assigned.get_full_name }}");
+{% endfor %}
+</script>

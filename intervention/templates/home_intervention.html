@@ -176,7 +176,7 @@
                         href="{% url 'intervention:intervention-map' %}"> Ver más grande</a>
                 </div>
                 <!-- /.panel-heading -->
-                <div class="panel-body">
+                <div class="panel-body" style="padding-bottom: 0px; padding-top: 0px">
                     <div class="row">
                         <!-- /.col-lg-4 (nested) -->
                         <div class="iframe-container" id="map">
@@ -259,6 +259,7 @@
     <script src="{% static 'raphael/raphael.min.js' %}"></script>
     <script src="{% static 'morrisjs/morris.min.js' %}"></script>
     <script src="{% static 'base/js/intervention/morris-data.js' %}"></script>
+    <script src="{% static 'base/js/intervention/map.js' %}"></script>
     {% include 'map_include.html' with interventions=interventions %}
 {% endblock %}
 {% block extracss %}

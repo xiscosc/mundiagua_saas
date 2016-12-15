@@ -7,7 +7,9 @@
     <form role="form" method="post" id="form-log">
         {% csrf_token %}
         <fieldset>
-            {{ form|bootstrap }}
+            <div id="form-data">
+                {{ form|bootstrap }}
+            </div>
             <input type="hidden" name="next"
                    value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
             <a id="btn-log" class="btn btn-lg btn-success btn-block" href="#">Entrar</a>

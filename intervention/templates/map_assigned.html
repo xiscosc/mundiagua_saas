@@ -65,5 +65,6 @@
 {% endblock %}
 
 {% block extrajs %}
+    <script src="{% static 'base/js/intervention/map.js' %}"></script>
     {% include 'map_include.html' with interventions=interventions %}
 {% endblock %}

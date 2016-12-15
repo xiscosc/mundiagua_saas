@@ -3,6 +3,10 @@
  */
 
 $(function() {
-    var perc = (actual_id/7.0)*100.0;
-    $('#pb').css('width', perc+"%")
+    $bar = $('#pb');
+    $bar.css('width', perc+"%");
+    if (perc==100) {
+        $bar.addClass('progress-bar-success');
+        $bar.removeClass('active');
+    }
 });

@@ -68,6 +68,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_superuser
 
+    def has_pb(self):
+        if self.pb_token is None or self.pb_token is '':
+            return False
+        else:
+            return True
 
 class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)

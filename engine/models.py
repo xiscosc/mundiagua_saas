@@ -9,6 +9,7 @@ from core.utils import generate_md5_id, get_time_zone
 
 class EngineStatus(models.Model):
     name = models.CharField(max_length=50)
+    percentage = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name

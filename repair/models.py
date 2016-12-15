@@ -12,6 +12,7 @@ from core.utils import generate_md5_id, get_time_zone
 class RepairStatus(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
+    percentage = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name

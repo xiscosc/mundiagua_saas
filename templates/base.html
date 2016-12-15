@@ -334,7 +334,7 @@
         {% endfor %}
     </script>
 {% endif %}
-{% if request.user.has_notification == 1 %}
+{% if request.user.has_notification == 1 and not request.user.has_pb %}
     <script type="text/javascript">
         make_notification(
                 "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",

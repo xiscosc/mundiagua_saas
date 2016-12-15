@@ -42,6 +42,7 @@ class HomeView(TemplateView):
         context['months'] = [x for x in xrange(1, 13)]
         context['years'] = [x for x in xrange(2014, date.today().year + 1)]
         context['interventions'] = self.get_interventions()
+        context['gmaps_api'] = settings.GMAPS_API_KEY
         return context
 
 
