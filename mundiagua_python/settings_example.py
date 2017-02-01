@@ -28,4 +28,4 @@ AWS_ACCESS_KEY = ""
 AWS_SECRET_KEY = ""
 AWS_REGION = "eu-west-1"
 
-GOOGLE_API_KEY = ""
+GMAPS_API_KEY = ""
