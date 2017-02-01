@@ -66,16 +66,16 @@
                     <td><strong>Sonda ORP</strong></td>
                     <td class="tc">{{ repair.orp|yesno:"Sí,No" }}</td>
                     <td><strong>Sonda PH</strong></td>
-                    <td class="tc">{{ repair.ph|yesno:"Sí,No"}}</td>
+                    <td class="tc">{{ repair.ph|yesno:"Sí,No" }}</td>
                 </tr>
             {% endif %}
     </table>
 
     <table class="table table-bordered table-hover table-striped">
-            <tr>
-                <td>{{ repair.description|linebreaks }}</td>
-            </tr>
-        </table>
+        <tr>
+            <td>{{ repair.description|linebreaks }}</td>
+        </tr>
+    </table>
 
     {% if logo == '1' or logo == '0' %}
 
@@ -83,20 +83,21 @@
             <tr>
                 <td>
                     <ul style="font-size: 12px;">
-                        <li>Los equipos bajo periodo de garantía que no presenten avería en el producto recibido tendrán
-                            un cargo de 22,00 €.
+                        <li>Es imprescindible la entrega del presente documento para la retirada del equipo arriba
+                            descrito. El horario de recepción y recogida de maquinaria es de <strong>8h a 16h</strong>.
                         </li>
-                        <li>De no recibirse autorización en el plazo de 20 días habrá un cargo de 25,00 € / mes por
+                        <li>Todas las reparaciones se realizarán previo presupuesto y cada presupuesto tendrá un coste
+                            de 22,00€ que deberá abonar el cliente. El importe de un presupuesto aceptado será
+                            descontado de la factura de reparación. En caso de no aceptación del presupuesto, el cliente
+                            acepta la devolución del equipo sin montar. Los equipos bajo periodo de garantía que no
+                            presenten avería en el producto tendrán un cargo
+                            de 22,00€. Se generarán cargos de 15.00€/mes desde la
+                            comunicación de presupuesto o comunicación de equipo ya reparado, en concepto de gastos de
                             almacenaje.
                         </li>
-                        <li>En el caso de no autorización, el cliente acepta la devolución del equipo sin montar.</li>
-                        <li>Todos los presupuestos solicitados tienen un coste de 22,00€ IVA INCLUIDO. Si la maquina es
-                            reparada, el precio del presupuesto sera descontado del importe total de la reparación.
+                        <li>Mundiagua S.L no se responsabiliza de los equipos que permanezcan más de 4 meses en nuestras
+                            instalaciones a la espera de una respuesta o recogida del cliente.
                         </li>
-                        <li>No nos responsabilizamos de los equipos que permanezcan mas de 4 meses en nuestras
-                            instalaciones a la espera de una respuesta del cliente.
-                        </li>
-                        <li>El horario de recepción y recogida de maquinaria es de <strong>8h a 16h</strong>.</li>
                         <li>Con la firma del cliente acepta las condiciones expuestas en este documento.</li>
                     </ul>
                 </td>
