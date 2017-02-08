@@ -2,6 +2,6 @@
 <script>
 var map = initMap();
 {% for i in interventions %}
-    putMarker(map, {{ i.address.latitude }}, {{ i.address.longitude }}, "{{ i }}", "{{ i.address.client }}", "{{ i.address }}", "{{ i.assigned.get_full_name }}", "{% url 'intervention:intervention-view' i.pk %}");
+    putMarker(map, {{ i.address.latitude }}, {{ i.address.longitude }}, "{{ i }}", "{{ i.address.client }}", "{{ i.address|linebreaks }}", "{{ i.assigned.get_full_name }}", "{% url 'intervention:intervention-view' i.pk %}");
 {% endfor %}
 </script>
