@@ -33,6 +33,7 @@ class Repair(models.Model):
     intern_description = models.TextField(null=True, blank=True, verbose_name="Descripción interna")
     warranty = models.BooleanField(default=False, verbose_name="Garantía")
     sms = models.ManyToManyField(SMS)
+    starred = models.BooleanField(default=False)
 
     class Meta:
         abstract = True

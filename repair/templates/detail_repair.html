@@ -2,7 +2,15 @@
 {% load static %}
 {% load bootstrap %}
 {% block page_title %}Reparación
-    <small>{{ repair }}</small> {% endblock %}
+    <small>{{ repair }}</small>
+    <a href="{% url 'repair:repair-starred' repair.is_ath repair.pk %}"
+       class="btn {% if repair.starred %}btn-danger{% else %}btn-default{% endif %}">
+        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+        <div class="text-desktop-starred pull-right">{% if not repair.starred %} No{% endif %}
+            Prioritaria
+        </div>
+    </a>
+{% endblock %}
 {% block content %}
 
 

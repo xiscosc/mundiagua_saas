@@ -1,8 +1,8 @@
 .zone {
-    color: white;
+    color: white !important;
     border-radius: 4px;
     float: left;
-    padding: 4px;
+    padding: 4px !important;
     margin-right: 3px;
 }
 
@@ -53,4 +53,12 @@
 @keyframes spin {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
+}
+
+.navbar-filters {
+    padding-top: 5px;
+}
+
+.li-filters {
+    padding-left: 5px;
 }

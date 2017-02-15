@@ -5,40 +5,118 @@
 {% block content %}
 
 
-        <div class="row">
-            <div class="col-lg-12">
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a class="navbar-brand" href="#">Filtros</a>
-                        </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Filtros</a>
+                    </div>
 
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                            <ul class="nav navbar-nav">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
                             {% if list_navigation %}
-                                <li {% if type == "0" %}class="active"{% endif %}><a href="{% url 'repair:repair-list' 0 %}">Todos los tipos</a></li>
-                                <li {% if type == "1" %}class="active"{% endif %}><a href="{% url 'repair:repair-list' 1 %}">Sólo ATH</a></li>
-                                <li {% if type == "2" %}class="active"{% endif %}><a href="{% url 'repair:repair-list' 2 %}">Sólo Idegis</a></li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if type == "0" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 0 starred %}">Todos los tipos</a></li>
+                                        <li {% if type == "1" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 1 starred %}">Sólo ATH</a></li>
+                                        <li {% if type == "2" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 2 starred %}">Sólo Idegis</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Prioritarias<span
+                                            class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if starred == '0' %} class="active" {% endif %}>
+                                            <a href="{% url 'repair:repair-list' type 0 %}">
+                                                Ver todas
+                                            </a>
+                                        </li>
+                                        <li {% if starred == '1' %} class="active" {% endif %}>
+                                            <a href="{% url 'repair:repair-list' type 1 %}">
+                                                Ver sólo prioritarias
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
                             {% else %}
-                                <li {% if type == "0" %}class="active"{% endif %}><a href="{% url 'repair:repair-search' 0 %}">Todos los tipos</a></li>
-                                <li {% if type == "1" %}class="active"{% endif %}><a href="{% url 'repair:repair-search' 1 %}">Sólo ATH</a></li>
-                                <li {% if type == "2" %}class="active"{% endif %}><a href="{% url 'repair:repair-search' 2 %}">Sólo Idegis</a></li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if type == "0" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 0  starred %}">Todos los tipos</a></li>
+                                        <li {% if type == "1" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 1  starred%}">Sólo ATH</a></li>
+                                        <li {% if type == "2" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 2  starred %}">Sólo Idegis</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Prioritarias<span
+                                            class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if starred == '0' %} class="active" {% endif %}>
+                                            <a href="{% url 'repair:repair-search' type 0 %}">
+                                                Ver todas
+                                            </a>
+                                        </li>
+                                        <li {% if starred == '1' %} class="active" {% endif %}>
+                                            <a href="{% url 'repair:repair-search' type 1 %}">
+                                                Ver sólo prioritarias
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
                             {% endif %}
-                            </ul>
-                        </div><!-- /.navbar-collapse -->
-                    </div><!-- /.container-fluid -->
-                </nav>
-            </div>
+                        </ul>
+
+                        <ul class="nav navbar-nav navbar-right navbar-filters">
+                            {% if type == "0" or type == "1" %}
+                                <li class="li-filters">
+                                    <img src="{% static 'base/img/ath.png' %}" class="img-list-repair">
+                                </li>
+                            {% endif %}
+                            {% if type == "0" or type == "2" %}
+                                <li class="li-filters">
+                                    <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
+                                </li>
+                            {% endif %}
+                            {% if starred == '1' %}
+                                <li class="li-filters">
+                                    <button type="button" class="btn btn-danger" disabled>
+                                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                    </button>
+                                </li>
+                            {% endif %}
+
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
         </div>
+    </div>
 
     {% include 'paginator.html' with obj=repairs %}
     <div class="row">
@@ -48,11 +126,11 @@
                     <tr>
                         <td style="width: 15%">
                             {% if repair.is_ath == 1 %}
-                                 <a href="{% url 'repair:repair-ath-view' repair.pk %}"
-                               class="btn btn-primary btn-block">{{ repair }}</a>
+                                <a href="{% url 'repair:repair-ath-view' repair.pk %}"
+                                   class="btn btn-primary btn-block">{{ repair }}</a>
                             {% else %}
-                                 <a href="{% url 'repair:repair-idegis-view' repair.pk %}"
-                               class="btn btn-default btn-block">{{ repair }}</a>
+                                <a href="{% url 'repair:repair-idegis-view' repair.pk %}"
+                                   class="btn btn-default btn-block">{{ repair }}</a>
                             {% endif %}
                         </td>
                         <td>
@@ -60,6 +138,13 @@
                                 <img src="{% static 'base/img/ath.png' %}" class="img-list-repair">
                             {% else %}
                                 <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
+                            {% endif %}
+
+                            {% if repair.starred %}
+                                <button type="button" class="btn btn-danger pull-right" disabled
+                                        style="margin-right: 5px">
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                </button>
                             {% endif %}
                         </td>
                     </tr>
@@ -85,7 +170,7 @@
                             <strong>Estado</strong>
                         </td>
                         <td>
-                           {{ repair.status }}
+                            {{ repair.status }}
                         </td>
                     </tr>
                     <tr>

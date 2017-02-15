@@ -118,15 +118,22 @@ class ListRepairView(TemplateView):
         page = int(self.request.GET.get('page', 1))
         context['list_navigation'] = True
         type = int(kwargs['type'])
-
+        starred = bool(int(kwargs['starred']))
         if type == 0:
             repairs_ath = AthRepair.objects.all()
             repairs_idegis = IdegisRepair.objects.all()
+            if starred:
+                repairs_ath = repairs_ath.filter(starred=True)
+                repairs_idegis = repairs_idegis.filter(starred=True)
             repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
         elif type == 1:
             repairs = AthRepair.objects.all().order_by("-date")
+            if starred:
+                repairs = repairs.filter(starred=True)
         else:
             repairs = IdegisRepair.objects.all().order_by("-date")
+            if starred:
+                repairs = repairs.filter(starred=True)
 
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
         context['repairs'] = paginator.page(page)
@@ -152,7 +159,7 @@ class PreSearchRepairView(PreSearchView):
         request.session['search_repair_ath'] = pk_list_ath
         request.session['search_repair_idegis'] = pk_list_idegis
         request.session['search_repair_text'] = search_text
-        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': 0}))
+        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': 0, 'starred': 0}))
 
 
 class SearchRepairView(TemplateView):
@@ -166,15 +173,23 @@ class SearchRepairView(TemplateView):
         repairs_ath_pk = self.request.session.get('search_repair_ath', list())
         repairs_idegis_pk = self.request.session.get('search_repair_idegis', list())
         type = int(kwargs['type'])
+        starred = bool(int(kwargs['starred']))
 
         if type == 0:
             repairs_ath = AthRepair.objects.filter(pk__in=repairs_ath_pk)
             repairs_idegis = IdegisRepair.objects.filter(pk__in=repairs_idegis_pk)
+            if starred:
+                repairs_ath = repairs_ath.filter(starred=True)
+                repairs_idegis = repairs_idegis.filter(starred=True)
             repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
         elif type == 1:
             repairs = AthRepair.objects.filter(pk__in=repairs_ath_pk).order_by("-date")
+            if starred:
+                repairs = repairs.filter(starred=True)
         else:
             repairs = IdegisRepair.objects.filter(pk__in=repairs_idegis_pk).order_by("-date")
+            if starred:
+                repairs = repairs.filter(starred=True)
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
         context['repairs'] = paginator.page(page)
         return context
@@ -190,3 +205,17 @@ class PrintRepairView(TemplateView):
         else:
             context['repair'] = IdegisRepair.objects.get(pk=kwargs['pk'])
         return context
+
+
+class ToggleStarredRepairView(View):
+    def get(self, request, *args, **kwargs):
+        if int(self.kwargs['type']) == 1:
+            urlname = 'repair-ath-view'
+            repair = AthRepair.objects.get(pk=self.kwargs['pk'])
+        else:
+            urlname = 'repair-idegis-view'
+            repair = IdegisRepair.objects.get(pk=self.kwargs['pk'])
+        repair.starred = not repair.starred
+        repair.save()
+        messages.success(self.request.user, "Cambio realizado correctamente")
+        return HttpResponseRedirect(reverse_lazy("repair:"+urlname, kwargs={'pk': self.kwargs['pk']}))
