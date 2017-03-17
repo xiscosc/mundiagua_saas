@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Gestión de usuario{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% block alert %} {% endblock %}
+        </div>
+    </div>
+
+    <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% block title %}{% endblock %}</h3>
+                    </div>
+                    <div class="panel-body">
+                    {% block contentpanel %} {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

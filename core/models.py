@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+from datetime import date
+
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -6,6 +8,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 from core.tasks import send_message
+from core.utils import has_to_change_password
 
 
 class MyUserManager(BaseUserManager):
@@ -48,8 +51,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_officer = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     has_notification = models.IntegerField(default=0)
-
+    last_password_update = models.DateField(default="1980-01-01")
+    phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -73,6 +78,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             return False
         else:
             return True
+
+    def has_to_change_password(self):
+        return has_to_change_password(self.last_password_update)
+
+    def update_change_password(self, commit=False):
+        self.last_password_update = date.today()
+        if commit:
+            self.save()
 
 class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)

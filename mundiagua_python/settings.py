@@ -237,7 +237,10 @@ NON_STAFF_VIEWS = ('message-new',
                    'release_hijack',
                    'intervention-image-upload',
                    'intervention-status-job',
-                   'changelog')
+                   'changelog',
+                   'user-manage',
+                   'password-change',
+                   'password-change-done')
 
 THUMBNAIL_ALIASES = {
     '': {

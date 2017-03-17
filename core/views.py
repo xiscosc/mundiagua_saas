@@ -1,17 +1,16 @@
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect, JsonResponse, Http404
-from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
 # Create your views here.
-from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView
 
 from client.models import Client, Address
 from core.models import User, Message
-from core.utils import get_return_from_id
+from core.utils import get_return_from_id, has_to_change_password
 from engine.models import EngineRepair
 
 
@@ -23,7 +22,7 @@ class SearchClientBaseView(TemplateView):
         context = self.get_context_data()
         context['clients'] = Client.objects.filter(name__icontains=search)
         context['show_results'] = len(context['clients'])
-        return render_to_response(self.template_name, context, context_instance=RequestContext(request))
+        return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
         context = super(SearchClientBaseView, self).get_context_data(**kwargs)
@@ -70,10 +69,13 @@ class IndexView(View):
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated() and request.user.is_active:
-            if request.user.is_officer:
-                response = 'intervention:intervention-home'
+            if has_to_change_password(request.user.last_password_update) is True:
+                response = 'password-change'
             else:
-                response = 'intervention:intervention-list-own'
+                if request.user.is_officer:
+                    response = 'intervention:intervention-home'
+                else:
+                    response = 'intervention:intervention-list-own'
         else:
             response = 'login'
 
@@ -165,3 +167,7 @@ class PreSearchView(View):
 
 class ChangeLogView(TemplateView):
     template_name = "changelog.html"
+
+
+class UserView(TemplateView):
+    template_name = 'user.html'

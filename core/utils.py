@@ -1,10 +1,12 @@
 # UTILS
 import hashlib, re, time
+from datetime import date
+from dateutil.relativedelta import relativedelta
+from pytz import timezone
 
 from django.core.urlresolvers import reverse_lazy
 from pushbullet import Pushbullet
 from django.core.mail import send_mail
-from pytz import timezone
 from django.conf import settings
 
 
@@ -89,3 +91,7 @@ def get_return_from_id(search_text):
 
 def get_time_zone():
     return timezone(settings.TIME_ZONE)
+
+
+def has_to_change_password(d):
+    return date.today() > (d + relativedelta(years=1, days=1))

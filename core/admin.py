@@ -61,11 +61,11 @@ class UserAdmin(BaseUserAdmin, HijackUserAdminMixin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_officer', 'pb_token', 'hijack_field')
+    list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_officer', 'hijack_field', 'last_login')
     list_filter = ('is_officer',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'pb_token', 'order_in_app')}),
+        (None, {'fields': ('email', 'password', 'last_password_update')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'pb_token', 'order_in_app', 'last_login', 'phone')}),
         ('Permissions', {'fields': ('is_active', 'is_officer')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
