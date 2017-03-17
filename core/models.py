@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_officer = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     has_notification = models.IntegerField(default=0)
-    last_password_update = models.DateField(default="1980-01-01")
+    last_password_update = models.DateField(default="2015-01-01")
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
 
