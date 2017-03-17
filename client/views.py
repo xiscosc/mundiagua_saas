@@ -197,7 +197,7 @@ class SendEmailView(View):
             subject = "ERROR " + subject
             body = "Error enviado este email: " + body
 
-        send_mail_client.delay(email, subject, body, request.user)
+        send_mail_client.delay(email, subject, body, request.user.pk)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

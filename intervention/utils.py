@@ -10,6 +10,7 @@ from django.http import HttpResponse
 
 from core.models import User
 from intervention.models import Intervention, InterventionModification, InterventionLog, InterventionStatus, Zone
+from intervention.tasks import send_intervention
 
 
 def update_intervention(intervention_pk, request):
@@ -43,8 +44,8 @@ def update_intervention(intervention_pk, request):
         pass
 
     try:
-        user_to_send = User.objects.get(pk=int(params.getlist('user_to_send')[0]))
-        intervention.send_to_user(user_to_send)
+        pktosend = int(params.getlist('user_to_send')[0])
+        send_intervention.delay(intervention.pk, pktosend, request.user.pk)
         intervention_save = False
     except IndexError:
         pass

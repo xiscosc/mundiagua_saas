@@ -133,7 +133,7 @@ def post_save_intervention(sender, **kwargs):
                                       intervention=intervention)
                 if intervention.status_id == settings.ASSIGNED_STATUS:
                     log.assigned = intervention.assigned
-                    send_intervention_assigned.delay(intervention)
+                    send_intervention_assigned.delay(intervention.pk)
                 log.save()
         except:
             pass

@@ -4,7 +4,9 @@ from celery import shared_task
 
 
 @shared_task
-def send_sms(sms):
+def send_sms(pk):
+    from client.models import SMS
+    sms = SMS.objects.get(pk=pk)
     result = sms.send()
     if result['success']:
         messages.success(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente")
