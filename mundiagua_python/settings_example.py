@@ -17,8 +17,7 @@ DATABASES = {
     }
 }
 
-SENDGRID_USER = "user"
-SENDGRID_PASSWORD = "pass"
+SENDGRID_API_KEY = "key"
 
 DEBUG = True
 DOMAIN = "https://www.example.com"
