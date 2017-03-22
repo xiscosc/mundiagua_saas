@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^engine/', include('engine.urls', namespace="engine")),
     url(r'^user/$', UserView.as_view(), name="user-manage"),
     url(r'^login/$', login, name='login',
-        kwargs={'template_name': 'login.html', 'authentication_form': MundiaguaLoginForm}),
+        kwargs={'template_name': 'login.html'}),
     url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
     url(r'^password/$', password_change,
         kwargs={'template_name': 'password_change.html', 'post_change_redirect': 'password-change-done',

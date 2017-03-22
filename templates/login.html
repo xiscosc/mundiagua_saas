@@ -8,6 +8,10 @@
         {% csrf_token %}
         <fieldset>
             <div id="form-data">
+                <div class="alert alert-warning">
+                    Puede ser que su navegador guarde una contraseña antigua. Si no puede entrar, use la nueva, el
+                    navegador le pedirá para actualizarla para próximos usos.
+                </div>
                 {{ form|bootstrap }}
             </div>
             <input type="hidden" name="next"
