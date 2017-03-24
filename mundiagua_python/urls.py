@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import login, logout, password_change, password_change_done, password_reset
+from django.contrib.auth.views import login, logout, password_change, password_change_done
 
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
     ChangeLogView, UserView
@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^engine/', include('engine.urls', namespace="engine")),
     url(r'^user/$', UserView.as_view(), name="user-manage"),
     url(r'^login/$', login, name='login',
-        kwargs={'template_name': 'login.html'}),
+        kwargs={'template_name': 'login.html', 'authentication_form': MundiaguaLoginForm}),
     url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
     url(r'^password/$', password_change,
         kwargs={'template_name': 'password_change.html', 'post_change_redirect': 'password-change-done',

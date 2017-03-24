@@ -48,7 +48,8 @@ OTHER_APPS = [
     'hijack_admin',
     'admin_honeypot',
     # 'wkhtmltopdf',
-    'easy_thumbnails'
+    'easy_thumbnails',
+    'django_user_agents'
 ]
 
 MY_APPS = [
@@ -84,6 +85,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.login.EnforceLoginMiddleware',
     'core.middleware.staff.StaffMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 PUBLIC_URLS = (

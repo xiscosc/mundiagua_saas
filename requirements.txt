@@ -18,3 +18,7 @@ django-admin-honeypot
 easy-thumbnails
 boto3
 xlwt
+pyyaml
+ua-parser
+user-agents
+django-user-agents
