@@ -7,7 +7,7 @@ class MundiaguaLoginForm(AuthenticationForm):
                                widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}))
 
     def __init__(self, request=None, *args, **kwargs):
-        super(AuthenticationForm, self).__init__(*args, **kwargs)
+        super(MundiaguaLoginForm, self).__init__(*args, **kwargs)
         if request.user_agent.is_mobile:
             self.fields['password'].widget.attrs.pop("autocomplete", 'false')
 

@@ -28,3 +28,5 @@ AWS_SECRET_KEY = ""
 AWS_REGION = "eu-west-1"
 
 GMAPS_API_KEY = ""
+
+NUMBER_TEMPLATES = 5
