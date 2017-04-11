@@ -12,11 +12,11 @@
             </div>
             <input type="hidden" name="next"
                    value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
-            <a id="btn-log" class="btn btn-lg btn-primary btn-block">Entrar</a>
+            <button type="submit" id="btn-log" class="btn btn-lg btn-primary btn-block">Entrar</button>
         </fieldset>
     </form>
 {% endblock %}
 
 {% block extrajs %}
-    <script src="{% static 'base/js/core/login.js' %}"></script>
+    <script src="{% static 'base/js/core/login.js' %}?v=615"></script>
 {% endblock %}
