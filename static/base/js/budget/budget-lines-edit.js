@@ -19,6 +19,8 @@ function addNewLine() {
     $ta.typeahead('destroy');
     $ta.typeahead({source: data_typeahead});
     activateEreaseButton();
+    $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+    $ta.last().focus();
 }
 
 var data_typeahead = [];
@@ -43,7 +45,7 @@ $(function () {
         activateEreaseButton();
     });
 
-    $('#btn-new-line').on('click', function () {
+    $('.btn-new-line').on('click', function () {
         addNewLine();
     });
 

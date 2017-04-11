@@ -2,6 +2,16 @@
  * Created by xiscosastre on 26/4/16.
  */
 
+
+function urlify(text) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function (url) {
+        return '<a class="btn btn-primary btn-xs" target="_blank" href="' + url + '"><div class="fa fa-chain"></div> Enlace externo</a>';
+    })
+    // or alternatively
+    // return text.replace(urlRegex, '<a href="$1">$1</a>')
+}
+
 $(function () {
     $('#selector_color').on('change', function () {
         $('#btn-color').css('background-color', $(this).find(':selected').data('color'));
@@ -35,7 +45,7 @@ $(function () {
         $('#icon_image').hide();
         $('#form_image').submit();
     });
-    
+
     $('#document').on('change', function () {
         $("#label_document").prepend("Adjuntando documento...");
         $('#icon_document').hide();
@@ -47,7 +57,7 @@ $(function () {
         $("#link_original_image").attr('href', "#");
         $('#progress_bar_image').show();
         var url = $(this).data('url');
-        $('#title_image').html("Foto de " +  $(this).data('name'));
+        $('#title_image').html("Foto de " + $(this).data('name'));
         $('#date_image').html($(this).data('date'));
         $('#modal_image').modal("show");
 
@@ -58,5 +68,24 @@ $(function () {
                 $("#link_original_image").attr('href', url);
             });
 
+    });
+
+    $('.intervention_modification_note').each(function () {
+        try {
+            var txt = $(this).html();
+            $(this).html(urlify(txt));
+        } catch (err) {
+
+        }
+    });
+
+
+    $('#intervention_description').children().each(function () {
+        try {
+            var txt = $(this).html();
+            $(this).html(urlify(txt));
+        } catch (err) {
+
+        }
     });
 });

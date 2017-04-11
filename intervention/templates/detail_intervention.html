@@ -57,7 +57,7 @@
                                     <td>
                                         {{ mod.created_by.get_full_name }}
                                     </td>
-                                    <td>
+                                    <td class="intervention_modification_note">
                                         {{ mod.note }}
                                     </td>
                                 </tr>
@@ -438,7 +438,7 @@
                             <td>
                                 <strong>Descripción</strong>
                             </td>
-                            <td>
+                            <td id="intervention_description">
                                 {{ intervention.description|linebreaks }}
                             </td>
                         </tr>
@@ -457,7 +457,7 @@
         var default_subject = "Aviso ATH";
         var from_model_id_val = {{ intervention.pk }};
     </script>
-    <script src="{% static 'base/js/intervention/detail.js' %}"></script>
+    <script src="{% static 'base/js/intervention/detail.js' %}?v=616"></script>
     <script src="{% static 'base/js/client/sms_email.js' %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}"></script>
 {% endblock %}

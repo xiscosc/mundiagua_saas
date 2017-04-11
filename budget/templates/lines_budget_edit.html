@@ -10,8 +10,8 @@
                 <div class="panel-heading">
                     <i class="fa fa-bar-chart-o fa-fw"></i> Líneas de presupuesto
                     <small>No mezclar puntos y comas</small>
-                    <button class="btn btn-primary btn-xs btn-left" id="btn-new-line"><i class="fa fa-plus-square"></i> Nueva línea
-                    </button>
+                    <a class="btn btn-primary btn-xs btn-left btn-new-line" href="#"><i class="fa fa-plus-square"></i> Nueva línea
+                    </a>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -51,6 +51,8 @@
                                 <button type="submit" class="btn btn-warning"><i class="fa fa-save fa-fw"></i> Guardar y
                                     continuar
                                 </button>
+                            <a class="btn btn-primary btn-xs btn-left btn-new-line" href="#" data-is_bottom="yes"><i class="fa fa-plus-square"></i> Nueva línea
+                            </a>
                             </form>
                         </div>
                     </div>
@@ -64,5 +66,5 @@
 
 {% block extrajs %}
     <script src="{% static 'bootstrap3-typeahead/bootstrap3-typeahead.min.js' %}"></script>
-    <script src="{% static 'base/js/budget/budget-lines-edit.js' %}"></script>
+    <script src="{% static 'base/js/budget/budget-lines-edit.js' %}?v=616"></script>
 {% endblock %}
