@@ -232,6 +232,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'message-ajax',
                    'intervention-list-own',
                    'intervention-view',
+                   'intervention-forbidden',
                    'client-address-edit-geo',
                    'home',
                    'logout',
@@ -254,3 +255,5 @@ MEDIA_URL = "/media/"
 
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+APP_VERSION = "6.1.7"

@@ -4,7 +4,6 @@ from datetime import date
 
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, DetailView, View
 from django.core.paginator import Paginator
@@ -75,6 +74,20 @@ class InterventionView(DetailView):
     model = Intervention
     context_object_name = "intervention"
     template_name = "detail_intervention.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_officer:
+            return super(InterventionView, self).dispatch(request, *args, **kwargs)
+        else:
+            try:
+                intervention = Intervention.objects.get(pk=kwargs['pk'])
+                if intervention.status_id == 2 and intervention.assigned_id == request.user.id:
+                    return super(InterventionView, self).dispatch(request, *args, **kwargs)
+                else:
+                    return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
+            except:
+                return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
+
 
     def get_context_data(self, **kwargs):
         context = super(InterventionView, self).get_context_data(**kwargs)
@@ -367,3 +380,7 @@ class MapAssignedInterventionView(MapInterventionView):
         worker = User.objects.get(pk=self.get_worker_id())
         context['title'] = worker.get_full_name()
         return context
+
+
+class ForbiddenInterventionView(TemplateView):
+    template_name = 'forbidden_intervention.html'

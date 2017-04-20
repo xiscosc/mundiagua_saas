@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Acceso a avería no autorizado{% endblock %}
+{% block content %}
+
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-12">
+            <div class="alert alert-danger" role="alert"><strong>Error de acceso</strong> Esta avería no se encuentra
+                actualmente asignada a su usuario, puede que lo estuviera anteriormente y que ahora esté finalizada. Si
+                cree que debería tener acceso contacte con su encargado.
+            </div>
+            <div class="form-group">
+                <a href="#" class="btn btn-primary" onclick="window.history.back();">Volver</a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

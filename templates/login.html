@@ -2,7 +2,8 @@
 {% load bootstrap %}
 {% load static %}
 {% load staticfiles %}
-{% block title %}Por favor, inicie sesión <button disabled class="btn btn-xs btn-default btn-left">6.1.6</button> {% endblock %}
+{% load core_tags %}
+{% block title %}Por favor, inicie sesión <button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}</button> {% endblock %}
 {% block content %}
     <form role="form" method="post" id="form-log">
         {% csrf_token %}

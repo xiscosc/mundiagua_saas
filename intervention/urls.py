@@ -4,7 +4,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
-    MapAssignedInterventionView
+    MapAssignedInterventionView, ForbiddenInterventionView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^reports/$', ReportInterventionView.as_view(), name="intervention-reports"),
     url(r'^map/$', MapInterventionView.as_view(), name="intervention-map"),
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
+    url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
 ]
