@@ -85,10 +85,12 @@
     <div class="panel-heading">Datos del cliente
         {% if request.user.is_officer %}
             <div class="pull-right">
-                        <button class="btn btn-xs btn-danger btn-email"><i
-                        class="fa fa-envelope"></i> Enviar correo</button>
-                <a class="btn btn-xs btn-default" href="{% url 'client:client-view' client.pk %}"><i
-                        class="fa fa-edit"></i> Modificar datos</a>
+                <button class="btn btn-xs btn-danger btn-email btn-circle btn-circle-inline"><i
+                        class="fa fa-envelope"></i>
+                </button>
+                <a class="btn btn-xs btn-default btn-circle btn-circle-inline"
+                   href="{% url 'client:client-view' client.pk %}"><i
+                        class="fa fa-edit"></i> </a>
             </div>
 
         {% endif %}
@@ -99,12 +101,13 @@
     <div class="col-md-7">
         <h3>Datos personales
             {% if edit %}
-                <a class="btn btn-warning" href="{% url 'client:client-edit' client.pk %}">Editar</a>
+                <a class="btn btn-warning btn-circle" href="{% url 'client:client-edit' client.pk %}"><i
+                        class="fa fa-edit"></i></a>
                 <!-- Single button -->
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        Crear <span class="caret"></span>
+                    <button type="button" class="btn btn-default dropdown-toggle btn-circle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"><i
+                            class="fa fa-plus"></i>
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'intervention:intervention-new' client.pk %}">Avería</a></li>
@@ -167,66 +170,66 @@
                         {{ address }}
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <strong>Localización</strong>
-                    </td>
-                    <td id="space_geo">
-                        {% if address.get_url_gmaps %}
-                            <a href="{{ address.get_url_gmaps }}" type="button" target="_blank"
-                               class="btn btn-success">
-                                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-                            </a>
-                        {% else %}
-                            <button class="btn btn-primary btn-xs" id="btn_geo">Grabar ubicación</button>
-                            <form method="post" action="{% url 'client:client-address-edit-geo' address.pk %}"
-                                  id="form_geo">
-                                {% csrf_token %}
-                            </form>
 
-                        {% endif %}
-                    </td>
-                </tr>
+                {% if  request.user_agent.is_mobile or address.get_url_gmaps %}
+                    <tr>
+                        <td>
+                            <strong>Localización</strong>
+                        </td>
+                        <td id="space_geo">
+                            {% if address.get_url_gmaps %}
+                                <a href="{{ address.get_url_gmaps }}" type="button" target="_blank"
+                                   class="btn btn-success btn-circle">
+                                    <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                                </a>
+                            {% else %}
+                                <button class="btn btn-primary btn-circle" id="btn_geo"><span class="fa fa-plus"></span>
+                                </button>
+                                <form method="post" action="{% url 'client:client-address-edit-geo' address.pk %}"
+                                      id="form_geo">
+                                    {% csrf_token %}
+                                </form>
 
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
             {% endif %}
 
         </table>
     </div>
     <div class="col-md-5">
         <h3>Teléfonos {% if edit %}
-            <a class="btn btn-success" href="{% url 'client:client-phone-new' client.pk %}">Añadir</a>{% endif %}</h3>
-        <table class="table table-bordered table-hover table-striped">
-            <tr>
-                <th>Alias</th>
-                <th>Teléfono</th>
-                {% if edit %}
-                    <th></th>
-                    <th></th>
-                {% endif %}
-                {% if sms %}
-                    <th></th>
-                {% endif %}
-            </tr>
-            {% for phone in client.get_phones %}
-                <tr>
-                    <td>{{ phone.alias }}</td>
-                    <td><a href="tel:{{ phone.phone }}">{{ phone.phone }}</a></td>
-                    {% if edit %}
-                        <td><a class="btn btn-block btn-warning"
-                               href="{% url 'client:client-phone-edit' phone.pk %}">Editar</a></td>
-                        <td><a class="btn btn-danger btn-block"
-                               href="{% url 'client:client-phone-delete' phone.pk %}">Eliminar</a></td>
-                    {% endif %}
-                    {% if sms %}
-                        <td>
-                            <button class="btn btn-primary btn-block btn-xs btn-sms" data-phone="{{ phone.pk }}">SMS
-                            </button>
-                        </td>
-                    {% endif %}
-                </tr>
+            <a class="btn btn-success btn-circle" href="{% url 'client:client-phone-new' client.pk %}"><i
+                    class="fa fa-plus"></i></a>{% endif %}</h3>
 
+
+        <ul class="list-group">
+            {% for phone in client.get_phones %}
+                <li class="list-group-item">
+                    <strong>{{ phone.alias }}</strong>
+                    <div class="pull-right" style="display: inline-flex">
+                        <a class="btn btn-default btn-circle-inline"
+                        href="tel:{{ phone.phone }}"><i class="fa fa-phone"></i> {{ phone.phone }}</a>
+                        {% if edit %}
+                            <a class="btn btn-block btn-warning btn-circle btn-circle-inline"
+                               href="{% url 'client:client-phone-edit' phone.pk %}"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-danger btn-block btn-circle btn-circle-inline "
+                               href="{% url 'client:client-phone-delete' phone.pk %}"><i class="fa fa-remove"></i></a>
+                        {% endif %}
+                        {% if sms %}
+                            <button class="btn btn-primary btn-circle btn-circle-inline btn-sms"
+                                    data-phone="{{ phone.pk }}">SMS
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </li>
             {% endfor %}
-        </table>
+
+        </ul>
+
+
     </div>
 </div>
 

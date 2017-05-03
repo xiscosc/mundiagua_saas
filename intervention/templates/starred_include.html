@@ -1,12 +1,12 @@
 {% if request.user.is_officer %}
 <a href="{% url 'intervention:intervention-starred' intervention.pk %}"
-   class="btn {% if intervention.starred %}btn-danger{% else %}btn-default{% endif %}">
+   class="btn {% if intervention.starred %}btn-danger{% else %}btn-default{% endif %} btn-circle-media">
     <span class="glyphicon glyphicon-star" aria-hidden="true"></span><div class="text-desktop-starred pull-right">{% if not intervention.starred %} No{% endif %}
     Prioritaria</div>
 </a>
 {% else %}
     <button
-   class="btn {% if intervention.starred %}btn-danger{% else %}btn-default{% endif %}" disabled>
+   class="btn {% if intervention.starred %}btn-danger{% else %}btn-default{% endif %} btn-circle-media" disabled>
     <span class="glyphicon glyphicon-star" aria-hidden="true"></span><div class="text-desktop-starred pull-right">{% if not intervention.starred %} No{% endif %}
     Prioritaria</div>
     </button>

@@ -11,7 +11,8 @@
                     <h3 class="panel-title">Nuevo Cliente</h3>
                 </div>
                 <div class="panel-body">
-                    <a href="{% url 'client:client-new' %}" class="btn btn-block btn-success">Crear Cliente</a>
+                    <a href="{% url 'client:client-new' %}" class="btn btn-block btn-success"><i class="fa fa-plus"></i>
+                        Crear Cliente</a>
                 </div>
             </div>
         </div>
@@ -32,12 +33,12 @@
                             <!-- end token -->
                             <div class="col-md-12">
                                 <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" placeholder="Texto a buscar"
-                                               name="search" required>
-                                <span class="input-group-btn">
+                                    <input type="text" class="form-control" placeholder="Texto a buscar"
+                                           name="search" required>
+                                    <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </span>
-                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -54,30 +55,34 @@
                                             <small>(Puede tener otras)</small>
                                         </th>
                                         <th></th>
-                                        {% if new_url2 %}<th></th>{% endif %}
+                                        {% if new_url2 %}
+                                            <th></th>{% endif %}
 
                                     </tr>
 
                                     {% for client in clients %}
-                                    <tr>
-                                        <td>
-                                            C{{ client.pk }}
-                                        </td>
-                                        <td>
-                                            {{ client.name }}
-                                        </td>
-                                        <td>
-                                            {{ client.get_first_address }}
-                                        </td>
-                                        <td>
-                                            <a href="{% url new_url client.pk %}"
-                                               class="btn btn-block {{ btn_class }}">{{ btn_text }}</a>
-                                        </td>
-                                    {% if new_url2 %}<td>
-                                            <a href="{% url new_url2 client.pk %}"
-                                               class="btn btn-block {{ btn_class2 }}">{{ btn_text2 }}</a>
-                                        </td>{% endif %}
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                C{{ client.pk }}
+                                            </td>
+                                            <td>
+                                                {{ client.name }}
+                                            </td>
+                                            <td>
+                                                {{ client.get_first_address }}
+                                            </td>
+                                            <td>
+                                                <a href="{% url new_url client.pk %}"
+                                                   class="btn btn-block {{ btn_class }}"><i
+                                                        class="fa fa-plus"></i> {{ btn_text }}</a>
+                                            </td>
+                                            {% if new_url2 %}
+                                                <td>
+                                                    <a href="{% url new_url2 client.pk %}"
+                                                       class="btn btn-block {{ btn_class2 }}"><i
+                                                            class="fa fa-plus"></i> {{ btn_text2 }}</a>
+                                                </td>{% endif %}
+                                        </tr>
                                     {% endfor %}
                                 </table>
                             {% endif %}

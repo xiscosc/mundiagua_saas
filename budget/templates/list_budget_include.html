@@ -1,0 +1,39 @@
+{% for budget in budgets %}
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        <td style="width: 15%">
+                            {% if type %}
+                                <a href="{% url 'budget:budget-repair-view' budget.pk %}"
+                               class="btn btn-info btn-block">{{ budget }}</a>
+                            {% else %}
+                                <a href="{% url 'budget:budget-view' budget.pk %}"
+                               class="btn btn-info btn-block">{{ budget }}</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if budget.invalid %}
+                                <button type="button" class="btn btn-default btn-left" style="color: #d44950;" disabled="">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> NULO
+                        </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Fecha</strong>
+                        </td>
+                        <td>
+                            {{ budget.date }}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Cliente</strong>
+                        </td>
+                        <td>
+                            {{ budget.address.client.name }}
+                        </td>
+                    </tr>
+                </table>
+            {% endfor %}

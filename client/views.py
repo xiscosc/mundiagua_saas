@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from itertools import chain
+from operator import attrgetter
+
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
@@ -82,6 +85,18 @@ class ClientView(DetailView):
     context_object_name = "client"
     model = Client
     template_name = "detail_client.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientView, self).get_context_data(**kwargs)
+        repairs_ath = AthRepair.objects.filter(address__client=context['object'])
+        repairs_idegis = IdegisRepair.objects.filter(address__client=context['object'])
+        context['interventions'] = Intervention.objects.filter(address__client=context['object']).order_by("-date")
+        context['repairs'] = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
+        context['engines'] = EngineRepair.objects.filter(address__client=context['object']).order_by("-date")
+        context['budgets'] = BudgetStandard.objects.filter(address__client=context['object']).order_by("-date")
+        return context
+
+
 
 
 class EditClientView(UpdateView):

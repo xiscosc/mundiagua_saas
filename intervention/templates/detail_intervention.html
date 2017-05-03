@@ -102,33 +102,21 @@
                         <h3 class="panel-title">Documentos de la avería</h3>
                     </div>
                     <div class="panel-body">
-                        <table class="table table-bordered table-hover table-striped">
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Usuario</th>
-                                <th>Documento</th>
-                                <th>Descargar</th>
-                            </tr>
+                        <ul class="list-group">
                             {% for d in intervention.get_documents %}
-                                <tr>
-                                    <td>
-                                        {{ d.date }}
-                                    </td>
-                                    <td>
-                                        {{ d.user.get_full_name }}
-                                    </td>
-                                    <td>
-                                        {{ d.filename }}
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-success btn-block" href="{{ d.document.url }}"
+                                <li class="list-group-item">
+                                    <strong>{{ d.filename }}</strong> por {{ d.user.get_full_name }}, {{ d.date }}.
+                                    <div class="pull-right" style="display: inline-flex">
+                                        <a class="btn btn-success btn-circle btn-circle-inline" href="{{ d.document.url }}"
                                            target="_blank">
                                             <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
                                         </a>
-                                    </td>
-                                </tr>
+                                    </div>
+
+                                </li>
                             {% endfor %}
-                        </table>
+
+                        </ul>
 
                     </div>
                 </div>
@@ -206,7 +194,7 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-md-2">
                                             <a class="btn btn-block" id="btn-color" href="#"
-                                                    style="color:white; background-color:{{ intervention.zone.color }}">
+                                               style="color:white; background-color:{{ intervention.zone.color }}">
                                                 Color
                                             </a>
                                         </div>
@@ -274,46 +262,47 @@
 
     {% if intervention.status_id == 2 and not request.user.is_officer %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Notificar estado del trabajo</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="row" id="forms">
-                        <form method="post" action="{% url 'intervention:intervention-status-job' intervention.pk %}">
-                            {% csrf_token %}
-                            <div class="col-xs-12 col-md-9">
-                                <select class="form-control" name="sub_status">
-                                    {% for s in sub_status %}
-                                        <option value="{{ s.pk }}">{{ s }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-xs-12 col-md-3">
-                                <button type="submit" class="btn btn-block btn-danger">
-                                    <span class="fa fa-flash"></span> Notificar
-                                </button>
-                            </div>
-                        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Notificar estado del trabajo</h3>
                     </div>
+                    <div class="panel-body">
+                        <div class="row" id="forms">
+                            <form method="post"
+                                  action="{% url 'intervention:intervention-status-job' intervention.pk %}">
+                                {% csrf_token %}
+                                <div class="col-xs-12 col-md-9">
+                                    <select class="form-control" name="sub_status">
+                                        {% for s in sub_status %}
+                                            <option value="{{ s.pk }}">{{ s }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-3">
+                                    <button type="submit" class="btn btn-block btn-danger">
+                                        <span class="fa fa-flash"></span> Notificar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     {% endif %}
 
     {% if intervention.get_history_sub|length > 0 %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Historial de estado del trabajo</h3>
-                </div>
-                <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Historial de estado del trabajo</h3>
+                    </div>
+                    <div class="panel-body">
                         <table class="table table-bordered table-hover table-striped" id="sub_history_table">
                             <tr>
                                 <th>Fecha</th>
@@ -334,10 +323,10 @@
                                 </tr>
                             {% endfor %}
                         </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     {% endif %}
 
     <div class="row">
@@ -391,9 +380,9 @@
 
                     {% if request.user.is_officer %}
                         <div class="pull-right">
-                            <a class="btn btn-xs btn-primary"
+                            <a class="btn btn-xs btn-primary btn-circle btn-circle-inline"
                                href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i
-                                    class="fa fa-print"></i> Imprimir</a>
+                                    class="fa fa-print"></i> </a>
                         </div>
                     {% endif %}
                 </div>

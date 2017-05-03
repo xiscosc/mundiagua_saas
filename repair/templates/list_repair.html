@@ -105,7 +105,7 @@
                             {% endif %}
                             {% if starred == '1' %}
                                 <li class="li-filters">
-                                    <button type="button" class="btn btn-danger" disabled>
+                                    <button type="button" class="btn btn-danger btn-circle" disabled>
                                         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                                     </button>
                                 </li>
@@ -121,68 +121,7 @@
     {% include 'paginator.html' with obj=repairs %}
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
-            {% for repair in repairs %}
-                <table class="table table-bordered table-hover table-striped">
-                    <tr>
-                        <td style="width: 15%">
-                            {% if repair.is_ath == 1 %}
-                                <a href="{% url 'repair:repair-ath-view' repair.pk %}"
-                                   class="btn btn-primary btn-block">{{ repair }}</a>
-                            {% else %}
-                                <a href="{% url 'repair:repair-idegis-view' repair.pk %}"
-                                   class="btn btn-default btn-block">{{ repair }}</a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if repair.is_ath == 1 %}
-                                <img src="{% static 'base/img/ath.png' %}" class="img-list-repair">
-                            {% else %}
-                                <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
-                            {% endif %}
-
-                            {% if repair.starred %}
-                                <button type="button" class="btn btn-danger pull-right" disabled
-                                        style="margin-right: 5px">
-                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                </button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Fecha</strong>
-                        </td>
-                        <td>
-                            {{ repair.date }}
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Modelo</strong>
-                        </td>
-                        <td>
-                            {{ repair.model }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Estado</strong>
-                        </td>
-                        <td>
-                            {{ repair.status }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Cliente</strong>
-                        </td>
-                        <td>
-                            {{ repair.address.client }}
-                        </td>
-                    </tr>
-                </table>
-            {% endfor %}
+            {% include 'list_repair_include.html' with repairs=repairs %}
         </div>
     </div>
     {% include 'paginator.html' with obj=repairs %}

@@ -4,70 +4,163 @@
 {% block page_title %}{{ client.name }}{% endblock %}
 {% block content %}
 
+
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Datos del cliente</h3>
-                </div>
-                <div class="panel-body">
-                    {% include 'client_data.html' with client=client edit=True sms=True %}
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-xs-12">
-                            <h3>Direcciones <a class="btn btn-success" href="{% url 'client:client-address-add' client.pk %}">Añadir</a>
-                            </h3>
-                            <table class="table table-bordered table-hover table-striped">
-                                <tr>
-                                    <th>Alias</th>
-                                    <th>Dirección</th>
-                                    <th>Zona frecuente</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                                {% for address in client.get_addresses %}
-                                    <tr>
-                                        <td>
-                                            {{ address.alias }}
-                                        </td>
-                                        <td>
-                                            {{ address.address|linebreaksbr }}
-                                        </td>
-                                        <td>
-                                            {% if address.default_zone %}
-                                                <div style="background-color: {{ address.default_zone.color }}"
-                                                     class="zone">{{ address.default_zone.name }}</div>
-                                            {% else %}
-                                                Sin datos
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if address.get_url_gmaps %}
-                                                <a href="{{ address.get_url_gmaps }}" type="button"
-                                                   class="btn btn-success">
-                                                    <span class="glyphicon glyphicon-map-marker"
-                                                          aria-hidden="true"></span>
-                                                </a>
-                                            {% else %}
-                                                <a href="#" type="button" class="btn" disabled>
-                                                    <span class="glyphicon glyphicon-map-marker"
-                                                          aria-hidden="true"></span>
-                                                </a>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-block btn-warning"
-                                               href="{% url 'client:client-address-edit' address.pk %}">Editar</a>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-block btn-danger"
-                                               href="{% url 'client:client-address-delete' address.pk %}">Eliminar</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="true" aria-controls="collapseOne">
+                                Datos del cliente
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            {% include 'client_data.html' with client=client edit=True sms=True %}
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                    <h3>Direcciones <a class="btn btn-success btn-circle"
+                                                       href="{% url 'client:client-address-add' client.pk %}"><i
+                                            class="fa fa-plus"></i></a>
+                                    </h3>
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <tr>
+                                            <th>Alias</th>
+                                            <th>Dirección</th>
+                                            <th>Localización</th>
+                                            <th>
+
+                                            </th>
+                                        </tr>
+                                        {% for address in client.get_addresses %}
+                                            <tr>
+                                                <td>
+                                                    {{ address.alias }}
+                                                </td>
+                                                <td>
+                                                    {{ address.address|linebreaksbr }}
+                                                </td>
+                                                <td>
+                                                    {% if address.default_zone %}
+                                                        <div style="background-color: {{ address.default_zone.color }}"
+                                                             class="zone">{{ address.default_zone.name }}</div>
+                                                    {% else %}
+                                                        <div style="background-color: lightgrey; color: black !important;"
+                                                             class="zone">Sin zona
+                                                        </div>
+                                                    {% endif %}
+
+                                                    {% if address.get_url_gmaps %}
+                                                        <a href="{{ address.get_url_gmaps }}" type="button"
+                                                           class="btn btn-success btn-circle"><span
+                                                                class="glyphicon glyphicon-map-marker"
+                                                                aria-hidden="true"></span></a>
+                                                    {% else %}
+                                                        <a href="#" type="button" class="btn btn-circle" disabled><span
+                                                                class="glyphicon glyphicon-map-marker"
+                                                                aria-hidden="true"></span></a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-block btn-warning btn-circle "
+                                                       href="{% url 'client:client-address-edit' address.pk %}"><i
+                                                            class="fa fa-edit"></i></a>
+
+                                                    <a class="btn btn-block btn-danger btn-circle "
+                                                       href="{% url 'client:client-address-delete' address.pk %}"><i
+                                                            class="fa fa-remove"></i></a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </diV>
                         </div>
-                    </diV>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Averías
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            {% if interventions|length > 0 %}
+                                {% include 'list_intervention_include.html' with interventions=interventions %}
+                            {% else %}
+                                <h5>No hay averías que mostrar</h5>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Reparaciones
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            {% if repairs|length > 0 %}
+                                {% include 'list_repair_include.html' with repairs=repairs %}
+                            {% else %}
+                                <h5>No hay reparaciones que mostrar</h5>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFour">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Presupuestos
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingFour">
+                        <div class="panel-body">
+                            {% if budgets|length > 0 %}
+                                {% include 'list_budget_include.html' with budgets=budgets %}
+                            {% else %}
+                                <h5>No hay presupuestos que mostrar</h5>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFive">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Reparaciones de motores
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingFive">
+                        <div class="panel-body">
+                            {% if engines|length > 0 %}
+                                {% include 'list_engine_include.html' with engines=engines %}
+                            {% else %}
+                                <h5>No hay reparaciones de motores que mostrar</h5>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,5 +171,6 @@
 {% endblock %}
 
 {% block extrajs %}
-        <script src="{% static 'base/js/client/sms_email.js' %}"></script>     <script src="{% static 'base/js/client/geolocation.js' %}"></script>
+    <script src="{% static 'base/js/client/sms_email.js' %}"></script>
+    <script src="{% static 'base/js/client/geolocation.js' %}"></script>
 {% endblock %}

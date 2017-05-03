@@ -115,10 +115,11 @@
                                 {% endif %}
                                 {% if starred %}
                                     <li class="li-filters">
-                                        <a class="zone" style="background-color: #d9534f"
-                                           href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 0 %}">
+                                        <button type="button" class="btn btn-danger btn-circle pull-right"
+                                                style="margin-right: 5px"
+                                                onclick="location.href = '{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 0 %}';">
                                             <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                        </a>
+                                        </button>
                                     </li>
                                 {% endif %}
                             </ul>

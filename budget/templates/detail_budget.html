@@ -18,8 +18,8 @@
 
                     <div class="pull-right">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-print"></i> Imprimir
+                            <button type="button" class="btn btn-primary btn-circle btn-circle-inline dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-print"></i>
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
@@ -76,12 +76,12 @@
                     <div class="panel-heading">
                         Información de la reparación {{ repair }}
                         {% if repair.is_ath %}
-                            <a class="btn btn-xs btn-left btn-warning"
-                               href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                            <a class="btn btn-circle btn-circle-inline btn-left btn-warning"
+                               href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i>
                             </a>
                         {% else %}
-                            <a class="btn btn-xs btn-left btn-warning"
-                               href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i> Editar
+                            <a class="btn btn-circle btn-circle-inline btn-left btn-warning"
+                               href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i>
                             </a>
                         {% endif %}
 
@@ -166,12 +166,12 @@
             <div class="panel-heading">
                 <i class="fa fa-bar-chart-o fa-fw"></i> Líneas de presupuesto
                 {% if repair %}
-                    <a class="btn btn-xs btn-left btn-primary"
-                       href="{% url 'budget:budget-repair-edit-lines' budget.pk %}"><i class="fa fa-edit"></i> Editar
+                    <a class="btn btn-circle btn-circle-inline btn-left btn-primary"
+                       href="{% url 'budget:budget-repair-edit-lines' budget.pk %}"><i class="fa fa-edit"></i>
                     </a>
                 {% else %}
-                    <a class="btn btn-xs btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i
-                            class="fa fa-edit"></i> Editar
+                    <a class="btn btn-circle btn-circle-inline btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i
+                            class="fa fa-edit"></i>
                     </a>
                 {% endif %}
 

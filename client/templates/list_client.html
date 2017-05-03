@@ -29,8 +29,7 @@
                             {{ client.get_first_address }}
                         </td>
                         <td>
-                            <a href="{% url 'client:client-view' client.pk %}" class="btn btn-block btn-primary">Ver
-                                cliente</a>
+                            <a href="{% url 'client:client-view' client.pk %}" class="btn btn-block btn-primary"><i class="fa fa-eye"></i> Ver</a>
                         </td>
                     </tr>
                 {% endfor %}

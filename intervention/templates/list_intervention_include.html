@@ -18,13 +18,7 @@
                             <div class="btn-mobile-list-intervention">Terminar</div>
                                 <div class="btn-desktop-list-intervention">Marcar para Terminar</div>
                             </a>
-                            {% if search_status.pk != 5 %}
-                            <a href="{% url 'intervention:intervention-bill' intervention.pk %}"
-                               class="btn btn-default">
-                                <div class="btn-mobile-list-intervention">Facturar</div>
-                                <div class="btn-desktop-list-intervention">Marcar para Facturar</div>
-                            </a>
-                                {% endif %}
+
                         {% endif %}
                         {% if nolinks %}
                             {% if intervention.starred %}
@@ -32,11 +26,14 @@
                             {% endif %}
                             Modificaciones: {{ intervention.get_num_modifications }}
                         {% else %}
-                            <button disabled
-                                    class="btn btn-warning pull-right">
+                            {% if intervention.get_num_modifications > 0 %}
+                                <button disabled
+                                    class="btn btn-warning btn-circle pull-right">
                                 <strong>{{ intervention.get_num_modifications }}</strong></button>
+                            {% endif %}
+
                             {% if intervention.starred %}
-                                <button type="button" class="btn btn-danger pull-right" disabled
+                                <button type="button" class="btn btn-danger btn-circle pull-right" disabled
                                         style="margin-right: 5px">
                                     <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                                 </button>

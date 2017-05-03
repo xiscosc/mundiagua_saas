@@ -15,6 +15,17 @@ from core.utils import send_data_to_user
 from intervention.tasks import send_intervention_assigned
 
 
+def get_upload_path(type, instance, filename):
+    return os.path.join(type, "V%s" % instance.intervention.pk, filename)
+
+
+def get_file_upload_path(instance, filename):
+    return get_upload_path('intervention_documents', instance, filename)
+
+
+def get_images_upload_path(instance, filename):
+    return get_upload_path('intervention_images', instance, filename)
+
 class InterventionStatus(models.Model):
     name = models.CharField(max_length=50)
 
@@ -111,11 +122,11 @@ class InterventionFile(models.Model):
 
 
 class InterventionImage(InterventionFile):
-    image = ThumbnailerImageField(upload_to='intervention_images', resize_source=dict(quality=85, size=(1620,0), upscale=False))
+    image = ThumbnailerImageField(upload_to=get_images_upload_path, resize_source=dict(quality=85, size=(1620,0), upscale=False))
 
 
 class InterventionDocument(InterventionFile):
-    document = models.FileField(upload_to='intervention_documents')
+    document = models.FileField(upload_to=get_file_upload_path)
 
     def filename(self):
         return os.path.basename(self.document.name)
