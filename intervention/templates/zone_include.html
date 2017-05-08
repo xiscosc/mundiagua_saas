@@ -1,0 +1,2 @@
+ <div style="background-color: {{ zone.color }}; border-color: {{ zone.border }}" class="zone">
+     {% if badge %}<span class="badge">{{ badge }}</span>{% endif %} <i class="fa {% if zone.pk > 6 %}fa-archive{% else %}fa-map{% endif %}"></i> {{ zone }}</div>

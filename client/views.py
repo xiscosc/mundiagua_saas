@@ -5,6 +5,7 @@ from operator import attrgetter
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 
@@ -97,8 +98,6 @@ class ClientView(DetailView):
         return context
 
 
-
-
 class EditClientView(UpdateView):
     model = Client
     template_name = 'new_client.html'
@@ -177,7 +176,6 @@ class DeleteAddresView(DeleteView):
 
 
 class SendSMSView(View):
-
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         sms = SMS(sender=request.user, body=params.getlist('sms_body')[0], phone_id=int(params.getlist('phone_pk')[0]))
@@ -201,13 +199,12 @@ class SendSMSView(View):
 
 
 class SendEmailView(View):
-
     def post(self, request, *args, **kwargs):
         body = request.POST.get('email_body', '')
         subject = request.POST.get('email_subject', '')
         email = request.POST.get('email_field', '')
 
-        if email is '' :
+        if email is '':
             email = "consultas@mundiaguabalear.com"
             subject = "ERROR " + subject
             body = "Error enviado este email: " + body
@@ -231,10 +228,9 @@ class AllClientsView(TemplateView):
 
 
 class PreSearchClientView(PreSearchView):
-
     def set_data_and_response(self, request):
         search_text = self.search_text
-        clients = Client.objects.filter(name__icontains=search_text)
+        clients = Client.objects.filter(Q(name__icontains=search_text) | Q(intern_code__icontains=search_text))
         addresses = Address.objects.filter(address__icontains=search_text)
         phones = Phone.objects.filter(phone__icontains=search_text)
         pk_list = []
@@ -265,7 +261,6 @@ class SearchClientView(TemplateView):
 
 
 class AddressGeoUpdateView(View):
-
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         address = Address.objects.get(pk=kwargs['pk'])
@@ -300,7 +295,6 @@ class PublicClientView(TemplateView):
 
 
 class RedirectOldClientView(View):
-
     def dispatch(self, request, *args, **kwargs):
         data = request.GET.get('id', 'none')
         data = "".join(data.split())

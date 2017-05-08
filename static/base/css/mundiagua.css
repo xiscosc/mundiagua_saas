@@ -1,9 +1,17 @@
 .zone {
-    color: white !important;
+    color: whitesmoke !important;
     border-radius: 4px;
     float: left;
     padding: 4px !important;
     margin-right: 3px;
+    margin-bottom: 3px;
+    border-style: solid;
+    border-width: 1.5px;
+}
+
+.zone .badge {
+    color: darkslategrey;
+    background-color: whitesmoke;
 }
 
 .btn-left {
@@ -92,4 +100,21 @@
 .btn-circle-inline.btn{
     margin-top: -5px;
     margin-right: 5px;
+}
+
+.btn-inline.btn{
+    margin-bottom: 3px;
+}
+
+.table-phone {
+    margin: 0px !important;
+    border: 0px !important;
+}
+
+.item-phone {
+    padding: 1px !important;
+}
+
+.td-phone {
+    border: 0px !important;
 }

@@ -206,23 +206,32 @@
 
         <ul class="list-group">
             {% for phone in client.get_phones %}
-                <li class="list-group-item">
-                    <strong>{{ phone.alias }}</strong>
-                    <div class="pull-right" style="display: inline-flex">
-                        <a class="btn btn-default btn-circle-inline"
-                        href="tel:{{ phone.phone }}"><i class="fa fa-phone"></i> {{ phone.phone }}</a>
-                        {% if edit %}
-                            <a class="btn btn-block btn-warning btn-circle btn-circle-inline"
-                               href="{% url 'client:client-phone-edit' phone.pk %}"><i class="fa fa-edit"></i></a>
-                            <a class="btn btn-danger btn-block btn-circle btn-circle-inline "
-                               href="{% url 'client:client-phone-delete' phone.pk %}"><i class="fa fa-remove"></i></a>
-                        {% endif %}
-                        {% if sms %}
-                            <button class="btn btn-primary btn-circle btn-circle-inline btn-sms"
-                                    data-phone="{{ phone.pk }}">SMS
-                            </button>
-                        {% endif %}
-                    </div>
+                <li class="list-group-item item-phone">
+                    <table class="table table-responsive table-phone">
+                        <tr>
+                            <td class="td-phone"><strong style="max-width: 50%">{{ phone.alias }}</strong></td>
+                            <td class="td-phone">
+                                <div class="pull-right" style="display: inline-flex">
+                                    <a class="btn btn-default btn-circle-inline"
+                                       href="tel:{{ phone.phone }}"><i class="fa fa-phone"></i> {{ phone.phone }}</a>
+                                    {% if edit %}
+                                        <a class="btn btn-block btn-warning btn-circle btn-circle-inline"
+                                           href="{% url 'client:client-phone-edit' phone.pk %}"><i
+                                                class="fa fa-edit"></i></a>
+                                        <a class="btn btn-danger btn-block btn-circle btn-circle-inline "
+                                           href="{% url 'client:client-phone-delete' phone.pk %}"><i
+                                                class="fa fa-remove"></i></a>
+                                    {% endif %}
+                                    {% if sms %}
+                                        <button class="btn btn-primary btn-circle btn-circle-inline btn-sms"
+                                                data-phone="{{ phone.pk }}">SMS
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
 
                 </li>
             {% endfor %}

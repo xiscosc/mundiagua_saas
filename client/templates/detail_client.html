@@ -46,8 +46,7 @@
                                                 </td>
                                                 <td>
                                                     {% if address.default_zone %}
-                                                        <div style="background-color: {{ address.default_zone.color }}"
-                                                             class="zone">{{ address.default_zone.name }}</div>
+                                                        {% include 'zone_include.html' with zone=address.default_zone %}
                                                     {% else %}
                                                         <div style="background-color: lightgrey; color: black !important;"
                                                              class="zone">Sin zona

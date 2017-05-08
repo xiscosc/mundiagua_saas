@@ -42,6 +42,8 @@ class HomeView(TemplateView):
         context['years'] = [x for x in xrange(2014, date.today().year + 1)]
         context['interventions'] = self.get_interventions()
         context['gmaps_api'] = settings.GMAPS_API_KEY
+        context['zones'] = Zone.objects.all().order_by('pk')
+        context['users'] = User.objects.all()
         return context
 
 
@@ -183,7 +185,7 @@ class PreSearchInterventionView(PreSearchView):
         interventions = Intervention.objects.filter(Q(description__icontains=search_text) |
                                                     Q(address__client__phones__phone__icontains=search_text) |
                                                     Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text))
+            address__address__icontains=search_text) | Q(address__client__intern_code__icontains=search_text))
         pk_list = []
         for i in interventions:
             pk_list.append(i.pk)

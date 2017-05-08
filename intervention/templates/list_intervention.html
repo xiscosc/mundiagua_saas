@@ -51,7 +51,7 @@
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred %}">
-                                                <div style="background-color: grey;"
+                                                <div style="background-color: grey; border-color: black"
                                                      class="zone">TODAS
                                                 </div>
                                             </a></li>
@@ -59,8 +59,7 @@
                                         {% for zone in zones %}
                                             <li>
                                                 <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk starred %}">
-                                                    <div style="background-color: {{ zone.color }}"
-                                                         class="zone">{{ zone }}</div>
+                                                    {% include 'zone_include.html' with zone=zone %}
                                                 </a></li>
                                         {% endfor %}
                                     </ul>
@@ -98,18 +97,18 @@
                             <ul class="nav navbar-nav navbar-right navbar-filters">
                                 {% if search_user %}
                                     <li class="li-filters">
+
                                         <a class="zone"
                                            href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned starred %}"
-                                           style="color: black !important; background-color: #fcf8e3">
-                                            {{ search_user.get_full_name|upper }}
+                                           style="color: black !important; background-color: white">
+                                            <i class="fa fa-user"></i> {{ search_user.get_full_name|upper }}
                                         </a>
                                     </li>
                                 {% endif %}
                                 {% if search_zone %}
                                     <li class="li-filters">
-                                        <a style="background-color: {{ search_zone.color }}" class="zone"
-                                           href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred %}">
-                                            {{ search_zone }}
+                                        <a style="margin-top: -15px" href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred %}">
+                                            {% include 'zone_include.html' with zone=search_zone %}
                                         </a>
                                     </li>
                                 {% endif %}

@@ -18,7 +18,8 @@
 
                     <div class="pull-right">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-primary btn-circle btn-circle-inline dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" class="btn btn-primary btn-circle btn-circle-inline dropdown-toggle"
+                                    data-toggle="dropdown">
                                 <i class="fa fa-print"></i>
                                 <span class="caret"></span>
                             </button>
@@ -68,6 +69,55 @@
             </div>
         </div>
     </div>
+
+
+    {% if not repair %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Averías vinculadas
+                            <div class="pull-right">
+                                <form class="form-inline" method="post" style="margin-top: -5px"
+                                      action="{% url 'budget:budget-link-intervention' budget.pk %}">
+                                    {% csrf_token %}
+                                    <input required type="text" class="form-control input-sm"
+                                           placeholder="Número de avería"
+                                           name="intervention">
+                                    <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i>
+                                        Vincular
+                                    </button>
+                                </form>
+                            </div>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if budget.intervention_set.all|length > 0 %}
+
+                        <ul class="list-group" style="margin-bottom: 0px;">
+                            {% for intervention in budget.intervention_set.all %}
+                                <li class="list-group-item">
+                                    <a href="{% url 'intervention:intervention-view' intervention.pk %}"
+                                       class="btn btn-danger btn-xs">{{ intervention }}</a> {{ intervention.address.client }}
+                                    <div class="pull-right" style="display: inline-flex">
+                                        <a class="btn btn-danger btn-circle btn-circle-inline"
+                                           href="{% url 'budget:budget-unlink-intervention' budget.pk intervention.pk 1 %}"
+                                        >
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                            {% else %}
+                            <h5>No hay averías vinculadas, use el botón de vincular para enlazar averías a este presupuesto</h5>
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
 
     {% if repair %}
         <div class="row">
@@ -170,7 +220,8 @@
                        href="{% url 'budget:budget-repair-edit-lines' budget.pk %}"><i class="fa fa-edit"></i>
                     </a>
                 {% else %}
-                    <a class="btn btn-circle btn-circle-inline btn-left btn-primary" href="{% url 'budget:budget-edit-lines' budget.pk %}"><i
+                    <a class="btn btn-circle btn-circle-inline btn-left btn-primary"
+                       href="{% url 'budget:budget-edit-lines' budget.pk %}"><i
                             class="fa fa-edit"></i>
                     </a>
                 {% endif %}
@@ -192,5 +243,6 @@
 
 {% endblock %}
 {% block extrajs %}
-        <script src="{% static 'base/js/client/sms_email.js' %}"></script>     <script src="{% static 'base/js/client/geolocation.js' %}"></script>
+    <script src="{% static 'base/js/client/sms_email.js' %}"></script>
+    <script src="{% static 'base/js/client/geolocation.js' %}"></script>
 {% endblock %}

@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, View
 
 from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSearchView
+from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
 
 
@@ -141,15 +142,16 @@ class ListRepairView(TemplateView):
 
 
 class PreSearchRepairView(PreSearchView):
-
     def set_data_and_response(self, request):
         search_text = self.search_text
         repairs_ath = AthRepair.objects.filter(Q(description__icontains=search_text) |
                                                Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text)| Q(address__client__phones__phone__icontains=search_text))
+            address__address__icontains=search_text) | Q(address__client__phones__phone__icontains=search_text) | Q(
+            address__client__intern_code__icontains=search_text))
         repairs_idegis = IdegisRepair.objects.filter(Q(description__icontains=search_text) |
                                                      Q(address__client__name__icontains=search_text) | Q(
-            address__address__icontains=search_text)| Q(address__client__phones__phone__icontains=search_text))
+            address__address__icontains=search_text) | Q(address__client__phones__phone__icontains=search_text) | Q(
+            address__client__intern_code__icontains=search_text))
         pk_list_ath = []
         pk_list_idegis = []
         for i in repairs_ath:
@@ -218,4 +220,74 @@ class ToggleStarredRepairView(View):
         repair.starred = not repair.starred
         repair.save()
         messages.success(self.request.user, "Cambio realizado correctamente")
-        return HttpResponseRedirect(reverse_lazy("repair:"+urlname, kwargs={'pk': self.kwargs['pk']}))
+        return HttpResponseRedirect(reverse_lazy("repair:" + urlname, kwargs={'pk': self.kwargs['pk']}))
+
+
+class LinkInterventionView(View):
+    def post(self, request, *args, **kwargs):
+        import re
+        params = request.POST.copy()
+        type = bool(int(kwargs['type']))
+        intervention_pk = int(re.sub("[^0-9]", "", params.getlist('intervention')[0]))
+
+        try:
+            intervention = Intervention.objects.get(pk=intervention_pk)
+
+            if type:
+                repair = AthRepair.objects.get(pk=kwargs['pk'])
+                intervention.repairs_ath.add(repair)
+                url = 'repair:repair-ath-view'
+            else:
+                repair = IdegisRepair.objects.get(pk=kwargs['pk'])
+                intervention.repairs_idegis.add(repair)
+                url = 'repair:repair-idegis-view'
+
+            messages.success(self.request.user, "Avería V%d - %s vinculada correctamente." % (
+                intervention_pk, intervention.address.client))
+
+        except:
+            if type:
+                url = 'repair:repair-ath-view'
+            else:
+                url = 'repair:repair-idegis-view'
+
+            messages.warning(self.request.user,
+                             "No se ha podido vincular la avería V%d debido a un error, puede ser que el número sea incorrecto." % intervention_pk)
+
+        return HttpResponseRedirect(reverse_lazy(url, kwargs={'pk': kwargs['pk']}))
+
+
+class UnlinkInterventionView(View):
+    def get(self, request, *args, **kwargs):
+        type = bool(int(kwargs['type']))
+        to_repair = bool(int(kwargs['to_repair']))
+        intervention_pk = int(kwargs['pk_intervention'])
+
+        try:
+            intervention = Intervention.objects.get(pk=intervention_pk)
+
+            if type:
+                repair = AthRepair.objects.get(pk=kwargs['pk'])
+                intervention.repairs_ath.remove(repair)
+                url = 'repair:repair-ath-view'
+            else:
+                repair = IdegisRepair.objects.get(pk=kwargs['pk'])
+                intervention.repairs_idegis.remove(repair)
+                url = 'repair:repair-idegis-view'
+
+            messages.success(self.request.user, "Avería V%d - %s desvinculada correctamente de la reparación." % (
+                intervention_pk, intervention.address.client))
+
+        except:
+            if type:
+                url = 'repair:repair-ath-view'
+            else:
+                url = 'repair:repair-idegis-view'
+
+            messages.warning(self.request.user,
+                             "No se ha podido desvincular la avería V%d debido a un error, puede ser que el número sea incorrecto." % intervention_pk)
+
+        if to_repair:
+            return HttpResponseRedirect(reverse_lazy(url, kwargs={'pk': kwargs['pk']}))
+        else:
+            return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': intervention_pk}))

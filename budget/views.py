@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from async_messages import message_user, constants
+from async_messages import message_user, constants, messages
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
@@ -10,6 +10,7 @@ from django.views.generic import TemplateView, View, UpdateView
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair
+from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 
 
@@ -157,7 +158,7 @@ class PreSearchBudgetView(PreSearchView):
 
         budgets = BudgetStandard.objects.filter(Q(address__client__phones__phone__icontains=search_text)|
             Q(address__client__name__icontains=search_text) | Q(
-                address__address__icontains=search_text))
+                address__address__icontains=search_text) | Q(address__client__intern_code__icontains=search_text))
 
         pk_list = []
         for i in budgets:
@@ -337,3 +338,46 @@ class BudgetRepairPrintView(TemplateView):
         context = super(BudgetRepairPrintView, self).get_context_data(**kwargs)
         context['budget'] = BudgetRepair.objects.get(pk=kwargs['pk'])
         return context
+
+
+class LinkInterventionView(View):
+    def post(self, request, *args, **kwargs):
+        import re
+        params = request.POST.copy()
+        intervention_pk = int(re.sub("[^0-9]", "", params.getlist('intervention')[0]))
+
+        try:
+            intervention = Intervention.objects.get(pk=intervention_pk)
+            budget = BudgetStandard.objects.get(pk=kwargs['pk'])
+            intervention.budgets.add(budget)
+            messages.success(self.request.user, "Avería V%d - %s vinculada correctamente." % (
+            intervention_pk, intervention.address.client))
+
+        except:
+            messages.warning(self.request.user,
+                             "No se ha podido vincular la avería V%d debido a un error, puede ser que el número sea incorrecto." % intervention_pk)
+
+        return HttpResponseRedirect(reverse_lazy('budget:budget-view', kwargs={'pk': kwargs['pk']}))
+
+
+class UnlinkInterventionView(View):
+
+    def get(self, request, *args, **kwargs):
+        to_budget = bool(int(kwargs['to_budget']))
+        intervention_pk = int(kwargs['pk_intervention'])
+
+        try:
+            intervention = Intervention.objects.get(pk=intervention_pk)
+            budget = BudgetStandard.objects.get(pk=kwargs['pk'])
+            intervention.budgets.remove(budget)
+            messages.success(self.request.user, "Avería V%d - %s desvinculada correctamente del presupuesto." % (
+                intervention_pk, intervention.address.client))
+
+        except:
+            messages.warning(self.request.user,
+                             "No se ha podido desvincular la avería V%d debido a un error, puede ser que el número sea incorrecto." % intervention_pk)
+
+        if to_budget:
+            return HttpResponseRedirect(reverse_lazy('budget:budget-view', kwargs={'pk': kwargs['pk']}))
+        else:
+            return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': intervention_pk}))

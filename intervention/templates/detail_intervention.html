@@ -107,7 +107,8 @@
                                 <li class="list-group-item">
                                     <strong>{{ d.filename }}</strong> por {{ d.user.get_full_name }}, {{ d.date }}.
                                     <div class="pull-right" style="display: inline-flex">
-                                        <a class="btn btn-success btn-circle btn-circle-inline" href="{{ d.document.url }}"
+                                        <a class="btn btn-success btn-circle btn-circle-inline"
+                                           href="{{ d.document.url }}"
                                            target="_blank">
                                             <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
                                         </a>
@@ -126,6 +127,75 @@
     {% endif %}
 
     {% if request.user.is_officer %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Vinculaciones
+                            <small>Puedes vincular esta avería a una reparación o un presupuesto</small>
+                            <div class="pull-right">
+                            </div>
+                        </h3>
+                    </div>
+                    <div class="panel-body forms_content">
+                        {% if intervention.repairs_ath.all|length > 0 or  intervention.repairs_idegis.all|length > 0 or intervention.budgets.all|length > 0 %}
+
+
+                            <ul class="list-group" style="margin-bottom: 0px;">
+                                {% for ath in intervention.repairs_ath.all %}
+                                    <li class="list-group-item">
+                                        <a href="{% url 'repair:repair-ath-view' ath.pk %}"
+                                           class="btn btn-primary btn-xs">{{ ath }}</a> {{ ath.model|upper }}
+                                        <div class="pull-right" style="display: inline-flex">
+                                            <a class="btn btn-danger btn-circle btn-circle-inline"
+                                               href="{% url 'repair:repair-unlink-intervention' ath.pk 1 intervention.pk 0 %}"
+                                            >
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                            </a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                                {% for idegis in intervention.repairs_idegis.all %}
+                                    <li class="list-group-item">
+                                        <a href="{% url 'repair:repair-idegis-view' idegis.pk %}"
+                                           class="btn btn-default btn-xs ">{{ idegis }}</a> {{ idegis.model|upper }}
+                                        <div class="pull-right" style="display: inline-flex">
+                                            <a class="btn btn-danger btn-circle btn-circle-inline"
+                                               href="{% url 'repair:repair-unlink-intervention' idegis.pk 0 intervention.pk 0 %}"
+                                            >
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                            </a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                                {% for budget in intervention.budgets.all %}
+
+                                    <li class="list-group-item">
+                                        <a href="{% url 'budget:budget-view' budget.pk %}" class="btn btn-xs btn-info">{{ budget }}</a> Creado el {{ budget.date }}
+                                        <div class="pull-right" style="display: inline-flex">
+                                            <a class="btn btn-danger  btn-circle btn-circle-inline"
+                                               href="{% url 'budget:budget-unlink-intervention' budget.pk intervention.pk 0 %}"
+                                            >
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                            </a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+
+
+                        {% else %}
+                            <h5>No hay vinculaciones que mostrar, para realizar una vinculación dirígete al presupuesto
+                                o reparación.</h5>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <div class="row">
             <div class="col-xs-12">
                 <div class="panel panel-default">
@@ -376,15 +446,15 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Datos de la avería
+                    <h3 class="panel-title">Datos de la avería
 
-                    {% if request.user.is_officer %}
-                        <div class="pull-right">
-                            <a class="btn btn-xs btn-primary btn-circle btn-circle-inline"
-                               href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i
-                                    class="fa fa-print"></i> </a>
-                        </div>
-                    {% endif %}
+                        {% if request.user.is_officer %}
+                            <div class="pull-right">
+                                <a class="btn btn-xs btn-primary btn-circle btn-circle-inline"
+                                   href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i
+                                        class="fa fa-print"></i> </a>
+                            </div>
+                        {% endif %}</h3>
                 </div>
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped">
@@ -402,8 +472,7 @@
                                 <strong>Zona</strong>
                             </td>
                             <td>
-                                <div style="background-color: {{ intervention.zone.color }}"
-                                     class="zone">{{ intervention.zone }}</div>
+                                {% include 'zone_include.html' with zone=intervention.zone %}
                             </td>
                         </tr>
                         <tr>

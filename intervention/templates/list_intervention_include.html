@@ -59,8 +59,7 @@
                         {% if nolinks %}
                             {{ intervention.zone }} - {{ intervention.address }}
                         {% else %}
-                            <div style="background-color: {{ intervention.zone.color }}"
-                                 class="zone">{{ intervention.zone }}</div>
+                            {% include 'zone_include.html' with zone=intervention.zone %}
                             {{ intervention.address }}
 
                         {% endif %}

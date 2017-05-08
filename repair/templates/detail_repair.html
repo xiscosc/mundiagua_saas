@@ -21,26 +21,32 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Información de la reparación
-                    <div class="pull-right">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary btn-circle btn-circle-inline dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-print"></i>
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu pull-right" role="menu">
-                                <li><a href="{% url 'repair:repair-print' 1 repair.is_ath repair.pk %}" target="_blank">Con
-                                    logo</a>
-                                </li>
-                                <li><a href="{% url 'repair:repair-print' 0 repair.is_ath repair.pk %}" target="_blank">Sin
-                                    logo</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li><a href="{% url 'repair:repair-print' 2 repair.is_ath repair.pk %}" target="_blank">Interno</a>
-                                </li>
-                            </ul>
+                    <h3 class="panel-title">Información de la reparación
+                        <div class="pull-right">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn btn-primary btn-circle btn-circle-inline dropdown-toggle"
+                                        data-toggle="dropdown">
+                                    <i class="fa fa-print"></i>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                    <li><a href="{% url 'repair:repair-print' 1 repair.is_ath repair.pk %}"
+                                           target="_blank">Con
+                                        logo</a>
+                                    </li>
+                                    <li><a href="{% url 'repair:repair-print' 0 repair.is_ath repair.pk %}"
+                                           target="_blank">Sin
+                                        logo</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'repair:repair-print' 2 repair.is_ath repair.pk %}"
+                                           target="_blank">Interno</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    </h3>
                 </div>
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped">
@@ -110,6 +116,50 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Averías vinculadas
+                        <div class="pull-right">
+                            <form class="form-inline" method="post" style="margin-top: -5px"
+                                  action="{% url 'repair:repair-link-intervention' repair.pk repair.is_ath %}">
+                                {% csrf_token %}
+                                <input required type="text" class="form-control input-sm" placeholder="Número de avería"
+                                       name="intervention">
+                                <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i>
+                                    Vincular
+                                </button>
+                            </form>
+                        </div>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                {% if repair.intervention_set.all|length > 0 %}
+                    <ul class="list-group" style="margin-bottom: 0px;">
+                        {% for intervention in repair.intervention_set.all %}
+                            <li class="list-group-item">
+                                <a href="{% url 'intervention:intervention-view' intervention.pk %}"
+                                   class="btn btn-danger btn-xs">{{ intervention }}</a> {{ intervention.address.client }}
+                                <div class="pull-right" style="display: inline-flex">
+                                    <a class="btn btn-danger btn-circle btn-circle-inline"
+                                       href="{% url 'repair:repair-unlink-intervention' repair.pk repair.is_ath intervention.pk 1 %}"
+                                    >
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                    </a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                  <h5>No hay averías vinculadas, use el botón de vincular para enlazar averías a esta reparación</h5>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {% include 'sms_include.html' with obj=repair title="SMS de la reparación" %}
 

@@ -43,9 +43,15 @@ class InterventionSubStatus(models.Model):
 class Zone(models.Model):
     name = models.CharField(max_length=50)
     color = ColorField(default='#FF0000')
+    border = ColorField(default='#FF0000')
 
     def __str__(self):
         return self.name.encode('utf8')
+
+    def get_pending_interventions(self):
+        return Intervention.objects.filter(zone=self, status_id=1).count()
+
+    pending_interventions = property(get_pending_interventions)
 
 
 class Intervention(models.Model):
@@ -59,6 +65,9 @@ class Intervention(models.Model):
     note = models.TextField(null=True)
     sms = models.ManyToManyField(SMS)
     starred = models.BooleanField(default=False)
+    repairs_ath = models.ManyToManyField('repair.AthRepair')
+    repairs_idegis = models.ManyToManyField('repair.IdegisRepair')
+    budgets = models.ManyToManyField('budget.BudgetStandard')
 
     def __str__(self):
         return "V" + str(self.pk)

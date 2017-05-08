@@ -87,6 +87,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         if commit:
             self.save()
 
+    def get_assigned_interventions(self):
+        from intervention.models import Intervention
+        return Intervention.objects.filter(assigned=self, status_id=2).count()
+
+    assigned_interventions = property(get_assigned_interventions)
+
+
 class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from')

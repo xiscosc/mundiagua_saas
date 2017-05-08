@@ -19,11 +19,17 @@ $(function () {
     var selected_zone = $('#selected_zone');
 
     selected_zone.css('background-color', zones_data[1]);
+    selected_zone.css('border-color', zones_border[1]);
 
     zone_selector.on('change', function () {
         var sel = zone_selector.find(":selected");
         selected_zone.css('background-color', zones_data[sel.val()]);
-        selected_zone.html(sel.html());
+        selected_zone.css('border-color', zones_border[sel.val()]);
+        if (sel.val()>6) {
+            selected_zone.html('<i class="fa fa-archive"></i> '+sel.html());
+        } else {
+            selected_zone.html('<i class="fa fa-map"></i> '+sel.html());
+        }
     });
 
     add_selector.on('change', function () {
