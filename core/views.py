@@ -151,6 +151,9 @@ class PreSearchView(View):
 
     search_text = None
 
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect('/')
+
     def set_data_and_response(self, request):
         return None
 
