@@ -1,6 +1,14 @@
 {% extends 'log_base.html' %}
 {% load bootstrap %}
-{% block title %}Sesión finalizada{% endblock %}
+{% load core_tags %}
+{% block title %}Intranet<button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}</button> {% endblock %}
 {% block content %}
-    <a href="{% url 'login' %}" class="btn btn-lg btn-primary btn-block">Volver a iniciar sesión</a>
+
+<div class="alert alert-warning">
+        <a class="close" data-dismiss="alert">×</a>
+          Se ha desconectado correctamente. Si ha sido redirigido aquí sin poder entrar es que su usuario no está autorizado.
+</div>
+
+    <a href="{% url 'login-google' %}" class="btn btn-lg btn-primary btn-block">Volver a iniciar sesión</a>
+
 {% endblock %}

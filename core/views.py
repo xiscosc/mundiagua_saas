@@ -2,11 +2,15 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.conf import settings
 
 # Create your views here.
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView
+from django.contrib.auth import login
+
+from oauth2client import client
 
 from client.models import Client, Address
 from core.models import User, Message
@@ -174,3 +178,26 @@ class ChangeLogView(TemplateView):
 
 class UserView(TemplateView):
     template_name = 'user.html'
+
+
+class GoogleLoginView(TemplateView):
+    template_name = 'login_google.html'
+
+
+class GoogleLogoutView(TemplateView):
+    template_name = 'logout_google.html'
+
+
+class GoogleProcessView(View):
+
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        token = params.getlist('token')[0]
+        idinfo = client.verify_id_token(token, settings.GOOGLE_CLIENT_ID)
+        try:
+            user = User.objects.get(email=idinfo['email'])
+            login(user, request, backend=None)
+            return HttpResponseRedirect(reverse_lazy('home'))
+        except User.DoesNotExist:
+            return HttpResponseRedirect(reverse_lazy('logout'))
+        return None

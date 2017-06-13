@@ -118,3 +118,8 @@
 .td-phone {
     border: 0px !important;
 }
+
+.login-link {
+    text-align: center;
+    padding-top: 15px;
+}

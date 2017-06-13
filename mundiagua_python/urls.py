@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout, password_change, password_change_done
 
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
-    ChangeLogView, UserView
+    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
 
@@ -33,8 +33,9 @@ urlpatterns = [
     url(r'^repair/', include('repair.urls', namespace="repair")),
     url(r'^engine/', include('engine.urls', namespace="engine")),
     url(r'^user/$', UserView.as_view(), name="user-manage"),
-    url(r'^login/$', login, name='login',
-        kwargs={'template_name': 'login.html', 'authentication_form': MundiaguaLoginForm}),
+    url(r'^login/$', login, name='login', kwargs={'template_name': 'login.html', 'authentication_form': MundiaguaLoginForm}),
+    url(r'^login/google/$', GoogleLoginView.as_view(), name='login-google'),
+    url(r'^login/google/process/$', GoogleProcessView.as_view(), name='login-google-process'),
     url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
     url(r'^user/password/$', password_change,
         kwargs={'template_name': 'password_change.html', 'post_change_redirect': 'password-change-done',

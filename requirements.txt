@@ -1,4 +1,4 @@
-Django==1.10.6
+Django==1.11.2
 django-bootstrap-form==3.2.1
 django-bower==5.1.0
 django-colorfield==0.1.10
@@ -15,10 +15,11 @@ django-hijack-admin
 celery==4.0.2
 python-memcached
 django-admin-honeypot
-easy-thumbnails
+easy-thumbnails==2.4.1
 boto3
 xlwt
 pyyaml
 ua-parser
 user-agents
 django-user-agents
+oauth2client

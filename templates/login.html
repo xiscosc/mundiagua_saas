@@ -14,6 +14,8 @@
             <input type="hidden" name="next"
                    value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
             <button type="submit" id="btn-log" class="btn btn-lg btn-primary btn-block">Entrar</button>
+
+            <a href="{% url 'login-google' %}"><h5 class="login-link">Iniciar sesión con cuenta Google</h5></a>
         </fieldset>
     </form>
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'log_base.html' %}
+{% load bootstrap %}
+{% load static %}
+{% load staticfiles %}
+{% load core_tags %}
+{% block title %}Por favor, inicie sesión <button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}</button> {% endblock %}
+{% block content %}
+    <br>
+
+    <form method="post" id="form_google" action="{% url 'login-google-process' %}">
+        {% csrf_token %}
+        <input type="hidden" name="token" value="none" id="token">
+    </form>
+
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+
+
+    <a href="{% url 'login' %}"><h5 class="login-link">Iniciar sesión con contraseña</h5></a>
+
+{% endblock %}
+
+
+{% block extrajs %}
+<script src="{% static 'base/js/core/login-google.js' %}?v=630"></script>
+{% endblock %}
+
+{% block extrahead %}
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="64351646816-0oncelskq3l65552muba7af47vjtu4hj.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+{% endblock %}

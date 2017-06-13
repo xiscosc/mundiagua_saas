@@ -47,9 +47,7 @@ OTHER_APPS = [
     'compat',
     'hijack_admin',
     'admin_honeypot',
-    # 'wkhtmltopdf',
     'easy_thumbnails',
-    'django_user_agents'
 ]
 
 MY_APPS = [
@@ -90,6 +88,8 @@ MIDDLEWARE_CLASSES = [
 
 PUBLIC_URLS = (
     r'login/',
+    r'login/google/',
+    r'login/google/process/',
     r'logout/',
     r'admin/',
     r'repair-status/(?P<online>\w+)/',
@@ -206,7 +206,7 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
-LOGIN_URL = "/login/"
+LOGIN_URL = "/login/google/"
 
 HIJACK_REGISTER_ADMIN = False
 HIJACK_ALLOW_GET_REQUESTS = True
@@ -237,6 +237,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'home',
                    'logout',
                    'login',
+                   'login-google',
                    'release_hijack',
                    'intervention-image-upload',
                    'intervention-status-job',
@@ -256,4 +257,4 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.2.1"
+APP_VERSION = "6.3alpha"
