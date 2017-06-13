@@ -90,6 +90,7 @@ PUBLIC_URLS = (
     r'login/',
     r'login/google/',
     r'login/google/process/',
+    r'login/google/error/',
     r'logout/',
     r'admin/',
     r'repair-status/(?P<online>\w+)/',
@@ -206,7 +207,7 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
-LOGIN_URL = "/login/google/"
+LOGIN_URL = "/login/"
 
 HIJACK_REGISTER_ADMIN = False
 HIJACK_ALLOW_GET_REQUESTS = True
@@ -258,3 +259,5 @@ SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.3alpha"
+
+LOGIN_REDIRECT_URL = "/"

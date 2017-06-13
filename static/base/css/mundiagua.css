@@ -123,3 +123,17 @@
     text-align: center;
     padding-top: 15px;
 }
+
+.google-logo {
+    height: 21px;
+    display: inline;
+}
+
+.g-signin2{
+  width: 100%;
+    margin-top: 5px;
+}
+
+.g-signin2 > div{
+  margin: 0 auto;
+}

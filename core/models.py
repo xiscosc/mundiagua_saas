@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_password_update = models.DateField(default="2015-01-01")
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
+    is_google = models.BooleanField(default=False)
 
 
     USERNAME_FIELD = 'email'

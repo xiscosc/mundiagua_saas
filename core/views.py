@@ -184,8 +184,8 @@ class GoogleLoginView(TemplateView):
     template_name = 'login_google.html'
 
 
-class GoogleLogoutView(TemplateView):
-    template_name = 'logout_google.html'
+class GoogleErrorView(TemplateView):
+    template_name = 'error_google.html'
 
 
 class GoogleProcessView(View):
@@ -196,8 +196,10 @@ class GoogleProcessView(View):
         idinfo = client.verify_id_token(token, settings.GOOGLE_CLIENT_ID)
         try:
             user = User.objects.get(email=idinfo['email'])
-            login(user, request, backend=None)
-            return HttpResponseRedirect(reverse_lazy('home'))
+            if user.is_google:
+                login(user=user, request=request, backend=None)
+                return HttpResponseRedirect(reverse_lazy('home'))
+            else:
+                return HttpResponseRedirect(reverse_lazy('login-google-error'))
         except User.DoesNotExist:
-            return HttpResponseRedirect(reverse_lazy('logout'))
-        return None
+            return HttpResponseRedirect(reverse_lazy('login-google-error'))

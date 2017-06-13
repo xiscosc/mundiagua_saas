@@ -2,15 +2,15 @@
 {% load static %}
 {% load bootstrap %}
 {% load core_tags %}
-{% block title %}Sesión finalizada<button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}</button> {% endblock %}
+{% block title %}Error de acceso<button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}</button> {% endblock %}
 {% block content %}
 
-<div class="alert alert-warning">
+<div class="alert alert-danger">
         <a class="close" data-dismiss="alert">×</a>
-          Se ha desconectado correctamente.
+          No está autorizado a entrar usando esta cuenta Google.
 </div>
 
-<a href="{% url 'login' %}" class="btn btn-lg btn-primary btn-block">Volver a iniciar sesión</a>
+    <a href="{% url 'login' %}" class="btn btn-lg btn-primary btn-block">Volver a iniciar sesión</a>
 
 {% endblock %}
 {% block extrajs %}
