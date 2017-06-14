@@ -81,7 +81,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
 
     def has_to_change_password(self):
-        return has_to_change_password(self.last_password_update)
+        if self.is_google:
+            return False
+        else:
+            return has_to_change_password(self.last_password_update)
 
     def update_change_password(self, commit=False):
         self.last_password_update = date.today()

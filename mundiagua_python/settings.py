@@ -207,7 +207,7 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
-LOGIN_URL = "/login/"
+LOGIN_URL = "/login/google/"
 
 HIJACK_REGISTER_ADMIN = False
 HIJACK_ALLOW_GET_REQUESTS = True

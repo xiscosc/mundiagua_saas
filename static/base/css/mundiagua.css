@@ -137,3 +137,10 @@
 .g-signin2 > div{
   margin: 0 auto;
 }
+
+.google-gif {
+    height: 80px;
+    display: none;
+    margin: auto;
+
+}

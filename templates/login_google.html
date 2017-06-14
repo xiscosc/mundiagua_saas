@@ -3,29 +3,49 @@
 {% load static %}
 {% load staticfiles %}
 {% load core_tags %}
-{% block title %}Por favor, inicie sesión <button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}</button> {% endblock %}
+{% block title %}Por favor, iniciesesión
+    <button disabled class="btn btn-xs btn-default btn-left"><i class="fa fa-lock fa-fw"></i> {% app_version %}
+    </button> {% endblock %}
 {% block content %}
-    <br>
+
+
+    <div class="row">
+        <img class="google-gif" src="{% static 'base/img/google.gif' %}"/>
+    </div>
+
+    <div class="row login-google">
+        <div class="col-xs-12 col-md-12">
+            <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        </div>
+
+    </div>
+
+    {% if request.GET.next %}
+        <p class="login-link login-google"><a href="{% url 'login' %}?next={{ request.GET.next }}"
+                                              id="link-login-password"><i class="fa fa-key"></i> Entrar usando
+            contraseña</a></p>
+    {% else %}
+        <p class="login-link login-google"><a href="{% url 'login' %}" id="link-login-password"><i
+                class="fa fa-key"></i> Entrar usando contraseña</a></p>
+    {% endif %}
+
+
 
     <form method="post" id="form_google" action="{% url 'login-google-process' %}">
         {% csrf_token %}
         <input type="hidden" name="token" value="none" id="token">
+        {% if request.GET.next %}
+            <input type="hidden" value="{{ request.GET.next }}" name="next">
+        {% endif %}
     </form>
-
-    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-
-
-    <a href="{% url 'login' %}"><h5 class="login-link">Iniciar sesión con contraseña</h5></a>
-
 {% endblock %}
 
-
 {% block extrajs %}
-<script src="{% static 'base/js/core/login-google.js' %}?v=630"></script>
+    <script src="{% static 'base/js/core/login-google.js' %}?v=630"></script>
 {% endblock %}
 
 {% block extrahead %}
     <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="64351646816-0oncelskq3l65552muba7af47vjtu4hj.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="{% google_client_id %}">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 {% endblock %}

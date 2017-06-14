@@ -12,9 +12,12 @@ function signOut() {
 
 
 $(function () {
-    gapi.load('auth2', function() {
+    setTimeout(function () {
+        gapi.load('auth2', function() {
         gapi.auth2.init().then(function () {
             signOut();
         });
       });
+    }, 780);
+
 });

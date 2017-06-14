@@ -13,32 +13,20 @@
             </div>
             <input type="hidden" name="next"
                    value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
-
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <button type="submit" id="btn-log" class="btn btn-lg btn-primary btn-block"><i class="fa fa-key"></i> Entrar</button>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-                </div>
-            </div>
-
-
-
-
-
+            <button type="submit" id="btn-log" class="btn btn-lg btn-primary btn-block"> Entrar</button>
 
         </fieldset>
+
+        {% if request.GET.next %}
+        <p class="login-link"><img class="google-logo" src="{% static 'base/img/google.png' %}" /> <a href="{% url 'login-google' %}?next={{ request.GET.next }}" id="link-login-google">Entrar usando Google</a></p>
+        {% else %}
+        <p class="login-link"><img class="google-logo" src="{% static 'base/img/google.png' %}" /> <a href="{% url 'login-google' %}" id="link-login-google">Entrar usando Google</a></p>
+        {% endif %}
+
     </form>
+
 {% endblock %}
 
 {% block extrajs %}
     <script src="{% static 'base/js/core/login.js' %}?v=615"></script>
-    <script src="{% static 'base/js/core/login-google.js' %}?v=630"></script>
-{% endblock %}
-
-{% block extrahead %}
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="64351646816-0oncelskq3l65552muba7af47vjtu4hj.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
 {% endblock %}

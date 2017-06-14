@@ -73,7 +73,7 @@ class IndexView(View):
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated() and request.user.is_active:
-            if has_to_change_password(request.user.last_password_update) is True:
+            if not request.user.is_google and has_to_change_password(request.user.last_password_update) is True:
                 response = 'password-change'
             else:
                 if request.user.is_officer:
@@ -193,12 +193,19 @@ class GoogleProcessView(View):
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         token = params.getlist('token')[0]
+        try:
+            next = params.getlist('next')[0]
+        except:
+            next = False
         idinfo = client.verify_id_token(token, settings.GOOGLE_CLIENT_ID)
         try:
             user = User.objects.get(email=idinfo['email'])
             if user.is_google:
                 login(user=user, request=request, backend=None)
-                return HttpResponseRedirect(reverse_lazy('home'))
+                if next:
+                    return HttpResponseRedirect(next)
+                else:
+                    return HttpResponseRedirect(reverse_lazy('home'))
             else:
                 return HttpResponseRedirect(reverse_lazy('login-google-error'))
         except User.DoesNotExist:
