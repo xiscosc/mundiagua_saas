@@ -30,6 +30,5 @@
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}
                 Administrador {% elif request.user.is_officer %} Oficina {% else %} Operario {% endif %}</li>
         </ul>
-
     </fieldset>
 {% endblock %}

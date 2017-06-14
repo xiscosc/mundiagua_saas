@@ -40,7 +40,7 @@ class InterventionSubStatus(models.Model):
         return self.name.encode('utf8')
 
 
-class Zone(models.Model):
+class InterventionInfo(models.Model):
     name = models.CharField(max_length=50)
     color = ColorField(default='#FF0000')
     border = ColorField(default='#FF0000')
@@ -51,7 +51,24 @@ class Zone(models.Model):
     def get_pending_interventions(self):
         return Intervention.objects.filter(zone=self, status_id=1).count()
 
+    def get_is_zone(self):
+        return None
+
     pending_interventions = property(get_pending_interventions)
+    is_zone = property(get_is_zone)
+
+    class Meta:
+        abstract = True
+
+
+class Zone(InterventionInfo):
+    def get_is_zone(self):
+        return True
+
+
+class Tag(InterventionInfo):
+    def get_is_zone(self):
+        return False
 
 
 class Intervention(models.Model):
@@ -68,6 +85,7 @@ class Intervention(models.Model):
     repairs_ath = models.ManyToManyField('repair.AthRepair')
     repairs_idegis = models.ManyToManyField('repair.IdegisRepair')
     budgets = models.ManyToManyField('budget.BudgetStandard')
+    tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return "V" + str(self.pk)
