@@ -68,7 +68,8 @@ BOWER_INSTALLED_APPS = (
     'bootstrap3-typeahead',
     'metisMenu',
     'remarkable-bootstrap-notify',
-    'animate.css'
+    'animate.css',
+    'bootstrap-tagsinput'
 )
 
 MIDDLEWARE_CLASSES = [
