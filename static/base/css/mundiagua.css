@@ -144,3 +144,14 @@
     margin: auto;
 
 }
+
+.graphic-data-selector {
+    display: inline-flex;
+    margin-top: -5px;
+}
+
+.year-selector{
+    min-width: 78px;
+    margin-left: 3px;
+    margin-right: 3px
+}

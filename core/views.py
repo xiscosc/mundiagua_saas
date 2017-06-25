@@ -200,7 +200,7 @@ class GoogleProcessView(View):
         idinfo = client.verify_id_token(token, settings.GOOGLE_CLIENT_ID)
         try:
             user = User.objects.get(email=idinfo['email'])
-            if user.is_google:
+            if user.is_active and user.is_google:
                 login(user=user, request=request, backend=None)
                 if next:
                     return HttpResponseRedirect(next)

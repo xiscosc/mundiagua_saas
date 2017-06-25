@@ -4,7 +4,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
-    MapAssignedInterventionView, ForbiddenInterventionView
+    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -14,7 +14,8 @@ urlpatterns = [
     url(r'^edit/(?P<pk>\d+)/$', UpdateInterventionView.as_view(), name="intervention-edit"),
     url(r'^terminate/(?P<pk>\d+)/$', TerminateIntervention.as_view(), name="intervention-terminate"),
     url(r'^bill/(?P<pk>\d+)/$', BillIntervention.as_view(), name="intervention-bill"),
-    url(r'^list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/$',
+    url(
+        r'^list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/(?P<tag_assigned>\d+)/$',
         ListInterventionView.as_view(), name="intervention-list"),
     url(r'^psearch/$', PreSearchInterventionView.as_view(), name="intervention-psearch"),
     url(r'^search/$', SearchInterventionView.as_view(), name="intervention-search"),
@@ -23,7 +24,7 @@ urlpatterns = [
     url(r'^morris/input/$', MorrisInterventionInput.as_view(), name="intervention-morris-input"),
     url(r'^morris/yearvs/$', MorrisYearVs.as_view(), name="intervention-morris-yearvs"),
     url(r'^print/(?P<pk>\d+)/$', PrintInterventionView.as_view(), name="intervention-print"),
-    url(r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/$',
+    url(r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/(?P<tag_assigned>\d+)/$',
         PrintListInterventionView.as_view(), name="intervention-print-list"),
     url(r'^list/own/$',
         OwnListInterventionView.as_view(), name="intervention-list-own"),
@@ -35,4 +36,5 @@ urlpatterns = [
     url(r'^map/$', MapInterventionView.as_view(), name="intervention-map"),
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
+    url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
 ]

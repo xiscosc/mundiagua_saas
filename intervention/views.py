@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import csv
 from datetime import date
 
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404
-from django.views.generic import TemplateView, DetailView, View
+from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator
 from django.db.models import Q
 from async_messages import messages
@@ -13,10 +12,12 @@ from async_messages import messages
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
-    InterventionDocument, InterventionSubStatus, InterventionLogSub
+    InterventionDocument, InterventionSubStatus, InterventionLogSub, Tag
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
-    generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention, generate_report
-from intervention.forms import ImageForm, DocumentForm
+    generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention, \
+    generate_report
+from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, EarlyInterventionModificationForm, \
+    InterventionModificationForm
 
 
 class HomeView(TemplateView):
@@ -43,6 +44,7 @@ class HomeView(TemplateView):
         context['interventions'] = self.get_interventions()
         context['gmaps_api'] = settings.GMAPS_API_KEY
         context['zones'] = Zone.objects.all().order_by('pk')
+        context['tags'] = Tag.objects.all().order_by('pk')
         context['users'] = User.objects.all()
         return context
 
@@ -59,7 +61,7 @@ class SearchClientView(SearchClientBaseView):
 
 class CreateInterventionView(CreateBaseView):
     model = Intervention
-    fields = ['address', 'description', 'zone']
+    form_class = NewInterventionForm
 
     def get_context_data(self, **kwargs):
         context = super(CreateInterventionView, self).get_context_data(**kwargs)
@@ -90,7 +92,6 @@ class InterventionView(DetailView):
             except:
                 return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
 
-
     def get_context_data(self, **kwargs):
         context = super(InterventionView, self).get_context_data(**kwargs)
         context['zones'] = Zone.objects.all()
@@ -106,6 +107,21 @@ class UpdateInterventionView(View):
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': kwargs['pk']}))
 
 
+class EditInterventionView(UpdateView):
+    model = Intervention
+    template_name = 'edit_intervention.html'
+
+    def get_form_class(self):
+        if self.object.is_early_modificalbe():
+            return EarlyInterventionModificationForm
+        else:
+            return InterventionModificationForm
+
+    def get_success_url(self):
+        messages.success(self.request.user, "Datos de la avería actualizados correctamente")
+        return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']})
+
+
 class ListInterventionView(TemplateView):
     template_name = "list_intervention.html"
 
@@ -115,11 +131,13 @@ class ListInterventionView(TemplateView):
         user_id = int(kwargs['user_assigned'])
         zone_id = int(kwargs['zone_assigned'])
         starred = int(kwargs['starred'])
+        tag_id = int(kwargs['tag_assigned'])
 
         page = int(self.request.GET.get('page', 1))
 
         context['users'] = User.objects.all()
         context['zones'] = Zone.objects.all()
+        context['tags'] = Tag.objects.all()
         context['list_navigation'] = True
         context['starred'] = starred
         context['page'] = page
@@ -127,13 +145,15 @@ class ListInterventionView(TemplateView):
         self.request.session['list_status_id'] = status_id
         self.request.session['list_user_id'] = user_id
         self.request.session['list_zone_id'] = zone_id
+        self.request.session['list_tag_id'] = tag_id
         self.request.session['list_page'] = page
         self.request.session['list_starred'] = starred
 
-        list_data = get_intervention_list(status_id, user_id, zone_id, starred)
+        list_data = get_intervention_list(status_id, user_id, zone_id, starred, tag_id)
         context['search_status'] = list_data['search_status']
         context['search_user'] = list_data['search_user']
         context['search_zone'] = list_data['search_zone']
+        context['search_tag'] = list_data['search_tag']
 
         paginator = Paginator(list_data['interventions'], settings.DEFAULT_NUM_PAGINATOR)
 
@@ -156,13 +176,15 @@ class FastModifyIntervention(TemplateView):
         status_id = request.session.get('list_status_id', 1)
         user_id = request.session.get('list_user_id', 0)
         zone_id = request.session.get('list_zone_id', 0)
+        tag_id = request.session.get('list_tag_id', 0)
         page = request.session.get('list_page', 1)
         starred = request.session.get('list_starred', 0)
 
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-list',
                                                  kwargs={'intervention_status': status_id, 'zone_assigned': zone_id,
                                                          'user_assigned': user_id,
-                                                         'starred': starred}) + "?page=" + str(page))
+                                                         'starred': starred, 'tag_assigned': tag_id}) + "?page=" + str(
+            page))
 
 
 class TerminateIntervention(FastModifyIntervention):
@@ -373,7 +395,6 @@ class MapInterventionView(TemplateView):
 
 
 class MapAssignedInterventionView(MapInterventionView):
-
     def get_worker_id(self):
         return int(self.kwargs['pk'])
 

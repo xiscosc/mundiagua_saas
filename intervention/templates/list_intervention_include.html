@@ -57,9 +57,15 @@
                     </td>
                     <td>
                         {% if nolinks %}
-                            {{ intervention.zone }} - {{ intervention.address }}
+                            {{ intervention.zone }} {% for tag in intervention.tags.all %}
+                               / {{ tag }}
+                            {% endfor %}  - {{ intervention.address }}
+
                         {% else %}
                             {% include 'zone_include.html' with zone=intervention.zone %}
+                            {% for tag in intervention.tags.all %}
+                                {% include 'zone_include.html' with zone=tag %}
+                            {% endfor %}
                             {{ intervention.address }}
 
                         {% endif %}

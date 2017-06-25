@@ -9,15 +9,22 @@
         <div class="col-lg-12 col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <a href="{% url 'intervention:intervention-list' 1 0 0 0 %}"><span
+                    <a href="{% url 'intervention:intervention-list' 1 0 0 0 0 %}"><span
                             class="badge pull-right">{{ status_pending }}</span>
                         <h3 class="panel-title"><i class="fa fa-clock-o"></i> Pendientes</h3></a>
                 </div>
                 <div class="panel-body">
                     {% for z in zones %}
                         {% if z.pending_interventions > 0 %}
-                            <a href="{% url 'intervention:intervention-list' 1 0 z.pk 0 %}">
+                            <a href="{% url 'intervention:intervention-list' 1 0 z.pk 0 0 %}">
                                 {% include 'zone_include.html' with zone=z badge=z.pending_interventions %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% for t in tags %}
+                        {% if t.pending_interventions > 0 %}
+                            <a href="{% url 'intervention:intervention-list' 1 0 0 0 t.pk %}">
+                                {% include 'zone_include.html' with zone=t badge=t.pending_interventions %}
                             </a>
                         {% endif %}
                     {% endfor %}
@@ -31,7 +38,7 @@
         <div class="col-lg-6 col-md-12">
             <div class="panel panel-warning">
                 <div class="panel-heading">
-                    <a href="{% url 'intervention:intervention-list' 2 0 0 0 %}"><span
+                    <a href="{% url 'intervention:intervention-list' 2 0 0 0 0 %}"><span
                             class="badge pull-right">{{ status_assigned }}</span>
                         <h3 class="panel-title" style="color:#8a6d3b !important;"><i class="fa fa-user"></i>
                             Asignadas actualmente</h3>
@@ -41,7 +48,7 @@
                     {% for u in users %}
                         {% if u.assigned_interventions > 0 %}
                             <a class="btn btn-default btn-inline"
-                               href="{% url 'intervention:intervention-list' 2 u.pk 0 0 %}"><span
+                               href="{% url 'intervention:intervention-list' 2 u.pk 0 0 0 %}"><span
                                     class="badge">{{ u.assigned_interventions }}</span> <i
                                     class="fa fa-user"></i> {{ u.first_name }} </a>
                         {% endif %}
@@ -56,17 +63,17 @@
                     <h3 class="panel-title"><i class="fa fa-database"></i> Otros estados</h3>
                 </div>
                 <div class="panel-body">
-                    <a href="{% url 'intervention:intervention-list' 3 0 0 0 %}"
+                    <a href="{% url 'intervention:intervention-list' 3 0 0 0 0 %}"
                        class="btn btn-success btn-inline">
                         <span class="badge">{{ status_terminated }}</span>
                         <i class="fa fa-check "></i> Terminadas
                     </a>
-                    <a href="{% url 'intervention:intervention-list' 4 0 0 0 %}"
+                    <a href="{% url 'intervention:intervention-list' 4 0 0 0 0 %}"
                        class="btn btn-danger btn-inline">
                         <span class="badge">{{ status_cancelled }}</span>
                         <i class="fa fa-warning"></i> Anuladas
                     </a>
-                    <a href="{% url 'intervention:intervention-list' 5 0 0 0 %}"
+                    <a href="{% url 'intervention:intervention-list' 5 0 0 0 0 %}"
                        class="btn btn-info btn-inline">
                         <span class="badge">{{ status_billing }}</span>
                         <i class="fa fa-calculator"></i> Para facturar
@@ -88,28 +95,23 @@
 
                     <div style="display: inline"><strong id="label_chart">(Mes actual)</strong></div>
 
-                    <div class="pull-right">
-
-                        <button class="btn btn-xs btn-success"
-                                id="btn_change_chart"><i
-                                class="fa fa-chain"></i> Cambiar
-                        </button>
-                    </div>
-
-                    <div class="pull-right">
-                        <select id="month_chart" class="btn btn-default btn-mini">
+                    <div class="pull-right graphic-data-selector">
+                        <select id="month_chart" class="form-control">
                             {% for m in months %}
                                 <option value="{{ m }}">{{ m }}</option>
                             {% endfor %}
                         </select>
-                        <span class="caret"></span>
 
-                        <select id="year_chart" class="btn btn-default btn-mini">
+                        <select id="year_chart" class="form-control year-selector">
                             {% for y in years %}
                                 <option value="{{ y }}">{{ y }}</option>
                             {% endfor %}
                         </select>
-                        <span class="caret"></span>
+
+                        <button class="btn btn-xs btn-warning"
+                                id="btn_change_chart"><i
+                                class="glyphicon glyphicon-record"></i>
+                        </button>
                     </div>
 
                 </div>

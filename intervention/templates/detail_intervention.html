@@ -453,6 +453,9 @@
                                 <a class="btn btn-xs btn-primary btn-circle btn-circle-inline"
                                    href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i
                                         class="fa fa-print"></i> </a>
+                                 <a class="btn btn-xs btn-default btn-circle btn-circle-inline"
+                                   href="{% url 'intervention:intervention-edit-data' intervention.pk %}"><i
+                                        class="fa fa-edit"></i> </a>
                             </div>
                         {% endif %}</h3>
                 </div>
@@ -469,10 +472,14 @@
                         </tr>
                         <tr>
                             <td>
-                                <strong>Zona</strong>
+                                <strong>Zona y etiquetas</strong>
                             </td>
                             <td>
                                 {% include 'zone_include.html' with zone=intervention.zone %}
+                                {% for tag in intervention.tags.all %}
+                                    {% include 'zone_include.html' with zone=tag %}
+                                {% endfor %}
+
                             </td>
                         </tr>
                         <tr>

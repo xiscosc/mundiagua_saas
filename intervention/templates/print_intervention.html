@@ -70,10 +70,12 @@
         </tr>
         <tr>
             <td>
-                <strong>Zona</strong>
+                <strong>Zona y etiquetas</strong>
             </td>
             <td>
-                {{ intervention.zone }}
+                {{ intervention.zone }}{% for tag in intervention.tags.all %}
+                    / {{ tag }}
+                {% endfor %}
             </td>
         </tr>
         <tr>
