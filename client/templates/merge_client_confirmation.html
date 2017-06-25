@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+
+
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="row">
+                <h4>Cliente a borrar</h4>
+            </div>
+            <div class="row">
+                {% include 'client_data.html' with client=client_old %}
+            </div>
+
+            <div class="row">
+                <h4>Cliente a fusionar</h4>
+            </div>
+            <div class="row">
+                {% include 'client_data.html' with client=client_new %}
+            </div>
+
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <button type="submit" class="btn btn-warning btn-lg btn-block"> Fusionar</button>
+            </div>
+        </form>
+
+            </div>
+    </div>
+
+    </br>
+
+{% endblock %}

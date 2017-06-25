@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 
 from client.models import Client, Address, Phone, SMS
@@ -16,6 +17,8 @@ from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import BudgetStandard, BudgetRepair
 from core.tasks import send_mail_client
+
+from async_messages import messages
 
 
 class CreateClientView(CreateView):
@@ -299,3 +302,75 @@ class RedirectOldClientView(View):
         data = request.GET.get('id', 'none')
         data = "".join(data.split())
         return HttpResponseRedirect(reverse_lazy('public-status-repair', kwargs={'online': data}))
+
+
+class SearchClientToReplaceView(TemplateView):
+    template_name = 'merge_client.html'
+
+    def post(self, request, *args, **kwargs):
+        search = request.POST.getlist('search')[0]
+        context = self.get_context_data()
+        context['clients'] = Client.objects.filter(name__icontains=search)
+        context['show_results'] = len(context['clients'])
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchClientToReplaceView, self).get_context_data(**kwargs)
+        context['show_results'] = -1
+        context['title'] = "Fusión de clientes"
+        context['subtitle'] = "Paso 1: Seleccionar cliente a borrar"
+        context['new_url'] = "client:client-merge-step2"
+        context['btn_text'] = "Seleccionar como cliente a borrar"
+        context['btn_class'] = "btn-danger"
+        return context
+
+
+class SearchClientToMergeView(TemplateView):
+    template_name = 'merge_client.html'
+
+    def post(self, request, *args, **kwargs):
+        search = request.POST.getlist('search')[0]
+        context = self.get_context_data()
+        context['clients'] = Client.objects.filter(name__icontains=search)
+        context['show_results'] = len(context['clients'])
+        client = Client.objects.get(pk=kwargs['pk'])
+        context['subtitle'] = ("Paso 2: Seleccionar cliente a fusionar con %s" % client.name)
+        context['client_obj'] = client
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchClientToMergeView, self).get_context_data(**kwargs)
+        try:
+            client = Client.objects.get(pk=kwargs['pk'])
+            context['subtitle'] = ("Paso 2: Seleccionar cliente a fusionar con %s" % client.name)
+        except:
+            pass
+        context['show_results'] = -1
+        context['title'] = "Fusión de clientes"
+        context['new_url'] = "client:client-merge-step3"
+        context['btn_text'] = "Seleccionar como cliente a fusionar"
+        context['btn_class'] = "btn-success"
+        return context
+
+
+class ClientMergeView(TemplateView):
+    template_name = 'merge_client_confirmation.html'
+
+    def post(self, request, *args, **kwargs):
+        client_old = Client.objects.get(pk=kwargs['pk1'])
+        client_new = Client.objects.get(pk=kwargs['pk2'])
+
+        Address.objects.filter(client=client_old).update(client=client_new)
+        Phone.objects.filter(client=client_old).update(client=client_new)
+
+        client_old.delete()
+
+        messages.success(request.user, "Clientes fusionados correctamente")
+        return HttpResponseRedirect(reverse_lazy('client:client-view', kwargs={'pk': client_new.pk}))
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientMergeView, self).get_context_data(**kwargs)
+        context['client_old'] = Client.objects.get(pk=kwargs['pk1'])
+        context['client_new'] = Client.objects.get(pk=kwargs['pk2'])
+        context['title'] = "Fusión de clientes - Confirmación"
+        return context

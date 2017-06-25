@@ -219,6 +219,9 @@
                                 <li>
                                     <a href="{% url 'client:client-all' %}">Todos los clientes</a>
                                 </li>
+                                <li>
+                                    <a href="{% url 'client:client-merge-step1' %}">Fusionar clientes</a>
+                                </li>
                                 <li class="sidebar-search">
                                     <form method="post" action="{% url 'client:client-psearch' %}">
                                         {% csrf_token %}

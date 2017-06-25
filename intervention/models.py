@@ -95,7 +95,7 @@ class Intervention(models.Model):
     repairs_ath = models.ManyToManyField('repair.AthRepair')
     repairs_idegis = models.ManyToManyField('repair.IdegisRepair')
     budgets = models.ManyToManyField('budget.BudgetStandard')
-    tags = models.ManyToManyField(Tag, verbose_name="Etiquetas")
+    tags = models.ManyToManyField(Tag, verbose_name="Etiquetas", blank=True)
 
     def __str__(self):
         return "V" + str(self.pk)
