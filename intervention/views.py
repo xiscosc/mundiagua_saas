@@ -94,7 +94,7 @@ class InterventionView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(InterventionView, self).get_context_data(**kwargs)
-        context['zones'] = Zone.objects.all()
+        context['zones'] = Zone.objects.all().exclude(pk=9)
         context['users'] = User.objects.filter(is_active=True).order_by('order_in_app')
         context['status'] = InterventionStatus.objects.all()
         context['sub_status'] = InterventionSubStatus.objects.all()

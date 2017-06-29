@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.widgets import CheckboxSelectMultiple
 
-from models import Intervention
+from models import Intervention, Zone
 
 
 class ImageForm(forms.Form):
@@ -17,6 +17,11 @@ class DocumentForm(forms.Form):
 
 
 class NewInterventionForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(NewInterventionForm, self).__init__(*args, **kwargs)
+        self.fields['zone'].queryset = Zone.objects.all().exclude(pk=9)
+
     class Meta:
         model = Intervention
         fields = ['address', 'description', 'zone', 'tags']

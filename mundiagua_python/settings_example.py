@@ -32,3 +32,5 @@ GOOGLE_CLIENT_ID = "ff.apps.googleusercontent.com"
 
 
 NUMBER_TEMPLATES = 5
+
+LOGIN_URL = "/login/"
