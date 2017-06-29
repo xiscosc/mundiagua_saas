@@ -1,0 +1,1 @@
+[{"model": "intervention.tag", "pk": 1, "fields": {"name": "PRESUPUESTO", "color": "#E08300"}}, {"model": "intervention.tag", "pk": 2, "fields": {"name": "CARBUROS", "color": "#004F37"}}, {"model": "intervention.tag", "pk": 3, "fields": {"name": "AVISO ATH", "color": "#00AEED"}}]
