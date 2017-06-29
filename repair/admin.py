@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from repair.models import AthRepair, IdegisRepair, AthRepairLog, IdegisRepairLog
+from repair.models import AthRepair, IdegisRepair, AthRepairLog, IdegisRepairLog, RepairStatus
 
 admin.site.register(AthRepair)
 admin.site.register(AthRepairLog)

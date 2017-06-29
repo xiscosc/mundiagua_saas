@@ -20,7 +20,7 @@ class NewInterventionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NewInterventionForm, self).__init__(*args, **kwargs)
-        self.fields['zone'].queryset = Zone.objects.all().exclude(pk=9)
+        self.fields['zone'].queryset = Zone.objects.all().exclude(pk=9).order_by('pk')
 
     class Meta:
         model = Intervention

@@ -94,7 +94,7 @@ class InterventionView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(InterventionView, self).get_context_data(**kwargs)
-        context['zones'] = Zone.objects.all().exclude(pk=9)
+        context['zones'] = Zone.objects.all().exclude(pk=9).order_by('pk')
         context['users'] = User.objects.filter(is_active=True).order_by('order_in_app')
         context['status'] = InterventionStatus.objects.all()
         context['sub_status'] = InterventionSubStatus.objects.all()
@@ -136,7 +136,7 @@ class ListInterventionView(TemplateView):
         page = int(self.request.GET.get('page', 1))
 
         context['users'] = User.objects.all()
-        context['zones'] = Zone.objects.all()
+        context['zones'] = Zone.objects.all().order_by('pk')
         context['tags'] = Tag.objects.all()
         context['list_navigation'] = True
         context['starred'] = starred
