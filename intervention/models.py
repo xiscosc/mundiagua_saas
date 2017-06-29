@@ -26,6 +26,7 @@ def get_file_upload_path(instance, filename):
 def get_images_upload_path(instance, filename):
     return get_upload_path('intervention_images', instance, filename)
 
+
 class InterventionStatus(models.Model):
     name = models.CharField(max_length=50)
 
@@ -40,16 +41,42 @@ class InterventionSubStatus(models.Model):
         return self.name.encode('utf8')
 
 
-class Zone(models.Model):
+class InterventionInfo(models.Model):
     name = models.CharField(max_length=50)
     color = ColorField(default='#FF0000')
-    border = ColorField(default='#FF0000')
 
     def __str__(self):
         return self.name.encode('utf8')
 
+    def get_is_zone(self):
+        return None
+
+    class Meta:
+        abstract = True
+
+
+class Zone(InterventionInfo):
+    border = ColorField(default='#FF0000')
+
+    def get_is_zone(self):
+        return True
+
+    is_zone = property(get_is_zone)
+
     def get_pending_interventions(self):
         return Intervention.objects.filter(zone=self, status_id=1).count()
+
+    pending_interventions = property(get_pending_interventions)
+
+
+class Tag(InterventionInfo):
+    def get_is_zone(self):
+        return False
+
+    is_zone = property(get_is_zone)
+
+    def get_pending_interventions(self):
+        return Intervention.objects.filter(tags=self, status_id=1).count()
 
     pending_interventions = property(get_pending_interventions)
 
@@ -68,6 +95,7 @@ class Intervention(models.Model):
     repairs_ath = models.ManyToManyField('repair.AthRepair')
     repairs_idegis = models.ManyToManyField('repair.IdegisRepair')
     budgets = models.ManyToManyField('budget.BudgetStandard')
+    tags = models.ManyToManyField(Tag, verbose_name="Etiquetas", blank=True)
 
     def __str__(self):
         return "V" + str(self.pk)
@@ -98,6 +126,13 @@ class Intervention(models.Model):
     def get_history_sub(self):
         return InterventionLogSub.objects.filter(intervention=self).order_by("date")
 
+    def is_early_modificalbe(self):
+        from datetime import datetime, timedelta
+        diff = datetime.today() - self.date.replace(tzinfo=None)
+        if timedelta(hours=4) > diff:
+            return True
+        else:
+            return False
 
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)

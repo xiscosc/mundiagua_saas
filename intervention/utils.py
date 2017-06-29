@@ -9,7 +9,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from core.models import User
-from intervention.models import Intervention, InterventionModification, InterventionLog, InterventionStatus, Zone
+from intervention.models import Intervention, InterventionModification, InterventionLog, InterventionStatus, Zone, Tag
 from intervention.tasks import send_intervention
 
 
@@ -126,9 +126,10 @@ def bill_intervention(intervention_pk, request):
     messages.success(request.user, "Avería " + str(intervention) + " marcada para facturar")
 
 
-def get_intervention_list(status_id, user_id, zone_id, starred):
+def get_intervention_list(status_id, user_id, zone_id, starred, tag_id):
     search_user = None
     search_zone = None
+    search_tag = None
 
     # NO USER NO ZONE
     if user_id == 0 and zone_id == 0:
@@ -162,13 +163,17 @@ def get_intervention_list(status_id, user_id, zone_id, starred):
     if starred:
         interventions = interventions.filter(starred=True)
 
+    if tag_id > 0:
+        search_tag = Tag.objects.get(pk=tag_id)
+        interventions = interventions.filter(tags=search_tag)
+
     try:
         search_status = InterventionStatus.objects.get(pk=status_id)
     except InterventionStatus.DoesNotExist:
         search_status = None
 
     return {'interventions': interventions, 'search_status': search_status, 'search_user': search_user,
-            'search_zone': search_zone}
+            'search_zone': search_zone, 'search_tag': search_tag}
 
 
 def generate_report(request):

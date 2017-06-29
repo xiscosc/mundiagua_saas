@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_password_update = models.DateField(default="2015-01-01")
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
+    is_google = models.BooleanField(default=False)
 
 
     USERNAME_FIELD = 'email'
@@ -80,7 +81,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
 
     def has_to_change_password(self):
-        return has_to_change_password(self.last_password_update)
+        if self.is_google:
+            return False
+        else:
+            return has_to_change_password(self.last_password_update)
 
     def update_change_password(self, commit=False):
         self.last_password_update = date.today()

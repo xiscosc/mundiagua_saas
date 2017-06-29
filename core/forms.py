@@ -12,7 +12,6 @@ class MundiaguaLoginForm(AuthenticationForm):
             self.fields['password'].widget.attrs.pop("autocomplete", 'false')
 
 
-
 class MundiaguaChangePasswordForm(PasswordChangeForm, SetPasswordForm):
     def save(self, commit=True):
         password = self.cleaned_data["new_password1"]

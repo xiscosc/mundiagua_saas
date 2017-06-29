@@ -13,3 +13,7 @@ def template_number():
 @register.simple_tag
 def app_version():
     return str(settings.APP_VERSION)
+
+@register.simple_tag
+def google_client_id():
+    return str(settings.GOOGLE_CLIENT_ID)

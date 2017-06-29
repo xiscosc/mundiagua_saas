@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Editar
+    <small>{{ object }}</small>{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-warning">
+                <a class="close" data-dismiss="alert">×</a>
+                Recuerde que la descripción sólo se puede modificar durante las 4 primeras horas.
+            </div>
+        </div>
+        <form method="post">
+            <div class="col-md-12">
+                {% csrf_token %}
+                {{ form|bootstrap }}
+            </div>
+            <div class="col-md-12">
+                <input type="submit" class="btn btn-primary" value="Modificar">
+            </div>
+        </form>
+    </div>
+{% endblock %}

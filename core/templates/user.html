@@ -2,11 +2,15 @@
 {% load bootstrap %}
 {% load static %}
 {% load staticfiles %}
-{% block title %}Información de <strong>{{ request.user.get_full_name }}</strong>{% endblock %}
+{% block title %}Información de <strong>{{ request.user.get_full_name }}</strong> {% if request.user.is_google %}
+    <button class="btn btn-default pull-right btn-xs">Cuenta <img src="{% static 'base/img/google.png' %}" class="google-logo"/></button>
+{% endif %}{% endblock %}
 {% block alert %}
     {% if request.user.has_to_change_password %}
-    <div class="alert alert-danger" role="alert"><strong>Debe cambiar la contraseña urgentemente.</strong> Hace más de un año que no cambia su contraseña, por seguridad debe cambiarla.</div>
-      {% endif %}
+        <div class="alert alert-danger" role="alert"><strong>Debe cambiar la contraseña urgentemente.</strong> Hace más
+            de un año que no cambia su contraseña, por seguridad debe cambiarla.
+        </div>
+    {% endif %}
 {% endblock %}
 {% block contentpanel %}
     <fieldset>
@@ -17,13 +21,14 @@
             <li><strong>Email corporativo:</strong> {{ request.user.email }}</li>
             <li><strong>Sistemas de notificación:</strong> {% if request.user.has_pb %} PushBullet
                 <img src="{% static 'base/img/pb.png' %}" height="24" width="24" data-toggle="tooltip"
-                     data-placement="top" title="{{ request.user.pb_token }}">, {% endif %} {% if request.user.phone %} SMS <div class="fa fa-comment"></div>, {% endif %}Email
+                     data-placement="top" title="{{ request.user.pb_token }}">, {% endif %} {% if request.user.phone %}
+                SMS
+                <div class="fa fa-comment"></div>, {% endif %}Email
                 <div class="fa fa-envelope"></div>
             </li>
             <li><strong>Teléfono</strong>: {{ request.user.phone }}</li>
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}
                 Administrador {% elif request.user.is_officer %} Oficina {% else %} Operario {% endif %}</li>
         </ul>
-
     </fieldset>
 {% endblock %}

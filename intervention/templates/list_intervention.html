@@ -33,12 +33,12 @@
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned starred %}">Todos
+                                            <a href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned starred tag_assigned %}">Todos
                                                 los operarios</a>
                                         </li>
                                         {% for user in users %}
                                             <li>
-                                                <a href="{% url 'intervention:intervention-list' intervention_status user.pk zone_assigned starred %}">{{ user.get_full_name }}</a>
+                                                <a href="{% url 'intervention:intervention-list' intervention_status user.pk zone_assigned starred tag_assigned %}">{{ user.get_full_name }}</a>
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -50,7 +50,7 @@
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred %}">
+                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred tag_assigned %}">
                                                 <div style="background-color: grey; border-color: black"
                                                      class="zone">TODAS
                                                 </div>
@@ -58,8 +58,30 @@
 
                                         {% for zone in zones %}
                                             <li>
-                                                <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk starred %}">
+                                                <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk starred tag_assigned %}">
                                                     {% include 'zone_include.html' with zone=zone %}
+                                                </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Filtro etiqueta <span
+                                            class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned starred 0 %}">
+                                                <div style="background-color: grey; border-color: black"
+                                                     class="zone">TODAS
+                                                </div>
+                                            </a></li>
+
+                                        {% for tag in tags %}
+                                            <li>
+                                                <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned starred tag.pk %}">
+                                                    {% include 'zone_include.html' with zone=tag %}
                                                 </a></li>
                                         {% endfor %}
                                     </ul>
@@ -71,12 +93,12 @@
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 0 %}">
+                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 0 tag_assigned %}">
                                                 Ver todas
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 1 %}">
+                                            <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 1 tag_assigned %}">
                                                 Ver sólo prioritarias
                                             </a>
                                         </li>
@@ -85,13 +107,13 @@
 
 
                                 {% if user_assigned != "0" or zone_assigned != "0" or starred %}
-                                    <!-- <li><a href="{% url 'intervention:intervention-list' intervention_status 0 0 0 %}">Desactivar
+                                    <!-- <li><a href="{% url 'intervention:intervention-list' intervention_status 0 0 0 0 %}">Desactivar
                                         todos
                                         los filtros</a></li> -->
                                 {% endif %}
 
                                 <li>
-                                    <a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned starred %}?page={{ page }}"
+                                    <a href="{% url 'intervention:intervention-print-list' intervention_status user_assigned zone_assigned starred tag_assigned %}?page={{ page }}"
                                        target="_blank"><i class="fa fa-print"></i> Imprimir</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right navbar-filters">
@@ -99,7 +121,7 @@
                                     <li class="li-filters">
 
                                         <a class="zone"
-                                           href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned starred %}"
+                                           href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned starred tag_assigned%}"
                                            style="color: black !important; background-color: white">
                                             <i class="fa fa-user"></i> {{ search_user.get_full_name|upper }}
                                         </a>
@@ -107,16 +129,24 @@
                                 {% endif %}
                                 {% if search_zone %}
                                     <li class="li-filters">
-                                        <a style="margin-top: -15px" href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred %}">
+                                        <a style="margin-top: -15px; padding-right: 1px; padding-left: 1px" href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred tag_assigned %}">
                                             {% include 'zone_include.html' with zone=search_zone %}
                                         </a>
                                     </li>
                                 {% endif %}
+                                {% if search_tag %}
+                                    <li class="li-filters">
+                                        <a style="margin-top: -15px; padding-left: 1px; padding-right: 1px" href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned starred 0 %}">
+                                            {% include 'zone_include.html' with zone=search_tag %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+
                                 {% if starred %}
                                     <li class="li-filters">
                                         <button type="button" class="btn btn-danger btn-circle pull-right"
                                                 style="margin-right: 5px"
-                                                onclick="location.href = '{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 0 %}';">
+                                                onclick="location.href = '{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned 0 tag_assigned %}';">
                                             <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                                         </button>
                                     </li>

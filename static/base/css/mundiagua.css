@@ -118,3 +118,40 @@
 .td-phone {
     border: 0px !important;
 }
+
+.login-link {
+    text-align: center;
+    padding-top: 15px;
+}
+
+.google-logo {
+    height: 21px;
+    display: inline;
+}
+
+.g-signin2{
+  width: 100%;
+    margin-top: 5px;
+}
+
+.g-signin2 > div{
+  margin: 0 auto;
+}
+
+.google-gif {
+    height: 80px;
+    display: none;
+    margin: auto;
+
+}
+
+.graphic-data-selector {
+    display: inline-flex;
+    margin-top: -5px;
+}
+
+.year-selector{
+    min-width: 78px;
+    margin-left: 3px;
+    margin-right: 3px
+}

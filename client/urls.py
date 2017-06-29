@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import CreateClientView, CreateAddressView, CreatePhoneView, ClientView, EditClientView, EditAddressView, \
     EditPhoneView, DeletePhoneView, DeleteAddresView, SendSMSView, AllClientsView, PreSearchClientView, \
-    SearchClientView, AddressGeoUpdateView, SendEmailView
+    SearchClientView, AddressGeoUpdateView, SendEmailView, SearchClientToReplaceView, SearchClientToMergeView, ClientMergeView
 
 urlpatterns = [
     url(r'^new/$', CreateClientView.as_view(), name="client-new"),
@@ -20,4 +20,7 @@ urlpatterns = [
     url(r'^all/$', AllClientsView.as_view(), name="client-all"),
     url(r'^psearch/$', PreSearchClientView.as_view(), name="client-psearch"),
     url(r'^search/$', SearchClientView.as_view(), name="client-search"),
+    url(r'^merge/step1/$', SearchClientToReplaceView.as_view(), name="client-merge-step1"),
+    url(r'^merge/step2/(?P<pk>\d+)/$', SearchClientToMergeView.as_view(), name="client-merge-step2"),
+    url(r'^merge/step3/(?P<pk1>\d+)/(?P<pk2>\d+)/$', ClientMergeView.as_view(), name="client-merge-step3"),
 ]

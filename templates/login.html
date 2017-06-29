@@ -13,9 +13,18 @@
             </div>
             <input type="hidden" name="next"
                    value="{% if next %}{{ next }}{% else %}{% url 'home' %}{% endif %}"/>
-            <button type="submit" id="btn-log" class="btn btn-lg btn-primary btn-block">Entrar</button>
+            <button type="submit" id="btn-log" class="btn btn-lg btn-primary btn-block"> Entrar</button>
+
         </fieldset>
+
+        {% if request.GET.next %}
+        <p class="login-link"><img class="google-logo" src="{% static 'base/img/google.png' %}" /> <a href="{% url 'login-google' %}?next={{ request.GET.next }}" id="link-login-google">Entrar usando Google</a></p>
+        {% else %}
+        <p class="login-link"><img class="google-logo" src="{% static 'base/img/google.png' %}" /> <a href="{% url 'login-google' %}" id="link-login-google">Entrar usando Google</a></p>
+        {% endif %}
+
     </form>
+
 {% endblock %}
 
 {% block extrajs %}
