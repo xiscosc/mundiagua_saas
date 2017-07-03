@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}{% if title %}{{ title }}{% else %}Listado deaverías
+{% block page_title %}{% if title %}{{ title }}{% else %}Listado de averías
     <small>{{ search_status }}  {% if search_status.pk == 2 %} |
         <a href="{% url 'intervention:intervention-map' %}"><i class="fa fa-map-marker"> </i> Ver mapa</a>{% endif %}
     </small> {% endif %}{% endblock %}
