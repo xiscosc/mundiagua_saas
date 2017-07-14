@@ -28,5 +28,5 @@
 {% endblock %}
 
 {% block extrajs %}
-    <script src="{% static 'base/js/core/login.js' %}?v=630"></script>
+    <script src="{% static 'base/js/core/login.js' %}{% app_version_includes %}"></script>
 {% endblock %}

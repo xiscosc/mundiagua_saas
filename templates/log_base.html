@@ -37,7 +37,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link href="{% static 'base/css/mundiagua.css' %}?v=630" rel="stylesheet" type="text/css">
+    <link href="{% static 'base/css/mundiagua.css' %}{% app_version_includes %}" rel="stylesheet" type="text/css">
 
     <meta name="theme-color" content="#bce8f1" />
 
@@ -46,7 +46,7 @@
         {% with 'base/img/login/'|add:tn|add:'.jpg' as bg_file %}
             <style type="text/css">
                 body {
-                    background: url('{% static bg_file %}') no-repeat center center fixed;
+                    background: url('{% static bg_file %}{% app_version_includes %}') no-repeat center center fixed;
                     -webkit-background-size: cover;
                     -moz-background-size: cover;
                     -o-background-size: cover;

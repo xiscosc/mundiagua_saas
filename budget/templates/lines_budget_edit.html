@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
+{% load core_tags %}
 {% block page_title %}Modificar contenido del presupuesto {{ budget }}{% endblock %}
 {% block content %}
 
@@ -66,6 +67,6 @@
 
 {% block extrajs %}
     <script src="{% static 'bootstrap3-typeahead/bootstrap3-typeahead.min.js' %}"></script>
-    <script src="{% static 'base/js/budget/budget-lines-main.js' %}?v=618"></script>
-    <script src="{% static 'base/js/budget/budget-lines-edit.js' %}?v=618"></script>
+    <script src="{% static 'base/js/budget/budget-lines-main.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/budget/budget-lines-edit.js' %}{% app_version_includes %}"></script>
 {% endblock %}

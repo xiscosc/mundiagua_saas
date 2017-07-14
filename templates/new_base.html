@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
+{% load core_tags %}
 {% block page_title %}{{ title }}{% endblock %}
 {% block content %}
 
@@ -73,6 +74,6 @@
                 {% endfor %}
             }
         </script>
-        <script src="{% static 'base/js/intervention/new.js' %}?v=618"></script>
+        <script src="{% static 'base/js/intervention/new.js' %}{% app_version_includes %}"></script>
     {% endif %}
 {% endblock %}

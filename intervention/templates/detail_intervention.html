@@ -2,6 +2,7 @@
 {% load static %}
 {% load bootstrap %}
 {% load thumbnail %}
+{% load core_tags %}
 {% block page_title %}Avería
     <small>{{ intervention }}</small>
     {% include 'starred_include.html' with intervention=intervention %}
@@ -522,10 +523,10 @@
         var default_subject = "Aviso ATH";
         var from_model_id_val = {{ intervention.pk }};
     </script>
-    <script src="{% static 'base/js/intervention/detail.js' %}?v=616"></script>
-    <script src="{% static 'base/js/client/sms_email.js' %}"></script>
-    <script src="{% static 'base/js/client/geolocation.js' %}"></script>
+    <script src="{% static 'base/js/intervention/detail.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>
 {% endblock %}
 {% block extracss %}
-    <link href="{% static 'base/css/intervention/detail.css' %}?v=618" rel="stylesheet" type="text/css">
+    <link href="{% static 'base/css/intervention/detail.css' %}{% app_version_includes %}" rel="stylesheet" type="text/css">
 {% endblock %}

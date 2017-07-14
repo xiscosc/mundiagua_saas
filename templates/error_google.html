@@ -14,7 +14,7 @@
 
 {% endblock %}
 {% block extrajs %}
-    <script src="{% static 'base/js/core/logout-google.js' %}?v=630" async defer></script>
+    <script src="{% static 'base/js/core/logout-google.js' %}{% app_version_includes %}" async defer></script>
 {% endblock %}
 
 {% block extrahead %}

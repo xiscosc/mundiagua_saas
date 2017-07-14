@@ -41,7 +41,7 @@
 {% endblock %}
 
 {% block extrajs %}
-    <script src="{% static 'base/js/core/login-google.js' %}?v=630"></script>
+    <script src="{% static 'base/js/core/login-google.js' %}{% app_version_includes %}"></script>
 {% endblock %}
 
 {% block extrahead %}
