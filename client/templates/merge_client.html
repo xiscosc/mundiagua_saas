@@ -70,9 +70,12 @@
                                                        class="btn btn-block {{ btn_class }}">{{ btn_text }}</a>
                                                 {% else %}
 
-                                                    {% if client.pk is not client_obj.pk %}
+                                                    {% if client.pk != client_obj.pk %}
                                                         <a href="{% url new_url client_obj.pk client.pk %}"
                                                            class="btn btn-block {{ btn_class }}">{{ btn_text }}</a>
+
+                                                     {% else %}
+                                                        <strong>Cliente a borrar</strong>
                                                     {% endif %}
                                                 {% endif %}
                                             </td>
