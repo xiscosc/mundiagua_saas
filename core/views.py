@@ -95,7 +95,8 @@ class NewMessageView(CreateView):
 
     def get_form(self, form_class=None):
         form = super(NewMessageView, self).get_form(form_class=form_class)
-        form.fields['to_user'].queryset = User.objects.filter(is_active=True).exclude(pk=self.request.user.pk)
+        users = User.objects.filter(is_active=True).exclude(pk=self.request.user.pk)
+        form.fields['to_user'].choices = [(u.pk, u.get_full_name()) for u in users]
         return form
 
     def form_valid(self, form):
