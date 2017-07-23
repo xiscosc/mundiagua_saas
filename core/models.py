@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_full_name()
 
     def __unicode__(self):
-        return self.get_full_name()
+        return self.get_full_name().encode('utf8')
 
     def is_staff(self):
         return self.is_superuser

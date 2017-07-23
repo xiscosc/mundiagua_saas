@@ -1,4 +1,4 @@
-from client.models import Client
+from client.models import Client, Address
 from intervention.models import Intervention
 from itertools import groupby
 
@@ -21,3 +21,5 @@ for client in Client.objects.all():
                 saved += 1
 
 print "UPDATED: " + str(saved)
+
+Address.objects.filter(default_zone_id=9).update(default_zone=None)

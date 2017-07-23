@@ -157,7 +157,7 @@ class PreSearchView(View):
     search_text = None
 
     def get(self, request, *args, **kwargs):
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse_lazy('home'))
 
     def set_data_and_response(self, request):
         return None
@@ -190,6 +190,9 @@ class GoogleErrorView(TemplateView):
 
 
 class GoogleProcessView(View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse_lazy('home'))
 
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
