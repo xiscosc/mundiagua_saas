@@ -71,6 +71,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):  # __unicode__ on Python 2
         return self.get_full_name()
 
+    def __unicode__(self):
+        return self.get_full_name()
+
     def is_staff(self):
         return self.is_superuser
 

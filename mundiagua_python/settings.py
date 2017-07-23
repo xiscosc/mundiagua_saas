@@ -239,6 +239,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'logout',
                    'login',
                    'login-google',
+                   'login-google-process',
                    'release_hijack',
                    'intervention-image-upload',
                    'intervention-status-job',
@@ -258,7 +259,7 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.3"
+APP_VERSION = "6.3.1"
 APP_VERSION_INCLUDES = 630
 
 LOGIN_REDIRECT_URL = "/"

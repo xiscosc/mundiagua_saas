@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView
 from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
 
 from oauth2client import client
 
@@ -210,3 +211,14 @@ class GoogleProcessView(View):
                 return HttpResponseRedirect(reverse_lazy('login-google-error'))
         except User.DoesNotExist:
             return HttpResponseRedirect(reverse_lazy('login-google-error'))
+
+
+class LoginPasswordView(LoginView):
+
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated():
+            next = request.GET.get('next', "/")
+            return HttpResponseRedirect(next)
+        else:
+            return super(LoginPasswordView, self).dispatch(request, *args, **kwargs)

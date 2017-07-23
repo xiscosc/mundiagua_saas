@@ -17,10 +17,10 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import login, logout, password_change, password_change_done
+from django.contrib.auth.views import LogoutView, PasswordChangeView, PasswordChangeDoneView
 
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
-    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView, GoogleErrorView
+    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
 
@@ -33,17 +33,17 @@ urlpatterns = [
     url(r'^repair/', include('repair.urls', namespace="repair")),
     url(r'^engine/', include('engine.urls', namespace="engine")),
     url(r'^user/$', UserView.as_view(), name="user-manage"),
-    url(r'^login/$', login, name='login', kwargs={'template_name': 'login.html', 'authentication_form': MundiaguaLoginForm}),
+    url(r'^login/$', LoginPasswordView.as_view(template_name='login.html', authentication_form=MundiaguaLoginForm),
+        name="login"),
     url(r'^login/google/$', GoogleLoginView.as_view(), name='login-google'),
     url(r'^login/google/process/$', GoogleProcessView.as_view(), name='login-google-process'),
     url(r'^login/google/error/$', GoogleErrorView.as_view(), name='login-google-error'),
-    url(r'^logout/$', logout, name='logout', kwargs={'template_name': 'logout.html'}),
-    url(r'^user/password/$', password_change,
-        kwargs={'template_name': 'password_change.html', 'post_change_redirect': 'password-change-done',
-                'password_change_form': MundiaguaChangePasswordForm},
-        name='password-change'),
-    url(r'^user/password-done/$', password_change_done,
-        kwargs={'template_name': 'password_change_done.html'}, name='password-change-done'),
+    url(r'^logout/$', LogoutView.as_view(template_name="logout.html"), name='logout'),
+    url(r'^user/password/$',
+        PasswordChangeView.as_view(template_name='password_change.html', success_url='/user/password-done/',
+                                   form_class=MundiaguaChangePasswordForm), name='password-change'),
+    url(r'^user/password-done/$', PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
+        name='password-change-done'),
     url(r'^$', IndexView.as_view(), name='home'),
     url(r'^message/new/$', NewMessageView.as_view(), name="message-new"),
     url(r'^message/inbox/$', MessagesListView.as_view(), name="message-inbox"),
@@ -58,6 +58,7 @@ urlpatterns = [
 if settings.DEBUG is True:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     import debug_toolbar
+
     urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns
