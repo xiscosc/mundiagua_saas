@@ -15,7 +15,7 @@
                 <strong>Email</strong>
             </td>
             <td>
-                {{ intervention.address.client.email }}
+                {{ intervention.address.client.email|default_if_none:"" }}
             </td>
         </tr>
         <tr>
@@ -23,7 +23,7 @@
                 <strong>Cod Cliente</strong>
             </td>
             <td>
-                {{ intervention.address.client.intern_code }}
+                {{ intervention.address.client.intern_code|default_if_none:"" }}
             </td>
         </tr>
         <tr>
@@ -31,7 +31,7 @@
                 <strong>DNI/CIF</strong>
             </td>
             <td>
-                {{ intervention.address.client.dni }}
+                {{ intervention.address.client.dni|default_if_none:"" }}
             </td>
         </tr>
         <tr>

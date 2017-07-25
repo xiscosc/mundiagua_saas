@@ -133,7 +133,7 @@
                     <strong>Email</strong>
                 </td>
                 <td>
-                    {{ client.email }}
+                    {{ client.email|default_if_none:"" }}
                     <div class="hidden" id="email_source">{{ client.email }}</div>
                 </td>
             </tr>
@@ -142,7 +142,7 @@
                     <strong>COD Cliente</strong>
                 </td>
                 <td>
-                    {{ client.intern_code }}
+                    {{ client.intern_code|default_if_none:"" }}
                 </td>
             </tr>
             <tr>
@@ -150,7 +150,7 @@
                     <strong>DNI/CIF</strong>
                 </td>
                 <td>
-                    {{ client.dni }}
+                    {{ client.dni|default_if_none:"" }}
                 </td>
             </tr>
             <tr>

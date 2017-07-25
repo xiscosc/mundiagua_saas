@@ -10,7 +10,7 @@
         </tr>
         <tr>
             <td><strong>DNI/CIF</strong></td>
-            <td>{{ repair.address.client.dni }}</td>
+            <td>{{ repair.address.client.dni|default_if_none:"" }}</td>
         </tr>
         <tr>
             <td><strong>Dirección</strong></td>
@@ -25,7 +25,7 @@
         </tr>
         <tr>
             <td><strong>Email</strong></td>
-            <td>{{ repair.address.client.email }}</td>
+            <td>{{ repair.address.client.email|default_if_none:"" }}</td>
         </tr>
     </table>
 
