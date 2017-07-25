@@ -1,22 +1,86 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Dirección{% endblock %}
+{% block page_title %}Dirección para {{ client.name }}{% endblock %}
 {% block content %}
 
-<div class="row">
-    <div class="col-md-12 col-xs-12 col-lg-12">
-        <form action="" method="post" id="new_form">{% csrf_token %}
-            {{ form|bootstrap }}
-            <div class="form-group">
-         <input type="hidden" id="other" name="other" value="0"/>
-         <button class="btn btn-success" id="btn_other">Guardar y añadir otra</button>
-         <button type="submit" class="btn btn-primary">Guardar y continuar</button>
-        </div>
-        </form>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-hover table-striped">
+                <tr>
+                    <td style="width: 33%">
+                        <strong>Nombre</strong>
+                    </td>
+                    <td>
+                        {{ client.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Email</strong>
+                    </td>
+                    <td>
+                        {{ client.email|default_if_none:"" }}
+                        <div class="hidden" id="email_source">{{ client.email }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>COD Cliente</strong>
+                    </td>
+                    <td>
+                        {{ client.intern_code|default_if_none:"" }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>DNI/CIF</strong>
+                    </td>
+                    <td>
+                        {{ client.dni|default_if_none:"" }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Identificación Intranet</strong>
+                    </td>
+                    <td>
+                        C{{ client.pk }}
+                    </td>
 
+            </table>
+        </div>
     </div>
-</div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                En <strong>Alias</strong> puede poner por ejemplo: Principal, Casa, Trabajo, Chalet... No hace falta
+                repetir el nombre del cliente.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-12">
+            <form action="" method="post" id="new_form">{% csrf_token %}
+                {{ form|bootstrap }}
+                <div class="form-group">
+                    <input type="hidden" id="other" name="other" value="0"/>
+                    <button class="btn btn-success" id="btn_other"><i class="fa fa-circle-o-notch"></i> Quiero añadir
+                        otra dirección
+                    </button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-arrow-right"></i> Guardar y continuar
+                    </button>
+                    {% if client.get_addresses|length > 0 %}
+                        <a href="{% url 'client:client-view' client.pk %}" class="btn btn-warning"><i
+                                class="fa fa-remove"></i> Omitir</a>
+                    {% endif %}
+                </div>
+            </form>
+
+        </div>
+    </div>
 
 
 {% endblock %}
