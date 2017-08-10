@@ -30,6 +30,9 @@
     <!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
+
+    <link href="{% static 'animate.css/animate.min.css' %}" rel="stylesheet" type="text/css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -63,7 +66,7 @@
 
     <div class="row row-login">
         <div class="col-md-4 col-md-offset-4">
-            <div class="login-panel panel panel-default">
+            <div class="login-panel panel panel-default animated fadeInDownBig">
                 <div class="panel-heading">
                     <h3 class="panel-title">{% block title %}{% endblock %}</h3>
                 </div>
@@ -91,6 +94,7 @@
 
 <!-- Custom Theme JavaScript -->
 <script src="{% static 'startbootstrap-sb-admin-2/dist/js/sb-admin-2.js' %}"></script>
+
 
 {% block extrajs %} {% endblock %}
 

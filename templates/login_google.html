@@ -21,11 +21,11 @@
     </div>
 
     {% if request.GET.next %}
-        <p class="login-link login-google"><a href="{% url 'login' %}?next={{ request.GET.next }}"
+        <p class="login-link login-google"><a href="{% url 'login-password' %}?next={{ request.GET.next }}"
                                               id="link-login-password"><i class="fa fa-key"></i> Entrar usando
             contraseña</a></p>
     {% else %}
-        <p class="login-link login-google"><a href="{% url 'login' %}" id="link-login-password"><i
+        <p class="login-link login-google"><a href="{% url 'login-password' %}" id="link-login-password"><i
                 class="fa fa-key"></i> Entrar usando contraseña</a></p>
     {% endif %}
 

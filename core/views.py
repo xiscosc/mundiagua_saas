@@ -217,6 +217,14 @@ class GoogleProcessView(View):
             return HttpResponseRedirect(reverse_lazy('login-google-error'))
 
 
+class LoginRedirectView(View):
+
+    def get(self, request, *args, **kwargs):
+        url = reverse_lazy('login-google')
+        next = request.GET.get('next', "/")
+        return HttpResponseRedirect(url+"?next="+next)
+
+
 class LoginPasswordView(LoginView):
 
     def dispatch(self, request, *args, **kwargs):

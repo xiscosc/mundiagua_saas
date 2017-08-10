@@ -88,6 +88,7 @@ MIDDLEWARE_CLASSES = [
 
 PUBLIC_URLS = (
     r'login/',
+    r'login/password/',
     r'login/google/',
     r'login/google/process/',
     r'login/google/error/',
@@ -207,7 +208,7 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
-LOGIN_URL = "/login/google/"
+LOGIN_URL = "/login/"
 
 HIJACK_REGISTER_ADMIN = False
 HIJACK_ALLOW_GET_REQUESTS = True
@@ -237,6 +238,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'client-address-edit-geo',
                    'home',
                    'logout',
+                   'login-password',
                    'login',
                    'login-google',
                    'login-google-process',
@@ -260,6 +262,6 @@ SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.3.1"
-APP_VERSION_INCLUDES = 630
+APP_VERSION_INCLUDES = 631
 
 LOGIN_REDIRECT_URL = "/"

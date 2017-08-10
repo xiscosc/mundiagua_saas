@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView, PasswordChangeView, PasswordChangeDoneView
 
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
-    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView
+    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, LoginRedirectView
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
 
@@ -33,8 +33,9 @@ urlpatterns = [
     url(r'^repair/', include('repair.urls', namespace="repair")),
     url(r'^engine/', include('engine.urls', namespace="engine")),
     url(r'^user/$', UserView.as_view(), name="user-manage"),
-    url(r'^login/$', LoginPasswordView.as_view(template_name='login.html', authentication_form=MundiaguaLoginForm),
-        name="login"),
+    url(r'^login/$', LoginRedirectView.as_view(), name="login"),
+    url(r'^login/password/$', LoginPasswordView.as_view(template_name='login_password.html', authentication_form=MundiaguaLoginForm),
+        name="login-password"),
     url(r'^login/google/$', GoogleLoginView.as_view(), name='login-google'),
     url(r'^login/google/process/$', GoogleProcessView.as_view(), name='login-google-process'),
     url(r'^login/google/error/$', GoogleErrorView.as_view(), name='login-google-error'),
