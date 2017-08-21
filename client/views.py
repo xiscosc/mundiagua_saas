@@ -137,6 +137,11 @@ class EditAddressView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
 
+    def get_context_data(self, **kwargs):
+        context = super(EditAddressView, self).get_context_data(**kwargs)
+        context['client'] = self.object.client
+        return context
+
 
 class DeletePhoneView(DeleteView):
     model = Phone

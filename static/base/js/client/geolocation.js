@@ -39,7 +39,7 @@ function sendPosition(position) {
             $button.remove();
             $('#space_geo').append('<a href="https://maps.google.com/maps?q=loc:'
                 + position.coords.latitude + ',' + position.coords.longitude
-                + '" type="button" target="_blank" class="btn btn-success">' +
+                + '" type="button" target="_blank" class="btn btn-success btn-circle">' +
                 '<span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></a>');
             $('#modal_geo').modal('toggle');
 
