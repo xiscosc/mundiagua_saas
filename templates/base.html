@@ -37,7 +37,7 @@
 
     <link href="{% static 'base/css/mundiagua.css' %}{% app_version_includes %}" rel="stylesheet" type="text/css">
 
-    <meta name="theme-color" content="#bce8f1" />
+    <meta name="theme-color" content="#bce8f1"/>
 
 
     {% block extracss %} {% endblock %}
@@ -101,7 +101,8 @@
                     <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'user-manage' %}"><i class="fa fa-user fa-fw"></i>{{ request.user.get_full_name }}</a>
+                    <li><a href="{% url 'user-manage' %}"><i
+                            class="fa fa-user fa-fw"></i>{{ request.user.get_full_name }}</a>
                     </li>
                     <li class="divider"></li>
                     <li><a href="{% url 'password-change' %}"><i class="fa fa-key fa-fw"></i> Cambiar contraseña</a>
@@ -130,15 +131,16 @@
                                     <a href="{% url 'intervention:intervention-search-client' %}">Nueva avería</a>
                                 </li>
                                 <li>
-                                <a href="{% url 'intervention:intervention-reports' %}">Informes</a>
-                            </li>
+                                    <a href="{% url 'intervention:intervention-reports' %}">Informes</a>
+                                </li>
                             {% endif %}
                             <li>
                                 <a href="{% url 'intervention:intervention-list-own' %}">Mis averías asignadas</a>
                             </li>
                             {% if request.user.is_officer %}
-                                <li class="sidebar-search">
-                                    <form method="post" action="{% url 'intervention:intervention-psearch' %}">
+                                <form method="post" action="{% url 'intervention:intervention-psearch' %}">
+                                    <li class="sidebar-search">
+
                                         {% csrf_token %}
                                         <div class="input-group custom-search-form">
                                             <input type="text" class="form-control" placeholder="Buscar avería"
@@ -351,9 +353,9 @@
 {% if request.user.has_notification == 1 and not request.user.has_pb %}
     <script type="text/javascript">
         make_notification(
-                "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",
-                "info",
-                "{% url 'message-inbox' %}"
+            "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",
+            "info",
+            "{% url 'message-inbox' %}"
         );
     </script>
 {% endif %}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load core_tags %}
 {% load bootstrap %}
 {% block page_title %}Teléfono para {{ client.name }}{% endblock %}
 {% block content %}
@@ -78,5 +79,6 @@
 
 {% endblock %}
 {% block extrajs %}
-    <script src="{% static 'base/js/client/new_phone_address.js' %}"></script>
+    <script src="{% static 'base/js/client/new_phone_address.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/client/phone-edit.js' %}{% app_version_includes %}"></script>
 {% endblock %}

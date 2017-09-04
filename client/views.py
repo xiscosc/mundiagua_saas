@@ -63,7 +63,7 @@ class CreateAddressView(CreateView):
 
 class CreatePhoneView(CreateView):
     model = Phone
-    fields = ["alias", "phone"]
+    fields = ["alias", "international_code", "phone"]
     template_name = "new_phone.html"
     success_url = reverse_lazy('intervention:intervention-home')
 
@@ -118,7 +118,7 @@ class EditClientView(UpdateView):
 class EditPhoneView(UpdateView):
     model = Phone
     template_name = "new_phone.html"
-    fields = ["alias", "phone"]
+    fields = ["alias", "international_code", "phone"]
 
     def get_success_url(self):
         return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})

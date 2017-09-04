@@ -31,6 +31,7 @@ class Client(models.Model):
 
 class Phone(models.Model):
     alias = models.CharField(max_length=45)
+    international_code = models.CharField(max_length=10, default=34, verbose_name="Código país")
     phone = models.CharField(max_length=45, verbose_name="Teléfono")
     client = models.ForeignKey(Client, related_name="phones")
 
@@ -81,11 +82,9 @@ class SMS(models.Model):
 
     def process_phone(self):
         phone_processed = self.phone.phone.replace(" ", "")
-        phone_processed = '+34' + phone_processed.replace(".", "")
-        if len(phone_processed) == 12:
-            return phone_processed
-        else:
-            return False
+        i_code = '+' + self.phone.international_code
+        phone_processed = i_code + phone_processed.replace(".", "")
+        return phone_processed
 
     def send(self):
         number = self.process_phone()

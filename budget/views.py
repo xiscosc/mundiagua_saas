@@ -12,6 +12,7 @@ from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
+from budget.utils import get_data_typeahead
 
 
 class SearchClientView(SearchClientBaseView):
@@ -73,14 +74,8 @@ class TypeAheadBudgetView(View):
         return super(TypeAheadBudgetView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        data = []
-        lines = BudgetLineStandard.objects.extra(where=["CHAR_LENGTH(product) < 140"])
-        for l in lines:
-            data.append(l.product)
-        lines2 = BudgetLineRepair.objects.extra(where=["CHAR_LENGTH(product) < 140"])
-        for l in lines2:
-            data.append(l.product)
-        return JsonResponse(data=list(set(data)), safe=False)
+        data = list(set(get_data_typeahead(BudgetLineStandard) + get_data_typeahead(BudgetLineRepair)))
+        return JsonResponse(data=data, safe=False)
 
 
 class BudgetDetailBase(UpdateView):

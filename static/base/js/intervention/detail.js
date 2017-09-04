@@ -2,6 +2,8 @@
  * Created by xiscosastre on 26/4/16.
  */
 
+var img_counter = 0;
+
 
 function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -10,6 +12,41 @@ function urlify(text) {
     })
     // or alternatively
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
+}
+
+
+function set_image(element) {
+    $modal = $('#modal_image');
+    $('#body_image').html("");
+    $("#link_original_image").attr('href', "#");
+    $('#progress_bar_image').show();
+    var url = element.data('url');
+    $('#title_image').html("Foto de " + element.data('name'));
+    $('#date_image').html(element.data('date'));
+    $modal.modal("show");
+
+    var img = $("<img class='img-responsive' />").attr('src', url)
+        .on('load', function () {
+            $('#progress_bar_image').hide();
+            $("#body_image").append(img);
+            $("#link_original_image").attr('href', url);
+        });
+
+
+    var next = element.data("gallery-id") + 1;
+    var previous = next - 2;
+
+    if (next >= img_counter) {
+        next = 0;
+    }
+
+    if (previous < 0) {
+        previous = img_counter - 1;
+    }
+
+    $('#next_img_btn').data("gallery-id", next);
+    $('#previous_img_btn').data("gallery-id", previous);
+
 }
 
 $(function () {
@@ -52,23 +89,17 @@ $(function () {
         $('#form_document').submit();
     });
 
-    $('.link_image').on('click', function () {
-        $('#body_image').html("");
-        $("#link_original_image").attr('href', "#");
-        $('#progress_bar_image').show();
-        var url = $(this).data('url');
-        $('#title_image').html("Foto de " + $(this).data('name'));
-        $('#date_image').html($(this).data('date'));
-        $('#modal_image').modal("show");
-
-        var img = $("<img class='img-responsive' />").attr('src', url)
-            .on('load', function () {
-                $('#progress_bar_image').hide();
-                $("#body_image").append(img);
-                $("#link_original_image").attr('href', url);
-            });
-
+    $link_images = $('.link_image');
+    $link_images.each(function (index) {
+        $(this).data("gallery-id", img_counter);
+        img_counter++;
     });
+
+    $link_images.on('click', function () {
+        set_image($(this));
+    });
+
+
 
     $('.intervention_modification_note').each(function () {
         try {
@@ -87,5 +118,11 @@ $(function () {
         } catch (err) {
 
         }
+    });
+
+    $('.gallery_btn').on('click', function () {
+        var gallery_id = $(this).data("gallery-id");
+        $img_element = $($link_images.get(gallery_id));
+        set_image($img_element);
     });
 });

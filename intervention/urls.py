@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.views.decorators.cache import cache_page
+
 from .views import HomeView, SearchClientView, CreateInterventionView, InterventionView, UpdateInterventionView, \
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
@@ -20,11 +23,13 @@ urlpatterns = [
     url(r'^psearch/$', PreSearchInterventionView.as_view(), name="intervention-psearch"),
     url(r'^search/$', SearchInterventionView.as_view(), name="intervention-search"),
     url(r'^modifications/$', ListModificationView.as_view(), name="intervention-modifications"),
-    url(r'^morris/assigned/$', MorrisInterventionAssigned.as_view(), name="intervention-morris-assigned"),
-    url(r'^morris/input/$', MorrisInterventionInput.as_view(), name="intervention-morris-input"),
-    url(r'^morris/yearvs/$', MorrisYearVs.as_view(), name="intervention-morris-yearvs"),
+    url(r'^morris/assigned/$', cache_page(settings.CACHE_TIME_CHARTS)(MorrisInterventionAssigned.as_view()),
+        name="intervention-morris-assigned"),
+    url(r'^morris/input/$', cache_page(settings.CACHE_TIME_CHART_INCOME)(MorrisInterventionInput.as_view()), name="intervention-morris-input"),
+    url(r'^morris/yearvs/$', cache_page(settings.CACHE_TIME_CHARTS)(MorrisYearVs.as_view()), name="intervention-morris-yearvs"),
     url(r'^print/(?P<pk>\d+)/$', PrintInterventionView.as_view(), name="intervention-print"),
-    url(r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/(?P<tag_assigned>\d+)/$',
+    url(
+        r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/(?P<tag_assigned>\d+)/$',
         PrintListInterventionView.as_view(), name="intervention-print-list"),
     url(r'^list/own/$',
         OwnListInterventionView.as_view(), name="intervention-list-own"),

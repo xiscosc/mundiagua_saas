@@ -16,12 +16,19 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="title_image">Foto de </h4>
+                    <h5 class="modal-title" id="title_image">Foto de </h5>
                     <small id="date_image">date</small>
                     <small class="pull-right"><a id="link_original_image" href="#" target="_blank">Ver imagen
                         completa</a></small>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="previous_img_btn" class="btn btn-xs btn-primary pull-left gallery_btn"><i class="fa fa-arrow-left"></i></button>
+                            <button id="next_img_btn" class="btn btn-xs btn-primary pull-right gallery_btn"><i class="fa fa-arrow-right"></i></button>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-body">
+
                     <div id="body_image">
 
                     </div>
@@ -172,7 +179,8 @@
                                 {% for budget in intervention.budgets.all %}
 
                                     <li class="list-group-item">
-                                        <a href="{% url 'budget:budget-view' budget.pk %}" class="btn btn-xs btn-info">{{ budget }}</a> Creado el {{ budget.date }}
+                                        <a href="{% url 'budget:budget-view' budget.pk %}"
+                                           class="btn btn-xs btn-info">{{ budget }}</a> Creado el {{ budget.date }}
                                         <div class="pull-right" style="display: inline-flex">
                                             <a class="btn btn-danger  btn-circle btn-circle-inline"
                                                href="{% url 'budget:budget-unlink-intervention' budget.pk intervention.pk 0 %}"
@@ -454,7 +462,7 @@
                                 <a class="btn btn-xs btn-primary btn-circle btn-circle-inline"
                                    href="{% url 'intervention:intervention-print' intervention.pk %}" target="_blank"><i
                                         class="fa fa-print"></i> </a>
-                                 <a class="btn btn-xs btn-default btn-circle btn-circle-inline"
+                                <a class="btn btn-xs btn-default btn-circle btn-circle-inline"
                                    href="{% url 'intervention:intervention-edit-data' intervention.pk %}"><i
                                         class="fa fa-edit"></i> </a>
                             </div>
@@ -528,5 +536,6 @@
     <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>
 {% endblock %}
 {% block extracss %}
-    <link href="{% static 'base/css/intervention/detail.css' %}{% app_version_includes %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'base/css/intervention/detail.css' %}{% app_version_includes %}" rel="stylesheet"
+          type="text/css">
 {% endblock %}

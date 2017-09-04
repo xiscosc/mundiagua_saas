@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mundiagua SL</title>
+    <title>Consulta Reparación - Mundiagua SL</title>
     <link rel='shortcut icon' href="{% static 'base/img/favicon.ico' %}" type='image/x-icon'/>
 
     <!-- Bootstrap Core CSS -->
@@ -30,82 +30,145 @@
     <div class="row">
 
     </div>
-    <h1><img src="{% static 'base/img/logo_black_big.png' %}" style="width: 15%"/> Estado de la reparación {{ repair }}
+    <h1>Consulta de reparación <img src="{% static 'base/img/logo_color.png' %}" style="width: 15%"/>
     </h1>
 
     {% if not error %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Estado de la reparación</h3>
-                </div>
-                <div class="panel-body" id="body_averia">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" id="pb" aria-valuenow="45"
-                             aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+        <div class="row">
+            <div class="col-md-8 col-xs-12">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Estado de la reparación</h3>
+                    </div>
+                    <div class="panel-body" id="body_averia">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>{{ repair.status }}</h2>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" id="pb"
+                                 aria-valuenow="45"
+                                 aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                            </div>
                         </div>
                     </div>
-                    <p class="text-center"><strong>{{ repair.status }}</strong>{% if repair.status.description %}:  {{ repair.status.description }}{% endif %}</p>
+                </div>
+
+                {% if not is_engine %}
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Descripción del estado</h3>
+                        </div>
+                        <div class="panel-body" id="body_averia">
+                            <ul>
+                                <li>{{ repair.status.description }}</li>
+                            </ul>
+
+
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="panel panel-primary">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Historial</h3>
+                    </div>
+                    <div class="panel-body" id="body_averia">
+                        <ul>
+                            {% if is_engine %}
+                                {% for log in repair.enginerepairlog_set.all %}
+                                    <li>{{ log }}</li>
+                                {% endfor %}
+                            {% else %}
+                                {% if repair.is_ath %}
+                                    {% for log in repair.athrepairlog_set.all %}
+                                        <li>{{ log }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for log in repair.idegisrepairlog_set.all %}
+                                        <li>{{ log }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Detalles de la reparación</h3>
+                    </div>
+                    <div class="panel-body" id="body_averia">
+                        <ul>
+                            <li>Identificador: <strong>{{ repair }}</strong></li>
+                            <li>Tipo de reparación: <strong>{% if is_engine %}
+                                Motor
+                            {% else %}
+                                {% if repair.is_ath %}
+                                    ATH
+                                {% else %}
+                                    IDEGIS
+                                {% endif %}{% endif %}</strong></li>
+                            <li>Modelo: <strong>{{ repair.model }}</strong></li>
+                            <li>Garantía: <strong>{{ repair.warranty|yesno:"Sí,No" }}</strong></li>
+                            <li>Entrada: <strong>{{ repair.date }}</strong></li>
+                        </ul>
+                    </div>
 
                 </div>
 
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Más información</h3>
+                    </div>
+                    <div class="panel-body" id="body_averia">
+                        <p class="text-center">¿Necesita más información? Contacte con nosotros</p>
+                        <p class="text-center">
+                            <a href="tel:971795177" class="btn btn-success"><i class="fa fa-phone"></i> 971 79 51 77</a>
+                        </p>
+                        <p class="text-center">
+                            <a href="mailto:consultas@mundiaguabalear.com?Subject=Reparación%20{{ repair }}" class="btn btn-primary">
+                                <i class="fa fa-envelope"></i> consultas@mundiaguabalear.com</a>
+                        </p>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Historial</h3>
-                </div>
-                <div class="panel-body" id="body_averia">
-                    {% if is_engine %}
-                        {% for log in repair.enginerepairlog_set.all %}
-                            {{ log }}<br>
-                        {% endfor %}
-                    {% else %}
-                        {% if repair.is_ath %}
-                            {% for log in repair.athrepairlog_set.all %}
-                                {{ log }}<br>
-                            {% endfor %}
-                        {% else %}
-                            {% for log in repair.idegisrepairlog_set.all %}
-                                {{ log }}<br>
-                            {% endfor %}
-                        {% endif %}
-                    {% endif %}
-                </div>
-            </div>
         </div>
-    </div>
 
     {% else %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Error</h3>
-                </div>
-                <div class="panel-body" id="body_averia">
-                    <h4>No se ha podido localizar ninguna reparación con ese identificador. Revise su id de reparación
-                        online y vuelva a intentarlo. Si el problema persiste contacte con nosotros en el 971795177 o en
-                        consultas@mundiaguabalear.com.</h4>
-                    <button class="btn btn-info " onclick="history.back(1)">Volver</button>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Error</h3>
+                    </div>
+                    <div class="panel-body" id="body_averia">
+                        <h4>No se ha podido localizar ninguna reparación con ese identificador. Revise su id de
+                            reparación
+                            online y vuelva a intentarlo. Si el problema persiste contacte con nosotros en el 971795177
+                            o en
+                            consultas@mundiaguabalear.com.</h4>
+                        <button class="btn btn-info " onclick="history.back(1)">Volver</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     {% endif %}
 
 </div>
 
 <script type="application/javascript">
-        var perc = {{ repair.status.percentage }};
+    var perc = {{ repair.status.percentage }};
 </script>
 
 <!-- jQuery -->
