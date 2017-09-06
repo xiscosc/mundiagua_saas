@@ -16,15 +16,7 @@
                         {{ client.name }}
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <strong>Email</strong>
-                    </td>
-                    <td>
-                        {{ client.email|default_if_none:"" }}
-                        <div class="hidden" id="email_source">{{ client.email }}</div>
-                    </td>
-                </tr>
+
                 <tr>
                     <td>
                         <strong>COD Cliente</strong>
@@ -58,6 +50,10 @@
             <div class="alert alert-info">
                 En <strong>Alias</strong> puede poner por ejemplo: Principal, Fijo, Móvil, o el nombre de la persona del
                 teléfono si es una empresa. No hace falta repetir el nombre del cliente.
+            </div>
+            <div class="alert alert-success">
+                Para guardar un teléfono internacional, por ejemplo uno holandés +31 612123123, en código país
+                seleccionaremos Países Bajos (+31) y en el apartado teléfono escribimos el resto del teléfono 612123123.
             </div>
         </div>
     </div>

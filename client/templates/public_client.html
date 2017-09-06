@@ -117,7 +117,7 @@
                                 {% endif %}{% endif %}</strong></li>
                             <li>Modelo: <strong>{{ repair.model }}</strong></li>
                             <li>Garantía: <strong>{{ repair.warranty|yesno:"Sí,No" }}</strong></li>
-                            <li>Entrada: <strong>{{ repair.date }}</strong></li>
+                            <li>Entrada: <strong>{{ repair.date|date:"d-m-Y" }} {{ repair.date|time:"H:i" }}</strong></li>
                         </ul>
                     </div>
 

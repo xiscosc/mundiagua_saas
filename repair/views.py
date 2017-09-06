@@ -13,6 +13,8 @@ from django.views.generic import UpdateView, View
 from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSearchView
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
+from repair.tasks import send_sms_tracking
+from core.tasks import send_mail_client
 
 
 class SearchClientView(SearchClientBaseView):
@@ -40,7 +42,7 @@ class CreateAthRepairView(CreateBaseView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('repair:repair-ath-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('repair:repair-ath-view', kwargs={'pk': self.object.pk}) + "?=new1"
 
 
 class CreateIdegisRepairView(CreateBaseView):
@@ -55,7 +57,7 @@ class CreateIdegisRepairView(CreateBaseView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('repair:repair-idegis-view', kwargs={'pk': self.object.pk})
+        return reverse_lazy('repair:repair-idegis-view', kwargs={'pk': self.object.pk}) + "?=new1"
 
 
 class RepairView(UpdateView):
@@ -291,3 +293,44 @@ class UnlinkInterventionView(View):
             return HttpResponseRedirect(reverse_lazy(url, kwargs={'pk': kwargs['pk']}))
         else:
             return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': intervention_pk}))
+
+
+class SendTrackingRepairView(View):
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        type = int(params.getlist('type_repair')[0])
+        sending_something = False
+
+        if type == 1:
+            repair = AthRepair.objects.get(pk=kwargs['pk'])
+            url = 'repair:repair-ath-view'
+        else:
+            repair = IdegisRepair.objects.get(pk=kwargs['pk'])
+            url = 'repair:repair-idegis-view'
+
+        if params.getlist('send_sms', "off")[0] == "on":
+            phone_pk = int(params.getlist('phone_id', "0")[0])
+            if phone_pk != 0:
+                send_sms_tracking.delay(repair.pk, type, phone_pk, request.user.pk)
+                sending_something = True
+
+        if params.getlist('send_email', "off")[0] == "on":
+            if repair.address.client.email is not None and repair.address.client.email != "":
+                sending_something = True
+                url_body = settings.DOMAIN + str(
+                    reverse_lazy('public-status-repair', kwargs={'online': repair.online_id}))
+                subject = u'Reparación %s registrada' % repair.__str__()
+                body = u'Su reparación %s ha sido registrada con éxito, puede consultar su estado ' \
+                       u'en el siguiente enlace %s, si no le funciona el enlace cópielo y péguelo en su navegador.' \
+                       u'\n\nTambién puede visitar nuestra web ' \
+                       u'www.mundiaguabalear.com con el id de reparación ' \
+                       u'%s.\n\nQuedamos a su disposición para cualquier duda o ' \
+                       u'consulta.' % (repair.__str__(), url_body, repair.online_id)
+
+                send_mail_client.delay(repair.address.client.email, subject, body, request.user.pk)
+
+        if sending_something:
+            messages.success(self.request.user, "Se han notificado los datos de seguimiento al cliente.")
+        else:
+            messages.warning(self.request.user, "No se ha notificado nada al cliente.")
+        return HttpResponseRedirect(reverse_lazy(url, kwargs={'pk': kwargs['pk']}))

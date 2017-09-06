@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import SearchClientView, CreateAthRepairView, CreateIdegisRepairView, AthRepairView, IdegisRepairView, \
     UpdateStatusRepair, ListRepairView, PreSearchRepairView, SearchRepairView, PrintRepairView, ToggleStarredRepairView, \
-    LinkInterventionView, UnlinkInterventionView
+    LinkInterventionView, UnlinkInterventionView, SendTrackingRepairView
 
 urlpatterns = [
     url(r'^search-client/$', SearchClientView.as_view(), name="repair-search-client"),
@@ -18,5 +18,6 @@ urlpatterns = [
     url(r'^link/(?P<pk>\d+)/(?P<type>\d+)/$', LinkInterventionView.as_view(), name="repair-link-intervention"),
     url(r'^unlink/(?P<pk>\d+)/(?P<type>\d+)/(?P<pk_intervention>\d+)/(?P<to_repair>\d+)/$', UnlinkInterventionView.as_view(),
         name="repair-unlink-intervention"),
+    url(r'^sendtracking/(?P<pk>\d+)/$', SendTrackingRepairView.as_view(), name="repair-send-tracking"),
 
 ]

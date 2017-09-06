@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
+{% load core_tags %}
 {% block page_title %}Reparación
     <small>{{ repair }}</small>
     <a href="{% url 'repair:repair-starred' repair.is_ath repair.pk %}"
@@ -21,42 +22,46 @@
                             aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">Envío de información de seguimiento al cliente</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h5>Se procederá a enviar un email y/o SMS al cliente con la información de la reparación
-                                y su seguimiento</h5>
+                <form method="post" action="{% url 'repair:repair-send-tracking' repair.pk %}">
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Se procederá a enviar un email y/o SMS al cliente con la información de la
+                                    reparación
+                                    y su seguimiento</h5>
+                            </div>
                         </div>
+                        {% csrf_token %}
+                        <input type="hidden" name="type_repair" value="{{ repair.is_ath }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4><input type="checkbox" name="send_sms" checked/> Envío por SMS</h4>
+                                <p>Seleccione un teléfono:</p>
+                                <select class="form-control" name="phone_id">
+                                    {% for phone in repair.address.client.get_phones %}
+                                        <option value="{{ phone.pk }}">{{ phone }}</option>
+                                        {{ phone }}
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <h4><input type="checkbox" checked name="send_email"/> Envío por email</h4>
+                                <p>Revise el email:</p>
+                                <input disabled value="{{ repair.address.client.email|default_if_none:"" }}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+
                     </div>
-                    <form method="post" action="">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4><input type="checkbox" name="send_sms" checked/> Envío por SMS</h4>
-                            <p>Seleccione un teléfono:</p>
-                            <select class="form-control" name="phone_id">
-                                {% for phone in repair.address.client.get_phones %}
-                                    <option  value="{{ phone.pk }}">{{ phone }}</option>
-                                    {{ phone }}
-                                {% endfor %}
-                            </select>
-
-                        </div>
-
-                        <div class="col-md-6">
-                            <h4><input type="checkbox" checked name="send_mail" /> Envío por email</h4>
-                            <p>Revise el email:</p>
-                            <input disabled value="{{ repair.address.client.email|default_if_none:"" }}"
-                                   class="form-control" />
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default sms_close" data-dismiss="modal">No enviar nada</button>
+                        <button type="submit" class="btn btn-primary" id="sms_send">Enviar</button>
                     </div>
-                    </form>
+                </form>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default sms_close" data-dismiss="modal">Descartar</button>
-                    <button type="button" class="btn btn-primary" id="sms_send">Enviar</button>
-                </div>
             </div>
         </div>
     </div>
@@ -116,7 +121,9 @@
                                 <strong>ID Online</strong>
                             </td>
                             <td>
-                                {{ repair.online_id }}
+                                <button disabled class="btn btn-default"><strong>{{ repair.online_id }}</strong></button>
+                                 <button class="btn btn-primary" id="btn-tracking">
+                                <i class="fa fa-send"></i> Enviar datos al cliente</button>
                             </td>
                         </tr>
                         <tr>
@@ -155,6 +162,7 @@
                                         class="fa fa-folder"></span> Ver Presupuestos</a>
                             </td>
                         </tr>
+
                     </table>
                 </div>
             </div>
@@ -273,6 +281,7 @@
         var default_subject = "Reparación completada";
         var from_model_id_val = {{ repair.pk }};
     </script>
-    <script src="{% static 'base/js/client/sms_email.js' %}"></script>
-    <script src="{% static 'base/js/client/geolocation.js' %}"></script>
+    <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/repair/detail.js' %}{% app_version_includes %}"></script>
 {% endblock %}
