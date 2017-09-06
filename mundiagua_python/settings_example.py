@@ -30,6 +30,8 @@ AWS_REGION = "eu-west-1"
 GMAPS_API_KEY = ""
 GOOGLE_CLIENT_ID = "ff.apps.googleusercontent.com"
 
+BITLY_API_KEY = "..."
+
 
 NUMBER_TEMPLATES = 5
 
