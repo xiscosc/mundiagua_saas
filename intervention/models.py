@@ -134,6 +134,14 @@ class Intervention(models.Model):
         else:
             return False
 
+    def has_media(self):
+        num = self.get_images().count() + self.get_documents().count()
+        if num > 0:
+            return True
+        else:
+            return False
+
+
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     note = models.TextField(null=True)

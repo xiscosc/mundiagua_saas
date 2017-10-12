@@ -121,7 +121,9 @@
                                 <strong>ID Online</strong>
                             </td>
                             <td>
-                                <button disabled class="btn btn-default"><strong>{{ repair.online_id }}</strong></button>
+                                <a href="{% url 'public-status-repair' repair.online_id %}" target="_blank" class="btn btn-default">
+                                    <strong>{{ repair.online_id }}</strong>
+                                </a>
                                  <button class="btn btn-primary" id="btn-tracking">
                                 <i class="fa fa-send"></i> Enviar datos al cliente</button>
                             </td>

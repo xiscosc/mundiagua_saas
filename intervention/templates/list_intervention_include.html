@@ -26,15 +26,24 @@
                             {% endif %}
                             Modificaciones: {{ intervention.get_num_modifications }}
                         {% else %}
+
+                            {% if intervention.has_media %}
+                                <button disabled
+                                    class="btn btn-success btn-circle pull-right"
+                                        data-toggle="tooltip" title="Tiene archivos adjuntos" >
+                                <i class="fa fa-paperclip"></i></button>
+                            {% endif %}
+
                             {% if intervention.get_num_modifications > 0 %}
                                 <button disabled
-                                    class="btn btn-warning btn-circle pull-right">
+                                    class="btn btn-warning btn-circle pull-right"
+                                        data-toggle="tooltip" title="Tiene modificaciones" style="margin-right: 5px">
                                 <strong>{{ intervention.get_num_modifications }}</strong></button>
                             {% endif %}
 
                             {% if intervention.starred %}
                                 <button type="button" class="btn btn-danger btn-circle pull-right" disabled
-                                        style="margin-right: 5px">
+                                        style="margin-right: 5px"  data-toggle="tooltip" title="Es prioritaria">
                                     <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                                 </button>
                             {% endif %}

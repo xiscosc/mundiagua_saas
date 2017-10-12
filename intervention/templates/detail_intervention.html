@@ -22,8 +22,10 @@
                         completa</a></small>
                     <div class="row">
                         <div class="col-md-12">
-                            <button id="previous_img_btn" class="btn btn-xs btn-primary pull-left gallery_btn"><i class="fa fa-arrow-left"></i></button>
-                            <button id="next_img_btn" class="btn btn-xs btn-primary pull-right gallery_btn"><i class="fa fa-arrow-right"></i></button>
+                            <button id="previous_img_btn" class="btn btn-xs btn-primary pull-left gallery_btn"><i
+                                    class="fa fa-arrow-left"></i></button>
+                            <button id="next_img_btn" class="btn btn-xs btn-primary pull-right gallery_btn"><i
+                                    class="fa fa-arrow-right"></i></button>
                         </div>
                     </div>
                 </div>
@@ -218,7 +220,11 @@
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-8">
+                                        <div class="col-md-12">
+                                            <h5>Cambiar estado:</h5>
+
+                                        </div>
+                                        <div class="col-xs-12 col-md-10">
                                             <select class="form-control" name="intervention_status"
                                                     id="intervention_status">
                                                 {% for st in status %}
@@ -236,9 +242,9 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <div class="col-xs-12 col-md-4">
+                                        <div class="col-xs-12 col-md-2">
                                             <button type="submit" class="btn btn-block btn-danger">
-                                                <span class="fa fa-flash"></span> Cambiar estado
+                                                <span class="fa fa-flash"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -251,13 +257,17 @@
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-8">
+                                        <div class="col-md-12">
+                                            <h5>Añadir modificación:</h5>
+
+                                        </div>
+                                        <div class="col-xs-12 col-md-10">
                                 <textarea class="form-control" name="intervention_modification" rows="3"
                                           placeholder="Escribe aquí una modificación" required></textarea>
                                         </div>
-                                        <div class="col-xs-12 col-md-4">
+                                        <div class="col-xs-12 col-md-2">
                                             <button type="submit" class="btn btn-block btn-warning">
-                                                <span class="fa fa-plus"></span> Añadir modificación
+                                                <span class="fa fa-plus"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -271,14 +281,18 @@
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-2">
+                                    <div class="col-md-12">
+                                            <h5>Cambiar zona:</h5>
+
+                                        </div>
+                                        <div class="col-xs-12 col-md-3">
                                             <a class="btn btn-block" id="btn-color" href="#"
                                                style="color:white; background-color:{{ intervention.zone.color }}">
-                                                Color
+                                                <i class="fa fa-map"></i>
                                             </a>
                                         </div>
 
-                                        <div class="col-xs-12 col-md-6">
+                                        <div class="col-xs-12 col-md-7">
                                             <select name="intervention_zone" class="form-control" id="selector_color">
                                                 {% for zone in zones %}
                                                     {% if zone.pk == intervention.zone.pk %}
@@ -291,9 +305,9 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <div class="col-xs-12 col-md-4">
+                                        <div class="col-xs-12 col-md-2">
                                             <button type="submit" class="btn btn-block btn-success">
-                                                <span class="fa fa-map-marker"></span> Cambiar Zona
+                                                <span class="fa fa-map-marker"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -305,16 +319,20 @@
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-8">
+                                    <div class="col-md-12">
+                                            <h5>Enviar copia a dispositivo:</h5>
+
+                                        </div>
+                                        <div class="col-xs-12 col-md-10">
                                             <select class="form-control" name="user_to_send">
                                                 {% for u in users %}
                                                     <option value="{{ u.pk }}">Enviar a {{ u.get_full_name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <div class="col-xs-12 col-md-4">
+                                        <div class="col-xs-12 col-md-2">
                                             <button type="submit" class="btn btn-default btn-block">
-                                                <span class="fa fa-envelope"></span> Enviar a dispositivo
+                                                <span class="fa fa-send"></span>
                                             </button>
                                         </div>
                                     </div>
