@@ -78,14 +78,14 @@ $(function () {
     }
 
     $('#image').on('change', function () {
-        $("#label_image").prepend("Adjuntando imagen...");
         $('#icon_image').hide();
+        $("#label_image").prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
         $('#form_image').submit();
     });
 
     $('#document').on('change', function () {
-        $("#label_document").prepend("Adjuntando documento...");
         $('#icon_document').hide();
+        $("#label_document").prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
         $('#form_document').submit();
     });
 

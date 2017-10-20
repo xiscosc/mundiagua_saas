@@ -177,6 +177,20 @@ class PreSearchView(View):
 class ChangeLogView(TemplateView):
     template_name = "changelog.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(ChangeLogView, self).get_context_data(**kwargs)
+        import django, boto3, sendgrid, sys, celery, memcache, psycopg2
+        context['intranet_version'] = settings.APP_COMPLETE_VERSION
+        context['django_version'] = django.__version__
+        context['amazon_version'] = boto3.__version__
+        context['sendgrid_version'] = sendgrid.__version__
+        context['celery_version'] = celery.__version__
+        context['python_version'] = sys.version
+        context['memcache_version'] = memcache.__version__
+        context['postgre_version_c'] = psycopg2.__version__
+        context['postgre_version'] = psycopg2.__libpq_version__
+        return context
+
 
 class UserView(TemplateView):
     template_name = 'user.html'

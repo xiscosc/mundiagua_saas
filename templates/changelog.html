@@ -1,8 +1,54 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Changelog{% endblock %}
+{% block page_title %}Acerca del sistema{% endblock %}
 {% block content %}
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Estado del sistema</div>
+        <div class="panel-body">
+            <ul>
+                <li>Intranet
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ intranet_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>Python
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ python_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>Django
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ django_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>AWS
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ amazon_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>Sendgrid
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ sendgrid_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>Celery
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ celery_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>Memcached
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ memcache_version }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li>PostgreSQL
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ postgre_version }} <i
+                            class="fa fa-check"></i></button>
+                    <button disabled class="btn-inline btn btn-xs btn-success">{{ postgre_version_c }} <i
+                            class="fa fa-check"></i></button>
+                </li>
+                <li><img src="{% static 'base/img/google.png' %}" class="google-logo"/> Cuentas de Google
+                    <button disabled class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+                </li>
+            </ul>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12">
@@ -67,7 +113,9 @@
             <h3>6.3</h3>
             <h5>30/06/2017</h5>
             <ul>
-                <li><img src="{% static 'base/img/google.png' %}" class="google-logo" /> Acceso a intranet con cuenta Google</li>
+                <li><img src="{% static 'base/img/google.png' %}" class="google-logo"/> Acceso a intranet con cuenta
+                    Google
+                </li>
                 <li>Sistema de etiquetas para las averías</li>
                 <li>Eliminación de las zonas Presupuesto y Carburos</li>
                 <li>Nuevas etiquetas Presupuesto, Carburos y ATH</li>
