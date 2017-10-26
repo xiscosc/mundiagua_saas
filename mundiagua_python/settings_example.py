@@ -36,3 +36,4 @@ BITLY_API_KEY = "..."
 NUMBER_TEMPLATES = 5
 
 LOGIN_URL = "/login/"
+IMAGE_NOT_FOUND = "base/img/image_not_available.png"

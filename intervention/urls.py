@@ -7,7 +7,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
-    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView
+    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, ImageView, DocumentView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -42,4 +42,6 @@ urlpatterns = [
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
+    url(r'^viewimage/(?P<key>.+)/$', cache_page(60)(ImageView.as_view()), name="intervention-view-image"),
+    url(r'^viewdocument/(?P<key>.+)/$', cache_page(60)(DocumentView.as_view()), name="intervention-view-document"),
 ]

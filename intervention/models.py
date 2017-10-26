@@ -11,8 +11,8 @@ from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 
 from client.models import SMS
-from core.utils import send_data_to_user
-from intervention.tasks import send_intervention_assigned
+from core.utils import send_data_to_user, create_amazon_client
+from intervention.tasks import send_intervention_assigned, upload_file
 
 
 def get_upload_path(type, instance, filename):
@@ -168,20 +168,66 @@ class InterventionFile(models.Model):
     intervention = models.ForeignKey(Intervention)
     user = models.ForeignKey('core.User')
     date = models.DateTimeField(auto_now_add=True)
+    in_s3 = models.BooleanField(default=False)
+    s3_key = models.CharField(max_length=20, default="no_key")
+
+    def file_path(self):
+        return None
+
+    def filename(self):
+        return os.path.basename(self.file_path())
+
+    def get_extension(self):
+        return os.path.splitext(self.filename())[1][1:]
+
+    def upload_to_s3(self):
+        import random
+        s3 = create_amazon_client('s3')
+        rand = int(random.random() * 100) % 9
+        key = "V%d_%d_%d.%s" % (self.intervention.pk, self.pk, rand, self.get_extension())
+        original_path = os.path.join(settings.MEDIA_ROOT, self.file_path())
+
+        try:
+            result = s3.upload_file(original_path, "test-mundiagua", key)
+            if result is None:
+                self.s3_key = key
+                self.in_s3 = True
+                self.save()
+                print "Removing %s" % original_path
+                os.remove(original_path)
+        except:
+            pass
 
     class Meta:
         abstract = True
 
+    def download_from_s3(self):
+        s3 = create_amazon_client('s3')
+        try:
+            data = s3.get_object(Bucket="test-mundiagua", Key=self.s3_key)
+            return data['Body']
+        except:
+            return None
+
 
 class InterventionImage(InterventionFile):
-    image = ThumbnailerImageField(upload_to=get_images_upload_path, resize_source=dict(quality=85, size=(1620,0), upscale=False))
+    image = models.ImageField(upload_to=get_images_upload_path)
+
+    def file_path(self):
+        return self.image.name
 
 
 class InterventionDocument(InterventionFile):
     document = models.FileField(upload_to=get_file_upload_path)
 
-    def filename(self):
-        return os.path.basename(self.document.name)
+    def file_path(self):
+        return self.document.name
+
+
+def post_save_file(sender, **kwargs):
+    doc = kwargs['instance']
+    if kwargs['created']:
+        upload_file.delay("document", doc.pk)
 
 
 def post_save_intervention(sender, **kwargs):
@@ -203,3 +249,4 @@ def post_save_intervention(sender, **kwargs):
 
 
 post_save.connect(post_save_intervention, sender=Intervention)
+post_save.connect(post_save_file, sender=InterventionDocument)

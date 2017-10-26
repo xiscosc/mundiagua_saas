@@ -3,7 +3,7 @@ from datetime import date
 
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.http import HttpResponseRedirect, JsonResponse, Http404, HttpResponse
 from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -407,3 +407,25 @@ class MapAssignedInterventionView(MapInterventionView):
 
 class ForbiddenInterventionView(TemplateView):
     template_name = 'forbidden_intervention.html'
+
+
+class ImageView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            image = InterventionImage.objects.get(s3_key=self.kwargs['key'])
+            image_data = image.download_from_s3().read()
+            return HttpResponse(image_data, content_type="image/%s" % image.get_extension())
+        except:
+            import os
+            with open(os.path.join(settings.STATIC_ROOT, settings.IMAGE_NOT_FOUND), "rb") as f:
+                return HttpResponse(f.read(), content_type="image/png")
+
+
+class DocumentView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            document = InterventionDocument.objects.get(s3_key=self.kwargs['key'])
+            image_data = document.download_from_s3().read()
+            return HttpResponse(image_data, content_type="application/%s" % document.get_extension())
+        except:
+            raise Http404("Archivo no disponible")

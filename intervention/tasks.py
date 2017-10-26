@@ -22,3 +22,12 @@ def send_intervention(pk, pkto, pkuser):
         user = User.objects.get(pk=pkuser)
         messages.warning(user,
                          "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name())
+
+@shared_task
+def upload_file(t, pk):
+    from intervention.models import InterventionImage, InterventionDocument
+    if t == "document":
+        instance = InterventionDocument.objects.get(pk=pk)
+    else:
+        instance = InterventionImage.objects.get(pk=pk)
+    instance.upload_to_s3()

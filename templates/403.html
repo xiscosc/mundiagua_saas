@@ -1,0 +1,11 @@
+{% extends 'log_base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% load core_tags %}
+{% block title %}Permiso denegado{% endblock %}
+{% block content %}
+
+<div class="alert alert-danger">
+    <h5>No tiene permisos para acceder a esta página. Contacte con el administrador</h5>
+</div>
+{% endblock %}

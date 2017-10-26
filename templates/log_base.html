@@ -42,7 +42,7 @@
 
     <link href="{% static 'base/css/mundiagua.css' %}{% app_version_includes %}" rel="stylesheet" type="text/css">
 
-    <meta name="theme-color" content="#bce8f1" />
+    <meta name="theme-color" content="#bce8f1"/>
 
     {% if request.user_agent.is_pc %}
         {% template_number as tn %}
@@ -68,7 +68,10 @@
         <div class="col-md-4 col-md-offset-4">
             <div class="login-panel panel panel-default animated zoomIn">
                 <div class="panel-heading">
-                    <h3 class="panel-title">{% block title %}{% endblock %}</h3>
+                    <h3 class="panel-title">{% block title %}{% endblock %}
+                        <button disabled class="btn btn-xs btn-default btn-left"><i
+                                class="fa fa-lock fa-fw"></i> {% app_version %}</button>
+                    </h3>
                 </div>
                 <div class="panel-body">
                     <div class="row">

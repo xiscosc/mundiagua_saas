@@ -91,7 +91,7 @@
                     </div>
                     <div class="panel-body">
                         {% for i in intervention.get_images %}
-                            <a href="#" class="link_image" data-url="/media/{{ i.image }}" data-date="{{ i.date }}"
+                            <a href="#" class="link_image" data-url="{% url 'intervention:intervention-view-image' i.s3_key %}" data-date="{{ i.date }}"
                                data-name="{{ i.user.get_full_name }}">
                                 <img src="{{ i.image|thumbnail_url:'intervention_th' }}" alt=""/>
                             </a>
@@ -118,7 +118,7 @@
                                     <strong>{{ d.filename }}</strong> por {{ d.user.get_full_name }}, {{ d.date }}.
                                     <div class="pull-right" style="display: inline-flex">
                                         <a class="btn btn-success btn-circle btn-circle-inline"
-                                           href="{{ d.document.url }}"
+                                           href="{% url 'intervention:intervention-view-document' d.s3_key %}"
                                            target="_blank">
                                             <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
                                         </a>

@@ -8,6 +8,7 @@ from async_messages import messages
 
 from client.tasks import send_sms
 from core.models import User
+from core.utils import create_amazon_client
 
 
 class Client(models.Model):
@@ -89,14 +90,8 @@ class SMS(models.Model):
     def send(self):
         number = self.process_phone()
         if number:
-            import boto3
-            from django.conf import settings
+            sns = create_amazon_client('sns')
             try:
-                sns = boto3.client('sns',
-                                   aws_access_key_id=settings.AWS_ACCESS_KEY,
-                                   aws_secret_access_key=settings.AWS_SECRET_KEY,
-                                   region_name=settings.AWS_REGION
-                                   )
                 result = sns.publish(PhoneNumber=number, Message=self.body)
                 status = int(result['ResponseMetadata']['HTTPStatusCode'])
                 if status == 200:
