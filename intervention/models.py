@@ -10,12 +10,12 @@ from django.db.models.signals import post_save
 from django.conf import settings
 
 from client.models import SMS
-from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail
+from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename
 from intervention.tasks import send_intervention_assigned, upload_file
 
 
 def get_upload_path(type, instance, filename):
-    return os.path.join(type, "V%s" % instance.intervention.pk, filename)
+    return os.path.join(type, "V%s" % instance.intervention.pk, format_filename(filename))
 
 
 def get_file_upload_path(instance, filename):

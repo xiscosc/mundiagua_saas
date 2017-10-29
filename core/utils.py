@@ -1,13 +1,17 @@
 # UTILS
-import hashlib, re, time, os
+import hashlib
+import os
+import re
+import string
+import time
 from datetime import date
-from dateutil.relativedelta import relativedelta
-from pytz import timezone
 
+from dateutil.relativedelta import relativedelta
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy
 from pushbullet import Pushbullet
-from django.core.mail import send_mail
-from django.conf import settings
+from pytz import timezone
 
 
 def send_data_to_user(user, subject, body, is_link=False):
@@ -122,3 +126,20 @@ def generate_thumbnail(intervention_image):
         type = "PNG"
     thumbnail.save(path_out, type, quality=95)
     return os.path.join(os.path.dirname(intervention_image.file_path()), os.path.basename(path_out))
+
+
+def format_filename(s):
+    """Take a string and return a valid filename constructed from the string.
+Uses a whitelist approach: any characters not present in valid_chars are
+removed. Also spaces are replaced with underscores.
+
+Note: this method may produce invalid filenames such as ``, `.` or `..`
+When I use this method I prepend a date string like '2009_01_15_19_46_32_'
+and append a file extension like '.txt', so I avoid the potential of using
+an invalid filename.
+
+"""
+    valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+    filename = ''.join(c for c in s if c in valid_chars)
+    filename = filename.replace(' ', '_')  # I don't like spaces in filenames.
+    return filename

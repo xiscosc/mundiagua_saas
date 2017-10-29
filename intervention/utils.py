@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import calendar
-from datetime import date, datetime
 import time
-
 import xlwt
+from datetime import date, datetime
+
 from async_messages import messages
 from django.conf import settings
 from django.http import HttpResponse
