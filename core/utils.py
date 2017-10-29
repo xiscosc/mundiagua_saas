@@ -125,7 +125,7 @@ def generate_thumbnail(intervention_image):
     if intervention_image.get_extension().lower() == "png":
         type = "PNG"
     thumbnail.save(path_out, type, quality=95)
-    return os.path.join(os.path.dirname(intervention_image.file_path()), os.path.basename(path_out))
+    return path_out
 
 
 def format_filename(s):
