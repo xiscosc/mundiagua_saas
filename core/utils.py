@@ -117,7 +117,7 @@ def create_amazon_client(service):
 def generate_thumbnail(intervention_image):
     from PIL import Image, ImageOps
     path_in = os.path.join(settings.MEDIA_ROOT, intervention_image.file_path())
-    path_out = os.path.join(os.path.dirname(path_in),
+    path_out = os.path.join(settings.MEDIA_ROOT, 'intervention_images', 'th',
                             "%d_th.%s" % (intervention_image.pk, intervention_image.get_extension()))
     image = Image.open(path_in)
     thumbnail = ImageOps.fit(image, settings.THUMBNAIL_SIZE, Image.ANTIALIAS)
