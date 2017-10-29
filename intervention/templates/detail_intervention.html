@@ -91,10 +91,19 @@
                     </div>
                     <div class="panel-body">
                         {% for i in intervention.get_images %}
-                            <a href="#" class="link_image" data-url="{% url 'intervention:intervention-view-image' i.s3_key %}" data-date="{{ i.date }}"
-                               data-name="{{ i.user.get_full_name }}">
-                                <img src="{{ i.image|thumbnail_url:'intervention_th' }}" alt=""/>
-                            </a>
+                            {% if i.thumbnail %}
+                                <a href="#" class="link_image"
+                                   data-url="{% url 'intervention:intervention-view-image' i.s3_key %}"
+                                   data-date="{{ i.date }}"
+                                   data-name="{{ i.user.get_full_name }}">
+                                    <img src="{{ i.thumbnail.url }}" alt=""/>
+                                </a>
+                                {% if i.s3_key == "no_key" %}
+                                    <button class="btn btn-warning btn-circle btn-circle-inline btn-s3" disabled>
+                                        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                                    </button>
+                                {% endif %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -117,11 +126,18 @@
                                 <li class="list-group-item">
                                     <strong>{{ d.filename }}</strong> por {{ d.user.get_full_name }}, {{ d.date }}.
                                     <div class="pull-right" style="display: inline-flex">
-                                        <a class="btn btn-success btn-circle btn-circle-inline"
-                                           href="{% url 'intervention:intervention-view-document' d.s3_key %}"
-                                           target="_blank">
-                                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
-                                        </a>
+                                        {% if d.s3_key == "no_key" %}
+                                            <button class="btn btn-warning btn-circle btn-circle-inline" disabled>
+                                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                                            </button>
+                                        {% else %}
+                                            <a class="btn btn-success btn-circle btn-circle-inline"
+                                               href="{% url 'intervention:intervention-prepare-download' d.pk %}"
+                                               target="_blank">
+                                                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
+                                            </a>
+                                        {% endif %}
+
                                     </div>
 
                                 </li>
@@ -281,7 +297,7 @@
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
-                                    <div class="col-md-12">
+                                        <div class="col-md-12">
                                             <h5>Cambiar zona:</h5>
 
                                         </div>
@@ -319,7 +335,7 @@
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
-                                    <div class="col-md-12">
+                                        <div class="col-md-12">
                                             <h5>Enviar copia a dispositivo:</h5>
 
                                         </div>

@@ -8,10 +8,9 @@ from django.db import models
 from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
-from easy_thumbnails.fields import ThumbnailerImageField
 
 from client.models import SMS
-from core.utils import send_data_to_user, create_amazon_client
+from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail
 from intervention.tasks import send_intervention_assigned, upload_file
 
 
@@ -174,6 +173,9 @@ class InterventionFile(models.Model):
     def file_path(self):
         return None
 
+    def get_bucket(self):
+        return None
+
     def filename(self):
         return os.path.basename(self.file_path())
 
@@ -188,7 +190,7 @@ class InterventionFile(models.Model):
         original_path = os.path.join(settings.MEDIA_ROOT, self.file_path())
 
         try:
-            result = s3.upload_file(original_path, "test-mundiagua", key)
+            result = s3.upload_file(original_path, self.get_bucket(), key)
             if result is None:
                 self.s3_key = key
                 self.in_s3 = True
@@ -204,7 +206,7 @@ class InterventionFile(models.Model):
     def download_from_s3(self):
         s3 = create_amazon_client('s3')
         try:
-            data = s3.get_object(Bucket="test-mundiagua", Key=self.s3_key)
+            data = s3.get_object(Bucket=self.get_bucket(), Key=self.s3_key)
             return data['Body']
         except:
             return None
@@ -212,9 +214,13 @@ class InterventionFile(models.Model):
 
 class InterventionImage(InterventionFile):
     image = models.ImageField(upload_to=get_images_upload_path)
+    thumbnail = models.ImageField(blank=True, null=True)
 
     def file_path(self):
         return self.image.name
+
+    def get_bucket(self):
+        return settings.S3_IMAGES
 
 
 class InterventionDocument(InterventionFile):
@@ -223,11 +229,22 @@ class InterventionDocument(InterventionFile):
     def file_path(self):
         return self.document.name
 
+    def get_bucket(self):
+        return settings.S3_DOCUMENTS
 
-def post_save_file(sender, **kwargs):
+
+def post_save_document(sender, **kwargs):
     doc = kwargs['instance']
     if kwargs['created']:
         upload_file.delay("document", doc.pk)
+
+
+def post_save_image(sender, **kwargs):
+    image = kwargs['instance']
+    if kwargs['created']:
+        image.thumbnail = generate_thumbnail(image)
+        image.save()
+        upload_file.delay("image", image.pk)
 
 
 def post_save_intervention(sender, **kwargs):
@@ -249,4 +266,5 @@ def post_save_intervention(sender, **kwargs):
 
 
 post_save.connect(post_save_intervention, sender=Intervention)
-post_save.connect(post_save_file, sender=InterventionDocument)
+post_save.connect(post_save_document, sender=InterventionDocument)
+post_save.connect(post_save_image, sender=InterventionImage)

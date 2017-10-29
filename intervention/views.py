@@ -409,6 +409,15 @@ class ForbiddenInterventionView(TemplateView):
     template_name = 'forbidden_intervention.html'
 
 
+class PrepareDownloadView(TemplateView):
+    template_name = 'download_document.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PrepareDownloadView, self).get_context_data(**kwargs)
+        context['document'] = InterventionDocument.objects.get(pk=kwargs['pk'])
+        return context
+
+
 class ImageView(View):
     def get(self, request, *args, **kwargs):
         try:

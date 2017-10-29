@@ -7,7 +7,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
-    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, ImageView, DocumentView
+    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, ImageView, DocumentView, PrepareDownloadView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -25,8 +25,10 @@ urlpatterns = [
     url(r'^modifications/$', ListModificationView.as_view(), name="intervention-modifications"),
     url(r'^morris/assigned/$', cache_page(settings.CACHE_TIME_CHARTS)(MorrisInterventionAssigned.as_view()),
         name="intervention-morris-assigned"),
-    url(r'^morris/input/$', cache_page(settings.CACHE_TIME_CHART_INCOME)(MorrisInterventionInput.as_view()), name="intervention-morris-input"),
-    url(r'^morris/yearvs/$', cache_page(settings.CACHE_TIME_CHARTS)(MorrisYearVs.as_view()), name="intervention-morris-yearvs"),
+    url(r'^morris/input/$', cache_page(settings.CACHE_TIME_CHART_INCOME)(MorrisInterventionInput.as_view()),
+        name="intervention-morris-input"),
+    url(r'^morris/yearvs/$', cache_page(settings.CACHE_TIME_CHARTS)(MorrisYearVs.as_view()),
+        name="intervention-morris-yearvs"),
     url(r'^print/(?P<pk>\d+)/$', PrintInterventionView.as_view(), name="intervention-print"),
     url(
         r'^print/list/(?P<intervention_status>\d+)/(?P<user_assigned>\d+)/(?P<zone_assigned>\d+)/(?P<starred>\d+)/(?P<tag_assigned>\d+)/$',
@@ -42,6 +44,9 @@ urlpatterns = [
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
-    url(r'^viewimage/(?P<key>.+)/$', cache_page(60)(ImageView.as_view()), name="intervention-view-image"),
-    url(r'^viewdocument/(?P<key>.+)/$', cache_page(60)(DocumentView.as_view()), name="intervention-view-document"),
+    url(r'^viewimage/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_PHOTOS)(ImageView.as_view()),
+        name="intervention-view-image"),
+    url(r'^viewdocument/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_DOCUMENTS)(DocumentView.as_view()),
+        name="intervention-view-document"),
+    url(r'^downloaddocument/(?P<pk>\d+)/$', PrepareDownloadView.as_view(), name="intervention-prepare-download"),
 ]

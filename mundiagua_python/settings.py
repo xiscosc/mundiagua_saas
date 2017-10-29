@@ -250,20 +250,16 @@ NON_STAFF_VIEWS = ('message-new',
                    'password-change',
                    'password-change-done')
 
-THUMBNAIL_ALIASES = {
-    '': {
-        'intervention_th': {'size': (100, 100), 'crop': True},
-    },
-}
+THUMBNAIL_SIZE = (100, 100)
 
 MEDIA_URL = "/media/"
 
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.4.1"
-APP_VERSION_INCLUDES = 641
-APP_COMPLETE_VERSION = "6.1.4.RV2-20171020"
+APP_VERSION = "6.4.2"
+APP_VERSION_INCLUDES = 642
+APP_COMPLETE_VERSION = "6.4.2.RV0-20171030"
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -271,3 +267,5 @@ LOGIN_REDIRECT_URL = "/"
 CACHE_TIME_CHARTS = 60 * 60
 CACHE_TIME_CHART_INCOME = 25 * 60
 CACHE_TIME_TYPEAHEAD = 60 * 24 * 60
+CACHE_TIME_PHOTOS = 60 * 25
+CACHE_TIME_DOCUMENTS = 60 * 10
