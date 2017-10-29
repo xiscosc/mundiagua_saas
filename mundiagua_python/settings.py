@@ -234,6 +234,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'message-ajax',
                    'intervention-list-own',
                    'intervention-view',
+                   'intervention-view-image',
                    'intervention-forbidden',
                    'client-address-edit-geo',
                    'home',
@@ -259,7 +260,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.4.2"
 APP_VERSION_INCLUDES = 642
-APP_COMPLETE_VERSION = "6.4.2.RV0-20171030"
+APP_COMPLETE_VERSION = "6.4.2.RV1-20171030"
 
 LOGIN_REDIRECT_URL = "/"
 
