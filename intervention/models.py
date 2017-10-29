@@ -14,16 +14,12 @@ from core.utils import send_data_to_user, create_amazon_client, generate_thumbna
 from intervention.tasks import send_intervention_assigned, upload_file
 
 
-def get_upload_path(type, instance, filename):
-    return os.path.join(type, "V%s" % instance.intervention.pk, format_filename(filename))
-
-
 def get_file_upload_path(instance, filename):
-    return get_upload_path('intervention_documents', instance, filename)
+    return os.path.join('intervention_documents', format_filename(filename))
 
 
 def get_images_upload_path(instance, filename):
-    return get_upload_path('intervention_images', instance, filename)
+    return os.path.join('intervention_images', format_filename(filename))
 
 
 class InterventionStatus(models.Model):
