@@ -118,6 +118,9 @@ class Intervention(models.Model):
     def get_documents(self):
         return InterventionDocument.objects.filter(intervention=self)
 
+    def get_no_officer_documents(self):
+        return self.get_documents().filter(only_officer=False)
+
     def get_history_sub(self):
         return InterventionLogSub.objects.filter(intervention=self).order_by("date")
 
@@ -196,6 +199,10 @@ class InterventionFile(models.Model):
         except:
             pass
 
+    def remove_form_s3(self):
+        s3 = create_amazon_client('s3')
+        s3.delete_object(Bucket=self.get_bucket(), Key=self.s3_key)
+
     class Meta:
         abstract = True
 
@@ -221,6 +228,7 @@ class InterventionImage(InterventionFile):
 
 class InterventionDocument(InterventionFile):
     document = models.FileField(upload_to=get_file_upload_path)
+    only_officer = models.BooleanField(default=True)
 
     def file_path(self):
         return self.document.name

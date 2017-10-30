@@ -235,6 +235,8 @@ NON_STAFF_VIEWS = ('message-new',
                    'intervention-list-own',
                    'intervention-view',
                    'intervention-view-image',
+                   'intervention-prepare-download',
+                   'intervention-view-document',
                    'intervention-forbidden',
                    'client-address-edit-geo',
                    'home',
@@ -259,8 +261,8 @@ SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.4.2"
-APP_VERSION_INCLUDES = 642
-APP_COMPLETE_VERSION = "6.4.2.RV2-20171030"
+APP_VERSION_INCLUDES = 6421
+APP_COMPLETE_VERSION = "6.4.2.RV3-20171030"
 
 LOGIN_REDIRECT_URL = "/"
 

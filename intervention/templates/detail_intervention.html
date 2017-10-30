@@ -18,8 +18,16 @@
                             aria-hidden="true">&times;</span></button>
                     <h5 class="modal-title" id="title_image">Foto de </h5>
                     <small id="date_image">date</small>
-                    <small class="pull-right"><a id="link_original_image" href="#" target="_blank">Ver imagen
-                        completa</a></small>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                        <a id="link_original_image" href="#" class="btn btn-xs btn-primary pull-right"
+                                                 target="_blank" style="margin-bottom: 3px"><i
+                            class="fa fa-arrows-alt"></i> Ampliar</a>
+                        <a style="display: none" id="link_remove" class="btn btn-xs btn-danger pull-left"
+                                                 href="#"> <i class="fa fa-remove"></i> Eliminar</a>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <button id="previous_img_btn" class="btn btn-xs btn-primary pull-left gallery_btn"><i
@@ -95,7 +103,13 @@
                                 <a href="#" class="link_image"
                                    data-url="{% url 'intervention:intervention-view-image' i.s3_key %}"
                                    data-date="{{ i.date }}"
-                                   data-name="{{ i.user.get_full_name }}">
+                                   data-name="{{ i.user.get_full_name }}"
+                                        {% if request.user == i.user %}
+                                   data-remove="{% url 'intervention:intervention-remove-file' i.pk %}?type=1"
+                                        {% else %}
+                                   data-remove="noremove"
+                                        {% endif %}
+                                >
                                     <img src="{{ i.thumbnail.url }}" alt=""/>
                                 </a>
                                 {% if i.s3_key == "no_key" %}
@@ -124,13 +138,41 @@
                         <ul class="list-group">
                             {% for d in intervention.get_documents %}
                                 <li class="list-group-item">
-                                    <strong>{{ d.filename }}</strong> por {{ d.user.get_full_name }}, {{ d.date }}.
+                                    <strong>{{ d.filename }}</strong>
+                                    | {{ d.user.get_full_name }}, {{ d.date|date:"d-m-Y" }} {{ d.date|time:"H:i" }}
                                     <div class="pull-right" style="display: inline-flex">
+                                        {% if request.user == d.user %}
+                                            {% if d.only_officer %}
+                                                <a class="btn btn-warning btn-xs btn-circle-inline"
+                                                   href="{% url 'intervention:intervention-make-document-visible' d.pk %}">
+                                                    <i class="fa fa-eye"></i> Mostrar a operario
+                                                </a>
+                                            {% else %}
+                                                <a class="btn btn-info btn-xs btn-circle-inline"
+                                                   href="{% url 'intervention:intervention-make-document-visible' d.pk %}">
+                                                    <i class="fa fa-eye-slash"></i> Ocultar a operario
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
                                         {% if d.s3_key == "no_key" %}
+                                            {% if request.user == d.user %}
+                                                <button class="btn btn-danger btn-circle btn-circle-inline" disabled>
+                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                                </button>
+
+                                            {% endif %}
                                             <button class="btn btn-warning btn-circle btn-circle-inline" disabled>
                                                 <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
                                             </button>
                                         {% else %}
+                                            {% if request.user == d.user %}
+                                                <a class="btn btn-danger btn-circle btn-circle-inline"
+                                                   href="{% url 'intervention:intervention-remove-file' d.pk %}?type=0"
+                                                >
+                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                                </a>
+
+                                            {% endif %}
                                             <a class="btn btn-success btn-circle btn-circle-inline"
                                                href="{% url 'intervention:intervention-prepare-download' d.pk %}"
                                                target="_blank">
@@ -151,6 +193,44 @@
         </div>
 
     {% endif %}
+
+    {% if not request.user.is_officer and intervention.get_no_officer_documents|length > 0 %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Documentos de la avería</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            {% for d in intervention.get_no_officer_documents %}
+                                <li class="list-group-item">
+                                    <strong>{{ d.filename }}</strong>
+                                    | {{ d.user.get_full_name }}, {{ d.date|date:"d-m-Y" }} {{ d.date|time:"H:i" }}
+                                    <div class="pull-right" style="display: inline-flex">
+                                        {% if d.s3_key == "no_key" %}
+                                            <button class="btn btn-warning btn-circle btn-circle-inline" disabled>
+                                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                                            </button>
+                                        {% else %}
+                                            <a class="btn btn-success btn-circle btn-circle-inline"
+                                               href="{% url 'intervention:intervention-prepare-download' d.pk %}"
+                                               target="_blank">
+                                                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
 
     {% if request.user.is_officer %}
         <div class="row">

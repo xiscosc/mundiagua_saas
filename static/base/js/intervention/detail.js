@@ -19,12 +19,18 @@ function set_image(element) {
     $modal = $('#modal_image');
     $('#body_image').html("");
     $("#link_original_image").attr('href', "#");
+    $remove_link = $('#link_remove');
+    $remove_link.hide();
     $('#progress_bar_image').show();
     var url = element.data('url');
     $('#title_image').html("Foto de " + element.data('name'));
     $('#date_image').html(element.data('date'));
+    var data_remove = element.data('remove');
+    if (data_remove != "noremove") {
+        $remove_link.attr('href', data_remove);
+        $remove_link.show()
+    }
     $modal.modal("show");
-
     var img = $("<img class='img-responsive' />").attr('src', url)
         .on('load', function () {
             $('#progress_bar_image').hide();

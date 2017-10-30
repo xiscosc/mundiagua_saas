@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 
+import os
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect, JsonResponse, Http404, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404, HttpResponse, HttpResponseForbidden
 from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -412,6 +413,20 @@ class ForbiddenInterventionView(TemplateView):
 class PrepareDownloadView(TemplateView):
     template_name = 'download_document.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_officer:
+            return super(PrepareDownloadView, self).dispatch(request, *args, **kwargs)
+        else:
+            try:
+                doc = InterventionDocument.objects.get(pk=kwargs['pk'])
+                intervention = doc.intervention
+                if not doc.only_officer and intervention.status_id == 2 and intervention.assigned_id == request.user.id:
+                    return super(PrepareDownloadView, self).dispatch(request, *args, **kwargs)
+                else:
+                    return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
+            except:
+                return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
+
     def get_context_data(self, **kwargs):
         context = super(PrepareDownloadView, self).get_context_data(**kwargs)
         context['document'] = InterventionDocument.objects.get(pk=kwargs['pk'])
@@ -434,7 +449,52 @@ class DocumentView(View):
     def get(self, request, *args, **kwargs):
         try:
             document = InterventionDocument.objects.get(s3_key=self.kwargs['key'])
-            image_data = document.download_from_s3().read()
-            return HttpResponse(image_data, content_type="application/%s" % document.get_extension())
+
+            if not request.user.is_officer:
+                if document.intervention.status_id != 2 or document.intervention.assigned_id != request.user.id or document.only_officer:
+                    return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
+
+            document_data = document.download_from_s3().read()
+            response = HttpResponse(document_data, content_type="application/%s" % document.get_extension())
+            response['Content-Disposition'] = 'attachment; filename="%s"' % document.filename()
+            return response
         except:
             raise Http404("Archivo no disponible")
+
+
+class RemoveFileView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            type = int(request.GET.get('type', 0))
+            if type == 0:
+                instance = InterventionDocument.objects.get(pk=self.kwargs['pk'])
+            else:
+                instance = InterventionImage.objects.get(pk=self.kwargs['pk'])
+
+            pk_intervention = instance.intervention_id
+            if instance.user == request.user:
+                instance.remove_form_s3()
+                if type == 1:
+                    os.remove(os.path.join(settings.MEDIA_ROOT, instance.thumbnail.name))
+                instance.delete()
+                messages.success(request.user, "Archivo eliminado")
+                return HttpResponseRedirect(
+                    reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
+            else:
+                return HttpResponseForbidden("Archivo no disponible")
+        except:
+            raise Http404("Archivo no disponible")
+
+
+class MakeVisibleDocumentView(View):
+    def get(self, request, *args, **kwargs):
+        instance = InterventionDocument.objects.get(pk=self.kwargs['pk'])
+        pk_intervention = instance.intervention_id
+        if instance.user == request.user:
+            instance.only_officer = not instance.only_officer
+            instance.save()
+            messages.success(request.user, "Visibilidad de archivo modificada")
+            return HttpResponseRedirect(
+                reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
+        else:
+            return HttpResponseForbidden("Archivo no disponible")
