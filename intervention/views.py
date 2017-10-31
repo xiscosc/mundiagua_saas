@@ -490,11 +490,8 @@ class MakeVisibleDocumentView(View):
     def get(self, request, *args, **kwargs):
         instance = InterventionDocument.objects.get(pk=self.kwargs['pk'])
         pk_intervention = instance.intervention_id
-        if instance.user == request.user:
-            instance.only_officer = not instance.only_officer
-            instance.save()
-            messages.success(request.user, "Visibilidad de archivo modificada")
-            return HttpResponseRedirect(
-                reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
-        else:
-            return HttpResponseForbidden("Archivo no disponible")
+        instance.only_officer = not instance.only_officer
+        instance.save()
+        messages.success(request.user, "Visibilidad de archivo modificada")
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
+
