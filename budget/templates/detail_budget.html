@@ -99,6 +99,7 @@
                                 <li class="list-group-item">
                                     <a href="{% url 'intervention:intervention-view' intervention.pk %}"
                                        class="btn btn-danger btn-xs">{{ intervention }}</a> {{ intervention.address.client }}
+                                    | {{ intervention.date|date:"d-m-Y" }} {{ intervention.date|time:"H:i" }}
                                     <div class="pull-right" style="display: inline-flex">
                                         <a class="btn btn-danger btn-circle btn-circle-inline"
                                            href="{% url 'budget:budget-unlink-intervention' budget.pk intervention.pk 1 %}"

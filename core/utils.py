@@ -13,6 +13,15 @@ from django.core.urlresolvers import reverse_lazy
 from pushbullet import Pushbullet
 from pytz import timezone
 
+INTERVENTION_REGEX = '[v|V][0-9]+'
+IDEGIS_REGEX = '[x|X][0-9]+'
+ATH_REGEX = '[a|A][0-9]+'
+CLIENT_REGEX = '[c|C][0-9]+'
+ENGINE_REGEX = '[e|B][0-9]+'
+BUDGET_REGEX = '[p|P][0-9]+'
+BUDGET_REGEX_2ND_FORMAT = '[p|P][m|M][0-9][0-9]/[0-9]+'
+BUDGET_REGEX_3RD_FORMAT = '[p|P][m|M][0-9][0-9]-[0-9]+'
+
 
 def send_data_to_user(user, subject, body, is_link=False):
     if user.pb_token is not None and user.pb_token is not u"" and user.pb_token is not "":
@@ -47,12 +56,14 @@ def send_mail_m(user, subject, body, is_link=False, fallback=False):
 
 
 def get_return_from_id(search_text):
-    intervention_r = re.compile('[v|V][0-9]+')
-    idegis_r = re.compile('[x|X][0-9]+')
-    ath_r = re.compile('[a|A][0-9]+')
-    client_r = re.compile('[c|C][0-9]+')
-    engine_r = re.compile('[e|E][0-9]+')
-    budget_r = re.compile('[p|P][0-9]+')
+    intervention_r = re.compile(INTERVENTION_REGEX)
+    idegis_r = re.compile(ATH_REGEX)
+    ath_r = re.compile(IDEGIS_REGEX)
+    client_r = re.compile(CLIENT_REGEX)
+    engine_r = re.compile(ENGINE_REGEX)
+    budget_r = re.compile(BUDGET_REGEX)
+    budget_r2 = re.compile(BUDGET_REGEX_2ND_FORMAT)
+    budget_r3 = re.compile(BUDGET_REGEX_3RD_FORMAT)
 
     intervention_m = intervention_r.match(search_text)
     if intervention_m is not None:
@@ -64,6 +75,18 @@ def get_return_from_id(search_text):
     if budget_m is not None:
         idstr = budget_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
+
+    budget_m = budget_r2.match(search_text)
+    if budget_m is not None:
+        idstr = budget_m.group()
+        id = int(re.sub("[^0-9]", "", idstr)[2:])
+        return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
+
+    budget_m = budget_r3.match(search_text)
+    if budget_m is not None:
+        idstr = budget_m.group()
+        id = int(re.sub("[^0-9]", "", idstr)[2:])
         return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
 
     idegis_m = idegis_r.match(search_text)

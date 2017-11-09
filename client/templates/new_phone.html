@@ -5,76 +5,43 @@
 {% block page_title %}Teléfono para {{ client.name }}{% endblock %}
 {% block content %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered table-hover table-striped">
-                <tr>
-                    <td style="width: 33%">
-                        <strong>Nombre</strong>
-                    </td>
-                    <td>
-                        {{ client.name }}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <strong>COD Cliente</strong>
-                    </td>
-                    <td>
-                        {{ client.intern_code|default_if_none:"" }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>DNI/CIF</strong>
-                    </td>
-                    <td>
-                        {{ client.dni|default_if_none:"" }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Identificación Intranet</strong>
-                    </td>
-                    <td>
-                        C{{ client.pk }}
-                    </td>
-
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-info">
-                En <strong>Alias</strong> puede poner por ejemplo: Principal, Fijo, Móvil, o el nombre de la persona del
-                teléfono si es una empresa. No hace falta repetir el nombre del cliente.
-            </div>
-            <div class="alert alert-success">
-                Para guardar un teléfono internacional, por ejemplo uno holandés +31 612123123, en código país
-                seleccionaremos Países Bajos (+31) y en el apartado teléfono escribimos el resto del teléfono 612123123.
-            </div>
-        </div>
-    </div>
+    {% include 'client_data_basic.html' with client=client %}
 
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
-            <form action="" method="post" id="new_form">{% csrf_token %}
-                {{ form|bootstrap }}
-                <div class="form-group">
-                    <input type="hidden" id="other" name="other" value="0"/>
-                    <button class="btn btn-success" id="btn_other"><i class="fa fa-circle-o-notch"></i> Quiero añadir otro teléfono</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-arrow-right"></i> Guardar y continuar</button>
-                    <a href="{% url 'client:client-view' client.pk %}" class="btn btn-warning"><i class="fa fa-remove"></i> Omitir</a>
-                </div>
-            </form>
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h3 class="panel-title">Datos del teléfono</h3></div>
+                <form action="" method="post" id="new_form">
+                    <div class="panel-body">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                    </div>
+                    <div class="panel-footer">
+                        <input type="hidden" id="other" name="other" value="0"/>
+                        <button class="btn btn-success" id="btn_other"><i class="fa fa-circle-o-notch"></i> Quiero
+                            añadir otro teléfono
+                        </button>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-arrow-right"></i> Guardar y
+                            continuar
+                        </button>
+                        <a href="{% url 'client:client-view' client.pk %}" class="btn btn-warning"><i
+                                class="fa fa-remove"></i> Omitir</a>
+
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-
 {% endblock %}
 {% block extrajs %}
-    <script src="{% static 'base/js/client/new_phone_address.js' %}{% app_version_includes %}"></script>
+    <script type="application/javascript">
+        var pops = ["En <strong>Alias</strong> puede poner por ejemplo: Principal, Fijo, Móvil, o el nombre de" +
+        " la persona del teléfono si es una empresa. No hace falta repetir el nombre del cliente.",
+        " Para guardar un teléfono internacional, por ejemplo uno holandés +31 612123123, " +
+        "en código país seleccionaremos Países Bajos (+31) y en el apartado teléfono escribimos el resto " +
+        "del teléfono 612123123."]
+    </script>
+    <script src="{% static 'base/js/client/new-phone-address.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/client/phone-edit.js' %}{% app_version_includes %}"></script>
 {% endblock %}

@@ -10,7 +10,8 @@ from django.db.models.signals import post_save
 from django.conf import settings
 
 from client.models import SMS
-from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename
+from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, ATH_REGEX, \
+    IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT
 from intervention.tasks import send_intervention_assigned, upload_file
 
 
@@ -107,7 +108,7 @@ class Intervention(models.Model):
 
     def send_to_user(self, user):
         return send_data_to_user(is_link=True, body=self.generate_url(), user=user,
-                          subject=str(self) + " - " + self.address.client.name)
+                                 subject=str(self) + " - " + self.address.client.name)
 
     def get_num_modifications(self):
         return InterventionModification.objects.filter(intervention=self).count()
@@ -251,11 +252,72 @@ def post_save_image(sender, **kwargs):
         upload_file.delay("image", image.pk)
 
 
+def search_objects_in_text(regex, text, trim=False):
+    import re
+    data = re.compile(regex).findall(text)
+    ids = []
+    for d in data:
+        id = re.sub("[^0-9]", "", d)
+        if trim:
+            id = id[2:]
+        ids.append(int(id))
+    return ids
+
+
+def autolink_intervention(intervention, text, user):
+    from async_messages import messages
+    added = False
+    error = False
+
+    for id in search_objects_in_text(ATH_REGEX, text):
+        try:
+            intervention.repairs_ath.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(IDEGIS_REGEX, text):
+        try:
+            intervention.repairs_idegis.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX, text):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX_2ND_FORMAT, text, trim=True):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX_3RD_FORMAT, text, trim=True):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+
+    if added:
+        messages.success(user, "Se han autonvinculado presupuestos y/o reparaciones a esta avería")
+    if error:
+        messages.warning(user, "Ha ocurrido un error durante la autovinculación en esta avería")
+
+
+def post_save_intervention_modification(sender, **kwargs):
+    intervention_mod = kwargs['instance']
+    if kwargs['created']:
+        autolink_intervention(intervention_mod.intervention, intervention_mod.note, intervention_mod.created_by)
+
+
 def post_save_intervention(sender, **kwargs):
     intervention = kwargs['instance']
     if kwargs['created']:
         log = InterventionLog(created_by=intervention.created_by, status=intervention.status, intervention=intervention)
         log.save()
+        autolink_intervention(intervention, intervention.description, intervention.created_by)
     else:
         try:
             if intervention._old_status_id != intervention.status_id or intervention._old_assigned_id != intervention.assigned_id:
@@ -272,3 +334,4 @@ def post_save_intervention(sender, **kwargs):
 post_save.connect(post_save_intervention, sender=Intervention)
 post_save.connect(post_save_document, sender=InterventionDocument)
 post_save.connect(post_save_image, sender=InterventionImage)
+post_save.connect(post_save_intervention_modification, sender=InterventionModification)

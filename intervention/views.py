@@ -12,6 +12,7 @@ from async_messages import messages
 
 from core.models import User
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
+from core.utils import ATH_REGEX, IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
     InterventionDocument, InterventionSubStatus, InterventionLogSub, Tag
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
@@ -19,6 +20,7 @@ from intervention.utils import update_intervention, generate_data_year_vs, gener
     generate_report
 from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
+
 
 
 class HomeView(TemplateView):
@@ -495,3 +497,60 @@ class MakeVisibleDocumentView(View):
         messages.success(request.user, "Visibilidad de archivo modificada")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
 
+
+class LinkToInterventionView(View):
+    def link_intervention(self, regex_text, text, type, trim=False):
+        import re
+        data = re.compile(regex_text).match(text)
+        if data is not None:
+
+            idstr = data.group()
+            id = re.sub("[^0-9]", "", idstr)
+            if trim:
+                id = id[2:]
+            id = int(id)
+            intervention = Intervention.objects.get(pk=self.kwargs['pk'])
+            if type == "ath":
+                intervention.repairs_ath.add(id)
+            elif type == "idegis":
+                intervention.repairs_idegis.add(id)
+            else:
+                intervention.budgets.add(id)
+            messages.success(self.request.user, "Vinculación correcta")
+            return True
+        else:
+            return False
+
+    def post(self, request, *args, **kwargs):
+        text = request.POST.get('object', "")
+        search_text = str(text).replace(" ", "")
+
+        try:
+            found = False
+
+            found = found | self.link_intervention(IDEGIS_REGEX, search_text, "idegis")
+
+            if not found:
+                found = found | self.link_intervention(ATH_REGEX, search_text, "ath")
+
+            if not found:
+                found = found | self.link_intervention(BUDGET_REGEX, search_text, "budget")
+
+            if not found:
+                found = found | self.link_intervention(BUDGET_REGEX_2ND_FORMAT, search_text, "budget", trim=True)
+
+            if not found:
+                found = found | self.link_intervention(BUDGET_REGEX_3RD_FORMAT, search_text, "budget", trim=True)
+
+            if not found:
+                messages.warning(self.request.user,
+                                 "No se ha podido vincular la avería debido a un error, "
+                                 "puede ser que el número sea incorrecto")
+
+        except:
+            messages.warning(self.request.user,
+                             "No se ha podido vincular la avería V%d debido a un error, "
+                             "puede ser que el número sea incorrecto." %
+                             int(kwargs['pk']))
+
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': kwargs['pk']}))

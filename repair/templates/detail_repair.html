@@ -57,7 +57,8 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default sms_close" data-dismiss="modal">No enviar nada</button>
+                        <button type="button" class="btn btn-default sms_close" data-dismiss="modal">No enviar nada
+                        </button>
                         <button type="submit" class="btn btn-primary" id="sms_send">Enviar</button>
                     </div>
                 </form>
@@ -121,11 +122,13 @@
                                 <strong>ID Online</strong>
                             </td>
                             <td>
-                                <a href="{% url 'public-status-repair' repair.online_id %}" target="_blank" class="btn btn-default">
+                                <a href="{% url 'public-status-repair' repair.online_id %}" target="_blank"
+                                   class="btn btn-default">
                                     <strong>{{ repair.online_id }}</strong>
                                 </a>
-                                 <button class="btn btn-primary" id="btn-tracking">
-                                <i class="fa fa-send"></i> Enviar datos al cliente</button>
+                                <button class="btn btn-primary" id="btn-tracking">
+                                    <i class="fa fa-send"></i> Enviar datos al cliente
+                                </button>
                             </td>
                         </tr>
                         <tr>
@@ -196,6 +199,7 @@
                                 <li class="list-group-item">
                                     <a href="{% url 'intervention:intervention-view' intervention.pk %}"
                                        class="btn btn-danger btn-xs">{{ intervention }}</a> {{ intervention.address.client }}
+                                    | {{ intervention.date|date:"d-m-Y" }} {{ intervention.date|time:"H:i" }}
                                     <div class="pull-right" style="display: inline-flex">
                                         <a class="btn btn-danger btn-circle btn-circle-inline"
                                            href="{% url 'repair:repair-unlink-intervention' repair.pk repair.is_ath intervention.pk 1 %}"
