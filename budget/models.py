@@ -3,6 +3,10 @@ from __future__ import unicode_literals
 
 from decimal import Decimal
 from django.db import models
+from django.db.models.signals import post_save
+
+from core.utils import search_objects_in_text, INTERVENTION_REGEX
+from intervention.models import Intervention
 
 
 class Budget(models.Model):
@@ -97,3 +101,30 @@ class BudgetLineStandard(BudgetLine):
 
 class BudgetLineRepair(BudgetLine):
     budget = models.ForeignKey(BudgetRepair)
+
+
+def link_to_intervention(instance):
+    from async_messages import messages
+    added = False
+    error = False
+    ids = search_objects_in_text(INTERVENTION_REGEX, instance.introduction)
+    ids = ids + search_objects_in_text(INTERVENTION_REGEX, instance.conditions)
+
+    for id in ids:
+        try:
+            Intervention.objects.get(pk=int(id)).budgets.add(instance)
+            added = True
+        except:
+            error = True
+
+    if added:
+        messages.success(instance.created_by, "Se han autonvinculado avería(s) a este presupuesto")
+    if error:
+        messages.warning(instance.created_by, "Ha ocurrido un error durante la autovinculación en este presupuesto")
+
+
+def post_save_budget_standard(sender, **kwargs):
+    link_to_intervention(kwargs['instance'])
+
+
+post_save.connect(post_save_budget_standard, sender=BudgetStandard)

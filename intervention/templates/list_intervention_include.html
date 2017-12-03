@@ -34,6 +34,13 @@
                                 <i class="fa fa-paperclip"></i></button>
                             {% endif %}
 
+                            {% if intervention.repairs_ath.all|length > 0 or  intervention.repairs_idegis.all|length > 0 or intervention.budgets.all|length > 0 %}
+                                <button disabled
+                                    class="btn btn-info btn-circle pull-right"
+                                        data-toggle="tooltip" title="Tiene vinculaciones" >
+                                <i class="fa fa-chain"></i></button>
+                            {% endif %}
+
                             {% if intervention.get_num_modifications > 0 %}
                                 <button disabled
                                     class="btn btn-warning btn-circle pull-right"

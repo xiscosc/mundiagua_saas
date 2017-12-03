@@ -11,7 +11,7 @@ from django.conf import settings
 
 from client.models import SMS
 from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, ATH_REGEX, \
-    IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT
+    IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, search_objects_in_text
 from intervention.tasks import send_intervention_assigned, upload_file
 
 
@@ -250,18 +250,6 @@ def post_save_image(sender, **kwargs):
         image.thumbnail = generate_thumbnail(image)
         image.save()
         upload_file.delay("image", image.pk)
-
-
-def search_objects_in_text(regex, text, trim=False):
-    import re
-    data = re.compile(regex).findall(text)
-    ids = []
-    for d in data:
-        id = re.sub("[^0-9]", "", d)
-        if trim:
-            id = id[2:]
-        ids.append(int(id))
-    return ids
 
 
 def autolink_intervention(intervention, text, user):

@@ -6,7 +6,8 @@ from django.db.models.signals import post_save
 
 from budget.models import BudgetRepair
 from client.models import SMS
-from core.utils import generate_md5_id, get_time_zone
+from intervention.models import Intervention
+from core.utils import generate_md5_id, get_time_zone, INTERVENTION_REGEX, search_objects_in_text
 
 
 class RepairStatus(models.Model):
@@ -50,6 +51,9 @@ class AthRepair(Repair):
     def is_ath(self):
         return 1
 
+    def get_budgets(self):
+        return BudgetRepair.objects.filter(ath_repair=self)
+
 
 class IdegisRepair(Repair):
     ph = models.BooleanField(default=False, verbose_name="Sonda PH")
@@ -59,14 +63,8 @@ class IdegisRepair(Repair):
     def __str__(self):
         return "X" + str(self.pk)
 
-    def get_budget(self):
-        if self.budget is not None:
-            return self.budget
-        else:
-            try:
-                return BudgetRepair.objects.get(idegis_repair=self)
-            except BudgetRepair.DoesNotExist:
-                return None
+    def get_budgets(self):
+        return BudgetRepair.objects.filter(idegis_repair=self)
 
     def is_ath(self):
         return 0
@@ -93,23 +91,48 @@ class IdegisRepairLog(RepairLog):
 
 # SIGNALS
 
+def link_to_intervention(instance, type):
+    from async_messages import messages
+    added = False
+    error = False
+    ids = search_objects_in_text(INTERVENTION_REGEX, instance.intern_description)
+    ids = ids + search_objects_in_text(INTERVENTION_REGEX, instance.description)
+
+    for id in ids:
+        try:
+            if type == "ath":
+                Intervention.objects.get(pk=int(id)).repairs_ath.add(instance)
+            else:
+                Intervention.objects.get(pk=int(id)).repairs_idegis.add(instance)
+            added = True
+        except:
+            error = True
+
+    if added:
+        messages.success(instance.created_by, "Se han autonvinculado avería(s) a esta reparación")
+    if error:
+        messages.warning(instance.created_by, "Ha ocurrido un error durante la autovinculación en esta reparación")
+
 
 def post_save_ath_repair(sender, **kwargs):
+    ins = kwargs['instance']
     if kwargs['created']:
-        ins = kwargs['instance']
         log = AthRepairLog(repair=ins, status=ins.status)
         log.save()
         ins.online_id = generate_md5_id("A", ins.pk)
         ins.save()
+    link_to_intervention(ins, "ath")
 
 
 def post_save_idegis_repair(sender, **kwargs):
+    ins = kwargs['instance']
     if kwargs['created']:
-        ins = kwargs['instance']
         log = IdegisRepairLog(repair=ins, status=ins.status)
         log.save()
         ins.online_id = generate_md5_id("X", ins.pk)
         ins.save()
+    link_to_intervention(ins, "idegis")
+
 
 post_save.connect(post_save_ath_repair, sender=AthRepair)
 post_save.connect(post_save_idegis_repair, sender=IdegisRepair)

@@ -20,9 +20,16 @@
                                 <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
                             {% endif %}
 
+                            {% if repair.get_budgets|length > 0 %}
+                                <button type="button" class="btn btn-primary btn-circle pull-right" disabled
+                                 data-toggle="tooltip" title="Número de presupuestos">
+                                    {{ repair.get_budgets|length }}
+                                </button>
+                            {% endif %}
+
                             {% if repair.starred %}
                                 <button type="button" class="btn btn-danger btn-circle pull-right" disabled
-                                        style="margin-right: 5px">
+                                        style="margin-right: 5px" data-toggle="tooltip" title="Es prioritaria">
                                     <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                                 </button>
                             {% endif %}

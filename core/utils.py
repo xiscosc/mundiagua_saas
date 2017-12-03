@@ -151,6 +151,18 @@ def generate_thumbnail(intervention_image):
     return os.path.join('intervention_images', 'th', filename)
 
 
+def search_objects_in_text(regex, text, trim=False):
+    import re
+    data = re.compile(regex).findall(text)
+    ids = []
+    for d in data:
+        id = re.sub("[^0-9]", "", d)
+        if trim:
+            id = id[2:]
+        ids.append(int(id))
+    return ids
+
+
 def format_filename(s):
     """Take a string and return a valid filename constructed from the string.
 Uses a whitelist approach: any characters not present in valid_chars are

@@ -164,7 +164,7 @@
                                 {% endif %}
                                 <a class="btn btn-info"
                                    href="{% url 'budget:budget-repair-list' repair.is_ath repair.pk %}"><span
-                                        class="fa fa-folder"></span> Ver Presupuestos</a>
+                                        class="badge">{{ repair.get_budgets|length }}</span> Ver Presupuestos</a>
                             </td>
                         </tr>
 
