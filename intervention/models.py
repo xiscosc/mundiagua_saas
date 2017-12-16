@@ -27,14 +27,14 @@ class InterventionStatus(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name.encode('utf8')
+        return self.name
 
 
 class InterventionSubStatus(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name.encode('utf8')
+        return self.name
 
 
 class InterventionInfo(models.Model):
@@ -42,7 +42,7 @@ class InterventionInfo(models.Model):
     color = ColorField(default='#FF0000')
 
     def __str__(self):
-        return self.name.encode('utf8')
+        return self.name
 
     def get_is_zone(self):
         return None
@@ -195,7 +195,7 @@ class InterventionFile(models.Model):
                 self.s3_key = key
                 self.in_s3 = True
                 self.save()
-                print "Removing %s" % original_path
+                print("Removing %s" % original_path)
                 os.remove(original_path)
         except:
             pass

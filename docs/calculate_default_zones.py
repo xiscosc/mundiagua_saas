@@ -20,6 +20,6 @@ for client in Client.objects.all():
                 add.save()
                 saved += 1
 
-print "UPDATED: " + str(saved)
+print("UPDATED: " + str(saved))
 
 Address.objects.filter(default_zone_id=9).update(default_zone=None)

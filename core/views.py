@@ -166,7 +166,7 @@ class PreSearchView(View):
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
         search_text = params.getlist('search_text')[0]
-        self.search_text = search_text.encode('utf-8')
+        self.search_text = search_text
         regex_data = get_return_from_id(self.search_text)
         if regex_data['found']:
             return HttpResponseRedirect(regex_data['url'])

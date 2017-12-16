@@ -23,8 +23,8 @@ BUDGET_REGEX_2ND_FORMAT = '[p|P][m|M][0-9][0-9]/[0-9]+'
 BUDGET_REGEX_3RD_FORMAT = '[p|P][m|M][0-9][0-9]-[0-9]+'
 
 
-def send_data_to_user(user, subject, body, is_link=False):
-    if user.pb_token is not None and user.pb_token is not u"" and user.pb_token is not "":
+def send_data_to_user(user, subject, body, is_link=False, from_user=None):
+    if user.has_pb():
         try:
             pb = Pushbullet(user.pb_token)
             if is_link:
@@ -33,80 +33,86 @@ def send_data_to_user(user, subject, body, is_link=False):
                 push = pb.push_note(subject, body)
             return push
         except:
-            return send_mail_m(user, subject, body, is_link, True)
+            return send_mail_m(user, subject, body, is_link=is_link, fallback=True, from_user=from_user)
     else:
-        return send_mail_m(user, subject, body, is_link, False)
+        return send_mail_m(user, subject, body, is_link=is_link, fallback=False, from_user=from_user)
 
 
 def generate_md5_id(char, id):
-    hash = hashlib.md5(str(time.time()) + str(id) + char + str(time.time())).hexdigest()
+    line = str(time.time()) + str(id) + char + str(time.time())
+    hash = hashlib.md5(line.encode("utf-8")).hexdigest()
     hash_numbers = re.sub("[^0-9]", "", hash)
     return char + hash_numbers[:6]
 
 
-def send_mail_m(user, subject, body, is_link=False, fallback=False):
+def send_mail_m(user, subject, body, is_link=False, fallback=False, from_user=None):
     ex_body = ""
     if fallback:
         ex_body = "MENSAJE ENVIADO POR SISTEMA DE RECUPERACION - PUSHBULLET HA FALLADO\n\n"
     if is_link:
         ex_body += "Consulta el siguiente enlace: "
 
+    if from_user is None:
+        from_email = "intranet@mundiaguabalear.com"
+    else:
+        from_email = from_user.email
+
     return send_mail(subject=subject, message=ex_body + body,
-                     from_email="intranet@mundiaguabalear.com", recipient_list=[user.email])
+                     from_email=from_email, recipient_list=[user.email])
 
 
 def get_return_from_id(search_text):
-    intervention_r = re.compile(INTERVENTION_REGEX)
-    idegis_r = re.compile(IDEGIS_REGEX)
-    ath_r = re.compile(ATH_REGEX)
-    client_r = re.compile(CLIENT_REGEX)
-    engine_r = re.compile(ENGINE_REGEX)
-    budget_r = re.compile(BUDGET_REGEX)
-    budget_r2 = re.compile(BUDGET_REGEX_2ND_FORMAT)
-    budget_r3 = re.compile(BUDGET_REGEX_3RD_FORMAT)
 
+    intervention_r = re.compile(INTERVENTION_REGEX)
     intervention_m = intervention_r.match(search_text)
     if intervention_m is not None:
         idstr = intervention_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('intervention:intervention-view', kwargs={"pk": id})}
 
+    budget_r = re.compile(BUDGET_REGEX)
     budget_m = budget_r.match(search_text)
     if budget_m is not None:
         idstr = budget_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
 
+    budget_r2 = re.compile(BUDGET_REGEX_2ND_FORMAT)
     budget_m = budget_r2.match(search_text)
     if budget_m is not None:
         idstr = budget_m.group()
         id = int(re.sub("[^0-9]", "", idstr)[2:])
         return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
 
+    budget_r3 = re.compile(BUDGET_REGEX_3RD_FORMAT)
     budget_m = budget_r3.match(search_text)
     if budget_m is not None:
         idstr = budget_m.group()
         id = int(re.sub("[^0-9]", "", idstr)[2:])
         return {"found": True, "url": reverse_lazy('budget:budget-view', kwargs={"pk": id})}
 
+    idegis_r = re.compile(IDEGIS_REGEX)
     idegis_m = idegis_r.match(search_text)
     if idegis_m is not None:
         idstr = idegis_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('repair:repair-idegis-view', kwargs={"pk": id})}
 
+    ath_r = re.compile(ATH_REGEX)
     ath_m = ath_r.match(search_text)
     if ath_m is not None:
         idstr = ath_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('repair:repair-ath-view', kwargs={"pk": id})}
 
+    client_r = re.compile(CLIENT_REGEX)
     client_m = client_r.match(search_text)
     if client_m is not None:
         idstr = client_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('client:client-view', kwargs={"pk": id})}
 
+    engine_r = re.compile(ENGINE_REGEX)
     engine_m = engine_r.match(search_text)
     if engine_m is not None:
         idstr = engine_m.group()

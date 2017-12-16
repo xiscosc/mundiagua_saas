@@ -18,7 +18,7 @@ class Client(models.Model):
     dni = models.CharField(max_length=45, null=True, blank=True, verbose_name="DNI/CIF")
 
     def __str__(self):
-        return self.name.encode('utf8')
+        return self.name
 
     def get_phones(self):
         return Phone.objects.filter(client=self)
@@ -37,7 +37,7 @@ class Phone(models.Model):
     client = models.ForeignKey(Client, related_name="phones")
 
     def __str__(self):
-        return (self.alias + " - " + self.phone).encode('utf8')
+        return (self.alias + " - " + self.phone)
 
 
 class Address(models.Model):
@@ -64,7 +64,7 @@ class Address(models.Model):
             return False
 
     def __str__(self):
-        return ("(" + self.alias + ") - " + self.address).encode('utf8')
+        return ("(" + self.alias + ") - " + self.address)
 
 
 class SMSStatus(models.Model):
