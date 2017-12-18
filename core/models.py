@@ -62,11 +62,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         # The user is identified by their email address
-        return (self.first_name + " " + self.last_name).encode('utf8')
+        return (self.first_name + " " + self.last_name)
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.first_name.encode('utf8')
+        return self.first_name
 
     def __str__(self):  # __unicode__ on Python 2
         return self.get_full_name()
@@ -75,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_superuser
 
     def has_pb(self):
-        if self.pb_token is None or self.pb_token is '':
+        if self.pb_token is None or self.pb_token is '' or self.pb_token is u"":
             return False
         else:
             return True
@@ -113,7 +113,7 @@ def post_save_message(sender, **kwargs):
         ins = kwargs['instance']
         ins.to_user.has_notification = 1
         ins.to_user.save()
-        body = ins.body+"\n\n"+ins.from_user.get_full_name().decode('utf-8')
+        body = ins.body+"\n\n"+ins.from_user.get_full_name()
         send_message.delay(ins.pk, body)
 
 

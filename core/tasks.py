@@ -9,7 +9,7 @@ from core.utils import send_data_to_user
 def send_message(pk, body):
     from core.models import Message
     ins = Message.objects.get(pk=pk)
-    result = send_data_to_user(ins.to_user, ins.subject, body)
+    result = send_data_to_user(ins.to_user, ins.subject, body, from_user=ins.from_user)
     if result:
         messages.success(ins.from_user, "Mensaje a " + ins.to_user.get_full_name() + " enviado correctamente")
     else:

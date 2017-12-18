@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.widgets import CheckboxSelectMultiple
 
-from models import Intervention, Zone
+from .models import Intervention, Zone
 
 
 class ImageForm(forms.Form):

@@ -283,7 +283,7 @@ class PublicClientView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PublicClientView, self).get_context_data(**kwargs)
-        online_id = kwargs['online'].encode(encoding='UTF-8')
+        online_id = kwargs['online']
         context['max_status'] = 7
 
         try:

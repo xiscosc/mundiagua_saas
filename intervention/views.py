@@ -22,7 +22,6 @@ from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, Ear
     InterventionModificationForm
 
 
-
 class HomeView(TemplateView):
     template_name = 'home_intervention.html'
 
@@ -42,8 +41,8 @@ class HomeView(TemplateView):
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
         context['status_billing'] = Intervention.objects.filter(status=5).count()
         context['modifications'] = InterventionModification.objects.all().order_by("-date")[:15]
-        context['months'] = [x for x in xrange(1, 13)]
-        context['years'] = [x for x in xrange(2014, date.today().year + 1)]
+        context['months'] = [x for x in range(1, 13)]
+        context['years'] = [x for x in range(2014, date.today().year + 1)]
         context['interventions'] = self.get_interventions()
         context['gmaps_api'] = settings.GMAPS_API_KEY
         context['zones'] = Zone.objects.all().order_by('pk')
