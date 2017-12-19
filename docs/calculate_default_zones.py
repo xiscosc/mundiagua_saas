@@ -5,7 +5,7 @@ from itertools import groupby
 saved = 0
 for client in Client.objects.all():
     for add in client.get_addresses():
-        interventions = Intervention.objects.filter(address=add)
+        interventions = Intervention.objects.filter(address=add).exclude(zone_id=9)
         if len(interventions) > 0:
             zones = []
             for i in interventions:
