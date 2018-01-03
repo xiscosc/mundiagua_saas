@@ -238,6 +238,7 @@ NON_STAFF_VIEWS = ('message-new',
                    'intervention-prepare-download',
                    'intervention-view-document',
                    'intervention-forbidden',
+                   'intervention-remove-file',
                    'client-address-edit-geo',
                    'home',
                    'logout',
@@ -262,7 +263,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.4.5"
 APP_VERSION_INCLUDES = 643
-APP_COMPLETE_VERSION = "6.4.5.REV1-20180102-PY3"
+APP_COMPLETE_VERSION = "6.4.5.REV2-20180103-PY3"
 
 LOGIN_REDIRECT_URL = "/"
 
