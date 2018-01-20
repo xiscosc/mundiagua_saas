@@ -14,11 +14,11 @@ $('.btn-sms').on('click', function () {
     } catch (err) {
     }
     try {
-       $('#from_model').val(from_model_val);
-       $('#from_model_id').val(from_model_id_val);
+        $('#from_model').val(from_model_val);
+        $('#from_model_id').val(from_model_id_val);
     } catch (err) {
-       $('#from_model').remove();
-       $('#from_model_id').remove();
+        $('#from_model').remove();
+        $('#from_model_id').remove();
     }
 
     $('#phone_pk').val($(this).data('phone'));
@@ -46,4 +46,16 @@ $('.btn-email').on('click', function () {
         console.log(err);
     }
     $('#modal_mail').modal('show');
+});
+
+$(function () {
+    $('.whatsapp-pc').each(function (index) {
+        $(this).popover({
+            html: true,
+            content: "El envío de mensajes por <strong>WhatsApp</strong> sólo esta disponible para móviles, " +
+            "<strong>próximamente</strong> lo estará para PC",
+            trigger: 'focus',
+            placement: 'left'
+        });
+    });
 });

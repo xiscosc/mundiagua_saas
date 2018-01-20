@@ -232,8 +232,20 @@
                                     {% endif %}
                                     {% if sms %}
                                         <button class="btn btn-primary btn-circle btn-circle-inline btn-sms"
-                                                data-phone="{{ phone.pk }}">SMS
+                                                data-phone="{{ phone.pk }}"><strong>SMS</strong>
                                         </button>
+                                    {% endif %}
+                                    {% if request.user_agent.is_mobile %}
+                                        <a class="btn btn-success btn-circle btn-circle-inline"
+                                           href="https://api.whatsapp.com/send?phone=
+                                               {{ phone.international_code }}{{ phone.phone }}" target="_blank">
+                                            <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
+                                        </a>
+                                    {% else %}
+                                        <a class="btn btn-success btn-circle btn-circle-inline whatsapp-pc"
+                                           tabindex="0">
+                                            <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
+                                        </a>
                                     {% endif %}
                                 </div>
                             </td>
