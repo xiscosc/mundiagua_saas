@@ -2,6 +2,7 @@ from client.models import Client
 from intervention.models import Intervention
 from itertools import groupby
 
+Client.objects.filter(address__pk=None).delete()
 saved = 0
 for client in Client.objects.all():
     for add in client.get_addresses():
@@ -22,4 +23,3 @@ for client in Client.objects.all():
 
 print("UPDATED: " + str(saved))
 
-Client.objects.filter(address__pk=None).delete()

@@ -5,7 +5,12 @@
 {% block title %}Página no encontrada{% endblock %}
 {% block content %}
 
-<div class="alert alert-danger">
-    <h5>No se ha encontrado la página solicitada</h5>
-</div>
+    <div class="alert alert-warning">
+        <a class="close" data-dismiss="alert">×</a>
+        <p>No se ha encontrado la página solicitada, puede ser que el elemento haya sido borrado, si los problemas
+            persisten contacte con el administrador</p>
+    </div>
+
+    <a href="javascript:history.back()" class="btn btn-lg btn-primary btn-block">Volver
+    </a>
 {% endblock %}
