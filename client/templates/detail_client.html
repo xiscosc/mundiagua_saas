@@ -4,6 +4,20 @@
 {% block page_title %}{{ client.name }}{% endblock %}
 {% block content %}
 
+    <div class="row row-new-instance animated fadeInLeft">
+        <div class="col-md-12">
+            <a href="{% url 'intervention:intervention-new' client.pk %}" class="btn btn-danger"><i
+                            class="fa fa-plus"></i> Crear Avería</a>
+            <a href="{% url 'repair:repair-ath-new' client.pk %}" class="btn btn-primary"><i
+                            class="fa fa-plus"></i> Crear Reparación ATH</a>
+            <a href="{% url 'repair:repair-idegis-new' client.pk %}" class="btn btn-default"><i
+                            class="fa fa-plus"></i> Crear Reparación Idegis</a>
+            <a href="{% url 'budget:budget-new' client.pk %}" class="btn btn-info"><i
+                            class="fa fa-plus"></i> Crear  Presupuesto</a>
+            <a href="{% url 'engine:engine-new' client.pk %}" class="btn btn-success"><i
+                            class="fa fa-plus"></i> Crear Reparación de motor</a>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">

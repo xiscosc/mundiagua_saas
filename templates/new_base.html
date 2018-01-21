@@ -6,9 +6,9 @@
 {% block content %}
 
     {% if is_budget_repair %}
-        {% include 'client_data.html' with client=repair.address.client address=repair.address %}
+        {% include 'client_data.html' with client=repair.address.client address=repair.address creating_new_instance=1 %}
     {% else %}
-        {% include 'client_data.html' with client=client %}
+        {% include 'client_data.html' with client=client creating_new_instance=1 %}
     {% endif %}
 
     <div class="row">

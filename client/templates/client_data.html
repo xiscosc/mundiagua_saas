@@ -85,9 +85,11 @@
     <div class="panel-heading">Datos del cliente
         {% if request.user.is_officer %}
             <div class="pull-right">
-                <button class="btn btn-xs btn-danger btn-email btn-circle btn-circle-inline"><i
-                        class="fa fa-envelope"></i>
-                </button>
+                {% if not creating_new_instance %}
+                    <button class="btn btn-xs btn-info btn-email btn-circle btn-circle-inline"><i
+                            class="fa fa-envelope"></i>
+                    </button>
+                {% endif %}
                 <a class="btn btn-xs btn-default btn-circle btn-circle-inline"
                    href="{% url 'client:client-view' client.pk %}"><i
                         class="fa fa-edit"></i> </a>
@@ -103,20 +105,10 @@
             {% if edit %}
                 <a class="btn btn-warning btn-circle" href="{% url 'client:client-edit' client.pk %}"><i
                         class="fa fa-edit"></i></a>
-                <!-- Single button -->
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle btn-circle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><i
-                            class="fa fa-plus"></i>
+                <button class="btn btn-xs btn-info btn-email btn-circle"><i
+                            class="fa fa-envelope"></i>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="{% url 'intervention:intervention-new' client.pk %}">Avería</a></li>
-                        <li><a href="{% url 'repair:repair-ath-new' client.pk %}">Reparación ATH</a></li>
-                        <li><a href="{% url 'repair:repair-idegis-new' client.pk %}">Reparación Idegis</a></li>
-                        <li><a href="{% url 'budget:budget-new' client.pk %}">Presupuesto</a></li>
-                        <li><a href="{% url 'engine:engine-new' client.pk %}">Reparación de motor</a></li>
-                    </ul>
-                </div>
+
             {% endif %}
         </h3>
         <table class="table table-bordered table-hover table-striped">
@@ -235,17 +227,20 @@
                                                 data-phone="{{ phone.pk }}"><strong>SMS</strong>
                                         </button>
                                     {% endif %}
-                                    {% if request.user_agent.is_mobile %}
-                                        <a class="btn btn-success btn-circle btn-circle-inline"
-                                           href="https://api.whatsapp.com/send?phone=
-                                               {{ phone.international_code }}{{ phone.phone }}" target="_blank">
-                                            <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
-                                        </a>
-                                    {% else %}
-                                        <a class="btn btn-success btn-circle btn-circle-inline whatsapp-pc"
-                                           tabindex="0">
-                                            <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
-                                        </a>
+                                    <!-- WhatsApp Buttons -->
+                                    {% if not creating_new_instance %}
+                                        {% if request.user_agent.is_mobile %}
+                                            <a class="btn btn-success btn-circle btn-circle-inline"
+                                               href="https://api.whatsapp.com/send?phone=
+                                                   {{ phone.international_code }}{{ phone.phone }}" target="_blank">
+                                                <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-success btn-circle btn-circle-inline whatsapp-pc"
+                                               tabindex="0">
+                                                <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </td>
