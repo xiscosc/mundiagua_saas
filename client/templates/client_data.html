@@ -231,8 +231,7 @@
                                     {% if not creating_new_instance %}
                                         
                                             <a class="btn btn-success btn-circle btn-circle-inline"
-                                               href="https://api.whatsapp.com/send?phone=
-                                                   {{ phone.international_code }}{{ phone.phone }}" target="_blank">
+                                               href="https://api.whatsapp.com/send?phone={{ phone.international_code }}{{ phone.phone }}" target="_blank">
                                                 <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
                                             </a>
                                        
