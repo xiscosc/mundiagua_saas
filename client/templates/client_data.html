@@ -103,11 +103,28 @@
     <div class="col-md-7">
         <h3>Datos personales
             {% if edit %}
+
+                {% if not request.user_agent.is_pc %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-circle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"><i
+                                class="fa fa-plus"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'intervention:intervention-new' client.pk %}">Avería</a></li>
+                            <li><a href="{% url 'repair:repair-ath-new' client.pk %}">Reparación ATH</a></li>
+                            <li><a href="{% url 'repair:repair-idegis-new' client.pk %}">Reparación Idegis</a></li>
+                            <li><a href="{% url 'budget:budget-new' client.pk %}">Presupuesto</a></li>
+                            <li><a href="{% url 'engine:engine-new' client.pk %}">Reparación de motor</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+
                 <a class="btn btn-warning btn-circle" href="{% url 'client:client-edit' client.pk %}"><i
                         class="fa fa-edit"></i></a>
                 <button class="btn btn-xs btn-info btn-email btn-circle"><i
-                            class="fa fa-envelope"></i>
-                    </button>
+                        class="fa fa-envelope"></i>
+                </button>
 
             {% endif %}
         </h3>
@@ -229,12 +246,13 @@
                                     {% endif %}
                                     <!-- WhatsApp Buttons -->
                                     {% if not creating_new_instance %}
-                                        
-                                            <a class="btn btn-success btn-circle btn-circle-inline"
-                                               href="https://api.whatsapp.com/send?phone={{ phone.international_code }}{{ phone.phone }}" target="_blank">
-                                                <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
-                                            </a>
-                                       
+
+                                        <a class="btn btn-success btn-circle btn-circle-inline"
+                                           href="https://api.whatsapp.com/send?phone=
+                                                   {{ phone.international_code }}{{ phone.phone }}" target="_blank">
+                                            <i class="fa fa-2x fa-whatsapp whatsapp-logo"></i>
+                                        </a>
+
                                     {% endif %}
                                 </div>
                             </td>

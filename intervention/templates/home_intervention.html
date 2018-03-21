@@ -95,24 +95,26 @@
 
                     <div style="display: inline"><strong id="label_chart">(Mes actual)</strong></div>
 
-                    <div class="pull-right graphic-data-selector">
-                        <select id="month_chart" class="form-control">
-                            {% for m in months %}
-                                <option value="{{ m }}">{{ m }}</option>
-                            {% endfor %}
-                        </select>
+                    {% if request.user_agent.is_pc %}
+                        <div class="pull-right graphic-data-selector">
+                            <select id="month_chart" class="form-control">
+                                {% for m in months %}
+                                    <option value="{{ m }}">{{ m }}</option>
+                                {% endfor %}
+                            </select>
 
-                        <select id="year_chart" class="form-control year-selector">
-                            {% for y in years %}
-                                <option value="{{ y }}">{{ y }}</option>
-                            {% endfor %}
-                        </select>
+                            <select id="year_chart" class="form-control year-selector">
+                                {% for y in years %}
+                                    <option value="{{ y }}">{{ y }}</option>
+                                {% endfor %}
+                            </select>
 
-                        <button class="btn btn-xs btn-warning"
-                                id="btn_change_chart"><i
-                                class="glyphicon glyphicon-record"></i>
-                        </button>
-                    </div>
+                            <button class="btn btn-xs btn-warning"
+                                    id="btn_change_chart"><i
+                                    class="glyphicon glyphicon-record"></i>
+                            </button>
+                        </div>
+                    {% endif %}
 
                 </div>
                 <!-- /.panel-heading -->

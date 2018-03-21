@@ -3,7 +3,7 @@
 {% load bootstrap %}
 {% block page_title %}{{ client.name }}{% endblock %}
 {% block content %}
-
+    {% if request.user_agent.is_pc %}
     <div class="row row-new-instance animated fadeInLeft">
         <div class="col-md-12">
             <a href="{% url 'intervention:intervention-new' client.pk %}" class="btn btn-danger"><i
@@ -18,6 +18,8 @@
                             class="fa fa-plus"></i> Crear Reparación de motor</a>
         </div>
     </div>
+
+    {% endif %}
 
     <div class="row">
         <div class="col-md-12">
