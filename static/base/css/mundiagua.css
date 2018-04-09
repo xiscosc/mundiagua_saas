@@ -22,14 +22,6 @@
     height:35px;
 }
 
-.login-panel{
-   margin-top: 8% !important;
-}
-
-.row-login {
-    margin-top: 15%;
-}
-
 @media screen and (min-width: 769px) {
     .btn-mobile-list-intervention {
         display: none;
@@ -119,30 +111,10 @@
     border: 0px !important;
 }
 
-.login-link {
-    text-align: center;
-    padding-top: 15px;
-}
 
 .google-logo {
     height: 21px;
     display: inline;
-}
-
-.g-signin2{
-  width: 100%;
-    margin-top: 5px;
-}
-
-.g-signin2 > div{
-  margin: 0 auto;
-}
-
-.google-gif {
-    height: 80px;
-    display: none;
-    margin: auto;
-
 }
 
 .graphic-data-selector {
