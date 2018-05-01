@@ -40,20 +40,6 @@
 
     <meta name="theme-color" content="#bce8f1"/>
 
-    {% if request.user_agent.is_pc %}
-        {% template_number as tn %}
-        {% with 'base/img/login/'|add:tn|add:'.jpg' as bg_file %}
-            <!-- <style type="text/css">
-                body {
-                    background: url('{% static bg_file %}{% app_version_includes %}') no-repeat center center fixed;
-                    -webkit-background-size: cover;
-                    -moz-background-size: cover;
-                    -o-background-size: cover;
-                    background-size: cover;
-                }
-            </style> -->
-        {% endwith %}
-    {% endif %}
 </head>
 
 <body>
@@ -73,7 +59,7 @@
                 <div class="panel-body login-panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <img src="{% static 'base/img/logo_black.png' %}" class="img-responsive"/>
+                            <img src="{% static 'base/img/logo_blue.png' %}{% app_version_includes %}" class="img-responsive"/>
                         </div>
                     </div>
                     {% block content %} {% endblock %}
