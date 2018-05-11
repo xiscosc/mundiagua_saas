@@ -3,7 +3,7 @@ from datetime import date
 
 import os
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404, HttpResponse, HttpResponseForbidden
 from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator

@@ -2,7 +2,7 @@
 from async_messages import message_user, constants, messages
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, View, UpdateView

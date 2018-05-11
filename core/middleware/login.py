@@ -1,9 +1,10 @@
 from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 import re
 
 
-class EnforceLoginMiddleware(object):
+class EnforceLoginMiddleware(MiddlewareMixin):
     """
     Middlware class which requires the user to be authenticated for all urls except
     those defined in PUBLIC_URLS in settings.py. PUBLIC_URLS should be a tuple of regular
@@ -15,7 +16,7 @@ class EnforceLoginMiddleware(object):
     validation on these set SERVE_STATIC_TO_PUBLIC to False.
     """
 
-    def __init__(self):
+    def __init__(self, get_response=None):
         self.login_url = getattr(settings, 'LOGIN_URL', '/accounts/login/')
         if hasattr(settings, 'PUBLIC_URLS'):
             public_urls = [re.compile(url) for url in settings.PUBLIC_URLS]
@@ -28,13 +29,14 @@ class EnforceLoginMiddleware(object):
                                 if url.__dict__.get('_callback_str') == 'django.views.static.serve'
                                 ])
         self.public_urls = tuple(public_urls)
+        super().__init__(get_response)
 
     def process_request(self, request):
         """
         Redirect anonymous users to login_url from non public urls
         """
         try:
-            if request.user.is_anonymous():
+            if request.user.is_anonymous:
                 for url in self.public_urls:
                     if url.match(request.path[1:]):
                         return None

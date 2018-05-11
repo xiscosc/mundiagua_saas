@@ -1,18 +1,14 @@
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.conf import settings
-
-# Create your views here.
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
-
 from oauth2client import client
-
 from client.models import Client, Address
 from core.models import User, Message
 from core.utils import get_return_from_id, has_to_change_password
@@ -72,8 +68,7 @@ class CreateBaseView(CreateView):
 class IndexView(View):
 
     def dispatch(self, request, *args, **kwargs):
-
-        if request.user.is_authenticated() and request.user.is_active:
+        if request.user.is_authenticated and request.user.is_active:
             if not request.user.is_google and has_to_change_password(request.user.last_password_update) is True:
                 response = 'password-change'
             else:
@@ -83,7 +78,6 @@ class IndexView(View):
                     response = 'intervention:intervention-list-own'
         else:
             response = 'login'
-
         return HttpResponseRedirect(reverse_lazy(response))
 
 
@@ -243,7 +237,7 @@ class LoginPasswordView(LoginView):
 
     def dispatch(self, request, *args, **kwargs):
 
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             next = request.GET.get('next', "/")
             return HttpResponseRedirect(next)
         else:

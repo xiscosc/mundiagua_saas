@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
 from operator import attrgetter
-
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
-
 from client.models import Client, Address, Phone, SMS
 from core.views import PreSearchView
 from engine.models import EngineRepair
@@ -17,7 +15,6 @@ from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import BudgetStandard, BudgetRepair
 from core.tasks import send_mail_client
-
 from async_messages import messages
 
 

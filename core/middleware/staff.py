@@ -1,25 +1,22 @@
 from django.http import HttpResponseForbidden
 from django.conf import settings
-from django.core.urlresolvers import resolve
+from django.urls import resolve
+from django.utils.deprecation import MiddlewareMixin
 
 
-class StaffMiddleware(object):
+class StaffMiddleware(MiddlewareMixin):
     """
     Middlware for control staff urls
     """
-
-    def __init__(self):
-        if hasattr(settings, 'NON_STAFF_VIEWS'):
-            non_staff_urls = settings.NON_STAFF_VIEWS
-        else:
-            non_staff_urls = []
-        self.non_staff_urls = tuple(non_staff_urls)
-
     def process_request(self, request):
         """
         Ban non staff users in staff urls
         """
-        if request.user.is_authenticated() and not request.user.is_officer:
-            current_url = resolve(request.path_info).url_name
-            if current_url not in self.non_staff_urls:
+        if request.user.is_authenticated and not request.user.is_officer:
+            if hasattr(settings, 'NON_STAFF_VIEWS'):
+                non_staff_urls = settings.NON_STAFF_VIEWS
+                current_url = resolve(request.path_info).url_name
+                if current_url not in non_staff_urls:
+                    return HttpResponseForbidden()
+            else:
                 return HttpResponseForbidden()

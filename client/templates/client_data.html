@@ -221,16 +221,10 @@
                             <td class="td-phone"><strong style="max-width: 50%">{{ phone.alias }}</strong></td>
                             <td class="td-phone">
                                 <div class="pull-right" style="display: inline-flex">
-                                    {% if phone.international_code == "34" %}
-                                        <a class="btn btn-default btn-circle-inline"
-                                           href="tel:{{ phone.phone }}"><i class="fa fa-phone"></i> {{ phone.phone }}
-                                        </a>
-                                    {% else %}
-                                        <a class="btn btn-default btn-circle-inline"
-                                           href="tel:00{{ phone.international_code }}{{ phone.phone }}"><i
-                                                class="fa fa-globe"></i>
-                                            +{{ phone.international_code }} {{ phone.phone }}</a>
-                                    {% endif %}
+                                    <a class="btn btn-default btn-circle-inline"
+                                       href="tel:+{{ phone.international_code }}{{ phone.phone }}"><i class="fa fa-phone"></i>
+                                        {% if phone.international_code != "34" %}+{{ phone.international_code }}{% endif %} {{ phone.phone }}
+                                    </a>
                                     {% if edit %}
                                         <a class="btn btn-block btn-warning btn-circle btn-circle-inline"
                                            href="{% url 'client:client-phone-edit' phone.pk %}"><i

@@ -3,9 +3,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.db.models.signals import post_save
-
-from async_messages import messages
-
 from client.tasks import send_sms
 from core.models import User
 from core.utils import create_amazon_client
@@ -34,7 +31,7 @@ class Phone(models.Model):
     alias = models.CharField(max_length=45)
     international_code = models.CharField(max_length=10, default=34, verbose_name="Código país")
     phone = models.CharField(max_length=45, verbose_name="Teléfono")
-    client = models.ForeignKey(Client, related_name="phones")
+    client = models.ForeignKey(Client, related_name="phones", on_delete=models.CASCADE)
 
     def __str__(self):
         return (self.alias + " - " + self.phone)
@@ -43,10 +40,10 @@ class Phone(models.Model):
 class Address(models.Model):
     alias = models.CharField(max_length=45)
     address = models.TextField(verbose_name="Dirección")
-    client = models.ForeignKey(Client)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     latitude = models.CharField(max_length=45, null=True, blank=True)
     longitude = models.CharField(max_length=45, null=True, blank=True)
-    default_zone = models.ForeignKey('intervention.Zone', null=True)
+    default_zone = models.ForeignKey('intervention.Zone', null=True, on_delete=models.CASCADE)
 
     def get_url_gmaps(self):
 
@@ -64,7 +61,7 @@ class Address(models.Model):
             return False
 
     def __str__(self):
-        return ("(" + self.alias + ") - " + self.address)
+        return "(" + self.alias + ") - " + self.address
 
 
 class SMSStatus(models.Model):
@@ -76,10 +73,10 @@ class SMSStatus(models.Model):
 
 class SMS(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    sender = models.ForeignKey(User)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField(max_length=160)
-    sent_status = models.ForeignKey(SMSStatus, default=1)
-    phone = models.ForeignKey(Phone)
+    sent_status = models.ForeignKey(SMSStatus, default=1, on_delete=models.CASCADE)
+    phone = models.ForeignKey(Phone, on_delete=models.CASCADE)
 
     def process_phone(self):
         phone_processed = self.phone.phone.replace(" ", "")
@@ -112,7 +109,6 @@ class SMS(models.Model):
 
     def __str__(self):
         return self.date.__str__() + " - " + self.sender.__str__()
-
 
 
 def post_save_sms(sender, **kwargs):

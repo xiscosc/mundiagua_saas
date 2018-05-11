@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 
 import os
 
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db import models
 from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
-
 from client.models import SMS
 from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, ATH_REGEX, \
     IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, search_objects_in_text
@@ -79,12 +78,12 @@ class Tag(InterventionInfo):
 
 class Intervention(models.Model):
     description = models.TextField(verbose_name="Descripción")
-    address = models.ForeignKey('client.Address', verbose_name="Dirección")
+    address = models.ForeignKey('client.Address', verbose_name="Dirección", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    zone = models.ForeignKey(Zone, default=1, verbose_name="Zona")
-    status = models.ForeignKey(InterventionStatus, default=1)
-    created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
-    assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
+    zone = models.ForeignKey(Zone, default=1, verbose_name="Zona", on_delete=models.CASCADE)
+    status = models.ForeignKey(InterventionStatus, default=1, on_delete=models.CASCADE)
+    created_by = models.ForeignKey('core.User', related_name='%(class)s_by', on_delete=models.CASCADE)
+    assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned', on_delete=models.CASCADE)
     note = models.TextField(null=True)
     sms = models.ManyToManyField(SMS)
     starred = models.BooleanField(default=False)
@@ -144,28 +143,28 @@ class Intervention(models.Model):
 class InterventionModification(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     note = models.TextField(null=True)
-    created_by = models.ForeignKey('core.User')
-    intervention = models.ForeignKey(Intervention)
+    created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
+    intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
 
 class InterventionLog(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('core.User', related_name='%(class)s_by')
-    assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned')
-    status = models.ForeignKey(InterventionStatus)
-    intervention = models.ForeignKey(Intervention)
+    created_by = models.ForeignKey('core.User', related_name='%(class)s_by', on_delete=models.CASCADE)
+    assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned', on_delete=models.CASCADE)
+    status = models.ForeignKey(InterventionStatus, on_delete=models.CASCADE)
+    intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
 
 class InterventionLogSub(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('core.User')
-    sub_status = models.ForeignKey(InterventionSubStatus)
-    intervention = models.ForeignKey(Intervention)
+    created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
+    sub_status = models.ForeignKey(InterventionSubStatus, on_delete=models.CASCADE)
+    intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
 
 class InterventionFile(models.Model):
-    intervention = models.ForeignKey(Intervention)
-    user = models.ForeignKey('core.User')
+    intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
+    user = models.ForeignKey('core.User', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     in_s3 = models.BooleanField(default=False)
     s3_key = models.CharField(max_length=20, default="no_key")

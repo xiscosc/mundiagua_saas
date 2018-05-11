@@ -9,7 +9,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from pushbullet import Pushbullet
 from pytz import timezone
 

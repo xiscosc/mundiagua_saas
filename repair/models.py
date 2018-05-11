@@ -21,15 +21,15 @@ class RepairStatus(models.Model):
 
 class Repair(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente")
-    created_by = models.ForeignKey('core.User')
-    status = models.ForeignKey(RepairStatus, default=1)
+    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente", on_delete=models.CASCADE)
+    created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
+    status = models.ForeignKey(RepairStatus, default=1, on_delete=models.CASCADE)
     online_id = models.CharField(max_length=25, null=True)
     model = models.CharField(max_length=100, null=True, blank=True, verbose_name="Modelo")
     year = models.CharField(max_length=25, null=True, blank=True, verbose_name="Año")
     serial_number = models.CharField(max_length=100, null=True, blank=True, verbose_name="Número de serie")
     notice_maker_number = models.CharField(max_length=50, null=True, blank=True, verbose_name="Nº Aviso del fabricante")
-    budget = models.ForeignKey('budget.BudgetStandard', null=True)
+    budget = models.ForeignKey('budget.BudgetStandard', null=True, on_delete=models.CASCADE)
     description = models.TextField(verbose_name="Descripción")
     intern_description = models.TextField(null=True, blank=True, verbose_name="Descripción interna")
     warranty = models.BooleanField(default=False, verbose_name="Garantía")
@@ -72,7 +72,7 @@ class IdegisRepair(Repair):
 
 class RepairLog(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    status = models.ForeignKey(RepairStatus)
+    status = models.ForeignKey(RepairStatus, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -82,11 +82,11 @@ class RepairLog(models.Model):
 
 
 class AthRepairLog(RepairLog):
-    repair = models.ForeignKey(AthRepair)
+    repair = models.ForeignKey(AthRepair, on_delete=models.CASCADE)
 
 
 class IdegisRepairLog(RepairLog):
-    repair = models.ForeignKey(IdegisRepair)
+    repair = models.ForeignKey(IdegisRepair, on_delete=models.CASCADE)
 
 
 # SIGNALS
