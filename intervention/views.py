@@ -3,7 +3,7 @@ from datetime import date
 
 import os
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse, Http404, HttpResponse, HttpResponseForbidden
 from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator
@@ -114,7 +114,7 @@ class EditInterventionView(UpdateView):
     template_name = 'edit_intervention.html'
 
     def get_form_class(self):
-        if self.object.is_early_modificalbe():
+        if self.object.is_early_modifiable():
             return EarlyInterventionModificationForm
         else:
             return InterventionModificationForm

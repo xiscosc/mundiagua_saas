@@ -46,8 +46,9 @@ OTHER_APPS = [
     'hijack',
     'compat',
     'hijack_admin',
-    'admin_honeypot',
+    #'admin_honeypot',
     'easy_thumbnails',
+    'debug_toolbar'
 ]
 
 MY_APPS = [
@@ -71,19 +72,20 @@ BOWER_INSTALLED_APPS = (
     'animate.css',
 )
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'async_messages.middleware.AsyncMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.login.EnforceLoginMiddleware',
     'core.middleware.staff.StaffMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 PUBLIC_URLS = (
@@ -261,9 +263,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.4.8"
-APP_VERSION_INCLUDES = 6480
-APP_COMPLETE_VERSION = "6.4.8.REV1-20180502-PY3"
+APP_VERSION = "6.4.9"
+APP_VERSION_INCLUDES = 6490
+APP_COMPLETE_VERSION = "6.4.9.RV0-DJ2PY3"
 
 LOGIN_REDIRECT_URL = "/"
 

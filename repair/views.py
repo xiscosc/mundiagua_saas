@@ -5,7 +5,7 @@ from operator import attrgetter
 from async_messages import messages
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, View

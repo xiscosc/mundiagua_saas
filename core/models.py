@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 from datetime import date
 
-
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -13,14 +12,13 @@ from core.utils import has_to_change_password
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, pb_token=None, password=None):
-
         if not email or not first_name or not last_name:
             raise ValueError('Users must have an email address, username, full_name')
 
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
-            last_name= last_name,
+            last_name=last_name,
             pb_token=pb_token
         )
 
@@ -29,7 +27,6 @@ class MyUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email=None, first_name=None, last_name=None, pb_token=None, password=None):
-
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -55,7 +52,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
     is_google = models.BooleanField(default=False)
-
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -100,8 +96,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from')
-    to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to', verbose_name="Destinatario")
+    from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to', verbose_name="Destinatario",
+                                on_delete=models.CASCADE)
     subject = models.CharField(max_length=200, blank=False, verbose_name="Asunto")
     body = models.TextField(blank=False, verbose_name="Cuerpo del mensaje")
 
@@ -113,7 +110,7 @@ def post_save_message(sender, **kwargs):
         ins = kwargs['instance']
         ins.to_user.has_notification = 1
         ins.to_user.save()
-        body = ins.body+"\n\n"+ins.from_user.get_full_name()
+        body = ins.body + "\n\n" + ins.from_user.get_full_name()
         send_message.delay(ins.pk, body)
 
 

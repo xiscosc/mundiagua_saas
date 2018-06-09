@@ -11,12 +11,12 @@ from intervention.models import Intervention
 
 class Budget(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('core.User')
+    created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
     introduction = models.TextField(verbose_name="Descripción")
     conditions = models.TextField(verbose_name="Condiciones",
                                   default="Para aceptar el presupuesto se tiene que devolver firmado.")
     tax = models.DecimalField(default=21.00, verbose_name="Impuesto", decimal_places=2, max_digits=5)
-    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente")
+    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente", on_delete=models.CASCADE)
     invalid = models.BooleanField(default=False, verbose_name="Nulo")
 
     class Meta:
@@ -59,8 +59,8 @@ class BudgetStandard(Budget):
 
 
 class BudgetRepair(Budget):
-    idegis_repair = models.ForeignKey('repair.IdegisRepair', null=True)
-    ath_repair = models.ForeignKey('repair.AthRepair', null=True)
+    idegis_repair = models.ForeignKey('repair.IdegisRepair', null=True, on_delete=models.CASCADE)
+    ath_repair = models.ForeignKey('repair.AthRepair', null=True, on_delete=models.CASCADE)
     intern_id = models.IntegerField(default=1)
 
     def get_repair(self):
@@ -96,11 +96,11 @@ class BudgetLine(models.Model):
 
 
 class BudgetLineStandard(BudgetLine):
-    budget = models.ForeignKey(BudgetStandard)
+    budget = models.ForeignKey(BudgetStandard, on_delete=models.CASCADE)
 
 
 class BudgetLineRepair(BudgetLine):
-    budget = models.ForeignKey(BudgetRepair)
+    budget = models.ForeignKey(BudgetRepair, on_delete=models.CASCADE)
 
 
 def link_to_intervention(instance):

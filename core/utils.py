@@ -9,7 +9,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from pushbullet import Pushbullet
 from pytz import timezone
 
@@ -56,9 +56,11 @@ def send_mail_m(user, subject, body, is_link=False, fallback=False, from_user=No
         from_email = "intranet@mundiaguabalear.com"
     else:
         from_email = from_user.email
-
-    return send_mail(subject=subject, message=ex_body + body,
+    try:
+        return send_mail(subject=subject, message=ex_body + body,
                      from_email=from_email, recipient_list=[user.email])
+    except:
+        return False
 
 
 def get_return_from_id(search_text):

@@ -17,13 +17,13 @@ class EngineStatus(models.Model):
 
 class EngineRepair(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente")
-    created_by = models.ForeignKey('core.User')
-    status = models.ForeignKey(EngineStatus, default=1)
+    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente", on_delete=models.CASCADE)
+    created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
+    status = models.ForeignKey(EngineStatus, default=1, on_delete=models.CASCADE)
     model = models.CharField(max_length=100, null=True, blank=True, verbose_name="Modelo")
     year = models.CharField(max_length=25, null=True, blank=True, verbose_name="Año")
     serial_number = models.CharField(max_length=100, null=True, blank=True, verbose_name="Número de serie")
-    budget = models.ForeignKey('budget.BudgetStandard', null=True)
+    budget = models.ForeignKey('budget.BudgetStandard', null=True, on_delete=models.CASCADE)
     description = models.TextField(verbose_name="Descripción")
     technical_service = models.CharField(max_length=125, verbose_name="Servicio técnico", null=True, blank=True)
     intern_description = models.TextField(null=True, blank=True, verbose_name="Descripción interna")
@@ -35,9 +35,9 @@ class EngineRepair(models.Model):
 
 
 class EngineRepairLog(models.Model):
-    repair = models.ForeignKey(EngineRepair)
+    repair = models.ForeignKey(EngineRepair, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    status = models.ForeignKey(EngineStatus)
+    status = models.ForeignKey(EngineStatus, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.date.astimezone(get_time_zone()).strftime("%d-%m-%Y %H:%M") + " - " + str(self.status)
