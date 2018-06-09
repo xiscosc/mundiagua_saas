@@ -114,7 +114,7 @@ class EditInterventionView(UpdateView):
     template_name = 'edit_intervention.html'
 
     def get_form_class(self):
-        if self.object.is_early_modificalbe():
+        if self.object.is_early_modifiable():
             return EarlyInterventionModificationForm
         else:
             return InterventionModificationForm

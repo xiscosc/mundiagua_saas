@@ -109,7 +109,7 @@ class Intervention(models.Model):
         return send_data_to_user(is_link=True, body=self.generate_url(), user=user,
                                  subject=str(self) + " - " + self.address.client.name)
 
-    def get_num_modifications(self):
+    def count_modifications(self):
         return InterventionModification.objects.filter(intervention=self).count()
 
     def get_images(self):
@@ -124,20 +124,25 @@ class Intervention(models.Model):
     def get_history_sub(self):
         return InterventionLogSub.objects.filter(intervention=self).order_by("date")
 
-    def is_early_modificalbe(self):
+    def is_early_modifiable(self):
         from datetime import datetime, timedelta
         diff = datetime.today() - self.date.replace(tzinfo=None)
-        if timedelta(hours=4) > diff:
-            return True
-        else:
-            return False
+        return timedelta(hours=4) > diff
+
+    def count_media(self):
+        return self.get_images().count() + self.get_documents().count()
 
     def has_media(self):
-        num = self.get_images().count() + self.get_documents().count()
-        if num > 0:
-            return True
-        else:
-            return False
+        return self.count_media() > 0
+
+    def count_links(self):
+        return self.repairs_ath.all().count() + self.repairs_idegis.all().count() + self.budgets.all().count()
+
+    def has_links(self):
+        return self.count_links() > 0
+
+    def has_modifications(self):
+        return self.count_modifications() > 0
 
 
 class InterventionModification(models.Model):

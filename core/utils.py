@@ -56,9 +56,11 @@ def send_mail_m(user, subject, body, is_link=False, fallback=False, from_user=No
         from_email = "intranet@mundiaguabalear.com"
     else:
         from_email = from_user.email
-
-    return send_mail(subject=subject, message=ex_body + body,
+    try:
+        return send_mail(subject=subject, message=ex_body + body,
                      from_email=from_email, recipient_list=[user.email])
+    except:
+        return False
 
 
 def get_return_from_id(search_text):
