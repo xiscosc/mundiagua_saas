@@ -24,3 +24,4 @@ django-user-agents
 oauth2client
 pyshorteners
 django-debug-toolbar
+django-tinymce
