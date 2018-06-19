@@ -10,7 +10,7 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from oauth2client import client
 from client.models import Client, Address
-from core.models import User, Message
+from core.models import User, Message, SystemVariable
 from core.utils import get_return_from_id, has_to_change_password
 from engine.models import EngineRepair
 
@@ -183,6 +183,15 @@ class ChangeLogView(TemplateView):
         context['memcache_version'] = memcache.__version__
         context['postgre_version_c'] = psycopg2.__version__
         context['postgre_version'] = psycopg2.__libpq_version__
+        return context
+
+
+class SystemVariableView(TemplateView):
+    template_name = "system_variables.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SystemVariableView, self).get_context_data(**kwargs)
+        context['variables'] = SystemVariable.objects.all().order_by('type')
         return context
 
 

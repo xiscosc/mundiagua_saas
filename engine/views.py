@@ -8,6 +8,7 @@ from django.http.response import HttpResponseRedirect
 from django.views.generic import UpdateView
 from django.views.generic.base import View, TemplateView
 
+from core.models import SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair, EngineStatus, EngineRepairLog
 
@@ -50,6 +51,11 @@ class EngineRepairView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(EngineRepairView, self).get_context_data(**kwargs)
         context['status'] = EngineStatus.objects.all().order_by("pk")
+        try:
+            sms_text = SystemVariable.objects.get(key='enginerepair_sms').get_value()
+            context['sms_value'] = sms_text.replace(':id', context.get('object').__str__())
+        except:
+            pass
         return context
 
     def form_valid(self, form):
@@ -76,6 +82,10 @@ class PrintEngineRepairView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PrintEngineRepairView, self).get_context_data(**kwargs)
         context['repair'] = EngineRepair.objects.get(pk=kwargs['pk'])
+        try:
+            context['repair_conditions'] = SystemVariable.objects.get(key='enginerepair_conditions').get_value()
+        except:
+            pass
         return context
 
 

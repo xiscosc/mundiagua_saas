@@ -55,17 +55,7 @@
         <table class="table" border="0">
             <tr>
                 <td>
-                    <ul style="font-size: 12px;">
-                        <li>De no recibirse autorización en el plazo de 20 días habrá un cargo de 25,00 € / mes por
-                            almacenaje.
-                        </li>
-                        <li>En el caso de no autorización, el cliente acepta la devolución del equipo sin montar.</li>
-                        <li>No nos responsabilizamos de los equipos que permanezcan mas de 4 meses en nuestras
-                            instalaciones a la espera de una respuesta del cliente.
-                        </li>
-                        <li>El horario de recepción y recogida de maquinaria es de <strong>8h a 16h</strong>.</li>
-                        <li>Con la firma del cliente acepta las condiciones expuestas en este documento.</li>
-                    </ul>
+                    {% autoescape off %}{{ repair_conditions }}{% endautoescape %}
                 </td>
             </tr>
         </table>

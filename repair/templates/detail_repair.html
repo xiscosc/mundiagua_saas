@@ -282,7 +282,7 @@
 {% endblock %}
 {% block extrajs %}
     <script type="application/javascript">
-        var default_sms = "Su reparación {{ repair }} se ha completado. Puede venir a recoger su producto de 8h a 16h";
+        var default_sms = "{{ sms_value }}";
         var from_model_val = {% if repair.is_ath %}"repair-ath"{% else %}"repair-idegis"{% endif %};
         var default_subject = "Reparación completada";
         var from_model_id_val = {{ repair.pk }};

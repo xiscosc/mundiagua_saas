@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Variables del sistema{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Instrucciones</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Aquí se pueden personalizar los valores por defecto de SMS y condiciones de reparaciones</p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-bordered table-hover table-striped">
+                        <tbody>
+                        <tr>
+                            <th>Clave</th>
+                            <th>Descripción</th>
+                            <th>Valor</th>
+                            <th></th>
+                        </tr>
+
+                        {% for var in variables %}
+                            <tr>
+                                <td>
+                                   <strong><small>{{ var.key }}</small></strong>
+                                </td>
+                                <td>
+                                    {{ var.description }}
+                                </td>
+                                <td>
+                                    {% autoescape off %}{{ var.get_value }}{% endautoescape %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-default" disabled><i class="fa fa-pencil"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+        </div>
+    </div>
+
+
+    </form>
+{% endblock %}

@@ -71,24 +71,7 @@
         <table class="table" border="0">
             <tr>
                 <td>
-                    <ul style="font-size: 12px;">
-                        <li>Es imprescindible la entrega del presente documento para la retirada del equipo arriba
-                            descrito. El horario de recepción y recogida de maquinaria es de <strong>8h a 16h</strong>.
-                        </li>
-                        <li>Todas las reparaciones se realizarán previo presupuesto y cada presupuesto tendrá un coste
-                            de 22,00€ que deberá abonar el cliente. El importe de un presupuesto aceptado será
-                            descontado de la factura de reparación. En caso de no aceptación del presupuesto, el cliente
-                            acepta la devolución del equipo sin montar. Los equipos bajo periodo de garantía que no
-                            presenten avería en el producto tendrán un cargo
-                            de 22,00€. Se generarán cargos de 15.00€/mes desde la
-                            comunicación de presupuesto o comunicación de equipo ya reparado, en concepto de gastos de
-                            almacenaje.
-                        </li>
-                        <li>Mundiagua S.L no se responsabiliza de los equipos que permanezcan más de 4 meses en nuestras
-                            instalaciones a la espera de una respuesta o recogida del cliente.
-                        </li>
-                        <li>Con la firma del cliente acepta las condiciones expuestas en este documento.</li>
-                    </ul>
+                    {% autoescape off %}{{ repair_conditions }}{% endautoescape %}
                 </td>
             </tr>
         </table>

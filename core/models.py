@@ -6,6 +6,8 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.db.models.signals import post_save
 
+from tinymce import models as tinymce_models
+
 from core.tasks import send_message
 from core.utils import has_to_change_password
 
@@ -103,8 +105,26 @@ class Message(models.Model):
     body = models.TextField(blank=False, verbose_name="Cuerpo del mensaje")
 
 
-# SIGNALS
+class SystemVariable(models.Model):
+    type = models.CharField(max_length=15, blank=False, null=False)
+    key = models.CharField(max_length=25, blank=False, null=False, unique=True)
+    description = models.TextField(blank=True, null=True)
+    rich_text = models.BooleanField(default=False)
+    value = tinymce_models.HTMLField(blank=True, null=True)
+    plain_value = models.TextField(blank=True, null=True)
+    last_modified_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
 
+    def get_value(self):
+        if self.rich_text:
+            return self.value
+        else:
+            return self.plain_value
+
+    def __str__(self):  # __unicode__ on Python 2
+        return self.type + " - " + self.key
+
+
+# SIGNALS
 def post_save_message(sender, **kwargs):
     if kwargs['created']:
         ins = kwargs['instance']

@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, View
 
+from core.models import SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSearchView
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
@@ -67,6 +68,11 @@ class RepairView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(RepairView, self).get_context_data(**kwargs)
         context['status'] = RepairStatus.objects.all()
+        try:
+            sms_text = SystemVariable.objects.get(key='repair_sms').get_value()
+            context['sms_value'] = sms_text.replace(':id', context.get('object').__str__())
+        except:
+            pass
         return context
 
     def form_valid(self, form):
@@ -204,6 +210,10 @@ class PrintRepairView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PrintRepairView, self).get_context_data(**kwargs)
+        try:
+            context['repair_conditions'] = SystemVariable.objects.get(key='repair_conditions').get_value()
+        except:
+            pass
         if int(kwargs['type']) == 1:
             context['repair'] = AthRepair.objects.get(pk=kwargs['pk'])
         else:

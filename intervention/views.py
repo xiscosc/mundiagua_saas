@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from async_messages import messages
 
-from core.models import User
+from core.models import User, SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from core.utils import ATH_REGEX, IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
@@ -100,6 +100,10 @@ class InterventionView(DetailView):
         context['users'] = User.objects.filter(is_active=True).order_by('order_in_app')
         context['status'] = InterventionStatus.objects.all()
         context['sub_status'] = InterventionSubStatus.objects.all()
+        try:
+            context['sms_value'] = SystemVariable.objects.get(key='intervention_sms').get_value()
+        except:
+            pass
         return context
 
 

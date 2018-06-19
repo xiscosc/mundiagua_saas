@@ -48,7 +48,8 @@ OTHER_APPS = [
     'hijack_admin',
     #'admin_honeypot',
     'easy_thumbnails',
-    'debug_toolbar'
+    'debug_toolbar',
+    'tinymce',
 ]
 
 MY_APPS = [
@@ -263,9 +264,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.4.9"
-APP_VERSION_INCLUDES = 6490
-APP_COMPLETE_VERSION = "6.4.9.RV0-DJ2PY3"
+APP_VERSION = "6.4.10"
+APP_VERSION_INCLUDES = 64100
+APP_COMPLETE_VERSION = "6.4.10.0-DJ2PY3"
 
 LOGIN_REDIRECT_URL = "/"
 

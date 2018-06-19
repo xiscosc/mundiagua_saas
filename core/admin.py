@@ -4,9 +4,10 @@ import django.forms as forms
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from hijack_admin.admin import HijackUserAdminMixin
 
-from core.models import Message, User
+from core.models import Message, User, SystemVariable
 
 admin.site.register(Message)
+admin.site.register(SystemVariable)
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
