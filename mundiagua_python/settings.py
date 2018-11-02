@@ -264,9 +264,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.4.11"
-APP_VERSION_INCLUDES = 64100
-APP_COMPLETE_VERSION = "6.4.11.0-DJ2PY3"
+APP_VERSION = "6.5"
+APP_VERSION_INCLUDES = 6500
+APP_COMPLETE_VERSION = "6.5.0.0-DJ2PY3-WIP"
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -276,3 +276,32 @@ CACHE_TIME_CHART_INCOME = 25 * 60
 CACHE_TIME_TYPEAHEAD = 60 * 24 * 60
 CACHE_TIME_PHOTOS = 60 * 25
 CACHE_TIME_DOCUMENTS = 60 * 10
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'width': '100%',
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'selector': 'textarea',
+    'theme': 'modern',
+    'plugins': '''
+            textcolor save link preview codesample contextmenu
+            table lists  insertdatetime  nonbreaking
+            contextmenu directionality searchreplace wordcount visualblocks
+            visualchars autolink lists  charmap  hr
+            anchor pagebreak
+            ''',
+    'toolbar1': '''
+            preview bold italic underline | fontselect,
+            fontsizeselect  | forecolor backcolor | alignleft alignright |
+            aligncenter alignjustify | indent outdent | bullist numlist table |
+            | link | codesample |
+            ''',
+    'toolbar2': '''
+            visualblocks visualchars |
+            charmap hr pagebreak nonbreaking anchor |
+            ''',
+    'contextmenu': 'formats | link',
+    'menubar': True,
+    'statusbar': True,
+    }

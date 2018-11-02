@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Variables del sistema{% endblock %}
+{% block page_title %}{{ title }}
+    <a class="btn btn-success btn-file btn-circle pull-right" id="label_image" href="{% url newurl %}">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true" id="icon_image"/>
+    </a>
+</form>{% endblock %}
 {% block content %}
 
     <div class="row">
@@ -9,25 +13,25 @@
             <table class="table table-bordered table-hover table-striped">
                         <tbody>
                         <tr>
-                            <th>Clave</th>
+                            <th>Nombre</th>
                             <th>Descripción</th>
-                            <th>Valor</th>
+                            <th>Porcentaje</th>
                             <th></th>
                         </tr>
 
                         {% for var in variables %}
                             <tr>
                                 <td>
-                                   <strong><small>{{ var.key }}</small></strong>
+                                   <strong><small>{{ var.name }}</small></strong>
                                 </td>
                                 <td>
                                     {{ var.description }}
                                 </td>
                                 <td>
-                                    {% autoescape off %}{{ var.get_value }}{% endautoescape %}
+                                    {{ var.percentage }} %
                                 </td>
                                 <td>
-                                    <a class="btn btn-default" href="{% url 'core:variable-edit' var.pk %}"><i class="fa fa-pencil"></i></a>
+                                    <a class="btn btn-default" href="{% url editurl var.pk %}"><i class="fa fa-pencil"></i></a>
                                 </td>
                             </tr>
                         {% endfor %}

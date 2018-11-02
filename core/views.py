@@ -5,14 +5,16 @@ from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import TemplateView
 from django.views.generic.base import View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from oauth2client import client
 from client.models import Client, Address
+from core.forms import SystemVariableRichForm, SystemVariablePlainForm
 from core.models import User, Message, SystemVariable
 from core.utils import get_return_from_id, has_to_change_password
-from engine.models import EngineRepair
+from engine.models import EngineRepair, EngineStatus
+from repair.models import RepairStatus
 
 
 class SearchClientBaseView(TemplateView):
@@ -193,6 +195,70 @@ class SystemVariableView(TemplateView):
         context = super(SystemVariableView, self).get_context_data(**kwargs)
         context['variables'] = SystemVariable.objects.all().order_by('type')
         return context
+
+
+class RepairStatusSystemView(TemplateView):
+    template_name = "system_repair_status.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(RepairStatusSystemView, self).get_context_data(**kwargs)
+        context['variables'] = RepairStatus.objects.all().order_by('percentage')
+        context['title'] = 'Estados reparación Idegis & ATH'
+        context['newurl'] = 'core:repair-status-new'
+        context['editurl'] = 'core:repair-status-edit'
+        return context
+
+
+class EngineRepairStatusSystemView(TemplateView):
+    template_name = "system_repair_status.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(EngineRepairStatusSystemView, self).get_context_data(**kwargs)
+        context['variables'] = EngineStatus.objects.all().order_by('percentage')
+        context['title'] = 'Estados reparación de motores'
+        context['newurl'] = 'core:engine-repair-status-new'
+        context['editurl'] = 'core:engine-repair-status-edit'
+        return context
+
+
+class SystemVariableUpdateView(UpdateView):
+    model = SystemVariable
+    template_name = 'system_variable_edit.html'
+    success_url = reverse_lazy('core:system-variables')
+
+    def get_form_class(self):
+        if self.object.rich_text:
+            return SystemVariableRichForm
+        else:
+            return SystemVariablePlainForm
+
+
+class SystemRepairStatusUpdateView(UpdateView):
+    model = RepairStatus
+    template_name = 'system_repair_status_edit.html'
+    success_url = reverse_lazy('core:repair-status')
+    fields = '__all__'
+
+
+class SystemRepairStatusCreateView(CreateView):
+    model = RepairStatus
+    template_name = 'system_repair_status_edit.html'
+    success_url = reverse_lazy('core:repair-status')
+    fields = '__all__'
+
+
+class SystemEngineRepairStatusUpdateView(UpdateView):
+    model = EngineStatus
+    template_name = 'system_repair_status_edit.html'
+    success_url = reverse_lazy('core:engine-repair-status')
+    fields = '__all__'
+
+
+class SystemEngineRepairStatusCreateView(CreateView):
+    model = EngineStatus
+    template_name = 'system_repair_status_edit.html'
+    success_url = reverse_lazy('core:engine-repair-status')
+    fields = '__all__'
 
 
 class UserView(TemplateView):

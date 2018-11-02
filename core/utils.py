@@ -171,6 +171,11 @@ def search_objects_in_text(regex, text, trim=False):
     return ids
 
 
+def generate_telegram_auth(id, email):
+    key = str(id) + email
+    return hashlib.sha256(key.encode()).hexdigest()[:10]
+
+
 def format_filename(s):
     """Take a string and return a valid filename constructed from the string.
 Uses a whitelist approach: any characters not present in valid_chars are

@@ -6,8 +6,7 @@ from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
 from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
-    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, LoginRedirectView, \
-    SystemVariableView
+    GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, LoginRedirectView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -16,8 +15,7 @@ urlpatterns = [
     path('budget/', include(('budget.urls', 'budget'), namespace='budget')),
     path('repair/', include(('repair.urls', 'repair'), namespace='repair')),
     path('engine/', include(('engine.urls', 'engine'), namespace='engine')),
-    path('user/', UserView.as_view(), name="user-manage"),
-    path('systemvariables/', SystemVariableView.as_view(), name="system-variables"),
+    path('core/', include(('core.urls', 'core'), namespace='core')),
     path('login/', LoginRedirectView.as_view(), name="login"),
     path('login/google/', GoogleLoginView.as_view(), name='login-google'),
     path('login/google/process/', GoogleProcessView.as_view(), name='login-google-process'),
@@ -32,7 +30,6 @@ urlpatterns = [
     path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
     path('hijack/', include(('hijack.urls', 'hijack'))),
     path('tinymce/', include('tinymce.urls')),
-    path('changelog/', ChangeLogView.as_view(), name="changelog"),
     path(
         'login/password/',
         LoginPasswordView.as_view(

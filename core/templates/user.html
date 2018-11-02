@@ -2,9 +2,22 @@
 {% load bootstrap %}
 {% load static %}
 {% load staticfiles %}
-{% block title %}Información de <strong>{{ request.user.get_full_name }}</strong> {% if request.user.is_google %}
-    <button class="btn btn-default pull-right btn-xs">Cuenta <img src="{% static 'base/img/google.png' %}" class="google-logo"/></button>
-{% endif %}{% endblock %}
+{% block title %}Información de <strong>{{ request.user.get_full_name }}</strong>
+    <div class="pull-right">
+        {% if request.user.is_google %}
+            <img src="{% static 'base/img/google.png' %}" class="google-logo"/>
+        {% endif %}
+        <div class="fa fa-envelope"></div>
+        {% if request.user.has_pb %}
+            <img src="{% static 'base/img/pb.png' %}" height="24" width="24" data-toggle="tooltip"
+                 data-placement="top" title="{{ request.user.pb_token }}">
+        {% endif %}
+        {% if request.user.telegram_token %}
+            <img src="{% static 'base/img/telegram.png' %}" height="24" width="24" data-toggle="tooltip"
+                 data-placement="top" title="{{ request.user.pb_token }}">
+        {% endif %}
+    </div>
+{% endblock %}
 {% block alert %}
     {% if request.user.has_to_change_password %}
         <div class="alert alert-danger" role="alert"><strong>Debe cambiar la contraseña urgentemente.</strong> Hace más
@@ -19,16 +32,11 @@
                     href="{% url 'password-change' %}"
                     class="btn btn-warning btn-xs">Cambiar ahora</a></li>
             <li><strong>Email corporativo:</strong> {{ request.user.email }}</li>
-            <li><strong>Sistemas de notificación:</strong> {% if request.user.has_pb %} PushBullet
-                <img src="{% static 'base/img/pb.png' %}" height="24" width="24" data-toggle="tooltip"
-                     data-placement="top" title="{{ request.user.pb_token }}">, {% endif %} {% if request.user.phone %}
-                SMS
-                <div class="fa fa-comment"></div>, {% endif %}Email
-                <div class="fa fa-envelope"></div>
-            </li>
             <li><strong>Teléfono</strong>: {{ request.user.phone }}</li>
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}
                 Administrador {% elif request.user.is_officer %} Oficina {% else %} Operario {% endif %}</li>
+            <li><strong>Token Telegram:</strong> <code>{{ request.user.id }}-{{ request.user.get_telegram_auth }}</code>
+            </li>
         </ul>
     </fieldset>
 {% endblock %}
