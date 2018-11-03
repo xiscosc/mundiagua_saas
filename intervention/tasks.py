@@ -31,3 +31,10 @@ def upload_file(t, pk):
     else:
         instance = InterventionImage.objects.get(pk=pk)
     instance.upload_to_s3()
+
+@shared_task
+def send_document_telegram_task(pk):
+    from intervention.models import InterventionDocument
+    instance = InterventionDocument.objects.get(pk=pk)
+    if instance.intervention.assigned.telegram_token:
+        instance.send_file_to_telegram()

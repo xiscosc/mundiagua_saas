@@ -236,6 +236,7 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">Vinculaciones
                             <small>Puedes vincular esta avería a una reparación o un presupuesto</small>
+                            {% if request.user_agent.is_pc %}
                             <div class="pull-right">
                                 <form class="form-inline" method="post" style="margin-top: -5px"
                                       action="{% url 'intervention:intervention-link' intervention.pk %}">
@@ -248,6 +249,7 @@
                                     </button>
                                 </form>
                             </div>
+                            {% endif %}
                         </h3>
                     </div>
                     <div class="panel-body forms_content">

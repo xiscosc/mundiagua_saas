@@ -35,8 +35,13 @@
             <li><strong>Teléfono</strong>: {{ request.user.phone }}</li>
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}
                 Administrador {% elif request.user.is_officer %} Oficina {% else %} Operario {% endif %}</li>
-            <li><strong>Token Telegram:</strong> <code>{{ request.user.id }}-{{ request.user.get_telegram_auth }}</code>
-            </li>
         </ul>
+
+        {% if not request.user.telegram_token %}
+            <h4>Registro Telegram</h4>
+            <p><a class="btn btn-info" href="https://t.me/mundiagua_bot"><i class="fa fa-send"></i> Abrir Telegram</a>
+                Código de registro: <code>/register {{ request.user.id }}-{{ request.user.get_telegram_auth }}</code>
+            </p>
+        {% endif %}
     </fieldset>
 {% endblock %}

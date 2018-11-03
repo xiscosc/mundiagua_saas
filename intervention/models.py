@@ -10,8 +10,10 @@ from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
 from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, ATH_REGEX, \
-    IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, search_objects_in_text
-from intervention.tasks import send_intervention_assigned, upload_file
+    IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, search_objects_in_text, \
+    send_telegram_message, send_telegram_document, send_telegram_picture, send_telegram_document_bin, \
+    send_telegram_picture_bin
+from intervention.tasks import send_intervention_assigned, upload_file, send_document_telegram_task
 
 
 def get_file_upload_path(instance, filename):
@@ -197,12 +199,14 @@ class InterventionFile(models.Model):
             result = s3.upload_file(original_path, self.get_bucket(), key)
             if result is None:
                 self.s3_key = key
+                if self.intervention.status_id == settings.ASSIGNED_STATUS:
+                    self.send_file_to_telegram()
                 self.in_s3 = True
                 self.save()
                 print("Removing %s" % original_path)
                 os.remove(original_path)
         except:
-            pass
+            print(result)
 
     def remove_form_s3(self):
         s3 = create_amazon_client('s3')
@@ -219,6 +223,9 @@ class InterventionFile(models.Model):
         except:
             return None
 
+    def send_file_to_telegram(self):
+        pass
+
 
 class InterventionImage(InterventionFile):
     image = models.ImageField(upload_to=get_images_upload_path)
@@ -229,6 +236,17 @@ class InterventionImage(InterventionFile):
 
     def get_bucket(self):
         return settings.S3_IMAGES
+
+    def send_file_to_telegram(self):
+        user = self.intervention.assigned
+        if user and user.telegram_token:
+            send_telegram_message(user.telegram_token, "Nueva imagen añadida a la avería " + str(
+                self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
+
+            if self.in_s3:
+                send_telegram_picture_bin(user.telegram_token, self.download_from_s3())
+            else:
+                send_telegram_picture(user.telegram_token, os.path.join(settings.MEDIA_ROOT, self.file_path()))
 
 
 class InterventionDocument(InterventionFile):
@@ -241,11 +259,30 @@ class InterventionDocument(InterventionFile):
     def get_bucket(self):
         return settings.S3_DOCUMENTS
 
+    def send_file_to_telegram(self):
+        user = self.intervention.assigned
+        if user and user.telegram_token:
+            if user.is_officer or not self.only_officer:
+                send_telegram_message(user.telegram_token, "Nueva documento añadido a la avería " + str(
+                    self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
+
+                if self.in_s3:
+                    send_telegram_document_bin(user.telegram_token, self.download_from_s3(), self.filename())
+                else:
+                    send_telegram_document(user.telegram_token, os.path.join(settings.MEDIA_ROOT, self.file_path()),
+                                           self.filename())
+
 
 def post_save_document(sender, **kwargs):
     doc = kwargs['instance']
     if kwargs['created']:
         upload_file.delay("document", doc.pk)
+
+    if doc.intervention.status_id == settings.ASSIGNED_STATUS \
+            and doc.intervention.assigned \
+            and not doc.intervention.assigned.is_officer \
+            and not doc.only_officer:
+        send_document_telegram_task.delay(doc.pk)
 
 
 def post_save_image(sender, **kwargs):

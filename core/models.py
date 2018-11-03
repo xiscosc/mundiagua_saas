@@ -9,7 +9,7 @@ from django.db.models.signals import post_save
 from tinymce import models as tinymce_models
 
 from core.tasks import send_message
-from core.utils import has_to_change_password, generate_telegram_auth
+from core.utils import has_to_change_password, generate_telegram_auth, send_telegram_message, send_data_to_user
 
 
 class MyUserManager(BaseUserManager):
@@ -54,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
     is_google = models.BooleanField(default=False)
-    telegram_token = models.CharField(max_length=254, null=True, blank=True)
+    telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
