@@ -1,3 +1,4 @@
+from django.core.management.base import BaseCommand
 from telegram.ext import Updater, CommandHandler
 from django.conf import settings
 
@@ -12,21 +13,20 @@ def start(bot, update):
         user = User.objects.get(telegram_token=token)
         bot.send_message(chat_id=token, text="Bienvenido de nuevo " + user.first_name)
     except Exception:
-        bot.send_message(chat_id=token, text="Este dispositvo no esta registrado, por favor registrelo para continuar")
+        bot.send_message(chat_id=token,
+                         text="Este dispositvo no esta registrado, por favor registrelo para continuar, "
+                              "ejemplo: /register 123-1a2b3c4d5")
 
 
-def register(bot, update, args=None):
+def register(bot, update, args):
     from core.models import User
     from core.utils import is_telegram_token
     import telegram
     token = update.message.chat_id
 
-    if args is None:
-        bot.send_message(chat_id=token, text="Es necesario un token de registro, ejemplo: /register 123-1a2b3c4d5")
-
     bot.send_chat_action(chat_id=token, action=telegram.ChatAction.TYPING)
     incorrect_token_message = "Token incorrecto, compruebe que su token es correcto. " \
-                              "Recuerde que el toquen puede cambiar cada cierto tiempo."
+                              "Recuerde que el token puede cambiar cada cierto tiempo."
     if is_telegram_token(args[0]):
         data = args[0].split('-')
         try:
@@ -46,12 +46,14 @@ def register(bot, update, args=None):
         bot.send_message(chat_id=token, text=incorrect_token_message)
 
 
-updater = Updater(token=settings.TELEGRAM_TOKEN)
-dispatcher = updater.dispatcher
-start_handler = CommandHandler('start', start)
-register_handler = CommandHandler('register', register, pass_args=True)
-register_handler_no_args = CommandHandler('register', register)
-dispatcher.add_handler(start_handler)
-dispatcher.add_handler(register_handler)
-dispatcher.add_handler(register_handler_no_args)
-updater.start_polling()
+class Command(BaseCommand):
+    help = 'Starts telegram bot listener'
+
+    def handle(self, *args, **options):
+        updater = Updater(token=settings.TELEGRAM_TOKEN)
+        dispatcher = updater.dispatcher
+        start_handler = CommandHandler('start', start)
+        register_handler = CommandHandler('register', register, pass_args=True)
+        dispatcher.add_handler(start_handler)
+        dispatcher.add_handler(register_handler)
+        updater.start_polling()

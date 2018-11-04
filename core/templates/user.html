@@ -35,6 +35,7 @@
             <li><strong>Teléfono</strong>: {{ request.user.phone }}</li>
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}
                 Administrador {% elif request.user.is_officer %} Oficina {% else %} Operario {% endif %}</li>
+            <li><strong>Código Telegram:</strong> <code>/register {{ request.user.id }}-{{ request.user.get_telegram_auth }}</code></li>
         </ul>
 
         {% if not request.user.telegram_token %}
