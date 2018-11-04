@@ -224,7 +224,7 @@ class EngineRepairStatusSystemView(TemplateView):
 class SystemVariableUpdateView(UpdateView):
     model = SystemVariable
     template_name = 'system_variable_edit.html'
-    success_url = reverse_lazy('core:system-variables')
+    success_url = reverse_lazy('core:variable')
 
     def get_form_class(self):
         if self.object.rich_text:
