@@ -5,8 +5,8 @@ from django.contrib.auth.views import LogoutView, PasswordChangeView, PasswordCh
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
-from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
-    GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, LoginRedirectView
+from core.views import IndexView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, \
+    LoginRedirectView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -22,10 +22,6 @@ urlpatterns = [
     path('login/google/error/', GoogleErrorView.as_view(), name='login-google-error'),
     path('logout/', LogoutView.as_view(template_name="logout.html"), name='logout'),
     path('', IndexView.as_view(), name='home'),
-    path('message/new/', NewMessageView.as_view(), name="message-new"),
-    path('message/inbox/', MessagesListView.as_view(), name="message-inbox"),
-    path('message/sent/', MessagesSentListView.as_view(), name="message-sent"),
-    path('message/ajax/', MessagesAjaxView.as_view(), name="message-ajax"),
     path('repair-status/<online>/', PublicClientView.as_view(), name="public-status-repair"),
     path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
     path('hijack/', include(('hijack.urls', 'hijack'))),

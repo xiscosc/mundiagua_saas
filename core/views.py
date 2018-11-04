@@ -87,7 +87,7 @@ class NewMessageView(CreateView):
     template_name = "new_message.html"
     model = Message
     fields = ['to_user', 'subject', 'body']
-    success_url = reverse_lazy('message-sent')
+    success_url = reverse_lazy('core:message-sent')
 
     def get_form(self, form_class=None):
         form = super(NewMessageView, self).get_form(form_class=form_class)

@@ -46,7 +46,6 @@ OTHER_APPS = [
     'hijack',
     'compat',
     'hijack_admin',
-    #'admin_honeypot',
     'easy_thumbnails',
     'debug_toolbar',
     'tinymce',
@@ -304,4 +303,4 @@ TINYMCE_DEFAULT_CONFIG = {
     'contextmenu': 'formats | link',
     'menubar': True,
     'statusbar': True,
-    }
+}

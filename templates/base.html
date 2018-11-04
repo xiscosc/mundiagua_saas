@@ -79,14 +79,14 @@
                 </a>
                 <ul class="dropdown-menu dropdown-messages" id="message-ajax">
                     <li>
-                        <a class="text-center" href="{% url 'message-inbox' %}">
+                        <a class="text-center" href="{% url 'core:message-inbox' %}">
                             <strong>Ver todos los mensajes</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a class="text-center" href="{% url 'message-new' %}">
+                        <a class="text-center" href="{% url 'core:message-new' %}">
                             <i class="fa fa-plus"></i>
                             <strong>Nuevo mensaje</strong>
                         </a>
@@ -375,7 +375,7 @@
         make_notification(
             "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",
             "info",
-            "{% url 'message-inbox' %}"
+            "{% url 'core:message-inbox' %}"
         );
     </script>
 {% endif %}

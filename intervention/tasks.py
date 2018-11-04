@@ -25,16 +25,60 @@ def send_intervention(pk, pkto, pkuser):
 
 @shared_task
 def upload_file(t, pk):
+    from django.conf import settings
     from intervention.models import InterventionImage, InterventionDocument
     if t == "document":
         instance = InterventionDocument.objects.get(pk=pk)
     else:
         instance = InterventionImage.objects.get(pk=pk)
+
+    if instance.intervention.status_id == settings.ASSIGNED_STATUS:
+        instance.send_file_to_telegram()
+
     instance.upload_to_s3()
 
+
 @shared_task
-def send_document_telegram_task(pk):
-    from intervention.models import InterventionDocument
-    instance = InterventionDocument.objects.get(pk=pk)
+def send_file_telegram_task(pk, t):
+    from intervention.models import InterventionDocument, InterventionImage
+    if t == 'document':
+        instance = InterventionDocument.objects.get(pk=pk)
+    else:
+        instance = InterventionImage.objects.get(pk=pk)
     if instance.intervention.assigned.telegram_token:
         instance.send_file_to_telegram()
+        if instance.sent_to_telegram:
+            instance.save()
+
+
+@shared_task
+def delete_telegram_messages_from_intervention(pk, pk_assigned_old):
+    from intervention.models import Intervention
+    from core.models import User
+    from core.utils import delete_telegram_messages
+    if pk_assigned_old:
+        instance = Intervention.objects.get(pk=pk)
+        user = User.objects.get(pk=pk_assigned_old)
+        if user.telegram_token:
+            ids = []
+            files = instance.get_images()
+            for f in files:
+                if f.telegram_message:
+                    ids.append(f.telegram_message)
+                    f.telegram_message = None
+                    f.save()
+            files = instance.get_documents()
+            for f in files:
+                if f.telegram_message:
+                    ids.append(f.telegram_message)
+                    f.telegram_message = None
+                    f.save()
+            if not user.is_officer:
+                delete_telegram_messages(user.telegram_token, ids, instance)
+
+@shared_task
+def delete_file_from_telegram(token, message_id, instance_pk):
+    from core.utils import delete_telegram_messages
+    from intervention.models import Intervention
+    instance = Intervention.objects.get(pk=instance_pk)
+    delete_telegram_messages(token, [message_id], instance)

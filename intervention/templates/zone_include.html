@@ -1,9 +1,9 @@
 {% if zone.is_zone %}
- <div style="background-color: {{ zone.color }}; border-color: {{ zone.border }}" class="zone">
+ <div style="background-color: {{ zone.color }}; border-color: {{ zone.border }}" class="zone {{ class }}">
      {% if badge %}<span class="badge">{{ badge }}</span>{% endif %}
     <i class="fa fa-map"></i> {{ zone }}</div>
 {% else %}
- <div style="background-color: {{ zone.color }}; border-color: {{ zone.color }}" class="zone">
+ <div style="background-color: {{ zone.color }}; border-color: {{ zone.color }}" class="zone {{ class }}">
      {% if badge %}<span class="badge">{{ badge }}</span>{% endif %}
     <i class="fa fa-tag"></i> {{ zone }}</div>
 {% endif %}

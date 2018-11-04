@@ -9,11 +9,11 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
-from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, ATH_REGEX, \
-    IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, search_objects_in_text, \
+from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, \
     send_telegram_message, send_telegram_document, send_telegram_picture, send_telegram_document_bin, \
-    send_telegram_picture_bin
-from intervention.tasks import send_intervention_assigned, upload_file, send_document_telegram_task
+    send_telegram_picture_bin, autolink_intervention
+from intervention.tasks import send_intervention_assigned, upload_file, send_file_telegram_task, \
+    delete_telegram_messages_from_intervention
 
 
 def get_file_upload_path(instance, filename):
@@ -175,6 +175,8 @@ class InterventionFile(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     in_s3 = models.BooleanField(default=False)
     s3_key = models.CharField(max_length=20, default="no_key")
+    telegram_message = models.BigIntegerField(default=None, null=True)
+    sent_to_telegram = models.BooleanField(default=False)
 
     def file_path(self):
         return None
@@ -199,8 +201,6 @@ class InterventionFile(models.Model):
             result = s3.upload_file(original_path, self.get_bucket(), key)
             if result is None:
                 self.s3_key = key
-                if self.intervention.status_id == settings.ASSIGNED_STATUS:
-                    self.send_file_to_telegram()
                 self.in_s3 = True
                 self.save()
                 print("Removing %s" % original_path)
@@ -239,14 +239,19 @@ class InterventionImage(InterventionFile):
 
     def send_file_to_telegram(self):
         user = self.intervention.assigned
-        if user and user.telegram_token:
+        if user and user.telegram_token and user != self.user:
             send_telegram_message(user.telegram_token, "Nueva imagen añadida a la avería " + str(
                 self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
 
             if self.in_s3:
-                send_telegram_picture_bin(user.telegram_token, self.download_from_s3())
+                message = send_telegram_picture_bin(user.telegram_token, self.download_from_s3())
             else:
-                send_telegram_picture(user.telegram_token, os.path.join(settings.MEDIA_ROOT, self.file_path()))
+                message = send_telegram_picture(user.telegram_token,
+                                                os.path.join(settings.MEDIA_ROOT, self.file_path()))
+
+            if message:
+                self.telegram_message = message.message_id
+                self.sent_to_telegram = True
 
 
 class InterventionDocument(InterventionFile):
@@ -261,16 +266,21 @@ class InterventionDocument(InterventionFile):
 
     def send_file_to_telegram(self):
         user = self.intervention.assigned
-        if user and user.telegram_token:
+        if not self.sent_to_telegram and user and user.telegram_token and user != self.user:
             if user.is_officer or not self.only_officer:
                 send_telegram_message(user.telegram_token, "Nueva documento añadido a la avería " + str(
                     self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
 
                 if self.in_s3:
-                    send_telegram_document_bin(user.telegram_token, self.download_from_s3(), self.filename())
+                    message = send_telegram_document_bin(user.telegram_token, self.download_from_s3(), self.filename())
                 else:
-                    send_telegram_document(user.telegram_token, os.path.join(settings.MEDIA_ROOT, self.file_path()),
-                                           self.filename())
+                    message = send_telegram_document(user.telegram_token,
+                                                     os.path.join(settings.MEDIA_ROOT, self.file_path()),
+                                                     self.filename())
+
+                if message:
+                    self.telegram_message = message.message_id
+                    self.sent_to_telegram = True
 
 
 def post_save_document(sender, **kwargs):
@@ -278,11 +288,8 @@ def post_save_document(sender, **kwargs):
     if kwargs['created']:
         upload_file.delay("document", doc.pk)
 
-    if doc.intervention.status_id == settings.ASSIGNED_STATUS \
-            and doc.intervention.assigned \
-            and not doc.intervention.assigned.is_officer \
-            and not doc.only_officer:
-        send_document_telegram_task.delay(doc.pk)
+    if doc.intervention.status_id == settings.ASSIGNED_STATUS and not doc.sent_to_telegram:
+        send_file_telegram_task.delay(doc.pk, 'document')
 
 
 def post_save_image(sender, **kwargs):
@@ -291,48 +298,6 @@ def post_save_image(sender, **kwargs):
         image.thumbnail = generate_thumbnail(image)
         image.save()
         upload_file.delay("image", image.pk)
-
-
-def autolink_intervention(intervention, text, user):
-    from async_messages import messages
-    added = False
-    error = False
-
-    for id in search_objects_in_text(ATH_REGEX, text):
-        try:
-            intervention.repairs_ath.add(id)
-            added = True
-        except:
-            error = True
-    for id in search_objects_in_text(IDEGIS_REGEX, text):
-        try:
-            intervention.repairs_idegis.add(id)
-            added = True
-        except:
-            error = True
-    for id in search_objects_in_text(BUDGET_REGEX, text):
-        try:
-            intervention.budgets.add(id)
-            added = True
-        except:
-            error = True
-    for id in search_objects_in_text(BUDGET_REGEX_2ND_FORMAT, text, trim=True):
-        try:
-            intervention.budgets.add(id)
-            added = True
-        except:
-            error = True
-    for id in search_objects_in_text(BUDGET_REGEX_3RD_FORMAT, text, trim=True):
-        try:
-            intervention.budgets.add(id)
-            added = True
-        except:
-            error = True
-
-    if added:
-        messages.success(user, "Se han autonvinculado presupuestos y/o reparaciones a esta avería")
-    if error:
-        messages.warning(user, "Ha ocurrido un error durante la autovinculación en esta avería")
 
 
 def post_save_intervention_modification(sender, **kwargs):
@@ -356,6 +321,8 @@ def post_save_intervention(sender, **kwargs):
                     log.assigned = intervention.assigned
                     send_intervention_assigned.delay(intervention.pk)
                 log.save()
+                if intervention._old_status_id == settings.ASSIGNED_STATUS:
+                    delete_telegram_messages_from_intervention.delay(intervention.pk, intervention._old_assigned_id)
         except:
             pass
 

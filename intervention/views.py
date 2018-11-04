@@ -21,6 +21,8 @@ from intervention.utils import update_intervention, generate_data_year_vs, gener
 from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
 
+from intervention.tasks import delete_file_from_telegram
+
 
 class HomeView(TemplateView):
     template_name = 'home_intervention.html'
@@ -446,7 +448,7 @@ class ImageView(View):
             return HttpResponse(image_data, content_type="image/%s" % image.get_extension())
         except:
             import os
-            with open(os.path.join(settings.STATIC_ROOT, settings.IMAGE_NOT_FOUND), "rb") as f:
+            with open(os.path.join(settings.STATIC_URL, settings.IMAGE_NOT_FOUND), "rb") as f:
                 return HttpResponse(f.read(), content_type="image/png")
 
 
@@ -496,6 +498,13 @@ class MakeVisibleDocumentView(View):
         instance = InterventionDocument.objects.get(pk=self.kwargs['pk'])
         pk_intervention = instance.intervention_id
         instance.only_officer = not instance.only_officer
+        # Remove document from user telegram
+        if instance.only_officer and instance.sent_to_telegram and instance.telegram_message:
+            if instance.intervention.assigned and not instance.intervention.assigned.is_officer:
+                delete_file_from_telegram.delay(instance.intervention.assigned.telegram_token,
+                                                instance.telegram_message, instance.intervention.pk)
+                instance.telegram_message = None
+
         instance.save()
         messages.success(request.user, "Visibilidad de archivo modificada")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))

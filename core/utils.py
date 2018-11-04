@@ -29,7 +29,7 @@ def send_data_to_user(user, subject, body, is_link=False, from_user=None):
 
     result = False
     if user.telegram_token:
-        result = send_telegram_message(user.telegram_token, body, subject, from_user)
+        result = send_telegram_message(user.telegram_token, body, subject)
 
     if not result and user.has_pb():
         try:
@@ -209,52 +209,106 @@ an invalid filename.
     return filename
 
 
-def send_telegram_message(token, message, subject=None, from_user=None):
-    text = message
+def send_telegram_message(token, message, subject=None):
+    s_subject = ''
     if subject:
-        text = subject + '\n\n' + message
-    if from_user:
-        text += '\n\n' + from_user
-    bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        s_subject = subject + '\n\n'
+
     try:
-        bot.send_message(chat_id=token, text=text)
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        bot.send_message(chat_id=token, text=s_subject + message)
         return True
     except:
         return False
 
 
 def send_telegram_picture(token, img_route):
-    bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
     try:
-        bot.send_photo(chat_id=token, photo=open(img_route, 'rb'))
-        return True
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_photo(chat_id=token, photo=open(img_route, 'rb'))
     except:
         return False
 
 
 def send_telegram_picture_bin(token, img_data):
-    bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
     try:
-        bot.send_photo(chat_id=token, photo=img_data)
-        return True
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_photo(chat_id=token, photo=img_data)
     except:
         return False
 
 
 def send_telegram_document(token, doc_route, filename):
-    bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
     try:
-        bot.send_document(chat_id=token, document=open(doc_route, 'rb'), filename=filename)
-        return True
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_document(chat_id=token, document=open(doc_route, 'rb'), filename=filename)
     except:
         return False
 
 
 def send_telegram_document_bin(token, doc_data, filename):
-    bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
     try:
-        bot.send_document(chat_id=token, document=doc_data, filename=filename)
-        return True
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_document(chat_id=token, document=doc_data, filename=filename)
     except:
         return False
 
+
+def delete_telegram_messages(token, ids, intervention):
+    removed = 0
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+    except:
+        return False
+
+    for id in ids:
+        try:
+            bot.delete_message(chat_id=token, message_id=id)
+            removed += 1
+        except:
+            pass
+
+    if removed > 0:
+        bot.send_message(chat_id=token, text="Se han elminado los archivos de " + str(intervention))
+
+
+def autolink_intervention(intervention, text, user):
+    from async_messages import messages
+    added = False
+    error = False
+
+    for id in search_objects_in_text(ATH_REGEX, text):
+        try:
+            intervention.repairs_ath.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(IDEGIS_REGEX, text):
+        try:
+            intervention.repairs_idegis.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX, text):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX_2ND_FORMAT, text, trim=True):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX_3RD_FORMAT, text, trim=True):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+
+    if added:
+        messages.success(user, "Se han autonvinculado presupuestos y/o reparaciones a esta avería")
+    if error:
+        messages.warning(user, "Ha ocurrido un error durante la autovinculación en esta avería")
