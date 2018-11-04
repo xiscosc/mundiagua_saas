@@ -70,7 +70,7 @@
                             </a>
 
                         {% endif %}
-                        <strong>Creada el</strong> {{ intervention.date }}
+                        <strong>{{ intervention.date|date:"d-m-Y" }}</strong> {{ intervention.date|time:"H:i" }}
 
                         <div class="pull-right">
                             {% if intervention.starred %}
