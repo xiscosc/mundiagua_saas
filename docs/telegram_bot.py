@@ -15,21 +15,26 @@ def start(bot, update):
         bot.send_message(chat_id=token, text="Este dispositvo no esta registrado, por favor registrelo para continuar")
 
 
-def register(bot, update, args):
+def register(bot, update, args=None):
     from core.models import User
     from core.utils import is_telegram_token
     import telegram
-
     token = update.message.chat_id
+
+    if args is None:
+        bot.send_message(chat_id=token, text="Es necesario un token de registro, ejemplo: /register 123-1a2b3c4d5")
+
     bot.send_chat_action(chat_id=token, action=telegram.ChatAction.TYPING)
-    incorrect_token_message = "Token incorrecto, compruebe que su token es correcto"
+    incorrect_token_message = "Token incorrecto, compruebe que su token es correcto. " \
+                              "Recuerde que el toquen puede cambiar cada cierto tiempo."
     if is_telegram_token(args[0]):
         data = args[0].split('-')
         try:
             user = User.objects.get(id=int(data[0]))
             if user.get_telegram_auth() == data[1]:
                 if user.telegram_token:
-                    bot.send_message(chat_id=token, text="Usted ya estaba registrado, se procedera a usar esta nueva cuenta")
+                    bot.send_message(chat_id=token,
+                                     text="Usted ya estaba registrado, se procedera a usar esta nueva cuenta")
                 user.telegram_token = token
                 user.save()
                 bot.send_message(chat_id=token, text="Registro completado. Bienvenido " + user.first_name)
@@ -45,6 +50,8 @@ updater = Updater(token=settings.TELEGRAM_TOKEN)
 dispatcher = updater.dispatcher
 start_handler = CommandHandler('start', start)
 register_handler = CommandHandler('register', register, pass_args=True)
+register_handler_no_args = CommandHandler('register', register)
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(register_handler)
+dispatcher.add_handler(register_handler_no_args)
 updater.start_polling()

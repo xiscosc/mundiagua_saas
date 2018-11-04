@@ -4,7 +4,7 @@ import os
 import re
 import string
 import time
-from datetime import date
+from datetime import date, datetime
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -182,8 +182,10 @@ def search_objects_in_text(regex, text, trim=False):
 
 
 def generate_telegram_auth(id, email):
-    key = str(id) + email
-    return hashlib.sha256(key.encode()).hexdigest()[:10]
+    now = datetime.now()
+    key = str(id) + email + str(now.hour)
+    data = hashlib.sha256(key.encode()).hexdigest()
+    return data[:5] + data[-5:]
 
 
 def is_telegram_token(token):

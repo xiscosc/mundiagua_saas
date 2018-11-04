@@ -39,7 +39,7 @@
 
         {% if not request.user.telegram_token %}
             <h4>Registro Telegram</h4>
-            <p><a class="btn btn-info" href="https://t.me/mundiagua_bot"><i class="fa fa-send"></i> Abrir Telegram</a>
+            <p><a class="btn btn-info" href="https://t.me/{{ telegran_name }}"><i class="fa fa-send"></i> Abrir Telegram</a>
                 Código de registro: <code>/register {{ request.user.id }}-{{ request.user.get_telegram_auth }}</code>
             </p>
         {% endif %}

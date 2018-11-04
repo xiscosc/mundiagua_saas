@@ -264,6 +264,11 @@ class SystemEngineRepairStatusCreateView(CreateView):
 class UserView(TemplateView):
     template_name = 'user.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(UserView, self).get_context_data(**kwargs)
+        context['telegran_name'] = settings.TELEGRAM_NAME
+        return context
+
 
 class GoogleLoginView(TemplateView):
     template_name = 'login_google.html'

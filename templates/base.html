@@ -356,9 +356,9 @@
 
 <script src="{% static 'remarkable-bootstrap-notify/dist/bootstrap-notify.min.js' %}"></script>
 
-<script src="{% static 'base/js/core/message-ajax.js' %}"></script>
+<script src="{% static 'base/js/core/message-ajax.js' %}{% app_version_includes %}"></script>
 
-<script src="{% static 'base/js/core/notifications.js' %}"></script>
+<script src="{% static 'base/js/core/notifications.js' %}{% app_version_includes %}"></script>
 {% block extrajs %} {% endblock %}
 
 {% block extrajs_include %} {% endblock %}
