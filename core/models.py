@@ -9,7 +9,7 @@ from django.db.models.signals import post_save
 from tinymce import models as tinymce_models
 
 from core.tasks import send_message
-from core.utils import has_to_change_password
+from core.utils import has_to_change_password, generate_telegram_auth, send_telegram_message, send_data_to_user
 
 
 class MyUserManager(BaseUserManager):
@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
     is_google = models.BooleanField(default=False)
+    telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -93,6 +94,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         from intervention.models import Intervention
         return Intervention.objects.filter(assigned=self, status_id=2).count()
 
+    def get_telegram_auth(self):
+        return generate_telegram_auth(self.id, self.email)
+
     assigned_interventions = property(get_assigned_interventions)
 
 
@@ -110,9 +114,8 @@ class SystemVariable(models.Model):
     key = models.CharField(max_length=25, blank=False, null=False, unique=True)
     description = models.TextField(blank=True, null=True)
     rich_text = models.BooleanField(default=False)
-    value = tinymce_models.HTMLField(blank=True, null=True)
-    plain_value = models.TextField(blank=True, null=True)
-    last_modified_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
+    value = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Valor de la variable")
+    plain_value = models.TextField(blank=True, null=True, verbose_name="Valor de la variable")
 
     def get_value(self):
         if self.rich_text:

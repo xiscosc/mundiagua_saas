@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Variables del sistema{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-danger animated shake"><strong>Atención:</strong> Si la variable de sistema contiene la palabra
+              <strong>:id</strong>, no debe ser borrada, ese valor será reemplazado por el número real de reparación.</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h4>{{ object.description }}</h4>
+        </div>
+        <div class="col-xs-12">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|bootstrap }}
+                <div class="form-group">
+                    <button type="submit" class="btn btn-warning btn-block"><span
+                            class="fa fa-save"></span> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    </form>
+{% endblock %}
+{% block extracss %}
+    {{ form.media }}
+{% endblock %}

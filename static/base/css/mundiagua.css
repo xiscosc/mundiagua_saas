@@ -9,6 +9,13 @@
     border-width: 1.5px;
 }
 
+.zone-xs {
+    padding: 1px 5px !important;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
 .zone .badge {
     color: darkslategrey;
     background-color: whitesmoke;
@@ -20,6 +27,11 @@
 
 .img-list-repair{
     height:35px;
+}
+
+.panel-intervention {
+    overflow: auto;
+    padding: 5px 15px;
 }
 
 @media screen and (min-width: 769px) {

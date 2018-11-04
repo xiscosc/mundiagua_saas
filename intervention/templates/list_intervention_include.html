@@ -1,111 +1,138 @@
 <div class="row">
     <div class="col-md-12 col-xs-12 col-lg-12">
-        {% for intervention in interventions %}
-            <table class="table table-bordered table-hover table-striped">
-                <tr>
-                    <td style="width: 15%">
-                        {% if nolinks %}
-                            <strong>{{ intervention }}</strong>
-                        {% else %}
-                            <a href="{% url 'intervention:intervention-view' intervention.pk %}"
-                               class="btn btn-danger btn-block">{{ intervention }}</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if request.user.is_officer and not nolinks and search_status.pk != 3 and search_status.pk != 4 %}
+        {% if nolinks %}
+            {% for intervention in interventions %}
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        <td style="width: 15%">
+                                <strong>{{ intervention }}</strong>
+                        </td>
+                        <td>
+                                {% if intervention.starred %}
+                                    <strong>DESTACADA</strong>,
+                                {% endif %}
+                                Modificaciones: {{ intervention.get_num_modifications }}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Fecha</strong>
+                        </td>
+                        <td>
+                            {{ intervention.date }}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Zona</strong>
+                        </td>
+                        <td>
+                                {{ intervention.zone }} {% for tag in intervention.tags.all %}
+                                / {{ tag }}
+                            {% endfor %}  - {{ intervention.address }}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Estado</strong>
+                        </td>
+                        <td>
+                            {{ intervention.status }}{% if intervention.status_id == 2 %} -
+                                {{ intervention.assigned.get_full_name }} {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Cliente</strong>
+                        </td>
+                        <td>
+                            {{ intervention.address.client }}
+                        </td>
+                    </tr>
+                </table>
+            {% endfor %}
+        {% else %}
+            {% for intervention in interventions %}
+
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-intervention">
+                        <a href="{% url 'intervention:intervention-view' intervention.pk %}"
+                           class="btn btn-danger btn-xs">{{ intervention }}</a>
+
+                        {% if request.user.is_officer  and search_status.pk != 3 and search_status.pk != 4 %}
                             <a href="{% url 'intervention:intervention-terminate' intervention.pk %}"
-                               class="btn btn-primary">
-                            <div class="btn-mobile-list-intervention">Terminar</div>
+                               class="btn btn-primary btn-xs">
+                                <div class="btn-mobile-list-intervention">Terminar</div>
                                 <div class="btn-desktop-list-intervention">Marcar para Terminar</div>
                             </a>
 
                         {% endif %}
-                        {% if nolinks %}
-                            {% if intervention.starred %}
-                                <strong>DESTACADA</strong>,
-                            {% endif %}
-                            Modificaciones: {{ intervention.get_num_modifications }}
-                        {% else %}
+                        <strong>Creada el</strong> {{ intervention.date }}
 
+                        <div class="pull-right">
+                            {% if intervention.starred %}
+                                <div style="background-color: indianred; border-color: darkred" class="zone zone-xs">
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Prioritaria
+                                </div>
+                            {% endif %}
+
+                            {% include 'zone_include.html' with zone=intervention.zone class="zone-xs" %}
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p><strong>Cliente:</strong> {{ intervention.address.client }}
+                            {% if request.user.is_officer %}
+                                | <a
+                                    href="{% url 'client:client-view' intervention.address.client.pk %}"
+                                    class="btn btn-xs btn-info"><i class="fa fa-eye"></i> Ver
+                                datos del cliente</a>
+                            {% endif %}
+                        </p>
+                        <p>
+                            <strong>Estado:</strong> {{ intervention.status|lower|capfirst }}
+                            {% if intervention.status_id == 2 and request.user.is_officer %} a
+                                <strong>{{ intervention.assigned.get_full_name }}</strong> |
+                                <a class="btn btn-xs btn-warning"
+                                   href="{% url 'intervention:intervention-list' 2 intervention.assigned.pk 0 0 0 %}"><i
+                                        class="fa fa-user"></i> Ver averías asignadas
+                                    a {{ intervention.assigned.get_full_name }}</a>
+                            {% endif %}
+                        </p>
+                        <p><strong>Dirección:</strong> {{ intervention.address.address }}</p>
+                    </div>
+                    {% if request.user.is_officer %}
+                        <div class="panel-footer panel-intervention">
+                            {% for tag in intervention.tags.all %}
+                                    {% include 'zone_include.html' with zone=tag class="zone-xs" %}
+                            {% endfor %}
                             {% if intervention.has_media %}
-                                <button disabled
-                                    class="btn btn-success btn-circle pull-right"
-                                        data-toggle="tooltip" title="Tiene archivos adjuntos" >
-                                <i class="fa fa-paperclip"></i></button>
+                                <div style="background-color: green; border-color: darkgreen" class="zone zone-xs">
+                                    <i class="fa fa-paperclip"></i> Adjuntos
+                                </div>
                             {% endif %}
 
                             {% if intervention.repairs_ath.all|length > 0 or  intervention.repairs_idegis.all|length > 0 or intervention.budgets.all|length > 0 %}
-                                <button disabled
-                                    class="btn btn-info btn-circle pull-right"
-                                        data-toggle="tooltip" title="Tiene vinculaciones"  style="margin-right: 5px" >
-                                <i class="fa fa-chain"></i></button>
+                                <div style="background-color: cornflowerblue; border-color: dodgerblue" class="zone zone-xs">
+                                    <i class="fa fa-chain"></i> Vinculada
+                                </div>
                             {% endif %}
 
-                            {% if intervention.get_num_modifications > 0 %}
-                                <button disabled
-                                    class="btn btn-warning btn-circle pull-right"
-                                        data-toggle="tooltip" title="Tiene modificaciones" style="margin-right: 5px">
-                                <strong>{{ intervention.get_num_modifications }}</strong></button>
+                            {% if intervention.count_modifications > 0 %}
+                                <div style="background-color: goldenrod; border-color: darkgoldenrod" class="zone zone-xs">
+                                    <span class="badge" style="font-size: 11px">{{ intervention.count_modifications }}</span> Modificaciones
+                                </div>
                             {% endif %}
 
-                            {% if intervention.starred %}
-                                <button type="button" class="btn btn-danger btn-circle pull-right" disabled
-                                        style="margin-right: 5px"  data-toggle="tooltip" title="Es prioritaria">
-                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                </button>
-                            {% endif %}
-                        {% endif %}
 
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Fecha</strong>
-                    </td>
-                    <td>
-                        {{ intervention.date }}
-                    </td>
 
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Zona</strong>
-                    </td>
-                    <td>
-                        {% if nolinks %}
-                            {{ intervention.zone }} {% for tag in intervention.tags.all %}
-                               / {{ tag }}
-                            {% endfor %}  - {{ intervention.address }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                        {% else %}
-                            {% include 'zone_include.html' with zone=intervention.zone %}
-                            {% for tag in intervention.tags.all %}
-                                {% include 'zone_include.html' with zone=tag %}
-                            {% endfor %}
-                            {{ intervention.address }}
-
-                        {% endif %}
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Estado</strong>
-                    </td>
-                    <td>
-                        {{ intervention.status }}{% if intervention.status_id == 2 %} -
-                            {{ intervention.assigned.get_full_name }} {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Cliente</strong>
-                    </td>
-                    <td>
-                        {{ intervention.address.client }}
-                    </td>
-                </tr>
-            </table>
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
     </div>
 </div>

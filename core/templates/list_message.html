@@ -24,8 +24,8 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li {% if inbox %} class="active" {% endif %}><a href="{% url 'message-inbox' %}">Recibidos</a></li>
-                            <li {% if not inbox %} class="active" {% endif %}><a href="{% url 'message-sent' %}">Enviados</a></li>
+                            <li {% if inbox %} class="active" {% endif %}><a href="{% url 'core:message-inbox' %}">Recibidos</a></li>
+                            <li {% if not inbox %} class="active" {% endif %}><a href="{% url 'core:message-sent' %}">Enviados</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
@@ -40,7 +40,7 @@
                     <i class="fa fa-comments fa-fw"></i>
                     Listado de mensajes
                     <div class="btn-group pull-right">
-                                <a href="{% url 'message-new' %}" class="btn btn-primary btn-xs">
+                                <a href="{% url 'core:message-new' %}" class="btn btn-primary btn-xs">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </div>

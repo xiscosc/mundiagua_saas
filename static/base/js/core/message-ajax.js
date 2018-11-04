@@ -3,7 +3,7 @@
  */
 
 $(function () {
-    $.get("/message/ajax/", function (data) {
+    $.get("/core/message/ajax/", function (data) {
         $("#message-ajax").prepend(data);
     });
 });

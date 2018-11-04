@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from pushbullet import Pushbullet
 from pytz import timezone
+import telegram
 
 INTERVENTION_REGEX = '[v|V][0-9]+'
 IDEGIS_REGEX = '[x|X][0-9]+'
@@ -21,10 +22,16 @@ ENGINE_REGEX = '[e|B][0-9]+'
 BUDGET_REGEX = '[p|P][0-9]+'
 BUDGET_REGEX_2ND_FORMAT = '[p|P][m|M][0-9][0-9]/[0-9]+'
 BUDGET_REGEX_3RD_FORMAT = '[p|P][m|M][0-9][0-9]-[0-9]+'
+TELEGRAM_TOKEN_REGEX = '\d+-\w{10}'
 
 
 def send_data_to_user(user, subject, body, is_link=False, from_user=None):
-    if user.has_pb():
+
+    result = False
+    if user.telegram_token:
+        result = send_telegram_message(user.telegram_token, body, subject)
+
+    if not result and user.has_pb():
         try:
             pb = Pushbullet(user.pb_token)
             if is_link:
@@ -34,8 +41,11 @@ def send_data_to_user(user, subject, body, is_link=False, from_user=None):
             return push
         except:
             return send_mail_m(user, subject, body, is_link=is_link, fallback=True, from_user=from_user)
-    else:
+
+    if not result and not user.has_pb():
         return send_mail_m(user, subject, body, is_link=is_link, fallback=False, from_user=from_user)
+
+    return result
 
 
 def generate_md5_id(char, id):
@@ -171,6 +181,17 @@ def search_objects_in_text(regex, text, trim=False):
     return ids
 
 
+def generate_telegram_auth(id, email):
+    key = str(id) + email
+    return hashlib.sha256(key.encode()).hexdigest()[:10]
+
+
+def is_telegram_token(token):
+    import re
+    data = re.compile(TELEGRAM_TOKEN_REGEX).findall(token)
+    return len(data) == 1
+
+
 def format_filename(s):
     """Take a string and return a valid filename constructed from the string.
 Uses a whitelist approach: any characters not present in valid_chars are
@@ -186,3 +207,108 @@ an invalid filename.
     filename = ''.join(c for c in s if c in valid_chars)
     filename = filename.replace(' ', '_')  # I don't like spaces in filenames.
     return filename
+
+
+def send_telegram_message(token, message, subject=None):
+    s_subject = ''
+    if subject:
+        s_subject = subject + '\n\n'
+
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        bot.send_message(chat_id=token, text=s_subject + message)
+        return True
+    except:
+        return False
+
+
+def send_telegram_picture(token, img_route):
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_photo(chat_id=token, photo=open(img_route, 'rb'))
+    except:
+        return False
+
+
+def send_telegram_picture_bin(token, img_data):
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_photo(chat_id=token, photo=img_data)
+    except:
+        return False
+
+
+def send_telegram_document(token, doc_route, filename):
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_document(chat_id=token, document=open(doc_route, 'rb'), filename=filename)
+    except:
+        return False
+
+
+def send_telegram_document_bin(token, doc_data, filename):
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+        return bot.send_document(chat_id=token, document=doc_data, filename=filename)
+    except:
+        return False
+
+
+def delete_telegram_messages(token, ids, intervention):
+    removed = 0
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+    except:
+        return False
+
+    for id in ids:
+        try:
+            bot.delete_message(chat_id=token, message_id=id)
+            removed += 1
+        except:
+            pass
+
+    if removed > 0:
+        bot.send_message(chat_id=token, text="Se han elminado los archivos de " + str(intervention))
+
+
+def autolink_intervention(intervention, text, user):
+    from async_messages import messages
+    added = False
+    error = False
+
+    for id in search_objects_in_text(ATH_REGEX, text):
+        try:
+            intervention.repairs_ath.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(IDEGIS_REGEX, text):
+        try:
+            intervention.repairs_idegis.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX, text):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX_2ND_FORMAT, text, trim=True):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(BUDGET_REGEX_3RD_FORMAT, text, trim=True):
+        try:
+            intervention.budgets.add(id)
+            added = True
+        except:
+            error = True
+
+    if added:
+        messages.success(user, "Se han autonvinculado presupuestos y/o reparaciones a esta avería")
+    if error:
+        messages.warning(user, "Ha ocurrido un error durante la autovinculación en esta avería")

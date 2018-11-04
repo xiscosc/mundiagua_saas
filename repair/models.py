@@ -11,9 +11,9 @@ from core.utils import generate_md5_id, get_time_zone, INTERVENTION_REGEX, searc
 
 
 class RepairStatus(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField()
-    percentage = models.IntegerField(default=0)
+    name = models.CharField(max_length=50, verbose_name='Nombre')
+    description = models.TextField(verbose_name='Descripción')
+    percentage = models.IntegerField(default=0, verbose_name='Porcentaje de reparación completada')
 
     def __str__(self):
         return self.name

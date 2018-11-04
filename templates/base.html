@@ -79,14 +79,14 @@
                 </a>
                 <ul class="dropdown-menu dropdown-messages" id="message-ajax">
                     <li>
-                        <a class="text-center" href="{% url 'message-inbox' %}">
+                        <a class="text-center" href="{% url 'core:message-inbox' %}">
                             <strong>Ver todos los mensajes</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a class="text-center" href="{% url 'message-new' %}">
+                        <a class="text-center" href="{% url 'core:message-new' %}">
                             <i class="fa fa-plus"></i>
                             <strong>Nuevo mensaje</strong>
                         </a>
@@ -101,7 +101,7 @@
                     <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'user-manage' %}"><i
+                    <li><a href="{% url 'core:user-manage' %}"><i
                             class="fa fa-user fa-fw"></i>{{ request.user.get_full_name }}</a>
                     </li>
                     <li class="divider"></li>
@@ -273,11 +273,19 @@
                                     class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'system-variables' %}">
-                                        <i class="fa fa-table fa-fw"></i> Variables del sistema</a>
+                                    <a href="{% url 'core:variable' %}">
+                                        <i class="fa fa-codepen fa-fw"></i> Variables del sistema</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'changelog' %}">
+                                    <a href="{% url 'core:repair-status' %}">
+                                        <i class="fa fa-gear fa-fw"></i> Estados Idegis & ATH</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'core:engine-repair-status' %}">
+                                        <i class="fa fa-code-fork fa-fw"></i> Estados Motor</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'core:changelog' %}">
                                         <i class="fa fa-laptop fa-fw"></i> Acerca del sistema</a>
                                 </li>
 
@@ -367,7 +375,7 @@
         make_notification(
             "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",
             "info",
-            "{% url 'message-inbox' %}"
+            "{% url 'core:message-inbox' %}"
         );
     </script>
 {% endif %}

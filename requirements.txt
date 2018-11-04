@@ -12,7 +12,7 @@ sendgrid-django==4.0.4
 django-bootstrap-pagination==1.6.4
 django-hijack
 django-hijack-admin
-celery==4.0.2
+celery==4.2.1
 python-memcached
 easy-thumbnails==2.4.1
 boto3
@@ -24,4 +24,5 @@ django-user-agents
 oauth2client
 pyshorteners
 django-debug-toolbar
-django-tinymce
+django-tinymce4-lite
+python-telegram-bot

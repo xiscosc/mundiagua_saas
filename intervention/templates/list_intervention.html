@@ -52,14 +52,14 @@
                                         <li>
                                             <a href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred tag_assigned %}">
                                                 <div style="background-color: grey; border-color: black"
-                                                     class="zone">TODAS
+                                                     class="zone zone-xs">TODAS
                                                 </div>
                                             </a></li>
 
                                         {% for zone in zones %}
                                             <li>
                                                 <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone.pk starred tag_assigned %}">
-                                                    {% include 'zone_include.html' with zone=zone %}
+                                                    {% include 'zone_include.html' with zone=zone class="zone-xs" %}
                                                 </a></li>
                                         {% endfor %}
                                     </ul>
@@ -74,14 +74,14 @@
                                         <li>
                                             <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned starred 0 %}">
                                                 <div style="background-color: grey; border-color: black"
-                                                     class="zone">TODAS
+                                                     class="zone zone-xs">TODAS
                                                 </div>
                                             </a></li>
 
                                         {% for tag in tags %}
                                             <li>
                                                 <a href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned starred tag.pk %}">
-                                                    {% include 'zone_include.html' with zone=tag %}
+                                                    {% include 'zone_include.html' with zone=tag class="zone-xs" %}
                                                 </a></li>
                                         {% endfor %}
                                     </ul>
@@ -120,7 +120,7 @@
                                 {% if search_user %}
                                     <li class="li-filters">
 
-                                        <a class="zone"
+                                        <a class="zone zone-xs"
                                            href="{% url 'intervention:intervention-list' intervention_status 0 zone_assigned starred tag_assigned%}"
                                            style="color: black !important; background-color: white">
                                             <i class="fa fa-user"></i> {{ search_user.get_full_name|upper }}
@@ -130,14 +130,14 @@
                                 {% if search_zone %}
                                     <li class="li-filters">
                                         <a style="margin-top: -15px; padding-right: 1px; padding-left: 1px" href="{% url 'intervention:intervention-list' intervention_status user_assigned 0 starred tag_assigned %}">
-                                            {% include 'zone_include.html' with zone=search_zone %}
+                                            {% include 'zone_include.html' with zone=search_zone class="zone-xs" %}
                                         </a>
                                     </li>
                                 {% endif %}
                                 {% if search_tag %}
                                     <li class="li-filters">
                                         <a style="margin-top: -15px; padding-left: 1px; padding-right: 1px" href="{% url 'intervention:intervention-list' intervention_status user_assigned zone_assigned starred 0 %}">
-                                            {% include 'zone_include.html' with zone=search_tag %}
+                                            {% include 'zone_include.html' with zone=search_tag class="zone-xs" %}
                                         </a>
                                     </li>
                                 {% endif %}

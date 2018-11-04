@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, PasswordChangeForm
+from core.models import SystemVariable
 
 
 class MundiaguaLoginForm(AuthenticationForm):
@@ -20,3 +21,17 @@ class MundiaguaChangePasswordForm(PasswordChangeForm, SetPasswordForm):
             self.user.update_change_password()
             self.user.save()
         return self.user
+
+
+class SystemVariableRichForm(forms.ModelForm):
+
+    class Meta:
+        model = SystemVariable
+        fields = ['value']
+
+
+class SystemVariablePlainForm(forms.ModelForm):
+
+    class Meta:
+        model = SystemVariable
+        fields = ['plain_value']

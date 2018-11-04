@@ -236,18 +236,20 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">Vinculaciones
                             <small>Puedes vincular esta avería a una reparación o un presupuesto</small>
-                            <div class="pull-right">
-                                <form class="form-inline" method="post" style="margin-top: -5px"
-                                      action="{% url 'intervention:intervention-link' intervention.pk %}">
-                                    {% csrf_token %}
-                                    <input required type="text" class="form-control input-sm"
-                                           placeholder="Id reparación o presupuesto"
-                                           name="object">
-                                    <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i>
-                                        Vincular
-                                    </button>
-                                </form>
-                            </div>
+                            {% if request.user_agent.is_pc %}
+                                <div class="pull-right">
+                                    <form class="form-inline" method="post" style="margin-top: -5px"
+                                          action="{% url 'intervention:intervention-link' intervention.pk %}">
+                                        {% csrf_token %}
+                                        <input required type="text" class="form-control input-sm"
+                                               placeholder="Id reparación o presupuesto"
+                                               name="object">
+                                        <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i>
+                                            Vincular
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endif %}
                         </h3>
                     </div>
                     <div class="panel-body forms_content">
@@ -322,8 +324,9 @@
                         <h3 class="panel-title">Realizar cambios</h3>
                     </div>
                     <div class="panel-body forms_content">
+
                         <div class="row">
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-md-6 col-xs-12">
                                 <form method="post" class="form_modify"
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
@@ -359,32 +362,6 @@
 
                                 </form>
                                 <hr>
-                            </div>
-                            <div class="col-xs-12 col-md-6">
-                                <form method="post" class="form_modify"
-                                      action="{% url 'intervention:intervention-edit' intervention.pk %}">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <h5>Añadir modificación:</h5>
-
-                                        </div>
-                                        <div class="col-xs-12 col-md-10">
-                                <textarea class="form-control" name="intervention_modification" rows="3"
-                                          placeholder="Escribe aquí una modificación" required></textarea>
-                                        </div>
-                                        <div class="col-xs-12 col-md-2">
-                                            <button type="submit" class="btn btn-block btn-warning">
-                                                <span class="fa fa-plus"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                                <hr>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 col-md-6">
                                 <form method="post" class="form_modify"
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
@@ -422,31 +399,29 @@
                                 </form>
                                 <hr>
                             </div>
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-md-6 col-xs-12">
                                 <form method="post" class="form_modify"
                                       action="{% url 'intervention:intervention-edit' intervention.pk %}">
                                     {% csrf_token %}
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <h5>Enviar copia a dispositivo:</h5>
+                                            <h5>Añadir modificación:</h5>
 
                                         </div>
                                         <div class="col-xs-12 col-md-10">
-                                            <select class="form-control" name="user_to_send">
-                                                {% for u in users %}
-                                                    <option value="{{ u.pk }}">Enviar a {{ u.get_full_name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                <textarea class="form-control" name="intervention_modification" rows="6"
+                                          placeholder="Escribe aquí una modificación" required></textarea>
                                         </div>
                                         <div class="col-xs-12 col-md-2">
-                                            <button type="submit" class="btn btn-default btn-block">
-                                                <span class="fa fa-send"></span>
+                                            <button type="submit" class="btn btn-block btn-warning">
+                                                <span class="fa fa-plus"></span>
                                             </button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
+
 
                     </div>
                     <div class="panel-body forms_progress" style="display: none">

@@ -5,9 +5,8 @@ from django.contrib.auth.views import LogoutView, PasswordChangeView, PasswordCh
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
-from core.views import IndexView, NewMessageView, MessagesListView, MessagesSentListView, MessagesAjaxView, \
-    ChangeLogView, UserView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, LoginRedirectView, \
-    SystemVariableView
+from core.views import IndexView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, \
+    LoginRedirectView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -16,23 +15,17 @@ urlpatterns = [
     path('budget/', include(('budget.urls', 'budget'), namespace='budget')),
     path('repair/', include(('repair.urls', 'repair'), namespace='repair')),
     path('engine/', include(('engine.urls', 'engine'), namespace='engine')),
-    path('user/', UserView.as_view(), name="user-manage"),
-    path('systemvariables/', SystemVariableView.as_view(), name="system-variables"),
+    path('core/', include(('core.urls', 'core'), namespace='core')),
     path('login/', LoginRedirectView.as_view(), name="login"),
     path('login/google/', GoogleLoginView.as_view(), name='login-google'),
     path('login/google/process/', GoogleProcessView.as_view(), name='login-google-process'),
     path('login/google/error/', GoogleErrorView.as_view(), name='login-google-error'),
     path('logout/', LogoutView.as_view(template_name="logout.html"), name='logout'),
     path('', IndexView.as_view(), name='home'),
-    path('message/new/', NewMessageView.as_view(), name="message-new"),
-    path('message/inbox/', MessagesListView.as_view(), name="message-inbox"),
-    path('message/sent/', MessagesSentListView.as_view(), name="message-sent"),
-    path('message/ajax/', MessagesAjaxView.as_view(), name="message-ajax"),
     path('repair-status/<online>/', PublicClientView.as_view(), name="public-status-repair"),
     path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
     path('hijack/', include(('hijack.urls', 'hijack'))),
     path('tinymce/', include('tinymce.urls')),
-    path('changelog/', ChangeLogView.as_view(), name="changelog"),
     path(
         'login/password/',
         LoginPasswordView.as_view(

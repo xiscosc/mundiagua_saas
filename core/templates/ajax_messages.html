@@ -1,7 +1,7 @@
 {% if messages_mundiagua|length > 0 %}
     {% for m in messages_mundiagua %}
         <li>
-            <a href="{% url 'message-inbox' %}">
+            <a href="{% url 'core:message-inbox' %}">
                 <div>
                     <strong>{{ m.from_user.get_full_name }}</strong>
                                     <span class="pull-right text-muted">
