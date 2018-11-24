@@ -26,3 +26,8 @@ def app_version_includes():
 @register.simple_tag
 def google_client_id():
     return str(settings.GOOGLE_CLIENT_ID)
+
+
+@register.simple_tag
+def template_color():
+    return str(settings.TEMPLATE_COLOR)
