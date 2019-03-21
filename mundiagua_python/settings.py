@@ -84,6 +84,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.login.EnforceLoginMiddleware',
     'core.middleware.staff.StaffMiddleware',
+    'core.middleware.gsmkey.GsmKey',
     'django_user_agents.middleware.UserAgentMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
@@ -305,3 +306,5 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
 }
+
+GSM_WATCH_CACHE_KEY = 'gsmstatus'
