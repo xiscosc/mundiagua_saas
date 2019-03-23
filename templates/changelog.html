@@ -37,6 +37,27 @@
                 <li><img src="{% static 'base/img/google.png' %}" class="google-logo"/> Cuentas de Google
                     <button disabled class="btn btn-xs btn-default"> Activas</button>
                 </li>
+                <li>GSM Microcom
+                    <button disabled class="btn-inline btn btn-xs btn-default">Última
+                        actualización {{ gsm_time }} </button>
+                    {% if request.gsm_status == 0 %}
+                        <button class="btn btn-xs btn-default" disabled>
+                            <i class="fa fa-circle fa-fw"></i>
+                        </button>
+                    {% elif request.gsm_status == 1 %}
+                        <button class="btn btn-xs btn-success"  disabled>
+                            <i class="fa fa-check-circle fa-fw"></i>
+                        </button>
+                    {% elif request.gsm_status == 2 %}
+                        <button class="btn btn-xs btn-warning"  disabled>
+                            <i class="fa fa-exclamation fa-fw"></i>
+                        </button>
+                    {% elif request.gsm_status == 3 %}
+                        <button class="btn btn-xs btn-danger"  disabled>
+                            <i class="fa fa-exclamation-triangle fa-fw"></i>
+                        </button>
+                    {% endif %}
+                </li>
             </ul>
         </div>
     </div>
@@ -47,6 +68,7 @@
             <h5>22/03/2019</h5>
             <ul>
                 <li>Añadido estado en tiempo real del servidor Microcom</li>
+                <li>Actualizaciones de estabilidad y seguridad</li>
             </ul>
         </div>
     </div>
@@ -160,7 +182,9 @@
                 </li>
                 <li>La búsqueda adminte ahora presupuestos en formato PM17-1245 o PM17/1235</li>
                 <ul>
-                    <h3>6.4.3.1 <button class="btn btn-xs btn-danger" disabled>HOTFIX</button> </h3>
+                    <h3>6.4.3.1
+                        <button class="btn btn-xs btn-danger" disabled>HOTFIX</button>
+                    </h3>
                     <h5>14/11/2017</h5>
                     <li>Solucionado error en la búsqueda directa por código</li>
 
@@ -352,12 +376,13 @@
                 <li>Corrección de errores</li>
                 <li>Cambio de textos en reparaciones</li>
                 <li>Cambio de textos en sms/email</li>
-            <ul>
-                <h3>6.1.2.1
-                    <button class="btn btn-xs btn-danger" disabled>HOTFIX</button> </h3>
-            <h5>08/02/2017</h5>
-                <li>Corrección de errores en los mapas</li>
-            </ul>
+                <ul>
+                    <h3>6.1.2.1
+                        <button class="btn btn-xs btn-danger" disabled>HOTFIX</button>
+                    </h3>
+                    <h5>08/02/2017</h5>
+                    <li>Corrección de errores en los mapas</li>
+                </ul>
             </ul>
         </div>
     </div>

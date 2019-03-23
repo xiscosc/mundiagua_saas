@@ -71,21 +71,13 @@
 
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                Estado Microcom {% if request.gsm == 0 %}
-                <button class="btn btn-xs btn-default" >
-                    <i class="fa fa-circle fa-fw"></i>
+                {% if request.gsm_status == 2 %}
+                <button class="btn btn-xs btn-warning" disabled>
+                    Posible problema en servidor GSM <i class="fa fa-exclamation-triangle fa-fw"></i>
                 </button>
-                {% elif request.gsm == 1 %}
-                <button class="btn btn-xs btn-success" >
-                    <i class="fa fa-check-circle fa-fw"></i>
-                </button>
-                {% elif request.gsm == 2 %}
-                <button class="btn btn-xs btn-warning" >
-                    <i class="fa fa-exclamation fa-fw"></i>
-                </button>
-                {% elif request.gsm == 3 %}
-                <button class="btn btn-xs btn-danger" >
-                    <i class="fa fa-exclamation-triangle fa-fw"></i>
+                {% elif request.gsm_status == 3 %}
+                <button class="btn btn-xs btn-danger" disabled>
+                    Problema detectado en servidor GSM <i class="fa fa-exclamation-triangle fa-fw"></i>
                 </button>
                 {% endif %}
 

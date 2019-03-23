@@ -176,6 +176,7 @@ class ChangeLogView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ChangeLogView, self).get_context_data(**kwargs)
         import django, boto3, sendgrid, sys, celery, memcache, psycopg2
+        from django.core.cache import cache
         context['intranet_version'] = settings.APP_COMPLETE_VERSION
         context['django_version'] = django.__version__
         context['amazon_version'] = boto3.__version__
@@ -185,6 +186,7 @@ class ChangeLogView(TemplateView):
         context['memcache_version'] = memcache.__version__
         context['postgre_version_c'] = psycopg2.__version__
         context['postgre_version'] = psycopg2.__libpq_version__
+        context['gsm_time'] = cache.get(settings.GSM_WATCH_TIME_CACHE_KEY)
         return context
 
 

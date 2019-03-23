@@ -4,6 +4,7 @@ from django.core.cache import cache
 
 import time
 import requests
+from datetime import datetime
 
 from core.models import User
 from core.utils import send_data_to_user
@@ -36,7 +37,8 @@ class Command(BaseCommand):
                     status = 3
                     self.send_error_message(users)
             finally:
-                cache.set(settings.GSM_WATCH_CACHE_KEY, status, settings.GSM_WATCH_TIME * 2)
+                cache.set(settings.GSM_WATCH_STATUS_CACHE_KEY, status, settings.GSM_WATCH_TIME * 2)
+                cache.set(settings.GSM_WATCH_TIME_CACHE_KEY, datetime.now(), settings.GSM_WATCH_TIME * 2)
                 time.sleep(settings.GSM_WATCH_TIME)
 
     def send_error_message(self, users):
