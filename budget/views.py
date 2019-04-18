@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView, View, UpdateView
 
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
+from core.utils import get_page_from_paginator
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
@@ -143,7 +144,7 @@ class ListBudgetView(TemplateView):
         page = int(self.request.GET.get('page', 1))
         budgets = BudgetStandard.objects.all().order_by("-date")
         paginator = Paginator(budgets, settings.DEFAULT_BUDGETS_PAGINATOR)
-        context['budgets'] = paginator.page(page)
+        context['budgets'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -175,7 +176,7 @@ class SearchBudgetView(TemplateView):
         budgets_pk = self.request.session.get('search_budgets', list())
         budgets = BudgetStandard.objects.filter(pk__in=budgets_pk).order_by("-date")
         paginator = Paginator(budgets, settings.DEFAULT_BUDGETS_PAGINATOR)
-        context['budgets'] = paginator.page(page)
+        context['budgets'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -194,7 +195,7 @@ class ListBudgetRepairView(TemplateView):
             budgets = BudgetRepair.objects.filter(idegis_repair_id=kwargs['pk']).order_by("-intern_id")
 
         paginator = Paginator(budgets, settings.DEFAULT_BUDGETS_PAGINATOR)
-        context['budgets'] = paginator.page(page)
+        context['budgets'] = get_page_from_paginator(paginator, page)
         return context
 
 

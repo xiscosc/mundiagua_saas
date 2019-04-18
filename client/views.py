@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 from client.models import Client, Address, Phone, SMS
+from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
@@ -228,7 +229,7 @@ class AllClientsView(TemplateView):
         clients = Client.objects.all()
         context['title'] = "Todos los clientes"
         paginator = Paginator(clients, settings.DEFAULT_CLIENTS_PAGINATOR)
-        context['clients'] = paginator.page(page)
+        context['clients'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -261,7 +262,7 @@ class SearchClientView(TemplateView):
         clients_pk = self.request.session.get('search_clients', list())
         clients = Client.objects.filter(pk__in=clients_pk)
         paginator = Paginator(clients, settings.DEFAULT_CLIENTS_PAGINATOR)
-        context['clients'] = paginator.page(page)
+        context['clients'] = get_page_from_paginator(paginator, page)
         return context
 
 

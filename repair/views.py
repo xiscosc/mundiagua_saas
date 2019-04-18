@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, View
 
 from core.models import SystemVariable
+from core.utils import get_page_from_paginator
 from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSearchView
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
@@ -145,7 +146,7 @@ class ListRepairView(TemplateView):
                 repairs = repairs.filter(starred=True)
 
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
-        context['repairs'] = paginator.page(page)
+        context['repairs'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -201,7 +202,7 @@ class SearchRepairView(TemplateView):
             if starred:
                 repairs = repairs.filter(starred=True)
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
-        context['repairs'] = paginator.page(page)
+        context['repairs'] = get_page_from_paginator(paginator, page)
         return context
 
 

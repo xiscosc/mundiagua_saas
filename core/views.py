@@ -12,7 +12,7 @@ from oauth2client import client
 from client.models import Client, Address
 from core.forms import SystemVariableRichForm, SystemVariablePlainForm
 from core.models import User, Message, SystemVariable
-from core.utils import get_return_from_id, has_to_change_password
+from core.utils import get_return_from_id, has_to_change_password, get_page_from_paginator
 from engine.models import EngineRepair, EngineStatus
 from repair.models import RepairStatus
 
@@ -112,7 +112,7 @@ class MessageListBaseView(TemplateView):
         page = int(self.request.GET.get('page', 1))
         messages = self.get_data()
         paginator = Paginator(messages, 10)
-        context['messages_mundiagua'] = paginator.page(page)
+        context['messages_mundiagua'] = get_page_from_paginator(paginator, page)
         return context
 
 

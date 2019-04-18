@@ -9,6 +9,7 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.mail import send_mail
+from django.core.paginator import InvalidPage
 from django.urls import reverse_lazy
 from pushbullet import Pushbullet
 from pytz import timezone
@@ -272,6 +273,13 @@ def delete_telegram_messages(token, ids, intervention):
 
     if removed > 0:
         bot.send_message(chat_id=token, text="Se han elminado los archivos de " + str(intervention))
+
+
+def get_page_from_paginator(paginator, page):
+    try:
+        return paginator.page(page)
+    except InvalidPage:
+        return paginator.page(paginator.num_pages)
 
 
 def autolink_intervention(intervention, text, user):

@@ -9,6 +9,7 @@ from django.views.generic import UpdateView
 from django.views.generic.base import View, TemplateView
 
 from core.models import SystemVariable
+from core.utils import get_page_from_paginator
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair, EngineStatus, EngineRepairLog
 
@@ -117,7 +118,7 @@ class SearchEngineRepairView(TemplateView):
         engines_pk = self.request.session.get('search_repairs_engine', list())
         repairs = EngineRepair.objects.filter(pk__in=engines_pk).order_by("-date")
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
-        context['repairs'] = paginator.page(page)
+        context['repairs'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -129,5 +130,5 @@ class ListEngineRepairView(TemplateView):
         page = int(self.request.GET.get('page', 1))
         repairs = EngineRepair.objects.all().order_by("-date")
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
-        context['repairs'] = paginator.page(page)
+        context['repairs'] = get_page_from_paginator(paginator, page)
         return context

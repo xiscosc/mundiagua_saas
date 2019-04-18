@@ -12,7 +12,8 @@ from async_messages import messages
 
 from core.models import User, SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
-from core.utils import ATH_REGEX, IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT
+from core.utils import ATH_REGEX, IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, \
+    get_page_from_paginator
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
     InterventionDocument, InterventionSubStatus, InterventionLogSub, Tag
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
@@ -165,7 +166,7 @@ class ListInterventionView(TemplateView):
 
         paginator = Paginator(list_data['interventions'], settings.DEFAULT_NUM_PAGINATOR)
 
-        context['interventions'] = paginator.page(page)
+        context['interventions'] = get_page_from_paginator(paginator, page)
 
         return context
 
@@ -235,7 +236,7 @@ class SearchInterventionView(TemplateView):
         interventions_pk = self.request.session.get('search_intervention', list())
         interventions = Intervention.objects.filter(pk__in=interventions_pk).order_by("-date")
         paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
-        context['interventions'] = paginator.page(page)
+        context['interventions'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -247,7 +248,7 @@ class ListModificationView(TemplateView):
         page = int(self.request.GET.get('page', 1))
         modifications = InterventionModification.objects.all().order_by("-date")
         paginator = Paginator(modifications, settings.DEFAULT_MODIFICATIONS_PAGINATOR)
-        context['modifications'] = paginator.page(page)
+        context['modifications'] = get_page_from_paginator(paginator, page)
         return context
 
 
@@ -302,7 +303,7 @@ class OwnListInterventionView(TemplateView):
         interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS,
                                                     assigned=self.request.user).order_by("-date")
         paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
-        context['interventions'] = paginator.page(page)
+        context['interventions'] = get_page_from_paginator(paginator, page)
 
         return context
 

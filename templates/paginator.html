@@ -1,9 +1,9 @@
 {% load bootstrap_pagination %}
 <div class="row">
     <div class="col-lg-12 btn-desktop-list-intervention">
-            {% bootstrap_paginate obj range=15 %}
+            {% bootstrap_paginate obj range=15 show_first_last=true %}
     </div>
     <div class="col-lg-12 btn-mobile-list-intervention">
-            {% bootstrap_paginate obj range=5 %}
+            {% bootstrap_paginate obj range=5 show_first_last=true %}
     </div>
 </div>
