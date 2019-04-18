@@ -1,30 +1,47 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}{% if title %}{{ title }}{% else %}Listado de presupuestos{% endif %}{% endblock %}
+{% block page_title %}{% if title %}{{ title }}{% else %}Listado de presupuestos{% endif %}
+    {% if search_text %}
+        {% if show_lines_option %}
+            <form method="post"  class="pull-right" action="{% url 'budget:budget-psearch' %}?lines=1">
+                {% csrf_token %}
+                <input type="hidden" name="search_text" value="{{ search_text }}">
+                <button class="btn btn-xs btn-primary" type="submit">Buscar en líneas de presupuesto</button>
+            </form>
+        {% else %}
+            <form method="post" class="pull-right" action="{% url 'budget:budget-psearch' %}">
+                {% csrf_token %}
+                <input type="hidden" name="search_text" value="{{ search_text }}">
+                <button class="btn btn-xs btn-warning" type="submit">Excluir líneas de presupuesto</button>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}
 {% block content %}
     {% if type %}
-    <div class="row">
-        <div class="col-lg-12">
-            <a href="{% url 'budget:budget-repair-new' type pk %}" class="btn btn-success btn-circle"><i class="fa fa-plus"></i></a>
+        <div class="row">
+            <div class="col-lg-12">
+                <a href="{% url 'budget:budget-repair-new' type pk %}" class="btn btn-success btn-circle"><i
+                        class="fa fa-plus"></i></a>
+            </div>
         </div>
-    </div>
     {% endif %}
     {% if budgets|length > 0 %}
-    {% include 'paginator.html' with obj=budgets %}
-    <div class="row">
-        <div class="col-md-12 col-xs-12 col-lg-12">
+        {% include 'paginator.html' with obj=budgets %}
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-lg-12">
 
-            {% include 'list_budget_include.html' with budgets=budgets %}
+                {% include 'list_budget_include.html' with budgets=budgets %}
 
+            </div>
         </div>
-    </div>
-    {% include 'paginator.html' with obj=budgets %}
+        {% include 'paginator.html' with obj=budgets %}
 
     {% else %}
-            <h4>No hay ningún presupuesto, puedes crear uno usando el botón.</h4>
+        <h4>No hay ningún presupuesto, puedes crear uno usando el botón.</h4>
 
-        {% endif %}
+    {% endif %}
 
 
 {% endblock %}

@@ -160,8 +160,16 @@ class PreSearchBudgetView(PreSearchView):
         for i in budgets:
             pk_list.append(i.pk)
 
+        lines_enabled = int(self.request.GET.get('lines', 0)) == 1
+        if lines_enabled:
+            lines = BudgetLineStandard.objects.filter(product__icontains=search_text)
+            for l in lines:
+                pk_list.append(l.budget.pk)
+            pk_list = list(set(pk_list))
+
         request.session['search_budgets'] = pk_list
         request.session['search_budgets_text'] = search_text
+        request.session['search_budgets_lines_enabled'] = lines_enabled
         return HttpResponseRedirect(reverse_lazy('budget:budget-search'))
 
 
@@ -177,6 +185,8 @@ class SearchBudgetView(TemplateView):
         budgets = BudgetStandard.objects.filter(pk__in=budgets_pk).order_by("-date")
         paginator = Paginator(budgets, settings.DEFAULT_BUDGETS_PAGINATOR)
         context['budgets'] = get_page_from_paginator(paginator, page)
+        context['search_text'] = search_text
+        context['show_lines_option'] = not self.request.session.get('search_budgets_lines_enabled', False)
         return context
 
 
