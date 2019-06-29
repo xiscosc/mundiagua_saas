@@ -16,6 +16,7 @@ from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSe
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
 from repair.tasks import send_sms_tracking
+from repair.utils import add_list_filters
 from core.tasks import send_mail_client
 
 
@@ -124,26 +125,26 @@ class ListRepairView(TemplateView):
     template_name = "list_repair.html"
 
     def get_context_data(self, **kwargs):
+        type = int(kwargs['type'])
+        starred = bool(int(kwargs['starred']))
+        status_id = int(kwargs['status_id'])
+        budget = int(kwargs['budget'])
+
         context = super(ListRepairView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
         context['list_navigation'] = True
-        type = int(kwargs['type'])
-        starred = bool(int(kwargs['starred']))
+        context['status'] = RepairStatus.objects.all()
+
         if type == 0:
-            repairs_ath = AthRepair.objects.all()
-            repairs_idegis = IdegisRepair.objects.all()
-            if starred:
-                repairs_ath = repairs_ath.filter(starred=True)
-                repairs_idegis = repairs_idegis.filter(starred=True)
+            repairs_ath = add_list_filters(AthRepair, status_id, starred, budget)
+            repairs_idegis = add_list_filters(IdegisRepair, status_id, starred, budget)
             repairs = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
         elif type == 1:
-            repairs = AthRepair.objects.all().order_by("-date")
-            if starred:
-                repairs = repairs.filter(starred=True)
+            repairs = add_list_filters(AthRepair, status_id, starred, budget)
+            repairs = repairs.order_by("-date")
         else:
-            repairs = IdegisRepair.objects.all().order_by("-date")
-            if starred:
-                repairs = repairs.filter(starred=True)
+            repairs = add_list_filters(IdegisRepair, status_id, starred, budget)
+            repairs = repairs.order_by("-date")
 
         paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
         context['repairs'] = get_page_from_paginator(paginator, page)

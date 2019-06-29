@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^ath/view/(?P<pk>\d+)/$', AthRepairView.as_view(), name="repair-ath-view"),
     url(r'^idegis/view/(?P<pk>\d+)/$', IdegisRepairView.as_view(), name="repair-idegis-view"),
     url(r'^status/(?P<pk>\d+)/$', UpdateStatusRepair.as_view(), name="repair-update-status"),
-    url(r'^list/(?P<type>\d+)/(?P<starred>\d+)/$', ListRepairView.as_view(), name="repair-list"),
+    url(r'^list/(?P<type>\d+)/(?P<status_id>\d+)/(?P<budget>\d+)/(?P<starred>\d+)/$', ListRepairView.as_view(), name="repair-list"),
     url(r'^psearch/$', PreSearchRepairView.as_view(), name="repair-psearch"),
     url(r'^search/(?P<type>\d+)/(?P<starred>\d+)/$', SearchRepairView.as_view(), name="repair-search"),
     url(r'^print/(?P<logo>\d+)/(?P<type>\d+)/(?P<pk>\d+)/$', PrintRepairView.as_view(), name="repair-print"),
@@ -19,5 +19,4 @@ urlpatterns = [
     url(r'^unlink/(?P<pk>\d+)/(?P<type>\d+)/(?P<pk_intervention>\d+)/(?P<to_repair>\d+)/$', UnlinkInterventionView.as_view(),
         name="repair-unlink-intervention"),
     url(r'^sendtracking/(?P<pk>\d+)/$', SendTrackingRepairView.as_view(), name="repair-send-tracking"),
-
 ]

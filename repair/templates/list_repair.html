@@ -31,11 +31,38 @@
                                        aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li {% if type == "0" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 0 starred %}">Todos los tipos</a></li>
+                                                href="{% url 'repair:repair-list' 0 status_id budget starred %}">Todos los tipos</a></li>
                                         <li {% if type == "1" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 1 starred %}">Sólo ATH</a></li>
+                                                href="{% url 'repair:repair-list' 1 status_id budget starred %}">Sólo ATH</a></li>
                                         <li {% if type == "2" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 2 starred %}">Sólo Idegis</a></li>
+                                                href="{% url 'repair:repair-list' 2 status_id budget starred %}">Sólo Idegis</a></li>
+                                    </ul>
+
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Estado <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                    <li {% if status_id == "0" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' type 0 budget starred %}">Todos los estados</a></li>
+                                    {% for s in status %}
+                                     <li {% if status_id == s.pk|stringformat:"i" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' type s.pk budget starred %}">{{ s.name }}</a></li>
+                                    {% endfor %}
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false"> Presupuesto <span class="caret"></span></a>
+                                     <ul class="dropdown-menu">
+                                        <li {% if budget == "0" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' type status_id 0 starred %}">Todas</a></li>
+                                        <li {% if budget == "1" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' type status_id 1 starred %}">Con presupuesto</a></li>
+                                        <li {% if budget == "2" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' type status_id 2 starred %}">Sin presupuesto</a></li>
                                     </ul>
                                 </li>
 
@@ -45,12 +72,12 @@
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li {% if starred == '0' %} class="active" {% endif %}>
-                                            <a href="{% url 'repair:repair-list' type 0 %}">
+                                            <a href="{% url 'repair:repair-list' type status_id budget 0 %}">
                                                 Ver todas
                                             </a>
                                         </li>
                                         <li {% if starred == '1' %} class="active" {% endif %}>
-                                            <a href="{% url 'repair:repair-list' type 1 %}">
+                                            <a href="{% url 'repair:repair-list' type status_id budget 1 %}">
                                                 Ver sólo prioritarias
                                             </a>
                                         </li>
