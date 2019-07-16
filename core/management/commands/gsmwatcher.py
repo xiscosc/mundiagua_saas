@@ -17,29 +17,28 @@ class Command(BaseCommand):
         # STATUS 1 - OK, 2 - WARNING, 3 - FAILURE
         status = 1
         users = User.objects.filter(pk__in=[1, 11])
-        while True:
-            try:
-                r = requests.get(settings.GSM_URL)
-                if r.status_code == 200:
-                    if status == 3:
-                        self.send_recover_message(users)
-                    status = 1
-                else:
-                    if status == 1:
-                        status = 2
-                    elif status == 2:
-                        status = 3
-                        self.send_error_message(users)
-            except:
+        try:
+            r = requests.get(settings.GSM_URL)
+            if r.status_code == 200:
+                if status == 3:
+                    self.send_recover_message(users)
+                status = 1
+            else:
                 if status == 1:
                     status = 2
                 elif status == 2:
                     status = 3
                     self.send_error_message(users)
-            finally:
-                cache.set(settings.GSM_WATCH_STATUS_CACHE_KEY, status, settings.GSM_WATCH_TIME * 2)
-                cache.set(settings.GSM_WATCH_TIME_CACHE_KEY, datetime.now(), settings.GSM_WATCH_TIME * 2)
-                time.sleep(settings.GSM_WATCH_TIME)
+        except:
+            if status == 1:
+                status = 2
+            elif status == 2:
+                status = 3
+                self.send_error_message(users)
+        finally:
+            cache.set(settings.GSM_WATCH_STATUS_CACHE_KEY, status, settings.GSM_WATCH_TIME * 2)
+            cache.set(settings.GSM_WATCH_TIME_CACHE_KEY, datetime.now(), settings.GSM_WATCH_TIME * 2)
+            time.sleep(settings.GSM_WATCH_TIME)
 
     def send_error_message(self, users):
         for user in users:
