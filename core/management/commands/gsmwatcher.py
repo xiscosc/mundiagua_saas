@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # STATUS 1 - OK, 2 - WARNING, 3 - FAILURE
         status = 1
-        users = User.objects.filter(pk__in=[1, 11])
+        users = User.objects.filter(pk__in=[1, 11, 23])
         try:
             r = requests.get(settings.GSM_URL)
             if r.status_code == 200:
@@ -36,9 +36,8 @@ class Command(BaseCommand):
                 status = 3
                 self.send_error_message(users)
         finally:
-            cache.set(settings.GSM_WATCH_STATUS_CACHE_KEY, status, settings.GSM_WATCH_TIME * 2)
-            cache.set(settings.GSM_WATCH_TIME_CACHE_KEY, datetime.now(), settings.GSM_WATCH_TIME * 2)
-            time.sleep(settings.GSM_WATCH_TIME)
+            cache.set(settings.GSM_WATCH_STATUS_CACHE_KEY, status, settings.GSM_WATCH_TIME * 5)
+            cache.set(settings.GSM_WATCH_TIME_CACHE_KEY, datetime.now(), settings.GSM_WATCH_TIME * 5)
 
     def send_error_message(self, users):
         for user in users:
