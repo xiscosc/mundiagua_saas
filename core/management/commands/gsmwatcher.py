@@ -16,7 +16,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # STATUS 1 - OK, 2 - WARNING, 3 - FAILURE
         status = 1
-        users = User.objects.filter(pk__in=[1, 11, 23])
+        user_pks = settings.USERS_IT + settings.USERS_TEC
+        users = User.objects.filter(pk__in=user_pks)
         try:
             r = requests.get(settings.GSM_URL)
             if r.status_code == 200:

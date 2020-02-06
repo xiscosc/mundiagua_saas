@@ -26,6 +26,6 @@ class Command(BaseCommand):
             self.send_error_message()
 
     def send_error_message(self):
-        users = User.objects.filter(pk__in=[1, 23])
+        users = User.objects.filter(pk__in=settings.USERS_IT)
         for user in users:
             send_data_to_user(user, "ERROR SERVICIO SMS", "Error autenticando servicio SMS")
