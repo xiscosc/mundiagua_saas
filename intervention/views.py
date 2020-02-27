@@ -42,7 +42,7 @@ class HomeView(TemplateView):
         context['status_assigned'] = Intervention.objects.filter(status=2).count()
         context['status_terminated'] = Intervention.objects.filter(status=3).count()
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
-        context['status_billing'] = Intervention.objects.filter(status=5).count()
+        context['status_preparation'] = Intervention.objects.filter(status=5).count()
         context['modifications'] = InterventionModification.objects.all().order_by("-date")[:15]
         context['months'] = [x for x in range(1, 13)]
         context['years'] = [x for x in range(2014, date.today().year + 1)]
