@@ -101,7 +101,9 @@ class InterventionView(DetailView):
         context = super(InterventionView, self).get_context_data(**kwargs)
         context['zones'] = Zone.objects.all().exclude(pk=9).order_by('pk')
         context['users'] = User.objects.filter(is_active=True).order_by('order_in_app')
-        context['status'] = InterventionStatus.objects.all()
+        allowed_transition_ids = self.get_object().status.allowed_transition_ids
+        context['show_users'] = 2 in allowed_transition_ids
+        context['status'] = InterventionStatus.objects.filter(pk__in=allowed_transition_ids)
         context['sub_status'] = InterventionSubStatus.objects.all()
         try:
             context['sms_value'] = SystemVariable.objects.get(key='intervention_sms').get_value()

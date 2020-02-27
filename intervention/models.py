@@ -30,6 +30,27 @@ class InterventionStatus(models.Model):
     def __str__(self):
         return self.name
 
+    def get_allowed_transition_ids(self):
+        # PENDIENTE 1
+        if self.id == 1:
+            return [2, 3, 4, 5]
+
+        # ASIGNADA 2
+        if self.id == 2:
+            return [1, 2, 3, 4]
+
+        # TERMINADA 3 // ANULADA 4
+        if self.id == 3 or self.id == 4:
+            return [5]
+
+        # PREPARACION 5
+        if self.id == 5:
+            return [1, 3, 4]
+
+        return []
+
+    allowed_transition_ids = property(get_allowed_transition_ids)
+
 
 class InterventionSubStatus(models.Model):
     name = models.CharField(max_length=50)

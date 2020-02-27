@@ -336,16 +336,6 @@
 
                                         </div>
                                         <div class="col-xs-12 col-md-10">
-                                            {% if intervention.status_id == 5 %}
-                                                <select class="form-control" name="intervention_status"
-                                                        id="intervention_status">
-                                                    {% for st in status %}
-                                                        {% if st.pk != 2 %}
-                                                            <option value="{{ st.pk }}">{{ st.name }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            {% else %}
                                                 <select class="form-control" name="intervention_status"
                                                         id="intervention_status">
                                                     {% for st in status %}
@@ -356,14 +346,15 @@
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
-                                                <select class="form-control" name="intervention_assigned"
-                                                        id="intervention_assigned">
-                                                    {% for u in users %}
-                                                        <option value="{{ u.pk }}">Asignar
-                                                            a {{ u.get_full_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            {% endif %}
+                                                {% if show_users %}
+                                                    <select class="form-control" name="intervention_assigned"
+                                                            id="intervention_assigned">
+                                                        {% for u in users %}
+                                                            <option value="{{ u.pk }}">Asignar
+                                                                a {{ u.get_full_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                {% endif %}
                                         </div>
                                         <div class="col-xs-12 col-md-2">
                                             <button type="submit" class="btn btn-block btn-danger">
