@@ -2,7 +2,7 @@ from django.urls import path
 from .views import SystemVariableView, SystemVariableUpdateView, ChangeLogView, UserView, RepairStatusSystemView, \
     SystemRepairStatusUpdateView, SystemRepairStatusCreateView, EngineRepairStatusSystemView, \
     SystemEngineRepairStatusUpdateView, SystemEngineRepairStatusCreateView, NewMessageView, MessagesListView, \
-    MessagesSentListView, MessagesAjaxView
+    MessagesSentListView, MessagesAjaxView, GetAllSmsView, GetSmsBySenderView, GetSmsView, SMSListView
 
 urlpatterns = [
     path('variable/', SystemVariableView.as_view(), name="variable"),
@@ -20,4 +20,8 @@ urlpatterns = [
     path('message/inbox/', MessagesListView.as_view(), name="message-inbox"),
     path('message/sent/', MessagesSentListView.as_view(), name="message-sent"),
     path('message/ajax/', MessagesAjaxView.as_view(), name="message-ajax"),
+    path('sms-api/sms/all/list', GetAllSmsView.as_view(), name="sms-api-all"),
+    path('sms-api/sms/sender/<sender>', GetSmsBySenderView.as_view(), name="sms-api-sender"),
+    path('sms-api/sms/<id>', GetSmsView.as_view(), name="sms-api-id"),
+    path('sms-gsm', SMSListView.as_view(), name="sms-gsm"),
 ]

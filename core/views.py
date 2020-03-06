@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import TemplateView
@@ -12,7 +12,7 @@ from oauth2client import client
 from client.models import Client, Address
 from core.forms import SystemVariableRichForm, SystemVariablePlainForm
 from core.models import User, Message, SystemVariable
-from core.utils import get_return_from_id, has_to_change_password, get_page_from_paginator
+from core.utils import get_return_from_id, has_to_change_password, get_page_from_paginator, get_sms_api
 from engine.models import EngineRepair, EngineStatus
 from repair.models import RepairStatus
 
@@ -147,6 +147,58 @@ class MessagesAjaxView(TemplateView):
             self.request.user.has_notification = 2
             self.request.user.save()
         return context
+
+
+class GetAllSmsView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            raise Http404("This is an ajax view, friend.")
+        return super(GetAllSmsView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        limit = request.GET.get('limit', 0)
+        offset = request.GET.get('offset', 0)
+        response_code, response = get_sms_api('/sms/all', limit, offset)
+        if response_code == 200:
+            return JsonResponse(data=response, safe=False)
+        else:
+            raise Http404(response)
+
+
+class GetSmsBySenderView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            raise Http404("This is an ajax view, friend.")
+        return super(GetSmsBySenderView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        limit = request.GET.get('limit', 0)
+        offset = request.GET.get('offset', 0)
+        sender = kwargs['sender']
+        response_code, response = get_sms_api('/sms/sender/' + sender, limit, offset)
+        if response_code == 200:
+            return JsonResponse(data=response, safe=False)
+        else:
+            raise Http404(response)
+
+
+class GetSmsView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            raise Http404("This is an ajax view, friend.")
+        return super(GetSmsView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        id = kwargs['id']
+        response_code, response = get_sms_api('/sms/' + id)
+        if response_code == 200:
+            return JsonResponse(data=response, safe=False)
+        else:
+            raise Http404(response)
+
+
+class SMSListView(TemplateView):
+    template_name = 'sms_list.html'
 
 
 class PreSearchView(View):

@@ -5,9 +5,11 @@ import re
 import string
 import time
 from datetime import date, datetime
+import requests
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage
 from django.urls import reverse_lazy
@@ -280,6 +282,14 @@ def get_page_from_paginator(paginator, page):
         return paginator.page(page)
     except InvalidPage:
         return paginator.page(paginator.num_pages)
+
+
+def get_sms_api(url, limit=0, offset=0):
+    host = settings.SMS_SERVICE_URL + url
+    headers = {'Authorization': cache.get(settings.SMS_TOKEN_CACHE_KEY)}
+    params = {'limit': limit, 'offset': offset}
+    r = requests.get(url=host, headers=headers, params=params)
+    return r.status_code, r.json()
 
 
 def autolink_intervention(intervention, text, user):
