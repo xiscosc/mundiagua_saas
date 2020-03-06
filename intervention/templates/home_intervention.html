@@ -5,9 +5,38 @@
 {% block content %}
 
     <div class="row">
-
         <div class="col-lg-12 col-md-12">
             <div class="panel panel-info">
+                <div class="panel-heading">
+                    <a href="{% url 'intervention:intervention-list' 5 0 0 0 0 %}"><span
+                            class="badge pull-right">{{ status_preparation }}</span>
+                        <h3 class="panel-title"><i class="fa fa-gears"></i> En Preparación</h3></a>
+                </div>
+                <div class="panel-body">
+                    {% for z in zones %}
+                        {% if z.preparation_interventions > 0 %}
+                            <a href="{% url 'intervention:intervention-list' 5 0 z.pk 0 0 %}">
+                                {% include 'zone_include.html' with zone=z badge=z.preparation_interventions %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% for t in tags %}
+                        {% if t.preparation_interventions > 0 %}
+                            <a href="{% url 'intervention:intervention-list' 5 0 0 0 t.pk %}">
+                                {% include 'zone_include.html' with zone=t badge=t.preparation_interventions %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-warning">
                 <div class="panel-heading">
                     <a href="{% url 'intervention:intervention-list' 1 0 0 0 0 %}"><span
                             class="badge pull-right">{{ status_pending }}</span>
@@ -36,7 +65,7 @@
 
     <div class="row">
         <div class="col-lg-6 col-md-12">
-            <div class="panel panel-warning">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
                     <a href="{% url 'intervention:intervention-list' 2 0 0 0 0 %}"><span
                             class="badge pull-right">{{ status_assigned }}</span>
@@ -72,11 +101,6 @@
                        class="btn btn-danger btn-inline">
                         <span class="badge">{{ status_cancelled }}</span>
                         <i class="fa fa-warning"></i> Anuladas
-                    </a>
-                    <a href="{% url 'intervention:intervention-list' 5 0 0 0 0 %}"
-                       class="btn btn-info btn-inline">
-                        <span class="badge">{{ status_billing }}</span>
-                        <i class="fa fa-calculator"></i> Para facturar
                     </a>
                 </div>
             </div>

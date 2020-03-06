@@ -42,7 +42,7 @@ class HomeView(TemplateView):
         context['status_assigned'] = Intervention.objects.filter(status=2).count()
         context['status_terminated'] = Intervention.objects.filter(status=3).count()
         context['status_cancelled'] = Intervention.objects.filter(status=4).count()
-        context['status_billing'] = Intervention.objects.filter(status=5).count()
+        context['status_preparation'] = Intervention.objects.filter(status=5).count()
         context['modifications'] = InterventionModification.objects.all().order_by("-date")[:15]
         context['months'] = [x for x in range(1, 13)]
         context['years'] = [x for x in range(2014, date.today().year + 1)]
@@ -101,7 +101,9 @@ class InterventionView(DetailView):
         context = super(InterventionView, self).get_context_data(**kwargs)
         context['zones'] = Zone.objects.all().exclude(pk=9).order_by('pk')
         context['users'] = User.objects.filter(is_active=True).order_by('order_in_app')
-        context['status'] = InterventionStatus.objects.all()
+        allowed_transition_ids = self.get_object().status.allowed_transition_ids
+        context['show_users'] = 2 in allowed_transition_ids
+        context['status'] = InterventionStatus.objects.filter(pk__in=allowed_transition_ids)
         context['sub_status'] = InterventionSubStatus.objects.all()
         try:
             context['sms_value'] = SystemVariable.objects.get(key='intervention_sms').get_value()

@@ -30,6 +30,27 @@ class InterventionStatus(models.Model):
     def __str__(self):
         return self.name
 
+    def get_allowed_transition_ids(self):
+        # PENDIENTE 1
+        if self.id == 1:
+            return [2, 3, 4, 5]
+
+        # ASIGNADA 2
+        if self.id == 2:
+            return [1, 2, 3, 4]
+
+        # TERMINADA 3 // ANULADA 4
+        if self.id == 3 or self.id == 4:
+            return [5]
+
+        # PREPARACION 5
+        if self.id == 5:
+            return [1, 3, 4]
+
+        return []
+
+    allowed_transition_ids = property(get_allowed_transition_ids)
+
 
 class InterventionSubStatus(models.Model):
     name = models.CharField(max_length=50)
@@ -53,29 +74,34 @@ class InterventionInfo(models.Model):
 
 
 class Zone(InterventionInfo):
-    border = ColorField(default='#FF0000')
-
     def get_is_zone(self):
         return True
-
-    is_zone = property(get_is_zone)
 
     def get_pending_interventions(self):
         return Intervention.objects.filter(zone=self, status_id=1).count()
 
+    def get_preparation_interventions(self):
+        return Intervention.objects.filter(zone=self, status_id=5).count()
+
+    border = ColorField(default='#FF0000')
+    is_zone = property(get_is_zone)
     pending_interventions = property(get_pending_interventions)
+    preparation_interventions = property(get_preparation_interventions)
 
 
 class Tag(InterventionInfo):
     def get_is_zone(self):
         return False
 
-    is_zone = property(get_is_zone)
-
     def get_pending_interventions(self):
         return Intervention.objects.filter(tags=self, status_id=1).count()
 
+    def get_preparation_interventions(self):
+        return Intervention.objects.filter(tags=self, status_id=5).count()
+
+    is_zone = property(get_is_zone)
     pending_interventions = property(get_pending_interventions)
+    preparation_interventions = property(get_preparation_interventions)
 
 
 class Intervention(models.Model):
@@ -83,7 +109,7 @@ class Intervention(models.Model):
     address = models.ForeignKey('client.Address', verbose_name="Dirección", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     zone = models.ForeignKey(Zone, default=1, verbose_name="Zona", on_delete=models.CASCADE)
-    status = models.ForeignKey(InterventionStatus, default=1, on_delete=models.CASCADE)
+    status = models.ForeignKey(InterventionStatus, default=5, on_delete=models.CASCADE)
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by', on_delete=models.CASCADE)
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned', on_delete=models.CASCADE)
     note = models.TextField(null=True)
