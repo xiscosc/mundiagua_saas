@@ -43,3 +43,10 @@ TELEGRAM_NAME = 'mundiagua_bot'
 
 GSM_URL = "https://gsm.test.com"
 GSM_WATCH_TIME = 300
+
+SMS_USERNAME = ''
+SMS_PASSWORD = ''
+SMS_SERVICE_URL = ''
+USERS_IT = []
+USERS_TEC = []
+SMS_SERVICE_PHONE = "+34612345678"

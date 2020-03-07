@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}
+    Mensajes recibidos GSM
+    {% if phone %}
+    <small id="sender" data-phone="{{ phone }}">+{{ phone }}</small>
+    <a class="btn btn-primary btn-xs pull-right" href="{% url 'core:sms-gsm' %}">Volver</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% block alert %} {% endblock %}
+        </div>
+    </div>
+
+    <div class="row" id="error-alert" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-danger">Error conectando al servicio SMS</div>
+        </div>
+    </div>
+
+    <div class="row" >
+        <div class="col-md-12">
+            <button class="btn btn-default btn-xs pull-right" disabled><span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span> {{gsm_phone}}</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-hover table-striped" id="sms-table">
+                <tr>
+                    <th>Remitente</th>
+                    <th>Telefono</th>
+                    <th>Fecha</th>
+                    <th>Texto</th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-12" id="sms-list">
+            <h5>Cargando...</h5>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                </div>
+            </div>
+        </div>
+    <div class="col-md-12" id="sms-list">
+            <h5>*Mostrando últimos 25 mensajes</h5>
+        </div>
+    </div>
+
+{% endblock %}
+{% block extrajs %}
+    <script src="{% static 'base/js/core/sms-gsm.js' %}"></script>
+    {% if phone %}
+        <script src="{% static 'base/js/core/sms-sender.js' %}"></script>
+    {% else %}
+        <script src="{% static 'base/js/core/sms-all.js' %}"></script>
+    {% endif %}
+{% endblock %}

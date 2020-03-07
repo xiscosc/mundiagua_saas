@@ -1,0 +1,3 @@
+$(function () {
+    getAllSMS(25);
+});

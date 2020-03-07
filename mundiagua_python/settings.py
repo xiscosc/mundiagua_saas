@@ -98,7 +98,8 @@ PUBLIC_URLS = (
     r'logout/',
     r'admin/',
     r'repair-status/(?P<online>\w+)/',
-    r'clientes/'
+    r'clientes/',
+    r'core/sms-gsm/notify'
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'
@@ -255,7 +256,9 @@ NON_STAFF_VIEWS = ('message-new',
                    'changelog',
                    'user-manage',
                    'password-change',
-                   'password-change-done')
+                   'password-change-done',
+                   'sms-gsm-notify'
+                   )
 
 THUMBNAIL_SIZE = (100, 100)
 
@@ -264,9 +267,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.7.0"
-APP_VERSION_INCLUDES = 6700
-APP_COMPLETE_VERSION = "6.7.0.1-20200227-dj2-py3"
+APP_VERSION = "6.7.1"
+APP_VERSION_INCLUDES = 6710
+APP_COMPLETE_VERSION = "6.7.1.0-20200309-dj2-py3"
 TEMPLATE_COLOR = '#1d3f72'
 
 LOGIN_REDIRECT_URL = "/"
@@ -309,3 +312,5 @@ TINYMCE_DEFAULT_CONFIG = {
 
 GSM_WATCH_STATUS_CACHE_KEY = 'gsmstatus'
 GSM_WATCH_TIME_CACHE_KEY = 'gsmtime'
+SMS_TOKEN_CACHE_KEY = 'smstoken'
+SMS_TOKEN_EXPIRE_TIME = 60 * 60 * 3
