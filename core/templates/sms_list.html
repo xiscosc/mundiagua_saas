@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
+{% load core_tags %}
 {% block page_title %}
     Mensajes recibidos GSM
     {% if phone %}
@@ -54,10 +55,10 @@
 
 {% endblock %}
 {% block extrajs %}
-    <script src="{% static 'base/js/core/sms-gsm.js' %}"></script>
+    <script src="{% static 'base/js/core/sms-gsm.js' %}{% app_version_includes %}"></script>
     {% if phone %}
-        <script src="{% static 'base/js/core/sms-sender.js' %}"></script>
+        <script src="{% static 'base/js/core/sms-sender.js' %}{% app_version_includes %}"></script>
     {% else %}
-        <script src="{% static 'base/js/core/sms-all.js' %}"></script>
+        <script src="{% static 'base/js/core/sms-all.js' %}{% app_version_includes %}"></script>
     {% endif %}
 {% endblock %}

@@ -2,6 +2,7 @@ from async_messages import messages
 from celery import shared_task
 from django.template.loader import get_template
 
+from core.models import User
 from core.utils import send_data_to_user
 
 
@@ -39,3 +40,10 @@ def send_mail_client(address, subject, body, user_pk):
         messages.success(user, "Email enviado correctamente a " + address)
     else:
         messages.warning(user, "Error enviando mail a " + address)
+
+
+@shared_task
+def notify_sms_received():
+    users = User.objects.filter(is_officer=True)
+    for user in users:
+        messages.info(user, "Nuevo SMS recibido")

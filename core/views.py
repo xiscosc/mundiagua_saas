@@ -13,6 +13,7 @@ from client.models import Client, Address
 from core.forms import SystemVariableRichForm, SystemVariablePlainForm
 from core.models import User, Message, SystemVariable
 from core.utils import get_return_from_id, has_to_change_password, get_page_from_paginator, get_sms_api
+from core.tasks import notify_sms_received
 from engine.models import EngineRepair, EngineStatus
 from repair.models import RepairStatus
 from async_messages import messages
@@ -200,9 +201,7 @@ class GetSmsView(View):
 
 class NotifySmsView(View):
     def get(self, request, *args, **kwargs):
-        users = User.objects.filter(is_officer=True)
-        for user in users:
-            messages.info(user, "Nuevo SMS recibido")
+        notify_sms_received.delay()
         return JsonResponse(data="OK", safe=False)
 
 
