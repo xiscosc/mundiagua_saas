@@ -43,7 +43,7 @@ function getDate(ts) {
 }
 
 function createPhoneLink(phone) {
-    return "<a href='/core/sms-gsm/sender/" + phone + "'>" + "+" + phone +"</a>";
+    return "<a href='/core/sms-gsm/sender/" + phone + "'>" + "+" + phone + "</a>";
 }
 
 function getPhoneName(phone) {
@@ -67,10 +67,14 @@ function fillTable(data) {
     $('#sms-list').fadeOut();
 }
 
+
 function getAllSMS(limit = 0, offset = 0) {
     var params = "?limit=" + limit + "&offset=" + offset;
     $.get("/core/sms-api/sms/all/list" + params, function (data) {
         fillTable(data);
+    }).fail(function () {
+        $('#error-alert').show();
+        $('#sms-list').fadeOut();
     });
 }
 
@@ -78,5 +82,8 @@ function getSenderSMS(sender, limit = 0, offset = 0) {
     var params = "?limit=" + limit + "&offset=" + offset;
     $.get("/core/sms-api/sms/sender/" + sender + params, function (data) {
         fillTable(data);
+    }).fail(function () {
+        $('#error-alert').show();
+        $('#sms-list').fadeOut();
     });
 }
