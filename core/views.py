@@ -200,6 +200,11 @@ class GetSmsView(View):
 class SMSListView(TemplateView):
     template_name = 'sms_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(SMSListView, self).get_context_data(**kwargs)
+        context['gsm_phone'] = settings.SMS_SERVICE_PHONE
+        return context
+
 
 class SMSSenderListView(TemplateView):
     template_name = 'sms_list.html'
@@ -207,6 +212,7 @@ class SMSSenderListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(SMSSenderListView, self).get_context_data(**kwargs)
         context['phone'] = kwargs['sender']
+        context['gsm_phone'] = settings.SMS_SERVICE_PHONE
         return context
 
 
@@ -248,6 +254,7 @@ class ChangeLogView(TemplateView):
         context['postgre_version_c'] = psycopg2.__version__
         context['postgre_version'] = psycopg2.__libpq_version__
         context['gsm_time'] = cache.get(settings.GSM_WATCH_TIME_CACHE_KEY)
+        context['gsm_phone'] = settings.SMS_SERVICE_PHONE
         return context
 
 
