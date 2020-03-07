@@ -3,7 +3,7 @@ function createTd(data) {
         return "<td>No disponible</td>";
     }
 
-    return "<td>"+ data + "</td>";
+    return "<td>" + data + "</td>";
 }
 
 function createTr(data) {
@@ -11,7 +11,7 @@ function createTr(data) {
         return "<tr>No disponible</tr>";
     }
 
-    return "<tr>"+ data + "</tr>";
+    return "<tr>" + data + "</tr>";
 }
 
 function initTable() {
@@ -32,31 +32,51 @@ function getDate(ts) {
     var min = date.getMinutes();
 
     if (hh < 10) {
-        hh = "0"+hh;
+        hh = "0" + hh;
     }
 
     if (min < 10) {
-        min = "0"+min;
+        min = "0" + min;
     }
 
-    return hh + ":" + min + " " + dd + '/' + mm + '/' + yyyy;
+    return dd + '/' + mm + '/' + yyyy + " " + hh + ":" + min;
 }
 
-function getAllSMS(limit=0, offset=0) {
+function createPhoneLink(phone) {
+    return "<a href='/core/sms-gsm/sender/" + phone + "'>" + "+" + phone +"</a>";
+}
+
+function getPhoneName(phone) {
+    if (phone) {
+        return phone.name;
+    }
+
+    return null;
+}
+
+function fillTable(data) {
+    initTable();
+    $('#sms-list').show();
+    data.items.forEach(function (item, index) {
+        $('#sms-table').append(createTr(
+            createTd(getPhoneName(item.phone)) +
+            createTd(createPhoneLink(item.msisdn)) +
+            createTd(getDate(item.ts)) +
+            createTd(item.text)));
+    });
+    $('#sms-list').fadeOut();
+}
+
+function getAllSMS(limit = 0, offset = 0) {
     var params = "?limit=" + limit + "&offset=" + offset;
     $.get("/core/sms-api/sms/all/list" + params, function (data) {
-        $('#sms-list').fadeOut();
-        initTable();
-        data.items.forEach(function (item, index) {
-            $('#sms-table').append(createTr(
-                createTd(item.phone.name) +
-                createTd("+" + item.msisdn) +
-                createTd(getDate(item.ts)) +
-                createTd(item.text)));
-        });
+        fillTable(data);
     });
 }
 
-$(function () {
-    getAllSMS();
-});
+function getSenderSMS(sender, limit = 0, offset = 0) {
+    var params = "?limit=" + limit + "&offset=" + offset;
+    $.get("/core/sms-api/sms/sender/" + sender + params, function (data) {
+        fillTable(data);
+    });
+}

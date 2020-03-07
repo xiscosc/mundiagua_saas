@@ -201,6 +201,15 @@ class SMSListView(TemplateView):
     template_name = 'sms_list.html'
 
 
+class SMSSenderListView(TemplateView):
+    template_name = 'sms_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SMSSenderListView, self).get_context_data(**kwargs)
+        context['phone'] = kwargs['sender']
+        return context
+
+
 class PreSearchView(View):
 
     search_text = None

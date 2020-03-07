@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load bootstrap %}
-{% block page_title %}Mensajes recibidos GSM{% endblock %}
-
+{% block page_title %}
+    Mensajes recibidos GSM
+    {% if phone %}
+    <small id="sender" data-phone="{{ phone }}">+{{ phone }}</small>
+    <a class="btn btn-primary btn-xs pull-right" href="{% url 'core:sms-gsm' %}">Volver</a>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -31,9 +36,17 @@
                 </div>
             </div>
         </div>
+    <div class="col-md-12" id="sms-list">
+            <h5>*Mostrando últimos 25 mensajes</h5>
+        </div>
     </div>
 
 {% endblock %}
 {% block extrajs %}
     <script src="{% static 'base/js/core/sms-gsm.js' %}"></script>
+    {% if phone %}
+        <script src="{% static 'base/js/core/sms-sender.js' %}"></script>
+    {% else %}
+        <script src="{% static 'base/js/core/sms-all.js' %}"></script>
+    {% endif %}
 {% endblock %}
