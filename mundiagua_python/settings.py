@@ -98,7 +98,8 @@ PUBLIC_URLS = (
     r'logout/',
     r'admin/',
     r'repair-status/(?P<online>\w+)/',
-    r'clientes/'
+    r'clientes/',
+    r'core/sms-gsm/notify'
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'
@@ -255,7 +256,9 @@ NON_STAFF_VIEWS = ('message-new',
                    'changelog',
                    'user-manage',
                    'password-change',
-                   'password-change-done')
+                   'password-change-done',
+                   'sms-gsm-notify'
+                   )
 
 THUMBNAIL_SIZE = (100, 100)
 
