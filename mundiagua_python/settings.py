@@ -321,4 +321,5 @@ GSM_WATCH_TIME_CACHE_KEY = 'gsmtime'
 SMS_TOKEN_CACHE_KEY = 'smstoken'
 SMS_TOKEN_EXPIRE_TIME = 60 * 60 * 3
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = ['GET']
+CORS_ORIGIN_REGEX_WHITELIST = [r"^https://\w+\.mundiaguabalear\.com$"]

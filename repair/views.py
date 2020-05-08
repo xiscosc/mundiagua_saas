@@ -329,8 +329,7 @@ class SendTrackingRepairView(View):
         if params.getlist('send_email', "off")[0] == "on":
             if repair.address.client.email is not None and repair.address.client.email != "":
                 sending_something = True
-                url_body = settings.DOMAIN + str(
-                    reverse_lazy('public-status-repair', kwargs={'online': repair.online_id}))
+                url_body = "https://customerservice.mundiaguabalear.com/?id=" + repair.online_id
                 subject = u'Reparación %s registrada' % repair.__str__()
                 body = u'Su reparación %s ha sido registrada con éxito, puede consultar su estado ' \
                        u'en el siguiente enlace %s, si no le funciona el enlace cópielo y péguelo en su navegador.' \

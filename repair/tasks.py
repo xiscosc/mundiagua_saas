@@ -17,7 +17,7 @@ def send_sms_tracking(pk_repair, is_ath, phone_pk, user_pk):
     else:
         repair = IdegisRepair.objects.get(pk=pk_repair)
 
-    url_to_short = settings.DOMAIN + str(reverse_lazy('public-status-repair', kwargs={'online': repair.online_id}))
+    url_to_short = "https://customerservice.mundiaguabalear.com/?id=" + repair.online_id
     body = u'Su reparación %s ha sido registrada, puede consultar su estado en %s o con el id %s en ' \
            u'nuestra página web' % (repair.__str__(), shortener.short(url_to_short), repair.online_id)
 
