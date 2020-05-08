@@ -26,3 +26,7 @@ pyshorteners
 django-debug-toolbar
 django-tinymce4-lite
 python-telegram-bot
+django-cors-headers
+djangorestframework
+markdown
+django-filter

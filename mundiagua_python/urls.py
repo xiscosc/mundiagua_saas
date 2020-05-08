@@ -26,6 +26,7 @@ urlpatterns = [
     path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
     path('hijack/', include(('hijack.urls', 'hijack'))),
     path('tinymce/', include('tinymce.urls')),
+    path('api/', include('mundiagua_python.api_urls')),
     path(
         'login/password/',
         LoginPasswordView.as_view(

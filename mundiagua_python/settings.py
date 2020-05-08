@@ -49,6 +49,8 @@ OTHER_APPS = [
     'easy_thumbnails',
     'debug_toolbar',
     'tinymce',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MY_APPS = [
@@ -75,6 +77,7 @@ BOWER_INSTALLED_APPS = (
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -99,7 +102,10 @@ PUBLIC_URLS = (
     r'admin/',
     r'repair-status/(?P<online>\w+)/',
     r'clientes/',
-    r'core/sms-gsm/notify'
+    r'core/sms-gsm/notify',
+
+    # API URLS ACCESS WILL BE MANAGED IN ANOTHER PLACE
+    r'api/*'
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'
@@ -269,7 +275,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.7.1"
 APP_VERSION_INCLUDES = 6710
-APP_COMPLETE_VERSION = "6.7.1.1-20200309-dj2-py3"
+APP_COMPLETE_VERSION = "6.7.1.2-2020508-dj2-py3-API-v1-0.0.1ALPHA"
 TEMPLATE_COLOR = '#1d3f72'
 
 LOGIN_REDIRECT_URL = "/"
@@ -314,3 +320,5 @@ GSM_WATCH_STATUS_CACHE_KEY = 'gsmstatus'
 GSM_WATCH_TIME_CACHE_KEY = 'gsmtime'
 SMS_TOKEN_CACHE_KEY = 'smstoken'
 SMS_TOKEN_EXPIRE_TIME = 60 * 60 * 3
+
+CORS_ORIGIN_ALLOW_ALL = True

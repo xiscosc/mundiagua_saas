@@ -39,6 +39,17 @@ class Repair(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def private_id(self):
+        return self.__str__()
+
+    @property
+    def type(self):
+        if self.is_ath():
+            return 'ATH'
+        else:
+            return 'IDEGIS'
+
 
 class AthRepair(Repair):
     bypass = models.BooleanField(default=False, verbose_name="ByPass")
