@@ -305,21 +305,6 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-television fa-fw"></i> Gestión GSM<span
-                                    class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                 <li>
-                                    <a href="{% url 'core:sms-gsm' %}">
-                                        <i class="fa fa-envelope-o fa-fw"></i> Gestión SMS GSM</a>
-                                </li>
-                                <li>
-                                    <a href="http://mundiaguabalear.com/gsm" target="_blank">
-                                        <i class="fa fa-wifi fa-fw"></i> GSM Microcom</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
                             <a href="#"><i class="fa fa-download fa-fw"></i> Otros<span
                                     class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -333,6 +318,24 @@
                                         <i class="fa fa-whatsapp fa-fw"></i> WhatsApp</a>
                                 </li>
 
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+
+                    {% endif %}
+                    {% if request.user.is_officer or request.user.is_technician %}
+                        <li>
+                            <a href="#"><i class="fa fa-television fa-fw"></i> Gestión GSM<span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'core:sms-gsm' %}">
+                                        <i class="fa fa-envelope-o fa-fw"></i> Gestión SMS GSM</a>
+                                </li>
+                                <li>
+                                    <a href="http://mundiaguabalear.com/gsm" target="_blank">
+                                        <i class="fa fa-wifi fa-fw"></i> GSM Microcom</a>
+                                </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>

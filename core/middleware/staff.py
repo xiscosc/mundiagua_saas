@@ -13,10 +13,11 @@ class StaffMiddleware(MiddlewareMixin):
         Ban non staff users in staff urls
         """
         if request.user.is_authenticated and not request.user.is_officer:
-            if hasattr(settings, 'NON_STAFF_VIEWS'):
-                non_staff_urls = settings.NON_STAFF_VIEWS
+            if hasattr(settings, 'NON_STAFF_VIEWS') and hasattr(settings, 'TECHNICIAN_VIEWS'):
+                technician_urls = settings.TECHNICIAN_VIEWS if request.user.is_technician else ()
+                urls_to_check = settings.NON_STAFF_VIEWS + technician_urls
                 current_url = resolve(request.path_info).url_name
-                if current_url not in non_staff_urls:
+                if current_url not in urls_to_check:
                     return HttpResponseForbidden()
             else:
                 return HttpResponseForbidden()

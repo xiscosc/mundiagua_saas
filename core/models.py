@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     pb_token = models.CharField(max_length=254, null=True, blank=True)
     order_in_app = models.IntegerField(default=9)
     is_officer = models.BooleanField(default=True)
+    is_technician = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     has_notification = models.IntegerField(default=0)
     last_password_update = models.DateField(default="2015-01-01")

@@ -62,21 +62,22 @@ class UserAdmin(BaseUserAdmin, HijackUserAdminMixin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_officer', 'hijack_field', 'last_login')
+    list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_officer', 'is_technician', 'hijack_field',
+                    'last_login')
     list_filter = ('is_officer',)
     fieldsets = (
         (None, {'fields': ('email', 'password', 'last_password_update')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'order_in_app', 'last_login', 'phone')}),
         ('Tokens', {'fields': ('pb_token', 'telegram_token')}),
-        ('Permissions', {'fields': ('is_active', 'is_officer', 'is_google')}),
+        ('Permissions', {'fields': ('is_active', 'is_officer', 'is_technician', 'is_google')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'pb_token', 'order_in_app', 'is_officer', 'is_google',
-                       'password1', 'password2')}
+            'fields': ('email', 'first_name', 'last_name', 'pb_token', 'order_in_app', 'is_officer', 'is_technician',
+                       'is_google', 'password1', 'password2')}
         ),
     )
     search_fields = ('email',)

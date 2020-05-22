@@ -266,6 +266,14 @@ NON_STAFF_VIEWS = ('message-new',
                    'sms-gsm-notify'
                    )
 
+TECHNICIAN_VIEWS = (
+    'sms-api-all',
+    'sms-api-sender',
+    'sms-api-id',
+    'sms-gsm',
+    'sms-gsm-sender',
+)
+
 THUMBNAIL_SIZE = (100, 100)
 
 MEDIA_URL = "/media/"
@@ -273,9 +281,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.7.1"
+APP_VERSION = "6.7.2"
 APP_VERSION_INCLUDES = 6710
-APP_COMPLETE_VERSION = "6.7.1.2-2020508-dj2-py3-API-v1-0.0.1ALPHA"
+APP_COMPLETE_VERSION = "6.7.2.0-2020522-dj2-py3 ** API 0.0.1ALPHA"
 TEMPLATE_COLOR = '#1d3f72'
 
 LOGIN_REDIRECT_URL = "/"
