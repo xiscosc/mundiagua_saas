@@ -93,9 +93,10 @@ class SMS(models.Model):
         if number:
             try:
                 result = create_nexmo_client().send_message({
-                    'from': 'MUNDIAGUA SL',
+                    'from': 'MUNDIAGUA',
                     'to': number,
                     'text': self.body,
+                    'type': 'unicode',
                 })
 
                 if check_nexmo_message_sent(result):
