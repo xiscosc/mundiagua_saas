@@ -1,4 +1,5 @@
 from .settings import *
+from kombu.utils.url import safequote
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -51,3 +52,16 @@ USERS_IT = []
 USERS_TEC = []
 SMS_SERVICE_PHONE = "+34612345678"
 CORS_ORIGIN_ALLOW_ALL = True
+
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'region': AWS_REGION,
+    'polling_interval': 30,
+    'queue_name_prefix': 'celery-mundiagua-in-EXAMPLE'
+}
+CELERY_BROKER_URL = "sqs://{aws_access_key}:{aws_secret_key}@".format(
+    aws_access_key=safequote(AWS_ACCESS_KEY),
+    aws_secret_key=safequote(AWS_SECRET_KEY),
+)
+
+NEXMO_KEY = ""
+NEXMO_SECRET = ""

@@ -12,7 +12,7 @@ sendgrid-django==4.0.4
 django-bootstrap-pagination==1.6.4
 django-hijack
 django-hijack-admin
-celery==4.2.1
+celery==4.4.2
 python-memcached
 easy-thumbnails==2.4.1
 boto3
@@ -30,3 +30,4 @@ django-cors-headers
 djangorestframework
 markdown
 django-filter
+nexmo

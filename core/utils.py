@@ -158,6 +158,19 @@ def create_amazon_client(service):
         return None
 
 
+def create_nexmo_client():
+    import nexmo
+    return nexmo.Client(key=settings.NEXMO_KEY, secret=settings.NEXMO_SECRET)
+
+
+def check_nexmo_message_sent(api_result):
+    if 'message-count' in api_result and int(api_result['message-count']) > 0:
+        if 'messages' in api_result:
+            if 'status' in api_result['messages'][0] and int(api_result['messages'][0]['status']) == 0:
+                return True
+    return False
+
+
 def generate_thumbnail(intervention_image):
     from PIL import Image, ImageOps
     path_in = os.path.join(settings.MEDIA_ROOT, intervention_image.file_path())
