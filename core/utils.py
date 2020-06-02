@@ -163,6 +163,11 @@ def create_nexmo_client():
     return nexmo.Client(key=settings.NEXMO_KEY, secret=settings.NEXMO_SECRET)
 
 
+def encode_nexmo_body(body):
+    import unidecode
+    return unidecode.unidecode(body).upper()
+
+
 def check_nexmo_message_sent(api_result):
     if 'message-count' in api_result and int(api_result['message-count']) > 0:
         if 'messages' in api_result:

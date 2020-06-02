@@ -32,3 +32,4 @@ markdown
 django-filter
 nexmo
 pycurl
+Unidecode

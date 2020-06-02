@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from client.tasks import send_sms
 from core.models import User
-from core.utils import create_amazon_client, create_nexmo_client, check_nexmo_message_sent
+from core.utils import create_amazon_client, create_nexmo_client, check_nexmo_message_sent, encode_nexmo_body
 
 
 class Client(models.Model):
@@ -95,8 +95,7 @@ class SMS(models.Model):
                 result = create_nexmo_client().send_message({
                     'from': 'MUNDIAGUA',
                     'to': number,
-                    'text': self.body,
-                    'type': 'unicode',
+                    'text': encode_nexmo_body(self.body),
                 })
 
                 if check_nexmo_message_sent(result):
