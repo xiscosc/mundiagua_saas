@@ -166,13 +166,13 @@ def create_nexmo_client():
 def encode_nexmo_body(body):
     import unidecode
     import re
-    encoded_body = unidecode.unidecode(body)
+    encoded_body = unidecode.unidecode(body).upper()
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-    url = re.findall(regex, encoded_body)
-    if len(url) > 0:
-        return encoded_body
-    else:
-        return encoded_body.upper()
+    urls = [x[0] for x in re.findall(regex, body)]
+    for url in urls:
+        encoded_body = encoded_body.replace(url.upper(), url)
+
+    return encoded_body
 
 
 def check_nexmo_message_sent(api_result):
