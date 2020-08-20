@@ -65,3 +65,5 @@ CELERY_BROKER_URL = "sqs://{aws_access_key}:{aws_secret_key}@".format(
 
 NEXMO_KEY = ""
 NEXMO_SECRET = ""
+
+SECRET_KEY = 'SECRET KEY'
