@@ -13,7 +13,7 @@ class Client(models.Model):
     email = models.EmailField(null=True, blank=True)
     intern_code = models.CharField(max_length=45, null=True, blank=True, verbose_name="COD Interno")
     dni = models.CharField(max_length=45, null=True, blank=True, verbose_name="DNI/CIF")
-    blocked = models.BooleanField(default=False)
+    blocked = models.BooleanField(default=False, verbose_name="Bloqueado")
 
     def __str__(self):
         if not self.blocked:
