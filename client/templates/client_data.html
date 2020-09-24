@@ -81,7 +81,7 @@
 {% if not edit %}
     <div class="row">
     <div class="col-md-12">
-    <div class="panel panel-default">
+    <div class="panel {% if client.blocked %} panel-danger {% else %} panel-default {% endif %}">
     <div class="panel-heading">Datos del cliente
         {% if request.user.is_officer %}
             <div class="pull-right">
@@ -102,7 +102,7 @@
 {% if client.blocked %}
     <div class="row">
         <div class="col-md-12 text-center">
-            <h2 style="color: darkred">***CLIENTE BLOQUEADO***</h2>
+            <h3 style="color: darkred">CLIENTE BLOQUEADO</h3>
         </div>
     </div>
 {% endif %}

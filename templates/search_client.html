@@ -72,23 +72,33 @@
                                                 {{ client.get_first_address }}
                                             </td>
                                             <td>
-                                                <a href="{% url new_url client.pk %}"
-                                                   class="btn btn-block {{ btn_class }}"><i
-                                                        class="fa fa-plus"></i> {{ btn_text }}</a>
+                                                {% if client.blocked %}
+                                                    <div class="text-center"><h5 style="color: darkred">CLIENTE
+                                                        BLOQUEADO</h5></div>
+                                                {% else %}
+                                                    <a href="{% url new_url client.pk %}"
+                                                       class="btn btn-block {{ btn_class }}"><i
+                                                            class="fa fa-plus"></i> {{ btn_text }}</a>
+                                                {% endif %}
                                             </td>
                                             {% if new_url2 %}
                                                 <td>
-                                                    <a href="{% url new_url2 client.pk %}"
-                                                       class="btn btn-block {{ btn_class2 }}"><i
-                                                            class="fa fa-plus"></i> {{ btn_text2 }}</a>
-                                                </td>{% endif %}
+                                                    {% if client.blocked %}
+                                                        <div class="text-center"><h5 style="color: darkred">CLIENTE
+                                                            BLOQUEADO</h5></div>
+                                                    {% else %}
+                                                        <a href="{% url new_url2 client.pk %}"
+                                                           class="btn btn-block {{ btn_class2 }}"><i
+                                                                class="fa fa-plus"></i> {{ btn_text2 }}</a>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
                                         </tr>
                                     {% endfor %}
                                 </table>
                             {% endif %}
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

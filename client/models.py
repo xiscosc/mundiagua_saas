@@ -19,7 +19,7 @@ class Client(models.Model):
         if not self.blocked:
             return self.name
         else:
-            return "**BLOQUEADO** " + self.name + " **BLOQUEADO**"
+            return "BLOQUEADO - " + self.name
 
     def get_phones(self):
         return Phone.objects.filter(client=self)

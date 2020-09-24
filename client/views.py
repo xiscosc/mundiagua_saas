@@ -21,7 +21,7 @@ from async_messages import messages
 
 class CreateClientView(CreateView):
     model = Client
-    fields = "__all__"
+    fields = ["name", "email", "intern_code", "dni"]
     template_name = 'new_client.html'
 
     def get_context_data(self, **kwargs):
