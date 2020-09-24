@@ -13,9 +13,13 @@ class Client(models.Model):
     email = models.EmailField(null=True, blank=True)
     intern_code = models.CharField(max_length=45, null=True, blank=True, verbose_name="COD Interno")
     dni = models.CharField(max_length=45, null=True, blank=True, verbose_name="DNI/CIF")
+    blocked = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        if not self.blocked:
+            return self.name
+        else:
+            return "**BLOQUEADO** " + self.name + " **BLOQUEADO**"
 
     def get_phones(self):
         return Phone.objects.filter(client=self)

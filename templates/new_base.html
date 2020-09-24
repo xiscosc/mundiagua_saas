@@ -21,15 +21,23 @@
                                 <h3 class="panel-title">{{ subtitle }}</h3>
                             </div>
                             <div class="panel-body">
-                                {{ form|bootstrap }}
-                                {% if zones %}
-                                    <div class="form-group">
-                                        <label class="control-label">Zona seleccionada</label>
-                                        <div class=" ">
-                                            <div class="zone" id="selected_zone"><i class="fa fa-map"></i> ZONA 1</div>
-                                            <h4 class="pull-right" id="label_default_zone"><strong>Zona seleccionada automáticamente</strong></h4>
-                                        </div>
+                                {% if client.blocked %}
+                                    <div class="text-center">
+                                        <h4 style="color: darkred">El cliente se encuentra bloqueado</h4>
                                     </div>
+                                {% else %}
+                                    {{ form|bootstrap }}
+                                    {% if zones %}
+                                        <div class="form-group">
+                                            <label class="control-label">Zona seleccionada</label>
+                                            <div class=" ">
+                                                <div class="zone" id="selected_zone"><i class="fa fa-map"></i> ZONA 1
+                                                </div>
+                                                <h4 class="pull-right" id="label_default_zone"><strong>Zona seleccionada
+                                                    automáticamente</strong></h4>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -38,10 +46,15 @@
                 <div class="form-group">
                     {% if engine %}
                         <div class="alert alert-warning">
-                            <strong>Alerta!</strong> Este presupuesto se vinculará con la reparación de motor {{ engine }}
+                            <strong>Alerta!</strong> Este presupuesto se vinculará con la reparación de
+                            motor {{ engine }}
                         </div>
                     {% endif %}
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    {% if client.blocked %}
+                        <button disabled class="btn btn-danger">CLIENTE BLOQUEADO</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    {% endif %}
                 </div>
             </form>
 
@@ -60,18 +73,20 @@
             {% for z in zones %}
                 {{ z.pk }}: "{{ z.color }}",
             {% endfor %}
-            };
+            }
+            ;
             var zones_border = {
             {% for z in zones %}
                 {{ z.pk }}: "{{ z.border }}",
             {% endfor %}
-            };
+            }
+            ;
             var default_zones = {
-                {% for ad in client.get_addresses  %}
-                    {% if ad.default_zone %}
-                        {{ ad.pk }}: "{{ ad.default_zone.pk }}",
-                    {% endif %}
-                {% endfor %}
+            {% for ad in client.get_addresses  %}
+                {% if ad.default_zone %}
+                    {{ ad.pk }}: "{{ ad.default_zone.pk }}",
+                {% endif %}
+            {% endfor %}
             }
         </script>
         <script src="{% static 'base/js/intervention/new.js' %}{% app_version_includes %}"></script>

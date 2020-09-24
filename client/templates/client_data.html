@@ -99,12 +99,19 @@
     </div>
     <div class="panel-body">
 {% endif %}
+{% if client.blocked %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 style="color: darkred">***CLIENTE BLOQUEADO***</h2>
+        </div>
+    </div>
+{% endif %}
 <div class="row">
     <div class="col-md-7">
         <h3>Datos personales
             {% if edit %}
 
-                {% if not request.user_agent.is_pc %}
+                {% if not request.user_agent.is_pc and not client.blocked %}
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle btn-circle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false"><i
@@ -220,38 +227,39 @@
                         <tr>
                             <td class="td-phone">
 
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-phone-square"></i>
-                                            {% if phone.international_code != "34" %}
-                                                +{{ phone.international_code }}{% endif %} {{ phone.phone }} <span
-                                                class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            {% if edit %}
-                                                <li><a href="{% url 'client:client-phone-edit' phone.pk %}"><i
-                                                        class="fa fa-edit"></i> Editar</a></li>
-                                                <li><a href="{% url 'client:client-phone-delete' phone.pk %}"><i
-                                                        class="fa fa-remove"></i> Eliminar</a></li>
-                                                <li role="separator" class="divider"></li>
-                                            {% endif %}
-                                            <li><a href="tel:+{{ phone.international_code }}{{ phone.phone }}"><i
-                                                    class="fa fa-volume-control-phone"></i> Llamar</a></li>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default dropdown-toggle"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-phone-square"></i>
+                                        {% if phone.international_code != "34" %}
+                                            +{{ phone.international_code }}{% endif %} {{ phone.phone }} <span
+                                            class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        {% if edit %}
+                                            <li><a href="{% url 'client:client-phone-edit' phone.pk %}"><i
+                                                    class="fa fa-edit"></i> Editar</a></li>
+                                            <li><a href="{% url 'client:client-phone-delete' phone.pk %}"><i
+                                                    class="fa fa-remove"></i> Eliminar</a></li>
+                                            <li role="separator" class="divider"></li>
+                                        {% endif %}
+                                        <li><a href="tel:+{{ phone.international_code }}{{ phone.phone }}"><i
+                                                class="fa fa-volume-control-phone"></i> Llamar</a></li>
 
-                                            {% if sms %}
-                                                <li><a href="#" class="btn-sms" data-phone="{{ phone.pk }}"><i
-                                                        class="fa fa-send-o"></i> Enviar SMS</a></li>
-                                            {% endif %}
-                                            {% if not creating_new_instance %}
-                                                <li><a href="https://api.whatsapp.com/send?phone={{ phone.international_code }}{{ phone.phone }}"
-                                                       target="_blank">
-                                                    <i class="fa fa-whatsapp"></i> Enviar WhatsApp
-                                                </a></li>
-                                            {% endif %}
+                                        {% if sms %}
+                                            <li><a href="#" class="btn-sms" data-phone="{{ phone.pk }}"><i
+                                                    class="fa fa-send-o"></i> Enviar SMS</a></li>
+                                        {% endif %}
+                                        {% if not creating_new_instance %}
+                                            <li><a href="https://api.whatsapp.com/send?phone=
+                                                    {{ phone.international_code }}{{ phone.phone }}"
+                                                   target="_blank">
+                                                <i class="fa fa-whatsapp"></i> Enviar WhatsApp
+                                            </a></li>
+                                        {% endif %}
 
-                                        </ul>
-                                    </div>
+                                    </ul>
+                                </div>
                             </td>
                             <td class="td-phone">
                                 <div class="pull-right" style="display: inline-flex">
