@@ -226,7 +226,7 @@ class AllClientsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(AllClientsView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
-        clients = Client.objects.all()
+        clients = Client.objects.all().order_by("pk")
         context['title'] = "Todos los clientes"
         paginator = Paginator(clients, settings.DEFAULT_CLIENTS_PAGINATOR)
         context['clients'] = get_page_from_paginator(paginator, page)
