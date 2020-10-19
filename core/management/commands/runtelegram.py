@@ -37,6 +37,12 @@ def register(update, context):
     token = update.message.chat_id
     incorrect_token_message = "Token incorrecto, compruebe que su token es correcto. " \
                               "Recuerde que el token puede cambiar cada cierto tiempo."
+
+    if len(context.args) == 0:
+        update.message.reply_text("Debe proporcionar un token de registro, "
+                                  "ejemplo: /register 123-1a2b3c4d5")
+        return
+
     if is_telegram_token(context.args[0]):
         data = context.args[0].split('-')
         try:
