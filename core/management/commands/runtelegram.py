@@ -1,14 +1,27 @@
+from functools import wraps
+
 from django.core.management.base import BaseCommand
 from telegram.ext import Updater, CommandHandler
+from telegram import ChatAction
 from django.conf import settings
 
 
+def send_typing_action(func):
+    """Sends typing action while processing func command."""
+
+    @wraps(func)
+    def command_func(update, context, *args, **kwargs):
+        context.bot.send_chat_action(chat_id=update.effective_message.chat_id, action=ChatAction.TYPING)
+        return func(update, context,  *args, **kwargs)
+
+    return command_func
+
+
+@send_typing_action
 def start(update, context):
     from core.models import User
-    import telegram
     token = update.message.chat_id
     update.message.reply_text("Bienvenido a Mundiagua")
-    update.send_chat_action(chat_id=token, action=telegram.ChatAction.TYPING)
     try:
         user = User.objects.get(telegram_token=token)
         update.message.reply_text("Bienvenido de nuevo " + user.first_name)
@@ -17,13 +30,11 @@ def start(update, context):
                               "ejemplo: /register 123-1a2b3c4d5")
 
 
+@send_typing_action
 def register(update, context):
     from core.models import User
     from core.utils import is_telegram_token
-    import telegram
     token = update.message.chat_id
-
-    update.send_chat_action(chat_id=token, action=telegram.ChatAction.TYPING)
     incorrect_token_message = "Token incorrecto, compruebe que su token es correcto. " \
                               "Recuerde que el token puede cambiar cada cierto tiempo."
     if is_telegram_token(context.args[0]):
