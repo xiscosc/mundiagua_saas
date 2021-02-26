@@ -458,7 +458,7 @@ class ImageView(View):
 class ImageUrlView(View):
     def get(self, request, *args, **kwargs):
         try:
-            image = InterventionImage.objects.get(s3_key=self.kwargs['key'])
+            image = InterventionImage.objects.get(pk=self.kwargs['pk'])
             return HttpResponse(image.get_signed_url())
         except:
             import os

@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
     url(r'^viewimage/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_PHOTOS)(ImageView.as_view()),
         name="intervention-view-image"),
-    url(r'^viewimage/(?P<key>.+)/url/$', ImageUrlView.as_view(),
+    url(r'^viewimage/(?P<pk>\d+)/url/$', ImageUrlView.as_view(),
         name="intervention-view-image-url"),
     url(r'^viewdocument/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_DOCUMENTS)(DocumentView.as_view()),
         name="intervention-view-document"),
