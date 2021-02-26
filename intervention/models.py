@@ -249,6 +249,14 @@ class InterventionFile(models.Model):
         except:
             return None
 
+    def get_signed_url(self):
+        s3 = create_amazon_client('s3')
+        try:
+            params = {'Bucket': self.get_bucket(), 'Key': self.s3_key}
+            return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=3600)
+        except:
+            return None
+
     def send_file_to_telegram(self):
         pass
 

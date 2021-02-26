@@ -28,7 +28,7 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path('api/', include('mundiagua_python.api_urls')),
     path(
-        'login/password/',
+        'login/password-deprecated/',
         LoginPasswordView.as_view(
             template_name='login_password.html',
             authentication_form=MundiaguaLoginForm

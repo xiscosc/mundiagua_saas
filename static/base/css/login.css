@@ -5,6 +5,11 @@ html {
 body {
   /* Margin bottom by footer height */
     margin-bottom: 20px;
+    background-image: url("/static/base/img/mallorca.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
     background-color: gainsboro;
 }
 
@@ -33,6 +38,7 @@ body {
 
 .login-panel-body {
     background-color: ghostwhite;
+    border-radius: 15px;
 }
 
 .row-login {

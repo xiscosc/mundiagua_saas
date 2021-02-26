@@ -455,6 +455,17 @@ class ImageView(View):
                 return HttpResponse(f.read(), content_type="image/png")
 
 
+class ImageUrlView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            image = InterventionImage.objects.get(s3_key=self.kwargs['key'])
+            return HttpResponse(image.get_signed_url())
+        except:
+            import os
+            with open(os.path.join(settings.STATIC_URL, settings.IMAGE_NOT_FOUND), "rb") as f:
+                return HttpResponse(f.read(), content_type="image/png")
+
+
 class DocumentView(View):
     def get(self, request, *args, **kwargs):
         try:

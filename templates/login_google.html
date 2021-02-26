@@ -17,17 +17,6 @@
 
     </div>
 
-    {% if request.GET.next %}
-        <p class="login-link login-google"><a href="{% url 'login-password' %}?next={{ request.GET.next }}"
-                                              id="link-login-password"><i class="fa fa-key"></i> Entrar usando
-            contraseña</a></p>
-    {% else %}
-        <p class="login-link login-google"><a href="{% url 'login-password' %}" id="link-login-password"><i
-                class="fa fa-key"></i> Entrar usando contraseña</a></p>
-    {% endif %}
-
-
-
     <form method="post" id="form_google" action="{% url 'login-google-process' %}">
         {% csrf_token %}
         <input type="hidden" name="token" value="none" id="token">

@@ -8,7 +8,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
     MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, ImageView, DocumentView, \
-    PrepareDownloadView, RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView
+    PrepareDownloadView, RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -47,6 +47,8 @@ urlpatterns = [
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
     url(r'^viewimage/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_PHOTOS)(ImageView.as_view()),
         name="intervention-view-image"),
+    url(r'^viewimage/(?P<key>.+)/url/$', ImageUrlView.as_view(),
+        name="intervention-view-image-url"),
     url(r'^viewdocument/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_DOCUMENTS)(DocumentView.as_view()),
         name="intervention-view-document"),
     url(r'^downloaddocument/(?P<pk>\d+)/$', PrepareDownloadView.as_view(), name="intervention-prepare-download"),
