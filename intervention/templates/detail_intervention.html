@@ -102,6 +102,7 @@
                             {% if i.thumbnail %}
                                 <a href="#" class="link_image"
                                    data-url="{% url 'intervention:intervention-view-image' i.s3_key %}"
+                                   data-key="{{ i.s3_key }}"
                                    data-date="{{ i.date }}"
                                    data-name="{{ i.user.get_full_name }}"
                                         {% if request.user == i.user %}

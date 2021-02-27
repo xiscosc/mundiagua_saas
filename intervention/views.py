@@ -462,8 +462,7 @@ class ImageUrlView(View):
             return HttpResponse(image.get_signed_url())
         except:
             import os
-            with open(os.path.join(settings.STATIC_URL, settings.IMAGE_NOT_FOUND), "rb") as f:
-                return HttpResponse(f.read(), content_type="image/png")
+            return settings.STATIC_URL + settings.IMAGE_NOT_FOUND
 
 
 class DocumentView(View):
@@ -475,10 +474,7 @@ class DocumentView(View):
                 if document.intervention.status_id != 2 or document.intervention.assigned_id != request.user.id or document.only_officer:
                     return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
 
-            document_data = document.download_from_s3().read()
-            response = HttpResponse(document_data, content_type="application/%s" % document.get_extension())
-            response['Content-Disposition'] = 'attachment; filename="%s"' % document.filename()
-            return response
+            return HttpResponseRedirect(document.get_signed_url())
         except:
             raise Http404("Archivo no disponible")
 

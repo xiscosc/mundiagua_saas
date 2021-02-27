@@ -4,7 +4,6 @@
 
 var img_counter = 0;
 
-
 function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.replace(urlRegex, function (url) {
@@ -14,7 +13,6 @@ function urlify(text) {
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }
 
-
 function set_image(element) {
     $modal = $('#modal_image');
     $('#body_image').html("");
@@ -22,7 +20,7 @@ function set_image(element) {
     $remove_link = $('#link_remove');
     $remove_link.hide();
     $('#progress_bar_image').show();
-    var url = element.data('url');
+    var s3key = element.data('key');
     $('#title_image').html("Foto de " + element.data('name'));
     $('#date_image').html(element.data('date'));
     var data_remove = element.data('remove');
@@ -31,28 +29,28 @@ function set_image(element) {
         $remove_link.show()
     }
     $modal.modal("show");
-    var img = $("<img class='img-responsive' />").attr('src', url)
-        .on('load', function () {
-            $('#progress_bar_image').hide();
-            $("#body_image").append(img);
-            $("#link_original_image").attr('href', url);
-        });
+    $.get("/intervention/getimageurl/" + s3key, function (data) {
+        var img = $("<img class='img-responsive' />").attr('src', data)
+            .on('load', function () {
+                $('#progress_bar_image').hide();
+                $("#body_image").append(img);
+                $("#link_original_image").attr('href', data);
+            });
 
+        var next = element.data("gallery-id") + 1;
+        var previous = next - 2;
 
-    var next = element.data("gallery-id") + 1;
-    var previous = next - 2;
+        if (next >= img_counter) {
+            next = 0;
+        }
 
-    if (next >= img_counter) {
-        next = 0;
-    }
+        if (previous < 0) {
+            previous = img_counter - 1;
+        }
 
-    if (previous < 0) {
-        previous = img_counter - 1;
-    }
-
-    $('#next_img_btn').data("gallery-id", next);
-    $('#previous_img_btn').data("gallery-id", previous);
-
+        $('#next_img_btn').data("gallery-id", next);
+        $('#previous_img_btn').data("gallery-id", previous);
+    })
 }
 
 $(function () {
