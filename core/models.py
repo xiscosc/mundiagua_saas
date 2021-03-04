@@ -44,6 +44,7 @@ class MyUserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=False, null=False)
     last_name = models.CharField(max_length=100, blank=False, null=False)
+    username = models.CharField(max_length=254, default="fill-me")
     email = models.EmailField(unique=True)
     pb_token = models.CharField(max_length=254, null=True, blank=True)
     order_in_app = models.IntegerField(default=9)
