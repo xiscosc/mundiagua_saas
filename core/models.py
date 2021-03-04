@@ -44,7 +44,7 @@ class MyUserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=False, null=False)
     last_name = models.CharField(max_length=100, blank=False, null=False)
-    username = models.CharField(max_length=254, default="fill-me")
+    username = models.CharField(max_length=254, unique=True)
     email = models.EmailField(unique=True)
     pb_token = models.CharField(max_length=254, null=True, blank=True)
     order_in_app = models.IntegerField(default=9)
@@ -58,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_google = models.BooleanField(default=False)
     telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def get_full_name(self):
