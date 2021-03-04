@@ -6,7 +6,7 @@ from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
 from core.views import IndexView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, \
-    LoginRedirectView
+    LoginRedirectView, PrivacyView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('engine/', include(('engine.urls', 'engine'), namespace='engine')),
     path('core/', include(('core.urls', 'core'), namespace='core')),
     path('login/', LoginRedirectView.as_view(), name="login"),
+    path('privacy/', PrivacyView.as_view(), name="privacy"),
     path('login/google/', GoogleLoginView.as_view(), name='login-google'),
     path('login/google/process/', GoogleProcessView.as_view(), name='login-google-process'),
     path('login/google/error/', GoogleErrorView.as_view(), name='login-google-error'),

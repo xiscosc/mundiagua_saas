@@ -339,6 +339,10 @@ class SystemEngineRepairStatusCreateView(CreateView):
     fields = '__all__'
 
 
+class PrivacyView(TemplateView):
+    template_name = 'privacy.html'
+
+
 class UserView(TemplateView):
     template_name = 'user.html'
 

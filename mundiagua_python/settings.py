@@ -90,6 +90,7 @@ MIDDLEWARE = [
 
 PUBLIC_URLS = (
     r'login/',
+    r'privacy/',
     r'login/password/',
     r'login/google/',
     r'login/google/process/',
