@@ -13,11 +13,12 @@ from core.utils import has_to_change_password, generate_telegram_auth, send_tele
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, pb_token=None, password=None):
-        if not email or not first_name or not last_name:
+    def create_user(self, username, email, first_name, last_name, pb_token=None, password=None):
+        if not username or not email or not first_name or not last_name:
             raise ValueError('Users must have an email address, username, full_name')
 
         user = self.model(
+            username=username,
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
@@ -28,8 +29,9 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email=None, first_name=None, last_name=None, pb_token=None, password=None):
+    def create_superuser(self, username=None, email=None, first_name=None, last_name=None, pb_token=None, password=None):
         user = self.model(
+            username=username,
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
@@ -59,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     def get_full_name(self):
         # The user is identified by their email address
