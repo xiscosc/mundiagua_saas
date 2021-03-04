@@ -66,7 +66,7 @@ class UserAdmin(BaseUserAdmin, HijackUserAdminMixin):
                     'last_login')
     list_filter = ('is_officer',)
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'last_password_update')}),
+        (None, {'fields': ('username', 'email', 'password', 'last_password_update')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'order_in_app', 'last_login', 'phone')}),
         ('Tokens', {'fields': ('pb_token', 'telegram_token')}),
         ('Permissions', {'fields': ('is_active', 'is_officer', 'is_technician', 'is_google')}),
