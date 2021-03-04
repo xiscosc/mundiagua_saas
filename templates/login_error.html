@@ -1,0 +1,14 @@
+{% extends 'log_base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% load core_tags %}
+{% block content %}
+
+<div class="alert alert-danger">
+        <a class="close" data-dismiss="alert">×</a>
+          <p>Se ha producido un error al iniciar sesión, es posible que la cuenta que ha utilizado no sea válida</p>
+</div>
+
+    <a href="{% url 'logout' %}" class="btn btn-lg btn-primary btn-block btn-login">Volver a intentarlo</a>
+
+{% endblock %}

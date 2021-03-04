@@ -6,9 +6,7 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth import login
-from django.contrib.auth.views import LoginView
-from oauth2client import client
+from django.contrib.auth import logout
 from client.models import Client, Address
 from core.forms import SystemVariableRichForm, SystemVariablePlainForm
 from core.models import User, Message, SystemVariable
@@ -16,7 +14,7 @@ from core.utils import get_return_from_id, has_to_change_password, get_page_from
 from core.tasks import notify_sms_received
 from engine.models import EngineRepair, EngineStatus
 from repair.models import RepairStatus
-from async_messages import messages
+from urllib.parse import urlencode
 
 
 class SearchClientBaseView(TemplateView):
@@ -81,7 +79,7 @@ class IndexView(View):
                 else:
                     response = 'intervention:intervention-list-own'
         else:
-            response = 'login'
+            return HttpResponseRedirect(settings.LOGIN_URL)
         return HttpResponseRedirect(reverse_lazy(response))
 
 
@@ -348,55 +346,17 @@ class UserView(TemplateView):
         return context
 
 
-class GoogleLoginView(TemplateView):
-    template_name = 'login_google.html'
+class LoginErrorView(TemplateView):
+    template_name = 'login_error.html'
 
 
-class GoogleErrorView(TemplateView):
-    template_name = 'error_google.html'
+class LoginView(TemplateView):
+    template_name = 'login_auth0.html'
 
 
-class GoogleProcessView(View):
-
+class LogoutView(View):
     def get(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse_lazy('home'))
-
-    def post(self, request, *args, **kwargs):
-        params = request.POST.copy()
-        token = params.getlist('token')[0]
-        try:
-            next = params.getlist('next')[0]
-        except:
-            next = False
-        idinfo = client.verify_id_token(token, settings.GOOGLE_CLIENT_ID)
-        try:
-            user = User.objects.get(email=idinfo['email'])
-            if user.is_active and user.is_google:
-                login(user=user, request=request, backend=None)
-                if next:
-                    return HttpResponseRedirect(next)
-                else:
-                    return HttpResponseRedirect(reverse_lazy('home'))
-            else:
-                return HttpResponseRedirect(reverse_lazy('login-google-error'))
-        except User.DoesNotExist:
-            return HttpResponseRedirect(reverse_lazy('login-google-error'))
-
-
-class LoginRedirectView(View):
-
-    def get(self, request, *args, **kwargs):
-        url = reverse_lazy('login-google')
-        next = request.GET.get('next', "/")
-        return HttpResponseRedirect(url+"?next="+next)
-
-
-class LoginPasswordView(LoginView):
-
-    def dispatch(self, request, *args, **kwargs):
-
-        if request.user.is_authenticated:
-            next = request.GET.get('next', "/")
-            return HttpResponseRedirect(next)
-        else:
-            return super(LoginPasswordView, self).dispatch(request, *args, **kwargs)
+        logout(request)
+        return_to = urlencode({'returnTo': request.build_absolute_uri('/')})
+        logout_url = 'https://%s/v2/logout?client_id=%s&%s' % (settings.SOCIAL_AUTH_AUTH0_DOMAIN, settings.SOCIAL_AUTH_AUTH0_KEY, return_to)
+        return HttpResponseRedirect(logout_url)

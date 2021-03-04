@@ -1,12 +1,11 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView, PasswordChangeView, PasswordChangeDoneView
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
-from core.views import IndexView, GoogleLoginView, GoogleProcessView, GoogleErrorView, LoginPasswordView, \
-    LoginRedirectView
+from core.views import IndexView, LogoutView, LoginErrorView, LoginView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -16,25 +15,16 @@ urlpatterns = [
     path('repair/', include(('repair.urls', 'repair'), namespace='repair')),
     path('engine/', include(('engine.urls', 'engine'), namespace='engine')),
     path('core/', include(('core.urls', 'core'), namespace='core')),
-    path('login/', LoginRedirectView.as_view(), name="login"),
-    path('login/google/', GoogleLoginView.as_view(), name='login-google'),
-    path('login/google/process/', GoogleProcessView.as_view(), name='login-google-process'),
-    path('login/google/error/', GoogleErrorView.as_view(), name='login-google-error'),
-    path('logout/', LogoutView.as_view(template_name="logout.html"), name='logout'),
+    path('', include('social_django.urls')),
+    path('login/logout/', LogoutView.as_view(), name="logout"),
+    path('login/error/', LoginErrorView.as_view()),
+    path('login/', LoginView.as_view()),
     path('', IndexView.as_view(), name='home'),
     path('repair-status/<online>/', PublicClientView.as_view(), name="public-status-repair"),
     path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
     path('hijack/', include(('hijack.urls', 'hijack'))),
     path('tinymce/', include('tinymce.urls')),
     path('api/', include('mundiagua_python.api_urls')),
-    path(
-        'login/password-deprecated/',
-        LoginPasswordView.as_view(
-            template_name='login_password.html',
-            authentication_form=MundiaguaLoginForm
-        ),
-        name="login-password"
-    ),
     path(
         'user/password/',
         PasswordChangeView.as_view(

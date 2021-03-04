@@ -47,6 +47,7 @@ OTHER_APPS = [
     'tinymce',
     'rest_framework',
     'corsheaders',
+    'social_django',
 ]
 
 MY_APPS = [
@@ -88,13 +89,14 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = {
+    'core.auth0login.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
 PUBLIC_URLS = (
-    r'login/',
-    r'login/password/',
-    r'login/google/',
-    r'login/google/process/',
-    r'login/google/error/',
-    r'logout/',
+    r'login/*',
+    r'complete/*',
     r'admin/',
     r'repair-status/(?P<online>\w+)/',
     r'clientes/',
@@ -105,25 +107,7 @@ PUBLIC_URLS = (
 )
 
 ROOT_URLCONF = 'mundiagua_python.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = 'mundiagua_python.wsgi.application'
-
 
 
 # Password validation
@@ -214,8 +198,6 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
-LOGIN_URL = "/login/"
-
 HIJACK_REGISTER_ADMIN = False
 HIJACK_ALLOW_GET_REQUESTS = True
 HIJACK_USE_BOOTSTRAP = True
@@ -282,8 +264,6 @@ APP_VERSION_INCLUDES = 6781
 APP_COMPLETE_VERSION = "6.7.8.0-20210227-dj2-py38"
 TEMPLATE_COLOR = '#1d3f72'
 
-LOGIN_REDIRECT_URL = "/"
-
 #CACHE TIMES IN SEC
 CACHE_TIME_CHARTS = 60 * 60
 CACHE_TIME_CHART_INCOME = 25 * 60
@@ -327,3 +307,16 @@ SMS_TOKEN_EXPIRE_TIME = 60 * 60 * 3
 
 CORS_ALLOW_METHODS = ['GET']
 CORS_ORIGIN_REGEX_WHITELIST = [r"^https://\w+\.mundiaguabalear\.com$"]
+
+LOGIN_URL = '/login/'
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+)
+SOCIAL_AUTH_AUTH0_LOGIN_ERROR_URL = "/login/error/"
+SOCIAL_AUTH_AUTH0_SCOPE = ['openid', 'profile', 'email']
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"

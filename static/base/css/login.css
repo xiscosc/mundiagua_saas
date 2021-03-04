@@ -90,3 +90,20 @@ code {
 .abcRioButtonBlue {
     background-color: #1d3f72 !important;
 }
+
+.btn-image:before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: text-top;
+    background-color: transparent;
+    background-position : center center;
+    background-repeat:no-repeat;
+    background-size: cover;
+}
+
+.btn-auth0:before{
+    background-image : url(https://cdn.worldvectorlogo.com/logos/auth0.svg);
+}

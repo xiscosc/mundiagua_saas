@@ -1,0 +1,12 @@
+{% extends 'log_base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% load core_tags %}
+{% block content %}
+    {% if request.GET.next %}
+        <a href="{% url 'social:begin' 'auth0' %}?next={{ request.GET.next }}" class="btn btn-lg btn-primary btn-block btn-login btn-image btn-auth0">Iniciar sesión</a>
+    {% else %}
+        <a href="{% url 'social:begin' 'auth0' %}" class="btn btn-lg btn-primary btn-block btn-login btn-image btn-auth0">Iniciar sesión</a>
+    {% endif %}
+
+{% endblock %}
