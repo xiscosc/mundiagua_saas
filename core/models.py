@@ -60,8 +60,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_google = models.BooleanField(default=False)
     telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     def get_full_name(self):
         # The user is identified by their email address
