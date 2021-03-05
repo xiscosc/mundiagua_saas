@@ -96,6 +96,7 @@ AUTHENTICATION_BACKENDS = {
 
 PUBLIC_URLS = (
     r'login/*',
+    r'uas/*',
     r'privacy/',
     r'complete/*',
     r'admin/',

@@ -71,13 +71,10 @@ class IndexView(View):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.is_active:
-            if not request.user.is_google and has_to_change_password(request.user.last_password_update) is True:
-                response = 'password-change'
+            if request.user.is_officer:
+                response = 'intervention:intervention-home'
             else:
-                if request.user.is_officer:
-                    response = 'intervention:intervention-home'
-                else:
-                    response = 'intervention:intervention-list-own'
+                response = 'intervention:intervention-list-own'
         else:
             return HttpResponseRedirect(settings.LOGIN_URL)
         return HttpResponseRedirect(reverse_lazy(response))
@@ -356,6 +353,11 @@ class LoginErrorView(TemplateView):
 
 class LoginView(TemplateView):
     template_name = 'login_auth0.html'
+
+
+class RedirectLoginView(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse_lazy('login'))
 
 
 class LogoutView(View):

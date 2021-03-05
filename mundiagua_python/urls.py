@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
-from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginView
+from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginView, RedirectLoginView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -13,11 +13,13 @@ urlpatterns = [
     path('repair/', include(('repair.urls', 'repair'), namespace='repair')),
     path('engine/', include(('engine.urls', 'engine'), namespace='engine')),
     path('core/', include(('core.urls', 'core'), namespace='core')),
-    path('', include('social_django.urls')),
+    path('uas/', include('social_django.urls')),
     path('privacy/', PrivacyView.as_view(), name="privacy"),
     path('login/logout/', LogoutView.as_view(), name="logout"),
     path('login/error/', LoginErrorView.as_view()),
-    path('login/', LoginView.as_view()),
+    path('login/google/', RedirectLoginView.as_view()),
+    path('login/password/', RedirectLoginView.as_view()),
+    path('login/', LoginView.as_view(), name="login"),
     path('', IndexView.as_view(), name='home'),
     path('repair-status/<online>/', PublicClientView.as_view(), name="public-status-repair"),
     path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
