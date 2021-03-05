@@ -28,9 +28,6 @@
 {% block contentpanel %}
     <fieldset>
         <ul>
-            <li><strong>Último cambio de contraseña:</strong> {{ request.user.last_password_update }} <a
-                    href="{% url 'password-change' %}"
-                    class="btn btn-warning btn-xs">Cambiar ahora</a></li>
             <li><strong>Email corporativo:</strong> {{ request.user.email }}</li>
             <li><strong>Teléfono</strong>: {{ request.user.phone }}</li>
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}

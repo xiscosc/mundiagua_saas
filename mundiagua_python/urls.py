@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
-from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
 from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginView
 
 urlpatterns = [
@@ -26,20 +24,6 @@ urlpatterns = [
     path('hijack/', include(('hijack.urls', 'hijack'))),
     path('tinymce/', include('tinymce.urls')),
     path('api/', include('mundiagua_python.api_urls')),
-    path(
-        'user/password/',
-        PasswordChangeView.as_view(
-            template_name='password_change.html',
-            success_url='/user/password-done/',
-            form_class=MundiaguaChangePasswordForm),
-        name='password-change'
-    ),
-    path(
-        'user/password-done/',
-        PasswordChangeDoneView.as_view(
-            template_name='password_change_done.html'
-        ),
-        name='password-change-done'),
 ]
 
 if settings.DEBUG is True:

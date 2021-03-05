@@ -3,10 +3,29 @@
 {% load bootstrap %}
 {% load core_tags %}
 {% block content %}
-    {% if request.GET.next %}
-        <a href="{% url 'social:begin' 'auth0' %}?next={{ request.GET.next }}" class="btn btn-lg btn-primary btn-block btn-login btn-image btn-auth0">Iniciar sesión</a>
-    {% else %}
-        <a href="{% url 'social:begin' 'auth0' %}" class="btn btn-lg btn-primary btn-block btn-login btn-image btn-auth0">Iniciar sesión</a>
-    {% endif %}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h5 style="color: darkblue">Redirigiendo al sistema de inicio de sesión unificado...</h5>
+        </div>
+    </div>
+    <br>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar"
+             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+        </div>
+    </div>
 
+{% endblock %}
+
+{% block extrajs %}
+    <script type="application/javascript">
+        {% if request.GET.next %}
+            url = "{% url 'social:begin' 'auth0' %}?next={{ request.GET.next }}"
+        {% else %}
+            url = "{% url 'social:begin' 'auth0' %}"
+        {% endif %}
+        setTimeout(function() {
+            window.location.href = url;
+        }, 1000);
+    </script>
 {% endblock %}

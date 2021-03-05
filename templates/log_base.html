@@ -45,14 +45,7 @@
                             <img src="{% static 'base/img/logo_blue.png' %}{% app_version_includes %}" class="img-responsive"/>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <h5 style="color: darkblue">Sistema de inicio de sesión unificado</h5>
-                        </div>
-                    </div>
-                    <br>
                     {% block content %} {% endblock %}
-
                     <br>
                     <div class="text-center"><a href="{% url 'privacy' %}"><small>Política de privacidad</small></a></div>
                 </div>
