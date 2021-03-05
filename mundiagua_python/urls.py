@@ -5,7 +5,7 @@ from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
 from core.forms import MundiaguaLoginForm, MundiaguaChangePasswordForm
-from core.views import IndexView, LogoutView, LoginErrorView, LoginView
+from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -16,6 +16,7 @@ urlpatterns = [
     path('engine/', include(('engine.urls', 'engine'), namespace='engine')),
     path('core/', include(('core.urls', 'core'), namespace='core')),
     path('', include('social_django.urls')),
+    path('privacy/', PrivacyView.as_view(), name="privacy"),
     path('login/logout/', LogoutView.as_view(), name="logout"),
     path('login/error/', LoginErrorView.as_view()),
     path('login/', LoginView.as_view()),
