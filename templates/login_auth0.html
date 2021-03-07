@@ -3,29 +3,15 @@
 {% load bootstrap %}
 {% load core_tags %}
 {% block content %}
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <h5 style="color: darkblue">Redirigiendo al sistema de inicio de sesión unificado...</h5>
-        </div>
+    <div class="row text-center">
+        <img class="google-gif" src="{% static 'base/img/google.gif' %}{% app_version_includes %}"/>
     </div>
-    <br>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped active" role="progressbar"
-             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
-        </div>
-    </div>
-
 {% endblock %}
 
 {% block extrajs %}
     <script type="application/javascript">
-        {% if request.GET.next %}
-            url = "{% url 'social:begin' 'auth0' %}?next={{ request.GET.next }}"
-        {% else %}
-            url = "{% url 'social:begin' 'auth0' %}"
-        {% endif %}
         setTimeout(function() {
-            window.location.href = url;
+            window.location.href = "{% url 'social:begin' 'auth0' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}";
         }, 1000);
     </script>
 {% endblock %}
