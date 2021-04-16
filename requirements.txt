@@ -36,3 +36,6 @@ Unidecode
 social-auth-app-django
 python-jose
 python-dotenv
+cryptography
+drf-jwt
+pyjwt

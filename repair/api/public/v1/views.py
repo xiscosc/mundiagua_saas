@@ -2,10 +2,14 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
 
 from repair.api.public.v1.serializers import AthRepairSerializer, IdegisRepairSerializer
 from repair.models import AthRepair, IdegisRepair
 
+
+@permission_classes([AllowAny])
 class RepairStatusViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         first_letter = pk[:1].upper()
