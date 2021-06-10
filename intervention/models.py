@@ -12,7 +12,7 @@ from client.models import SMS
 from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, \
     send_telegram_message, send_telegram_document_with_s3_url, send_telegram_picture_with_s3_url, autolink_intervention
 from intervention.tasks import send_intervention_assigned, upload_file, send_file_telegram_task, \
-    delete_telegram_messages_from_intervention
+    delete_telegram_messages_from_intervention, delete_file_from_telegram
 
 
 def get_file_upload_path(instance, filename):
@@ -319,9 +319,14 @@ def post_save_document(sender, **kwargs):
     doc = kwargs['instance']
     if kwargs['created']:
         upload_file.delay("document", doc.pk)
-
-    if doc.intervention.status_id == settings.ASSIGNED_STATUS and not doc.sent_to_telegram:
+    elif doc.intervention.status_id == settings.ASSIGNED_STATUS and not doc.sent_to_telegram:
         send_file_telegram_task.delay(doc.pk, 'document')
+    elif doc.intervention.status_id == settings.ASSIGNED_STATUS and doc.sent_to_telegram:
+        if not doc.intervention.assigned.is_officer and doc.only_officer:
+            delete_file_from_telegram.delay(doc.intervention.assigned.telegram_token, doc.telegram_message, doc.intervention.pk)
+            doc.telegram_message = None
+            doc.sent_to_telegram = False
+            doc.save()
 
 
 def post_save_image(sender, **kwargs):

@@ -53,25 +53,19 @@ def delete_telegram_messages_from_intervention(pk, pk_assigned_old):
     from intervention.models import Intervention
     from core.models import User
     from core.utils import delete_telegram_messages
-    if pk_assigned_old:
+    from itertools import chain
+    user = User.objects.get(pk=pk_assigned_old)
+    if pk_assigned_old and not user.is_officer and user.telegram_token:
         instance = Intervention.objects.get(pk=pk)
-        user = User.objects.get(pk=pk_assigned_old)
-        if user.telegram_token:
-            ids = []
-            files = instance.get_images()
-            for f in files:
-                if f.telegram_message:
-                    ids.append(f.telegram_message)
-                    f.telegram_message = None
-                    f.save()
-            files = instance.get_documents()
-            for f in files:
-                if f.telegram_message:
-                    ids.append(f.telegram_message)
-                    f.telegram_message = None
-                    f.save()
-            if not user.is_officer:
-                delete_telegram_messages(user.telegram_token, ids, instance)
+        ids = []
+        for f in list(chain(instance.get_images(), instance.get_documents())):
+            if f.telegram_message:
+                ids.append(f.telegram_message)
+                f.telegram_message = None
+                f.sent_to_telegram = False
+                f.save()
+        delete_telegram_messages(user.telegram_token, ids, instance)
+
 
 @shared_task
 def delete_file_from_telegram(token, message_id, instance_pk):

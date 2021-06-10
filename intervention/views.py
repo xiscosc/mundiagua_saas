@@ -508,14 +508,6 @@ class MakeVisibleDocumentView(View):
         instance = InterventionDocument.objects.get(pk=self.kwargs['pk'])
         pk_intervention = instance.intervention_id
         instance.only_officer = not instance.only_officer
-        # Remove document from user telegram
-        if instance.only_officer and instance.sent_to_telegram and instance.telegram_message:
-            if instance.intervention.assigned and not instance.intervention.assigned.is_officer:
-                delete_file_from_telegram.delay(instance.intervention.assigned.telegram_token,
-                                                instance.telegram_message, instance.intervention.pk)
-                instance.telegram_message = None
-                instance.sent_to_telegram = False
-
         instance.save()
         messages.success(request.user, "Visibilidad de archivo modificada")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
