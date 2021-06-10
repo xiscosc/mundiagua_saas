@@ -10,8 +10,7 @@ from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
 from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, \
-    send_telegram_message, send_telegram_document, send_telegram_picture, send_telegram_document_bin, \
-    send_telegram_picture_bin, autolink_intervention
+    send_telegram_message, send_telegram_document_with_s3_url, send_telegram_picture_with_s3_url, autolink_intervention
 from intervention.tasks import send_intervention_assigned, upload_file, send_file_telegram_task, \
     delete_telegram_messages_from_intervention
 
@@ -278,14 +277,11 @@ class InterventionImage(InterventionFile):
                 self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
 
             if self.in_s3:
-                message = send_telegram_picture_bin(user.telegram_token, self.download_from_s3())
-            else:
-                message = send_telegram_picture(user.telegram_token,
-                                                os.path.join(settings.MEDIA_ROOT, self.file_path()))
-
-            if message:
-                self.telegram_message = message.message_id
-                self.sent_to_telegram = True
+                message = send_telegram_picture_with_s3_url(user.telegram_token, self.get_signed_url())
+                if message:
+                    self.telegram_message = message.message_id
+                    self.sent_to_telegram = True
+                    self.save()
 
 
 class InterventionDocument(InterventionFile):
@@ -306,15 +302,11 @@ class InterventionDocument(InterventionFile):
                     self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
 
                 if self.in_s3:
-                    message = send_telegram_document_bin(user.telegram_token, self.download_from_s3(), self.filename())
-                else:
-                    message = send_telegram_document(user.telegram_token,
-                                                     os.path.join(settings.MEDIA_ROOT, self.file_path()),
-                                                     self.filename())
-
-                if message:
-                    self.telegram_message = message.message_id
-                    self.sent_to_telegram = True
+                    message = send_telegram_document_with_s3_url(user.telegram_token, self.get_signed_url(), self.filename())
+                    if message:
+                        self.telegram_message = message.message_id
+                        self.sent_to_telegram = True
+                        self.save()
 
 
 def post_save_document(sender, **kwargs):

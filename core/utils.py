@@ -252,34 +252,18 @@ def send_telegram_message(token, message, subject=None):
         return False
 
 
-def send_telegram_picture(token, img_route):
+def send_telegram_picture_with_s3_url(token, url):
     try:
         bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-        return bot.send_photo(chat_id=token, photo=open(img_route, 'rb'))
+        return bot.send_photo(chat_id=token, photo=url)
     except:
         return False
 
 
-def send_telegram_picture_bin(token, img_data):
+def send_telegram_document_with_s3_url(token, url, filename):
     try:
         bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-        return bot.send_photo(chat_id=token, photo=img_data)
-    except:
-        return False
-
-
-def send_telegram_document(token, doc_route, filename):
-    try:
-        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-        return bot.send_document(chat_id=token, document=open(doc_route, 'rb'), filename=filename)
-    except:
-        return False
-
-
-def send_telegram_document_bin(token, doc_data, filename):
-    try:
-        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-        return bot.send_document(chat_id=token, document=doc_data, filename=filename)
+        return bot.send_document(chat_id=token, document=url, filename=filename)
     except:
         return False
 

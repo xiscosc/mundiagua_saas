@@ -32,10 +32,9 @@ def upload_file(t, pk):
     else:
         instance = InterventionImage.objects.get(pk=pk)
 
+    instance.upload_to_s3()
     if instance.intervention.status_id == settings.ASSIGNED_STATUS:
         instance.send_file_to_telegram()
-
-    instance.upload_to_s3()
 
 
 @shared_task

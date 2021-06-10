@@ -25,7 +25,7 @@ oauth2client
 pyshorteners
 django-debug-toolbar
 django-tinymce4-lite
-python-telegram-bot
+python-telegram-bot==13.6
 django-cors-headers
 djangorestframework
 markdown
