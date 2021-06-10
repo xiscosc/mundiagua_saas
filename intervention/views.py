@@ -514,6 +514,7 @@ class MakeVisibleDocumentView(View):
                 delete_file_from_telegram.delay(instance.intervention.assigned.telegram_token,
                                                 instance.telegram_message, instance.intervention.pk)
                 instance.telegram_message = None
+                instance.sent_to_telegram = False
 
         instance.save()
         messages.success(request.user, "Visibilidad de archivo modificada")

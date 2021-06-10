@@ -223,7 +223,7 @@ class InterventionFile(models.Model):
         original_path = os.path.join(settings.MEDIA_ROOT, self.file_path())
 
         try:
-            result = s3.upload_file(original_path, self.get_bucket(), key)
+            result = s3.upload_file(original_path, self.get_bucket(), key, extra_args=self.get_upload_args())
             if result is None:
                 self.s3_key = key
                 self.in_s3 = True
@@ -259,6 +259,9 @@ class InterventionFile(models.Model):
     def send_file_to_telegram(self):
         pass
 
+    def get_upload_args(self):
+        return {}
+
 
 class InterventionImage(InterventionFile):
     image = models.ImageField(upload_to=get_images_upload_path)
@@ -269,6 +272,9 @@ class InterventionImage(InterventionFile):
 
     def get_bucket(self):
         return settings.S3_IMAGES
+
+    def get_upload_args(self):
+        return {'ContentType': 'image'}
 
     def send_file_to_telegram(self):
         user = self.intervention.assigned

@@ -23,6 +23,7 @@ def send_intervention(pk, pkto, pkuser):
         messages.warning(user,
                          "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name())
 
+
 @shared_task
 def upload_file(t, pk):
     from django.conf import settings
@@ -34,7 +35,7 @@ def upload_file(t, pk):
 
     instance.upload_to_s3()
     if instance.intervention.status_id == settings.ASSIGNED_STATUS:
-        instance.send_file_to_telegram()
+        send_file_telegram_task.delay(instance.pk, t)
 
 
 @shared_task
@@ -44,10 +45,7 @@ def send_file_telegram_task(pk, t):
         instance = InterventionDocument.objects.get(pk=pk)
     else:
         instance = InterventionImage.objects.get(pk=pk)
-    if instance.intervention.assigned.telegram_token:
-        instance.send_file_to_telegram()
-        if instance.sent_to_telegram:
-            instance.save()
+    instance.send_file_to_telegram()
 
 
 @shared_task
