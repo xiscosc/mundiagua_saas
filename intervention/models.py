@@ -292,8 +292,8 @@ class InterventionImage(InterventionFile):
             if result is None:
                 self.thumbnail_s3_key = key
                 self.save()
-                # print("Removing %s" % original_path)
-                # os.remove(original_path)
+                print("Removing thumbnail %s" % original_path)
+                os.remove(original_path)
         except Exception as err:
             print(err)
 
@@ -351,10 +351,7 @@ def post_save_document(sender, **kwargs):
 def post_save_image(sender, **kwargs):
     image = kwargs['instance']
     if kwargs['created']:
-        path = generate_thumbnail(image)
-        image.thumbnail = path
-        image.upload_thumbnail_to_s3(path)
-        image.save()
+        image.upload_thumbnail_to_s3(generate_thumbnail(image))
         upload_file.delay("image", image.pk)
 
 
