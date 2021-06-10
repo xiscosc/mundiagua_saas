@@ -258,7 +258,7 @@ class InterventionFile(models.Model):
 class InterventionImage(InterventionFile):
     image = models.ImageField(upload_to=get_images_upload_path)
     thumbnail = models.ImageField(blank=True, null=True)
-    thumbnail_s3_key = models.CharField(max_length=20, default=None, null=True)
+    thumbnail_s3_key = models.CharField(max_length=60, default=None, null=True)
 
     def file_path(self):
         return self.image.name
