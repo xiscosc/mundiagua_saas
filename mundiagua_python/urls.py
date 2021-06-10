@@ -3,7 +3,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from client.views import PublicClientView, RedirectOldClientView
-from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginView, RedirectLoginView
+from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginErrorAuthView, LoginView,\
+    RedirectLoginView
 
 urlpatterns = [
     path('spectrum/', admin.site.urls),
@@ -17,6 +18,7 @@ urlpatterns = [
     path('privacy/', PrivacyView.as_view(), name="privacy"),
     path('login/logout/', LogoutView.as_view(), name="logout"),
     path('login/error/', LoginErrorView.as_view()),
+    path('login/error-auth/', LoginErrorAuthView.as_view()),
     path('login/google/', RedirectLoginView.as_view()),
     path('login/password/', RedirectLoginView.as_view()),
     path('login/', LoginView.as_view(), name="login"),

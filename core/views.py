@@ -351,6 +351,10 @@ class LoginErrorView(TemplateView):
     template_name = 'login_error.html'
 
 
+class LoginErrorAuthView(TemplateView):
+    template_name = 'login_error_auth.html'
+
+
 class LoginView(TemplateView):
     template_name = 'login_auth0.html'
 

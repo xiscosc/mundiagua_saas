@@ -72,6 +72,7 @@ BOWER_INSTALLED_APPS = (
 )
 
 MIDDLEWARE = [
+    'social_django.middleware.SocialAuthExceptionMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -284,9 +285,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "6.7.10"
+APP_VERSION = "6.7.11"
 APP_VERSION_INCLUDES = 6791
-APP_COMPLETE_VERSION = "6.7.10.0.20210416"
+APP_COMPLETE_VERSION = "6.7.11.0.20210610"
 TEMPLATE_COLOR = '#1d3f72'
 
 #CACHE TIMES IN SEC
@@ -334,6 +335,7 @@ CORS_ALLOW_METHODS = ['GET']
 CORS_ORIGIN_REGEX_WHITELIST = [r"^https://\w+\.mundiaguabalear\.com$"]
 
 LOGIN_URL = '/login/'
+LOGIN_ERROR_URL = '/login/error-auth/'
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
