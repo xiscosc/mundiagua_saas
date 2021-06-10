@@ -101,8 +101,7 @@
                         {% for i in intervention.get_images %}
                             {% if i.thumbnail %}
                                 <a href="#" class="link_image"
-                                   data-url="{% url 'intervention:intervention-view-image' i.s3_key %}"
-                                   data-key="{{ i.s3_key }}"
+                                   data-url="{% url 'intervention:intervention-view-image-url' i.s3_key %}"
                                    data-date="{{ i.date }}"
                                    data-name="{{ i.user.get_full_name }}"
                                         {% if request.user == i.user %}
@@ -111,7 +110,7 @@
                                    data-remove="noremove"
                                         {% endif %}
                                 >
-                                    <img src="{{ i.thumbnail.url }}" alt=""/>
+                                    <img src="{{ i.get_thumbnail_signed_url }}" alt=""/>
                                 </a>
                                 {% if i.s3_key == "no_key" %}
                                     <button class="btn btn-warning btn-circle btn-circle-inline btn-s3" disabled>
@@ -172,7 +171,7 @@
                                                 </button>
                                             {% endif %}
                                             <a class="btn btn-success btn-circle btn-circle-inline"
-                                               href="{% url 'intervention:intervention-prepare-download' d.pk %}"
+                                               href="{% url 'intervention:intervention-view-document' d.s3_key %}"
                                                target="_blank">
                                                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
                                             </a>
@@ -213,7 +212,7 @@
                                             </button>
                                         {% else %}
                                             <a class="btn btn-success btn-circle btn-circle-inline"
-                                               href="{% url 'intervention:intervention-prepare-download' d.pk %}"
+                                               href="{% url 'intervention:intervention-view-document' d.s3_key %}"
                                                target="_blank">
                                                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
                                             </a>

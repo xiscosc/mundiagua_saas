@@ -22,8 +22,6 @@ from intervention.utils import update_intervention, generate_data_year_vs, gener
 from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
 
-from intervention.tasks import delete_file_from_telegram
-
 
 class HomeView(TemplateView):
     template_name = 'home_intervention.html'
@@ -353,7 +351,7 @@ class ToggleStarredInterventionView(View):
 class AddStatusJobView(View):
     def post(self, request, *args, **kwargs):
         status_id = int(request.POST.get('sub_status', 0))
-        if status_id is not 0:
+        if status_id != 0:
             try:
                 log = InterventionLogSub(intervention_id=self.kwargs['pk'], created_by=self.request.user,
                                          sub_status_id=status_id)
@@ -418,41 +416,6 @@ class MapAssignedInterventionView(MapInterventionView):
 
 class ForbiddenInterventionView(TemplateView):
     template_name = 'forbidden_intervention.html'
-
-
-class PrepareDownloadView(TemplateView):
-    template_name = 'download_document.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_officer:
-            return super(PrepareDownloadView, self).dispatch(request, *args, **kwargs)
-        else:
-            try:
-                doc = InterventionDocument.objects.get(pk=kwargs['pk'])
-                intervention = doc.intervention
-                if not doc.only_officer and intervention.status_id == 2 and intervention.assigned_id == request.user.id:
-                    return super(PrepareDownloadView, self).dispatch(request, *args, **kwargs)
-                else:
-                    return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
-            except:
-                return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
-
-    def get_context_data(self, **kwargs):
-        context = super(PrepareDownloadView, self).get_context_data(**kwargs)
-        context['document'] = InterventionDocument.objects.get(pk=kwargs['pk'])
-        return context
-
-
-class ImageView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            image = InterventionImage.objects.get(s3_key=self.kwargs['key'])
-            image_data = image.download_from_s3().read()
-            return HttpResponse(image_data, content_type="image/%s" % image.get_extension())
-        except:
-            import os
-            with open(os.path.join(settings.STATIC_URL, settings.IMAGE_NOT_FOUND), "rb") as f:
-                return HttpResponse(f.read(), content_type="image/png")
 
 
 class ImageUrlView(View):

@@ -55,7 +55,7 @@ def delete_telegram_messages_from_intervention(pk, pk_assigned_old):
     from core.utils import delete_telegram_messages
     from itertools import chain
     user = User.objects.get(pk=pk_assigned_old)
-    if pk_assigned_old and not user.is_officer and user.telegram_token:
+    if user.telegram_token:
         instance = Intervention.objects.get(pk=pk)
         ids = []
         for f in list(chain(instance.get_images(), instance.get_documents())):

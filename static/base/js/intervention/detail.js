@@ -29,7 +29,7 @@ function set_image(element) {
         $remove_link.show()
     }
     $modal.modal("show");
-    $.get("/intervention/getimageurl/" + s3key, function (data) {
+    $.get(element.data('url'), function (data) {
         var img = $("<img class='img-responsive' />").attr('src', data)
             .on('load', function () {
                 $('#progress_bar_image').hide();

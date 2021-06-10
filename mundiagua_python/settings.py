@@ -248,9 +248,8 @@ NON_STAFF_VIEWS = ('message-new',
                    'message-ajax',
                    'intervention-list-own',
                    'intervention-view',
-                   'intervention-view-image',
-                   'intervention-prepare-download',
                    'intervention-view-document',
+                   'intervention-view-image-url',
                    'intervention-forbidden',
                    'intervention-remove-file',
                    'client-address-edit-geo',
@@ -286,7 +285,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "6.7.11"
-APP_VERSION_INCLUDES = 6791
+APP_VERSION_INCLUDES = 67115
 APP_COMPLETE_VERSION = "6.7.11.5.20210610"
 TEMPLATE_COLOR = '#1d3f72'
 

@@ -240,14 +240,6 @@ class InterventionFile(models.Model):
     class Meta:
         abstract = True
 
-    def download_from_s3(self):
-        s3 = create_amazon_client('s3')
-        try:
-            data = s3.get_object(Bucket=self.get_bucket(), Key=self.s3_key)
-            return data['Body']
-        except:
-            return None
-
     def get_signed_url(self):
         s3 = create_amazon_client('s3')
         try:
@@ -266,6 +258,7 @@ class InterventionFile(models.Model):
 class InterventionImage(InterventionFile):
     image = models.ImageField(upload_to=get_images_upload_path)
     thumbnail = models.ImageField(blank=True, null=True)
+    thumbnail_s3_key = models.CharField(max_length=20, default=None, null=True)
 
     def file_path(self):
         return self.image.name
@@ -275,6 +268,34 @@ class InterventionImage(InterventionFile):
 
     def get_upload_args(self):
         return {'ContentType': 'image/%s' % self.get_extension()}
+
+    def get_thumbnail_signed_url(self):
+        if self.thumbnail_s3_key is None:
+            return self.thumbnail.url
+
+        s3 = create_amazon_client('s3')
+        try:
+            params = {'Bucket': self.get_bucket(), 'Key': self.thumbnail_s3_key}
+            return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=3600)
+        except:
+            return None
+
+    def upload_thumbnail_to_s3(self, thumbnail_path):
+        import random
+        s3 = create_amazon_client('s3')
+        rand = int(random.random() * 100) % 9
+        key = "th/V%d_%d_%d.%s" % (self.intervention.pk, self.pk, rand, self.get_extension())
+        original_path = os.path.join(settings.MEDIA_ROOT, thumbnail_path)
+
+        try:
+            result = s3.upload_file(original_path, self.get_bucket(), key, ExtraArgs=self.get_upload_args())
+            if result is None:
+                self.thumbnail_s3_key = key
+                self.save()
+                # print("Removing %s" % original_path)
+                # os.remove(original_path)
+        except Exception as err:
+            print(err)
 
     def send_file_to_telegram(self):
         user = self.intervention.assigned
@@ -319,8 +340,6 @@ def post_save_document(sender, **kwargs):
     doc = kwargs['instance']
     if kwargs['created']:
         upload_file.delay("document", doc.pk)
-    elif doc.intervention.status_id == settings.ASSIGNED_STATUS and not doc.sent_to_telegram:
-        send_file_telegram_task.delay(doc.pk, 'document')
     elif doc.intervention.status_id == settings.ASSIGNED_STATUS and doc.sent_to_telegram:
         if not doc.intervention.assigned.is_officer and doc.only_officer:
             delete_file_from_telegram.delay(doc.intervention.assigned.telegram_token, doc.telegram_message, doc.intervention.pk)
@@ -332,7 +351,9 @@ def post_save_document(sender, **kwargs):
 def post_save_image(sender, **kwargs):
     image = kwargs['instance']
     if kwargs['created']:
-        image.thumbnail = generate_thumbnail(image)
+        path = generate_thumbnail(image)
+        image.thumbnail = path
+        image.upload_thumbnail_to_s3(path)
         image.save()
         upload_file.delay("image", image.pk)
 

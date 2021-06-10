@@ -7,8 +7,8 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
-    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, ImageView, DocumentView, \
-    PrepareDownloadView, RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView
+    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, DocumentView, \
+    RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -45,12 +45,8 @@ urlpatterns = [
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
-    url(r'^viewimage/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_PHOTOS)(ImageView.as_view()),
-        name="intervention-view-image"),
     url(r'^getimageurl/(?P<key>.+)/$', ImageUrlView.as_view(), name="intervention-view-image-url"),
-    url(r'^viewdocument/(?P<key>.+)/$', cache_page(settings.CACHE_TIME_DOCUMENTS)(DocumentView.as_view()),
-        name="intervention-view-document"),
-    url(r'^downloaddocument/(?P<pk>\d+)/$', PrepareDownloadView.as_view(), name="intervention-prepare-download"),
+    url(r'^viewdocument/(?P<key>.+)/$', DocumentView.as_view(), name="intervention-view-document"),
     url(r'^removefile/(?P<pk>\d+)/$', RemoveFileView.as_view(), name="intervention-remove-file"),
     url(r'^makevisibledocument/(?P<pk>\d+)/$', MakeVisibleDocumentView.as_view(), name="intervention-make-document-visible"),
     url(r'^link/(?P<pk>\d+)/$', LinkToInterventionView.as_view(), name="intervention-link")
