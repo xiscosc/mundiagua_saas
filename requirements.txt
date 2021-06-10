@@ -1,4 +1,4 @@
-Django==2.2.20
+Django==2.2.24
 django-bootstrap-form==3.2.1
 django-bower==5.2.0
 django-colorfield==0.1.10
@@ -33,7 +33,7 @@ django-filter
 nexmo
 pycurl
 Unidecode
-social-auth-app-django
+social-auth-app-django==4.0.0
 python-jose
 python-dotenv
 cryptography
