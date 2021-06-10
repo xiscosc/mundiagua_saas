@@ -223,15 +223,15 @@ class InterventionFile(models.Model):
         original_path = os.path.join(settings.MEDIA_ROOT, self.file_path())
 
         try:
-            result = s3.upload_file(original_path, self.get_bucket(), key, extra_args=self.get_upload_args())
+            result = s3.upload_file(original_path, self.get_bucket(), key, ExtraArgs=self.get_upload_args())
             if result is None:
                 self.s3_key = key
                 self.in_s3 = True
                 self.save()
                 print("Removing %s" % original_path)
                 os.remove(original_path)
-        except:
-            print(result)
+        except Exception as err:
+            print(err)
 
     def remove_form_s3(self):
         s3 = create_amazon_client('s3')
@@ -274,7 +274,7 @@ class InterventionImage(InterventionFile):
         return settings.S3_IMAGES
 
     def get_upload_args(self):
-        return {'ContentType': 'image'}
+        return {'ContentType': 'image/%s' % self.get_extension()}
 
     def send_file_to_telegram(self):
         user = self.intervention.assigned

@@ -15,7 +15,7 @@ django-hijack-admin
 celery==5.0.2
 python-memcached
 easy-thumbnails==2.4.1
-boto3
+boto3==1.17.91
 xlwt
 pyyaml
 ua-parser
