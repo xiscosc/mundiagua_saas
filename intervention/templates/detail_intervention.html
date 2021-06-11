@@ -99,7 +99,7 @@
                     </div>
                     <div class="panel-body">
                         {% for i in intervention.get_images %}
-                            {% if i.thumbnail %}
+                            {% if i.thumbnail_s3_key %}
                                 <a href="#" class="link_image"
                                    data-url="{% url 'intervention:intervention-view-image-url' i.s3_key %}"
                                    data-date="{{ i.date }}"
