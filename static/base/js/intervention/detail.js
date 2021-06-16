@@ -125,8 +125,7 @@ $(function () {
     });
 
     $('#document').on('change', function () {
-        $('#icon_document').hide();
-        $("#label_document").prepend('<p style="color: darkblue" id="upload_percent">0%</p>');
+        $("#label_document").html('<p style="color: darkblue" id="upload_percent">0%</p>');
         let file = this.files[0];
         $.post($('#document').data('url'), {fileName: file.name, csrfmiddlewaretoken: $('#document').data('token')})
             .done(function( data ) {
