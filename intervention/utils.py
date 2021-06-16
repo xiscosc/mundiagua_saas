@@ -2,6 +2,8 @@
 import calendar
 import time
 import xlwt
+import uuid
+import os
 from datetime import date, datetime
 
 from async_messages import messages
@@ -174,6 +176,13 @@ def get_intervention_list(status_id, user_id, zone_id, starred, tag_id):
 
     return {'interventions': interventions, 'search_status': search_status, 'search_user': search_user,
             'search_zone': search_zone, 'search_tag': search_tag}
+
+
+def generate_document_s3_key(intervention: Intervention, filename):
+    folder = intervention.__str__()
+    id = uuid.uuid1().__str__()
+    _, file_extension = os.path.splitext(filename)
+    return "%s/%s%s" % (folder, id, file_extension)
 
 
 def generate_report(request):

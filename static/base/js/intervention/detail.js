@@ -13,6 +13,43 @@ function urlify(text) {
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }
 
+function uploadFileToS3(file, s3Data) {
+    var formData = new FormData();
+    formData.append('AWSAccessKeyId', s3Data.fields.AWSAccessKeyId)
+    formData.append('key', s3Data.fields.key)
+    formData.append('policy', s3Data.fields.policy)
+    formData.append('signature', s3Data.fields.signature)
+    formData.append('file', file)
+
+    $.ajax({
+        type: 'POST',
+        url: s3Data.url,
+        // Content type must much with the parameter you signed your URL with
+        contentType: false,
+        // this flag is important, if not set, it will try to send data as a form
+        processData: false,
+        // the actual file is sent raw
+        data: formData,
+        success: function() {location.reload(); },
+        error: function () { setUploadToError(); },
+        xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = (evt.loaded / evt.total) * 100;
+                    $("#upload_percent").html(Math.floor( percentComplete ) + "%")
+                }
+            }, false);
+            return xhr;
+        }
+    })
+}
+
+function setUploadToError() {
+    $('#modal_upload').modal("show");
+    $('#body_upload').html('<h5 style="color: red">Error subiendo el archivo</h5>');
+}
+
 function set_image(element) {
     $modal = $('#modal_image');
     $('#body_image').html("");
@@ -83,14 +120,21 @@ $(function () {
 
     $('#image').on('change', function () {
         $('#icon_image').hide();
-        $("#label_image").prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
+        $("#label_image").prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="color: orange"></span>');
         $('#form_image').submit();
     });
 
     $('#document').on('change', function () {
         $('#icon_document').hide();
-        $("#label_document").prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
-        $('#form_document').submit();
+        $("#label_document").prepend('<p style="color: darkblue" id="upload_percent">0%</p>');
+        let file = this.files[0];
+        $.post($('#document').data('url'), {fileName: file.name, csrfmiddlewaretoken: $('#document').data('token')})
+            .done(function( data ) {
+                uploadFileToS3(file, data)
+            })
+            .fail(function (data) {
+                setUploadToError();
+            });
     });
 
     $link_images = $('.link_image');

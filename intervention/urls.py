@@ -8,7 +8,7 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
     MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, DocumentView, \
-    RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView
+    RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView, PreUploadDocument
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -46,7 +46,8 @@ urlpatterns = [
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
     url(r'^getimageurl/(?P<key>.+)/$', ImageUrlView.as_view(), name="intervention-view-image-url"),
-    url(r'^viewdocument/(?P<key>.+)/$', DocumentView.as_view(), name="intervention-view-document"),
+    url(r'^viewdocument/(?P<pk>\d+)/$', DocumentView.as_view(), name="intervention-view-document"),
+    url(r'^preuploaddocument/(?P<pk>\d+)/$', PreUploadDocument.as_view(), name="intervention-preupload-document"),
     url(r'^removefile/(?P<pk>\d+)/$', RemoveFileView.as_view(), name="intervention-remove-file"),
     url(r'^makevisibledocument/(?P<pk>\d+)/$', MakeVisibleDocumentView.as_view(), name="intervention-make-document-visible"),
     url(r'^link/(?P<pk>\d+)/$', LinkToInterventionView.as_view(), name="intervention-link")

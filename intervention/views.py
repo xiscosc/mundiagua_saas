@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import date
+import json
 
 import os
 from django.conf import settings
@@ -18,9 +19,10 @@ from intervention.models import Intervention, Zone, InterventionStatus, Interven
     InterventionDocument, InterventionSubStatus, InterventionLogSub, Tag
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention, \
-    generate_report
+    generate_report, generate_document_s3_key
 from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
+from intervention.tasks import send_file_telegram_task, delete_file_from_telegram
 
 
 class HomeView(TemplateView):
@@ -431,8 +433,7 @@ class ImageUrlView(View):
 class DocumentView(View):
     def get(self, request, *args, **kwargs):
         try:
-            document = InterventionDocument.objects.get(s3_key=self.kwargs['key'])
-
+            document = InterventionDocument.objects.get(pk=self.kwargs['pk'])
             if not request.user.is_officer:
                 if document.intervention.status_id != 2 or document.intervention.assigned_id != request.user.id or document.only_officer:
                     return HttpResponseRedirect(reverse_lazy('intervention:intervention-forbidden'))
@@ -454,8 +455,6 @@ class RemoveFileView(View):
             pk_intervention = instance.intervention_id
             if instance.user == request.user:
                 instance.remove_form_s3()
-                if type == 1:
-                    os.remove(os.path.join(settings.MEDIA_ROOT, instance.thumbnail.name))
                 instance.delete()
                 messages.success(request.user, "Archivo eliminado")
                 return HttpResponseRedirect(
@@ -472,8 +471,28 @@ class MakeVisibleDocumentView(View):
         pk_intervention = instance.intervention_id
         instance.only_officer = not instance.only_officer
         instance.save()
+
+        if not instance.only_officer and instance.intervention.status.id == 2:
+            send_file_telegram_task.delay(instance.pk, 'document')
+
+        if instance.only_officer and instance.intervention.status.id == 2 and instance.sent_to_telegram:
+            delete_file_from_telegram.delay(instance.intervention.assigned.telegram_token, instance.telegram_message, instance.intervention.pk)
+            instance.telegram_message = None
+            instance.sent_to_telegram = False
+            instance.save()
+
         messages.success(request.user, "Visibilidad de archivo modificada")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
+
+
+class PreUploadDocument(View):
+    def post(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=self.kwargs['pk'])
+        filename = request.POST['fileName']
+        key = generate_document_s3_key(intervention, filename)
+        document = InterventionDocument(intervention=intervention, user=request.user, in_s3=True, s3_key=key, original_name=filename)
+        document.save()
+        return JsonResponse(document.get_upload_signed_url())
 
 
 class LinkToInterventionView(View):

@@ -11,7 +11,7 @@ from django.conf import settings
 from client.models import SMS
 from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, \
     send_telegram_message, send_telegram_document_with_s3_url, send_telegram_picture_with_s3_url, autolink_intervention
-from intervention.tasks import send_intervention_assigned, upload_file, send_file_telegram_task, \
+from intervention.tasks import send_intervention_assigned, upload_file, \
     delete_telegram_messages_from_intervention, delete_file_from_telegram
 
 
@@ -199,9 +199,10 @@ class InterventionFile(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     in_s3 = models.BooleanField(default=False)
-    s3_key = models.CharField(max_length=20, default="no_key")
+    s3_key = models.CharField(max_length=120, default=None, null=True)
     telegram_message = models.BigIntegerField(default=None, null=True)
     sent_to_telegram = models.BooleanField(default=False)
+    original_name = models.CharField(max_length=120, default=None, null=True)
 
     def file_path(self):
         return None
@@ -210,10 +211,17 @@ class InterventionFile(models.Model):
         return None
 
     def filename(self):
-        return os.path.basename(self.file_path())
+        if self.original_name is not None:
+            return self.original_name
+        else:
+            return os.path.basename(self.file_path())
 
     def get_extension(self):
         return os.path.splitext(self.filename())[1][1:]
+
+    def get_upload_signed_url(self):
+        s3 = create_amazon_client('s3')
+        return s3.generate_presigned_post(self.get_bucket(), self.s3_key, ExpiresIn=60)
 
     def upload_to_s3(self):
         import random
@@ -256,22 +264,28 @@ class InterventionFile(models.Model):
 
 
 class InterventionImage(InterventionFile):
-    image = models.ImageField(upload_to=get_images_upload_path)
-    thumbnail = models.ImageField(blank=True, null=True)
+    image = models.ImageField(upload_to=get_images_upload_path, blank=True, null=True)
     thumbnail_s3_key = models.CharField(max_length=60, default=None, null=True)
 
     def file_path(self):
+        if self.image is None:
+            return None
         return self.image.name
 
     def get_bucket(self):
         return settings.S3_IMAGES
+
+    def remove_form_s3(self):
+        super(InterventionImage, self).remove_form_s3()
+        s3 = create_amazon_client('s3')
+        s3.delete_object(Bucket=self.get_bucket(), Key=self.thumbnail_s3_key)
 
     def get_upload_args(self):
         return {'ContentType': 'image/%s' % self.get_extension()}
 
     def get_thumbnail_signed_url(self):
         if self.thumbnail_s3_key is None:
-            return self.thumbnail.url
+            return None
 
         s3 = create_amazon_client('s3')
         try:
@@ -312,10 +326,12 @@ class InterventionImage(InterventionFile):
 
 
 class InterventionDocument(InterventionFile):
-    document = models.FileField(upload_to=get_file_upload_path)
+    document = models.FileField(upload_to=get_file_upload_path, default=None, null=True)
     only_officer = models.BooleanField(default=True)
 
     def file_path(self):
+        if self.document is None:
+            return None
         return self.document.name
 
     def get_bucket(self):
@@ -334,18 +350,6 @@ class InterventionDocument(InterventionFile):
                         self.telegram_message = message.message_id
                         self.sent_to_telegram = True
                         self.save()
-
-
-def post_save_document(sender, **kwargs):
-    doc = kwargs['instance']
-    if kwargs['created']:
-        upload_file.delay("document", doc.pk)
-    elif doc.intervention.status_id == settings.ASSIGNED_STATUS and doc.sent_to_telegram:
-        if not doc.intervention.assigned.is_officer and doc.only_officer:
-            delete_file_from_telegram.delay(doc.intervention.assigned.telegram_token, doc.telegram_message, doc.intervention.pk)
-            doc.telegram_message = None
-            doc.sent_to_telegram = False
-            doc.save()
 
 
 def post_save_image(sender, **kwargs):
@@ -383,6 +387,5 @@ def post_save_intervention(sender, **kwargs):
 
 
 post_save.connect(post_save_intervention, sender=Intervention)
-post_save.connect(post_save_document, sender=InterventionDocument)
 post_save.connect(post_save_image, sender=InterventionImage)
 post_save.connect(post_save_intervention_modification, sender=InterventionModification)
