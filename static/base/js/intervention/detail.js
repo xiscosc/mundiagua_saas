@@ -125,9 +125,11 @@ $(function () {
     });
 
     $('#document').on('change', function () {
+        var url = $('#document').data('url');
+        var token = $('#document').data('token');
         $("#label_document").html('<p style="color: darkblue" id="upload_percent">0%</p>');
         let file = this.files[0];
-        $.post($('#document').data('url'), {fileName: file.name, csrfmiddlewaretoken: $('#document').data('token')})
+        $.post(url, {fileName: file.name, csrfmiddlewaretoken: token})
             .done(function( data ) {
                 uploadFileToS3(file, data)
             })
