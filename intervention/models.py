@@ -9,10 +9,10 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
-from core.utils import send_data_to_user, create_amazon_client, generate_thumbnail, format_filename, \
+from core.utils import send_data_to_user, create_amazon_client, format_filename, \
     send_telegram_message, send_telegram_document_with_s3_url, send_telegram_picture_with_s3_url, autolink_intervention
-from intervention.tasks import send_intervention_assigned, upload_file, \
-    delete_telegram_messages_from_intervention, delete_file_from_telegram
+from intervention.tasks import send_intervention_assigned, \
+    delete_telegram_messages_from_intervention
 
 
 def get_file_upload_path(instance, filename):
@@ -210,6 +210,9 @@ class InterventionFile(models.Model):
     def get_bucket(self):
         return None
 
+    def get_upload_bucket(self):
+        return self.get_bucket()
+
     def filename(self):
         if self.original_name is not None:
             return self.original_name
@@ -221,25 +224,7 @@ class InterventionFile(models.Model):
 
     def get_upload_signed_url(self):
         s3 = create_amazon_client('s3')
-        return s3.generate_presigned_post(self.get_bucket(), self.s3_key, ExpiresIn=60)
-
-    def upload_to_s3(self):
-        import random
-        s3 = create_amazon_client('s3')
-        rand = int(random.random() * 100) % 9
-        key = "V%d_%d_%d.%s" % (self.intervention.pk, self.pk, rand, self.get_extension())
-        original_path = os.path.join(settings.MEDIA_ROOT, self.file_path())
-
-        try:
-            result = s3.upload_file(original_path, self.get_bucket(), key, ExtraArgs=self.get_upload_args())
-            if result is None:
-                self.s3_key = key
-                self.in_s3 = True
-                self.save()
-                print("Removing %s" % original_path)
-                os.remove(original_path)
-        except Exception as err:
-            print(err)
+        return s3.generate_presigned_post(self.get_upload_bucket(), self.s3_key, ExpiresIn=60, Fields=self.get_upload_args())
 
     def remove_form_s3(self):
         s3 = create_amazon_client('s3')
@@ -252,7 +237,7 @@ class InterventionFile(models.Model):
         s3 = create_amazon_client('s3')
         try:
             params = {'Bucket': self.get_bucket(), 'Key': self.s3_key}
-            return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=3600)
+            return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=120)
         except:
             return None
 
@@ -265,7 +250,7 @@ class InterventionFile(models.Model):
 
 class InterventionImage(InterventionFile):
     image = models.ImageField(upload_to=get_images_upload_path, blank=True, null=True)
-    thumbnail_s3_key = models.CharField(max_length=60, default=None, null=True)
+    thumbnail_s3_key = models.CharField(max_length=120, default=None, null=True)
 
     def file_path(self):
         if self.image is None:
@@ -275,13 +260,16 @@ class InterventionImage(InterventionFile):
     def get_bucket(self):
         return settings.S3_IMAGES
 
+    def get_upload_bucket(self):
+        return settings.S3_PROCESSING_IMAGES
+
     def remove_form_s3(self):
         super(InterventionImage, self).remove_form_s3()
         s3 = create_amazon_client('s3')
         s3.delete_object(Bucket=self.get_bucket(), Key=self.thumbnail_s3_key)
 
     def get_upload_args(self):
-        return {'ContentType': 'image/%s' % self.get_extension()}
+        return {'ContentType': 'image/jpeg'}
 
     def get_thumbnail_signed_url(self):
         if self.thumbnail_s3_key is None:
@@ -293,23 +281,6 @@ class InterventionImage(InterventionFile):
             return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=3600)
         except:
             return None
-
-    def upload_thumbnail_to_s3(self, thumbnail_path):
-        import random
-        s3 = create_amazon_client('s3')
-        rand = int(random.random() * 100) % 9
-        key = "th/V%d_%d_%d.%s" % (self.intervention.pk, self.pk, rand, self.get_extension())
-        original_path = os.path.join(settings.MEDIA_ROOT, thumbnail_path)
-
-        try:
-            result = s3.upload_file(original_path, self.get_bucket(), key, ExtraArgs=self.get_upload_args())
-            if result is None:
-                self.thumbnail_s3_key = key
-                self.save()
-                print("Removing thumbnail %s" % original_path)
-                os.remove(original_path)
-        except Exception as err:
-            print(err)
 
     def send_file_to_telegram(self):
         user = self.intervention.assigned
@@ -352,13 +323,6 @@ class InterventionDocument(InterventionFile):
                         self.save()
 
 
-def post_save_image(sender, **kwargs):
-    image = kwargs['instance']
-    if kwargs['created']:
-        image.upload_thumbnail_to_s3(generate_thumbnail(image))
-        upload_file.delay("image", image.pk)
-
-
 def post_save_intervention_modification(sender, **kwargs):
     intervention_mod = kwargs['instance']
     if kwargs['created']:
@@ -387,5 +351,4 @@ def post_save_intervention(sender, **kwargs):
 
 
 post_save.connect(post_save_intervention, sender=Intervention)
-post_save.connect(post_save_image, sender=InterventionImage)
 post_save.connect(post_save_intervention_modification, sender=InterventionModification)

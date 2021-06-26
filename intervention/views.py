@@ -327,19 +327,6 @@ class UploadImageView(View):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class UploadDocumentView(View):
-    def post(self, request, *args, **kwargs):
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            document = InterventionDocument(document=request.FILES['document'], intervention_id=self.kwargs['pk'],
-                                            user=self.request.user)
-            document.save()
-            messages.success(self.request.user, "Documento guardado correctamente")
-        else:
-            messages.warning(self.request.user, "Error, no se ha podido guardar el documento")
-
-        return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']}))
-
 
 class ToggleStarredInterventionView(View):
     def get(self, request, *args, **kwargs):
@@ -423,7 +410,7 @@ class ForbiddenInterventionView(TemplateView):
 class ImageUrlView(View):
     def get(self, request, *args, **kwargs):
         try:
-            image = InterventionImage.objects.get(s3_key=self.kwargs['key'])
+            image = InterventionImage.objects.get(pk=self.kwargs['pk'])
             return HttpResponse(image.get_signed_url())
         except:
             import os
@@ -485,7 +472,7 @@ class MakeVisibleDocumentView(View):
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))
 
 
-class PreUploadDocument(View):
+class PreUploadDocumentView(View):
     def post(self, request, *args, **kwargs):
         intervention = Intervention.objects.get(pk=self.kwargs['pk'])
         filename = request.POST['fileName']
@@ -493,6 +480,16 @@ class PreUploadDocument(View):
         document = InterventionDocument(intervention=intervention, user=request.user, in_s3=True, s3_key=key, original_name=filename)
         document.save()
         return JsonResponse(document.get_upload_signed_url())
+
+
+class PreUploadImageView(View):
+    def post(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=self.kwargs['pk'])
+        filename = request.POST['fileName']
+        key = generate_document_s3_key(intervention, filename)
+        image = InterventionImage(intervention=intervention, user=request.user, in_s3=True, s3_key=key, original_name=filename, thumbnail_s3_key="th/"+key)
+        image.save()
+        return JsonResponse(image.get_upload_signed_url())
 
 
 class LinkToInterventionView(View):

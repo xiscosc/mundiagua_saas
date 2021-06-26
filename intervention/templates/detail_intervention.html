@@ -57,12 +57,25 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h5 class="modal-title">Subiendo archivo</h5>
+                <h5 class="modal-title">Subida de archivos</h5>
             </div>
             <div class="modal-body">
                 <div id="body_upload">
-                    <p>Guardando el archivo, no cierre esta ventana...</p>
-                    {% include 'progress_bar.html' with w=100 %}
+                    <div id="file_selection" style="display: none">
+                        <h5>Novedad: Puede subir más de un archivo a la vez</h5>
+                        <p>Seleccione los archivos que desea subir</p>
+                        <input multiple data-token="{{ csrf_token }}" data-url="{% url 'intervention:intervention-preupload-document' intervention.pk %}" type="file" id="document" />
+                    </div>
+                    <div id="image_selection" style="display: none">
+                        <h5>Novedad: Puede subir más de una foto a la vez</h5>
+                        <p>Seleccione las fotos que desea subir</p>
+                        <input multiple data-token="{{ csrf_token }}" data-url="{% url 'intervention:intervention-preupload-image' intervention.pk %}" type="file" accept="image/*" id="image" />
+                    </div>
+                    <div id="file_progress"></div>
+                    <div id="preview_progress" style="display: none">
+                        <h5>Procesando imágenes...</h5>
+                        {% include 'progress_bar.html' with w=100 %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,7 +133,7 @@
                         {% for i in intervention.get_images %}
                             {% if i.thumbnail_s3_key %}
                                 <a href="#" class="link_image"
-                                   data-url="{% url 'intervention:intervention-view-image-url' i.s3_key %}"
+                                   data-url="{% url 'intervention:intervention-view-image-url' i.pk %}"
                                    data-date="{{ i.date }}"
                                    data-name="{{ i.user.get_full_name }}"
                                         {% if request.user == i.user %}
@@ -129,7 +142,7 @@
                                    data-remove="noremove"
                                         {% endif %}
                                 >
-                                    <img src="{{ i.get_thumbnail_signed_url }}" alt=""/>
+                                    <img src="{{ i.get_thumbnail_signed_url }}" style="height: 100px; width: 100px" onerror="imgError(this);" alt=""/>
                                 </a>
                                 {% if i.s3_key == "no_key" %}
                                     <button class="btn btn-warning btn-circle btn-circle-inline btn-s3" disabled>

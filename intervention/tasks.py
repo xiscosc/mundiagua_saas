@@ -25,20 +25,6 @@ def send_intervention(pk, pkto, pkuser):
 
 
 @shared_task
-def upload_file(t, pk):
-    from django.conf import settings
-    from intervention.models import InterventionImage, InterventionDocument
-    if t == "document":
-        instance = InterventionDocument.objects.get(pk=pk)
-    else:
-        instance = InterventionImage.objects.get(pk=pk)
-
-    instance.upload_to_s3()
-    if instance.intervention.status_id == settings.ASSIGNED_STATUS:
-        send_file_telegram_task.delay(instance.pk, t)
-
-
-@shared_task
 def send_file_telegram_task(pk, t):
     from intervention.models import InterventionDocument, InterventionImage
     if t == 'document':

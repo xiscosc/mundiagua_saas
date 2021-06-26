@@ -5,10 +5,11 @@ from django.views.decorators.cache import cache_page
 from .views import HomeView, SearchClientView, CreateInterventionView, InterventionView, UpdateInterventionView, \
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
-    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, UploadDocumentView, \
+    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
     MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, DocumentView, \
-    RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView, PreUploadDocument
+    RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView, PreUploadDocumentView, \
+    PreUploadImageView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -37,7 +38,6 @@ urlpatterns = [
     url(r'^list/own/$',
         OwnListInterventionView.as_view(), name="intervention-list-own"),
     url(r'^new/image/(?P<pk>\d+)/$', UploadImageView.as_view(), name="intervention-image-upload"),
-    url(r'^new/document/(?P<pk>\d+)/$', UploadDocumentView.as_view(), name="intervention-document-upload"),
     url(r'^starred/(?P<pk>\d+)/$', ToggleStarredInterventionView.as_view(), name="intervention-starred"),
     url(r'^status-job/(?P<pk>\d+)/$', AddStatusJobView.as_view(), name="intervention-status-job"),
     url(r'^reports/$', ReportInterventionView.as_view(), name="intervention-reports"),
@@ -45,9 +45,10 @@ urlpatterns = [
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
-    url(r'^getimageurl/(?P<key>.+)/$', ImageUrlView.as_view(), name="intervention-view-image-url"),
+    url(r'^getimageurl/(?P<pk>\d+)/$', ImageUrlView.as_view(), name="intervention-view-image-url"),
     url(r'^viewdocument/(?P<pk>\d+)/$', DocumentView.as_view(), name="intervention-view-document"),
-    url(r'^preuploaddocument/(?P<pk>\d+)/$', PreUploadDocument.as_view(), name="intervention-preupload-document"),
+    url(r'^preupload/document/(?P<pk>\d+)/$', PreUploadDocumentView.as_view(), name="intervention-preupload-document"),
+    url(r'^preupload/image/(?P<pk>\d+)/$', PreUploadImageView.as_view(), name="intervention-preupload-image"),
     url(r'^removefile/(?P<pk>\d+)/$', RemoveFileView.as_view(), name="intervention-remove-file"),
     url(r'^makevisibledocument/(?P<pk>\d+)/$', MakeVisibleDocumentView.as_view(), name="intervention-make-document-visible"),
     url(r'^link/(?P<pk>\d+)/$', LinkToInterventionView.as_view(), name="intervention-link")

@@ -3,6 +3,9 @@
  */
 
 var img_counter = 0;
+var upload_counter = 0;
+var upload_counter_finished = 0;
+var uploading_images = false;
 
 function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -13,6 +16,13 @@ function urlify(text) {
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }
 
+
+function imgError(image) {
+    image.onerror = "";
+    image.src = "https://stackblitz.com/files/react-spinner-sample/github/RahmanM/react-spinner-sample/master/loading.gif";
+    return true;
+}
+
 function uploadFileToS3(file, s3Data) {
     var formData = new FormData();
     formData.append('AWSAccessKeyId', s3Data.fields.AWSAccessKeyId)
@@ -20,6 +30,12 @@ function uploadFileToS3(file, s3Data) {
     formData.append('policy', s3Data.fields.policy)
     formData.append('signature', s3Data.fields.signature)
     formData.append('file', file)
+
+    if (s3Data.fields.ContentType) {
+        formData.append('ContentType', s3Data.fields.ContentType)
+    }
+
+    let id = generateId(file.name);
 
     $.ajax({
         type: 'POST',
@@ -30,14 +46,14 @@ function uploadFileToS3(file, s3Data) {
         processData: false,
         // the actual file is sent raw
         data: formData,
-        success: function() {location.reload(); },
-        error: function () { setUploadToError(); },
+        success: function() { finishUpload(id); },
+        error: function () { setUploadToError(id); },
         xhr: function() {
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function(evt) {
                 if (evt.lengthComputable) {
                     var percentComplete = (evt.loaded / evt.total) * 100;
-                    $("#upload_percent").html(Math.floor( percentComplete ) + "%")
+                    $("#" + id + '_p').html(Math.floor( percentComplete ) + "%")
                 }
             }, false);
             return xhr;
@@ -45,9 +61,25 @@ function uploadFileToS3(file, s3Data) {
     })
 }
 
-function setUploadToError() {
-    $('#modal_upload').modal("show");
-    $('#body_upload').html('<h5 style="color: red">Error subiendo el archivo</h5>');
+function setUploadToError(id) {
+    $("#" + id + '_s').removeClass('glyphicon-refresh-animate');
+    $("#" + id + '_b').removeClass('btn-default').addClass('btn-danger');
+}
+
+function finishUpload(id) {
+    $("#" + id + '_s').hide();
+    $("#" + id + '_d').show();
+    $("#" + id + '_b').removeClass('btn-default').addClass('btn-success');
+    upload_counter_finished++;
+    if (upload_counter_finished >= upload_counter) {
+        if (uploading_images) {
+            $('#preview_progress').show();
+            $('#file_progress').hide();
+            setTimeout(function(){ location.reload();}, 5000);
+        } else {
+            location.reload();
+        }
+    }
 }
 
 function set_image(element) {
@@ -90,6 +122,37 @@ function set_image(element) {
     })
 }
 
+function prepareUploadToS3(file, url, token) {
+    let id = generateId(file.name);
+    let uploadElement = '<button style="margin: 3px" disabled class="btn btn-default" id="' + id + '_b">' +
+        file.name + ' <div id="' + id + '_p">0%</div>' +
+        ' <span id="' + id + '_s" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>' +
+        '<span id="' + id + '_d" class="glyphicon glyphicon-check" style="display: none"></span></button>';
+    $('#file_progress').append(uploadElement);
+    $.post(url, {fileName: file.name, csrfmiddlewaretoken: token})
+        .done(function( data ) {
+            uploadFileToS3(file, data)
+        })
+        .fail(function (data) {
+            setUploadToError(id);
+        });
+}
+
+function generateId(string) {
+
+    var hash = 0;
+
+    if (string.length == 0) return hash;
+
+    for (i = 0; i < string.length; i++) {
+        char = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+
+    return hash;
+}
+
 $(function () {
     $('#selector_color').on('change', function () {
         $('#btn-color').css('background-color', $(this).find(':selected').data('color'));
@@ -118,25 +181,41 @@ $(function () {
         //No table
     }
 
-    $('#image').on('change', function () {
-        $('#icon_image').hide();
-        $("#label_image").prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="color: orange"></span>');
-        $('#form_image').submit();
-    });
-
     $('#document').on('change', function () {
         var url = $('#document').data('url');
         var token = $('#document').data('token');
-        $("#label_document").html('<p style="color: darkblue" id="upload_percent">0%</p>');
-        let file = this.files[0];
-        $.post(url, {fileName: file.name, csrfmiddlewaretoken: token})
-            .done(function( data ) {
-                uploadFileToS3(file, data)
-            })
-            .fail(function (data) {
-                setUploadToError();
-            });
+        $('#file_selection').hide('slow');
+        uploading_images = false;
+        upload_counter = this.files.length;
+        upload_counter_finished = 0;
+        [...this.files].forEach(function (item, index) {
+            prepareUploadToS3(item, url, token);
+        });
     });
+
+    $('#image').on('change', function () {
+        var url = $('#image').data('url');
+        var token = $('#image').data('token');
+        $('#image_selection').hide('slow');
+        upload_counter = this.files.length;
+        uploading_images = true;
+        upload_counter_finished = 0;
+        [...this.files].forEach(function (item, index) {
+            prepareUploadToS3(item, url, token);
+        });
+    });
+
+    $('#icon_document').on('click', function () {
+        $('#modal_upload').modal("show");
+        $('#file_selection').show();
+        $('#image_selection').hide();
+    })
+
+    $('#icon_image').on('click', function () {
+        $('#modal_upload').modal("show");
+        $('#image_selection').show();
+        $('#file_selection').hide();
+    })
 
     $link_images = $('.link_image');
     $link_images.each(function (index) {

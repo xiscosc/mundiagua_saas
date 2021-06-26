@@ -183,20 +183,6 @@ def check_nexmo_message_sent(api_result):
     return False
 
 
-def generate_thumbnail(intervention_image):
-    from PIL import Image, ImageOps
-    path_in = os.path.join(settings.MEDIA_ROOT, intervention_image.file_path())
-    filename = "%d_th.%s" % (intervention_image.pk, intervention_image.get_extension())
-    path_out = os.path.join(settings.MEDIA_ROOT, 'intervention_images', 'th', filename)
-    image = Image.open(path_in)
-    thumbnail = ImageOps.fit(image, settings.THUMBNAIL_SIZE, Image.ANTIALIAS)
-    type = "JPEG"
-    if intervention_image.get_extension().lower() == "png":
-        type = "PNG"
-    thumbnail.save(path_out, type, quality=95)
-    return os.path.join('intervention_images', 'th', filename)
-
-
 def search_objects_in_text(regex, text, trim=False):
     import re
     data = re.compile(regex).findall(text)
