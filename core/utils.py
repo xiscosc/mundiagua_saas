@@ -13,7 +13,6 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage
 from django.urls import reverse_lazy
-from pushbullet import Pushbullet
 from pytz import timezone
 import telegram
 
@@ -34,18 +33,7 @@ def send_data_to_user(user, subject, body, is_link=False, from_user=None):
     if user.telegram_token:
         result = send_telegram_message(user.telegram_token, body, subject)
 
-    if not result and user.has_pb():
-        try:
-            pb = Pushbullet(user.pb_token)
-            if is_link:
-                push = pb.push_link(title=subject, url=body)
-            else:
-                push = pb.push_note(subject, body)
-            return push
-        except:
-            return send_mail_m(user, subject, body, is_link=is_link, fallback=True, from_user=from_user)
-
-    if not result and not user.has_pb():
+    if not result:
         return send_mail_m(user, subject, body, is_link=is_link, fallback=False, from_user=from_user)
 
     return result

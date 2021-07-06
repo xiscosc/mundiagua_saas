@@ -13,7 +13,7 @@ from core.utils import has_to_change_password, generate_telegram_auth, send_tele
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, username, email, first_name, last_name, pb_token=None, password=None):
+    def create_user(self, username, email, first_name, last_name, password=None):
         if not username or not email or not first_name or not last_name:
             raise ValueError('Users must have an email address, username, full_name')
 
@@ -21,21 +21,19 @@ class MyUserManager(BaseUserManager):
             username=username,
             email=self.normalize_email(email),
             first_name=first_name,
-            last_name=last_name,
-            pb_token=pb_token
+            last_name=last_name
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username=None, email=None, first_name=None, last_name=None, pb_token=None, password=None):
+    def create_superuser(self, username=None, email=None, first_name=None, last_name=None, password=None):
         user = self.model(
             username=username,
             email=self.normalize_email(email),
             first_name=first_name,
-            last_name=last_name,
-            pb_token=pb_token
+            last_name=last_name
         )
         user.set_password(password)
         user.is_superuser = True
@@ -48,7 +46,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=100, blank=False, null=False)
     username = models.CharField(max_length=254, unique=True)
     email = models.EmailField(unique=True)
-    pb_token = models.CharField(max_length=254, null=True, blank=True)
     order_in_app = models.IntegerField(default=9)
     is_officer = models.BooleanField(default=True)
     is_technician = models.BooleanField(default=False)
@@ -57,7 +54,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_password_update = models.DateField(default="2015-01-01")
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
-    is_google = models.BooleanField(default=False)
     telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
 
     USERNAME_FIELD = 'email'
@@ -76,23 +72,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def is_staff(self):
         return self.is_superuser
-
-    def has_pb(self):
-        if self.pb_token is None or self.pb_token is '' or self.pb_token is u"":
-            return False
-        else:
-            return True
-
-    def has_to_change_password(self):
-        if self.is_google:
-            return False
-        else:
-            return has_to_change_password(self.last_password_update)
-
-    def update_change_password(self, commit=False):
-        self.last_password_update = date.today()
-        if commit:
-            self.save()
 
     def get_assigned_interventions(self):
         from intervention.models import Intervention

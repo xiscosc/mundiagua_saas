@@ -4,26 +4,12 @@
 {% load staticfiles %}
 {% block title %}Información de <strong>{{ request.user.get_full_name }}</strong>
     <div class="pull-right">
-        {% if request.user.is_google %}
-            <img src="{% static 'base/img/google.png' %}" class="google-logo"/>
-        {% endif %}
         <div class="fa fa-envelope"></div>
-        {% if request.user.has_pb %}
-            <img src="{% static 'base/img/pb.png' %}" height="24" width="24" data-toggle="tooltip"
-                 data-placement="top" title="{{ request.user.pb_token }}">
-        {% endif %}
         {% if request.user.telegram_token %}
             <img src="{% static 'base/img/telegram.png' %}" height="24" width="24" data-toggle="tooltip"
-                 data-placement="top" title="{{ request.user.pb_token }}">
+                 data-placement="top">
         {% endif %}
     </div>
-{% endblock %}
-{% block alert %}
-    {% if request.user.has_to_change_password %}
-        <div class="alert alert-danger" role="alert"><strong>Debe cambiar la contraseña urgentemente.</strong> Hace más
-            de un año que no cambia su contraseña, por seguridad debe cambiarla.
-        </div>
-    {% endif %}
 {% endblock %}
 {% block contentpanel %}
     <fieldset>

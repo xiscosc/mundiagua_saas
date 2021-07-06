@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from client.tasks import send_sms
 from core.models import User
-from core.utils import create_amazon_client, create_nexmo_client, check_nexmo_message_sent, encode_nexmo_body
+from core.utils import create_nexmo_client, check_nexmo_message_sent, encode_nexmo_body
 
 
 class Client(models.Model):

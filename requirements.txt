@@ -2,7 +2,6 @@ Django==2.2.24
 django-bootstrap-form==3.2.1
 django-bower==5.2.0
 django-colorfield==0.1.10
-pushbullet.py==0.11.0
 python-magic==0.4.12
 requests
 six==1.10.0
@@ -33,7 +32,7 @@ nexmo
 pycurl
 Unidecode
 social-auth-app-django==4.0.0
-python-jose
+python-jose==3.3.0
 python-dotenv
 cryptography
 drf-jwt

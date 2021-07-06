@@ -15,14 +15,6 @@ from intervention.tasks import send_intervention_assigned, \
     delete_telegram_messages_from_intervention
 
 
-def get_file_upload_path(instance, filename):
-    return os.path.join('intervention_documents', format_filename(filename))
-
-
-def get_images_upload_path(instance, filename):
-    return os.path.join('intervention_images', format_filename(filename))
-
-
 class InterventionStatus(models.Model):
     name = models.CharField(max_length=50)
 
@@ -202,10 +194,7 @@ class InterventionFile(models.Model):
     s3_key = models.CharField(max_length=120, default=None, null=True)
     telegram_message = models.BigIntegerField(default=None, null=True)
     sent_to_telegram = models.BooleanField(default=False)
-    original_name = models.CharField(max_length=120, default=None, null=True)
-
-    def file_path(self):
-        return None
+    original_name = models.CharField(max_length=120)
 
     def get_bucket(self):
         return None
@@ -214,10 +203,7 @@ class InterventionFile(models.Model):
         return self.get_bucket()
 
     def filename(self):
-        if self.original_name is not None:
-            return self.original_name
-        else:
-            return os.path.basename(self.file_path())
+        return self.original_name
 
     def get_extension(self):
         return os.path.splitext(self.filename())[1][1:]
@@ -247,15 +233,12 @@ class InterventionFile(models.Model):
     def get_upload_args(self):
         return {}
 
+    def __str__(self):
+        return "V" + str(self.intervention.pk) + " | " + str(self.pk) + " | " + self.filename()
+
 
 class InterventionImage(InterventionFile):
-    image = models.ImageField(upload_to=get_images_upload_path, blank=True, null=True)
     thumbnail_s3_key = models.CharField(max_length=120, default=None, null=True)
-
-    def file_path(self):
-        if self.image is None:
-            return None
-        return self.image.name
 
     def get_bucket(self):
         return settings.S3_IMAGES
@@ -297,13 +280,7 @@ class InterventionImage(InterventionFile):
 
 
 class InterventionDocument(InterventionFile):
-    document = models.FileField(upload_to=get_file_upload_path, default=None, null=True)
     only_officer = models.BooleanField(default=True)
-
-    def file_path(self):
-        if self.document is None:
-            return None
-        return self.document.name
 
     def get_bucket(self):
         return settings.S3_DOCUMENTS

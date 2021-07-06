@@ -68,16 +68,16 @@ class UserAdmin(BaseUserAdmin, HijackUserAdminMixin):
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password', 'last_password_update')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'order_in_app', 'last_login', 'phone')}),
-        ('Tokens', {'fields': ('pb_token', 'telegram_token')}),
-        ('Permissions', {'fields': ('is_active', 'is_officer', 'is_technician', 'is_google')}),
+        ('Tokens', {'fields': ['telegram_token']}),
+        ('Permissions', {'fields': ('is_active', 'is_officer', 'is_technician')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'first_name', 'last_name', 'pb_token', 'order_in_app', 'is_officer',
-                       'is_technician', 'is_google', 'password1', 'password2')}
+            'fields': ('username', 'email', 'first_name', 'last_name', 'order_in_app', 'is_officer',
+                       'is_technician', 'password1', 'password2')}
         ),
     )
     search_fields = ('email',)

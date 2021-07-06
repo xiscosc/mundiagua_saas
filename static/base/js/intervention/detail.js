@@ -75,7 +75,7 @@ function finishUpload(id) {
         if (uploading_images) {
             $('#preview_progress').show();
             $('#file_progress').hide();
-            setTimeout(function(){ location.reload();}, 5000);
+            setTimeout(function(){ location.reload();}, 3750);
         } else {
             location.reload();
         }
