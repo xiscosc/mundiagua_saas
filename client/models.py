@@ -10,7 +10,6 @@ from core.utils import create_nexmo_client, check_nexmo_message_sent, encode_nex
 
 class Client(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nombre")
-    email = models.EmailField(null=True, blank=True)
     intern_code = models.CharField(max_length=45, null=True, blank=True, verbose_name="COD Interno")
     dni = models.CharField(max_length=45, null=True, blank=True, verbose_name="DNI/CIF")
     blocked = models.BooleanField(default=False, verbose_name="Bloqueado")
