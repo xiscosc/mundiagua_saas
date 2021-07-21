@@ -411,6 +411,7 @@ class ClientMergeView(TemplateView):
 
         Address.objects.filter(client=client_old).update(client=client_new)
         Phone.objects.filter(client=client_old).update(client=client_new)
+        Email.objects.filter(client=client_old).update(client=client_new)
 
         client_old.delete()
 
