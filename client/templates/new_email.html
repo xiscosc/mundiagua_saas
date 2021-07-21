@@ -2,7 +2,7 @@
 {% load static %}
 {% load core_tags %}
 {% load bootstrap %}
-{% block page_title %}Teléfono para {{ client.name }}{% endblock %}
+{% block page_title %}Email para {{ client.name }}{% endblock %}
 {% block content %}
 
     {% include 'client_data_basic.html' with client=client %}
@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
             <div class="panel panel-primary">
-                <div class="panel-heading"><h3 class="panel-title">Datos del teléfono</h3></div>
+                <div class="panel-heading"><h3 class="panel-title">Datos del email</h3></div>
                 <form action="" method="post" id="new_form">
                     <div class="panel-body">
                         {% csrf_token %}
@@ -19,7 +19,7 @@
                     <div class="panel-footer">
                         <input type="hidden" id="other" name="other" value="0"/>
                         <button class="btn btn-success" id="btn_other"><i class="fa fa-circle-o-notch"></i> Guardar y
-                            añadir otro teléfono
+                            añadir otro email
                         </button>
                         <button type="submit" class="btn btn-primary"><i class="fa fa-arrow-right"></i> Guardar y
                             continuar
@@ -36,12 +36,8 @@
 {% endblock %}
 {% block extrajs %}
     <script type="application/javascript">
-        var pops = ["En <strong>Alias</strong> puede poner por ejemplo: Principal, Fijo, Móvil, o el nombre de" +
-        " la persona del teléfono si es una empresa. No hace falta repetir el nombre del cliente.",
-        " Para guardar un teléfono internacional, por ejemplo uno holandés +31 612123123, " +
-        "en código país seleccionaremos Países Bajos (+31) y en el apartado teléfono escribimos el resto " +
-        "del teléfono 612123123."]
+        var pops = ["En <strong>Alias</strong> puede poner por ejemplo: Principal, Contabilidad, o el nombre de" +
+        " la persona del email si es una empresa. No hace falta repetir el nombre del cliente."]
     </script>
     <script src="{% static 'base/js/client/new-phone-address.js' %}{% app_version_includes %}"></script>
-    <script src="{% static 'base/js/client/phone-edit.js' %}{% app_version_includes %}"></script>
 {% endblock %}

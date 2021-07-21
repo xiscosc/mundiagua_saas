@@ -12,14 +12,6 @@
         </tr>
         <tr>
             <td>
-                <strong>Email</strong>
-            </td>
-            <td>
-                {{ intervention.address.client.email|default_if_none:"" }}
-            </td>
-        </tr>
-        <tr>
-            <td>
                 <strong>Cod Cliente</strong>
             </td>
             <td>
@@ -40,7 +32,7 @@
             </td>
             <td>
                 {% for phone in intervention.address.client.get_phones %}
-                    {{ phone }},
+                    {{ phone.printable }},
                 {% endfor %}
             </td>
         </tr>

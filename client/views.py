@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
-from client.models import Client, Address, Phone, SMS
+from client.models import Client, Address, Phone, SMS, Email
 from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
@@ -21,7 +21,7 @@ from async_messages import messages
 
 class CreateClientView(CreateView):
     model = Client
-    fields = ["name", "email", "intern_code", "dni"]
+    fields = ["name", "intern_code", "dni"]
     template_name = 'new_client.html'
 
     def get_context_data(self, **kwargs):
@@ -63,7 +63,6 @@ class CreatePhoneView(CreateView):
     model = Phone
     fields = ["alias", "international_code", "phone"]
     template_name = "new_phone.html"
-    success_url = reverse_lazy('intervention:intervention-home')
 
     def get_context_data(self, **kwargs):
         context = super(CreatePhoneView, self).get_context_data(**kwargs)
@@ -78,9 +77,35 @@ class CreatePhoneView(CreateView):
     def get_success_url(self):
         other = int(self.request.POST.getlist('other')[0])
         if other == 0:
-            return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
+            if self.request.resolver_match.url_name == "client-phone-new":
+                return reverse_lazy('client:client-email-new', kwargs={'id': self.object.client.pk})
+            else:
+                return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
         else:
             return reverse_lazy('client:client-phone-new', kwargs={'id': self.object.client.pk})
+
+
+class CreateEmailView(CreateView):
+    model = Email
+    fields = ["alias", "email"]
+    template_name = "new_email.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateEmailView, self).get_context_data(**kwargs)
+        context['client'] = Client.objects.get(id=self.kwargs['id'])
+        return context
+
+    def form_valid(self, form):
+        email = form.save(commit=False)
+        email.client = Client.objects.get(id=self.kwargs['id'])
+        return super(CreateEmailView, self).form_valid(form)
+
+    def get_success_url(self):
+        other = int(self.request.POST.getlist('other')[0])
+        if other == 0:
+            return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
+        else:
+            return reverse_lazy('client:client-email-new', kwargs={'id': self.object.client.pk})
 
 
 class ClientView(DetailView):
@@ -127,6 +152,20 @@ class EditPhoneView(UpdateView):
         return context
 
 
+class EditEmailView(UpdateView):
+    model = Email
+    template_name = "new_email.html"
+    fields = ["alias", "email"]
+
+    def get_success_url(self):
+        return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super(EditEmailView, self).get_context_data(**kwargs)
+        context['client'] = self.object.client
+        return context
+
+
 class EditAddressView(UpdateView):
     model = Address
     template_name = "new_address.html"
@@ -145,6 +184,15 @@ class DeletePhoneView(DeleteView):
     model = Phone
     context_object_name = "phone"
     template_name = 'delete_phone.html'
+
+    def get_success_url(self):
+        return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
+
+
+class DeleteEmailView(DeleteView):
+    model = Email
+    context_object_name = "email"
+    template_name = 'delete_email.html'
 
     def get_success_url(self):
         return reverse_lazy('client:client-view', kwargs={'pk': self.object.client.pk})
@@ -208,14 +256,12 @@ class SendEmailView(View):
     def post(self, request, *args, **kwargs):
         body = request.POST.get('email_body', '')
         subject = request.POST.get('email_subject', '')
-        email = request.POST.get('email_field', '')
+        email_pk = request.POST.get('email_field', '')
 
-        if email is '':
-            email = "consultas@mundiaguabalear.com"
-            subject = "ERROR " + subject
-            body = "Error enviado este email: " + body
+        if email_pk == '':
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-        send_mail_client.delay(email, subject, body, request.user.pk)
+        send_mail_client.delay(email_pk, subject, body, request.user.pk)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

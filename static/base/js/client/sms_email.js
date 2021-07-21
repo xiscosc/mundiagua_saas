@@ -39,7 +39,7 @@ $('#sms_send').on('click', function () {
 
 $('.btn-email').on('click', function () {
     try {
-        $('#email_field').val($('#email_source').html());
+        //$('#email_field').val($('#email_source').html());
         $('#email_body').val(default_sms);
         $('#email_subject').val(default_subject);
     } catch (err) {

@@ -48,9 +48,7 @@
                                             <th>Alias</th>
                                             <th>Dirección</th>
                                             <th>Localización</th>
-                                            <th>
-
-                                            </th>
+                                            <th>Edición</th>
                                         </tr>
                                         {% for address in client.get_addresses %}
                                             <tr>
@@ -81,11 +79,11 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-block btn-warning btn-circle "
+                                                    <a class="btn btn-warning btn-circle "
                                                        href="{% url 'client:client-address-edit' address.pk %}"><i
                                                             class="fa fa-edit"></i></a>
 
-                                                    <a class="btn btn-block btn-danger btn-circle "
+                                                    <a class="btn btn-danger btn-circle "
                                                        href="{% url 'client:client-address-delete' address.pk %}"><i
                                                             class="fa fa-remove"></i></a>
                                                 </td>

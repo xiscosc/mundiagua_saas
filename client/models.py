@@ -24,11 +24,23 @@ class Client(models.Model):
     def get_phones(self):
         return Phone.objects.filter(client=self)
 
+    def get_emails(self):
+        return Email.objects.filter(client=self)
+
     def get_addresses(self):
         return Address.objects.filter(client=self)
 
     def get_first_address(self):
         return self.get_addresses().first()
+
+
+class Email(models.Model):
+    alias = models.CharField(max_length=45)
+    email = models.EmailField()
+    client = models.ForeignKey(Client, related_name="emails", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.alias + " - " + self.email
 
 
 class Phone(models.Model):
@@ -38,7 +50,13 @@ class Phone(models.Model):
     client = models.ForeignKey(Client, related_name="phones", on_delete=models.CASCADE)
 
     def __str__(self):
-        return (self.alias + " - " + self.phone)
+        return self.alias + " - " + self.phone
+
+    def printable(self):
+        if self.international_code == "34":
+            return self.phone
+        else:
+            return "+" + self.international_code + " " + self.phone
 
 
 class Address(models.Model):
@@ -66,6 +84,9 @@ class Address(models.Model):
 
     def __str__(self):
         return "(" + self.alias + ") - " + self.address
+
+    def printable(self):
+        return self.address
 
 
 class SMSStatus(models.Model):

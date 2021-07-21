@@ -40,8 +40,11 @@
 
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="email" class="form-control" name="email_field" id="email_field" placeholder="Email"
-                               required>
+                        <select class="form-control" name="email_field" id="email_field" required>
+                            {% for e in client.get_emails %}
+                                <option value="{{ e.pk }}">{{ e }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" id="email_subject" name="email_subject"
@@ -102,7 +105,7 @@
 {% if client.blocked %}
     <div class="row">
         <div class="col-md-12 text-center">
-            <h3 style="color: darkred">CLIENTE BLOQUEADO</h3>
+            <h3 style="color: darkred">🔒 CLIENTE BLOQUEADO</h3>
         </div>
     </div>
 {% endif %}
@@ -142,15 +145,6 @@
                 </td>
                 <td>
                     {{ client.name }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Email</strong>
-                </td>
-                <td>
-                    {{ client.email|default_if_none:"" }}
-                    <div class="hidden" id="email_source">{{ client.email }}</div>
                 </td>
             </tr>
             <tr>
@@ -213,10 +207,37 @@
             {% endif %}
 
         </table>
+        <h4>Emails {% if edit %}
+            <a class="btn btn-success btn-circle" href="{% url 'client:client-email-new' client.pk %}"><i
+                    class="fa fa-plus"></i></a>{% endif %}</h4>
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <th>Alias</th>
+                <th>Email</th>
+            </tr>
+            {% for email in client.get_emails %}
+                <tr>
+                    <td>
+                        {{ email.alias }}
+                    </td>
+                    <td>
+                        {{ email.email }} {% if edit %} <a class="btn btn-warning btn-circle"
+                                                           href="{% url 'client:client-email-edit' email.pk %}"><i
+                            class="fa fa-edit"></i></a>
+
+                        <a class="btn btn-danger btn-circle btn-right"
+                           href="{% url 'client:client-email-delete' email.pk %}"><i
+                                class="fa fa-remove"></i></a> {% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </table>
+
     </div>
     <div class="col-md-5">
         <h3>Teléfonos {% if edit %}
-            <a class="btn btn-success btn-circle" href="{% url 'client:client-phone-new' client.pk %}"><i
+            <a class="btn btn-success btn-circle" href="{% url 'client:client-phone-add' client.pk %}"><i
                     class="fa fa-plus"></i></a>{% endif %}</h3>
 
 

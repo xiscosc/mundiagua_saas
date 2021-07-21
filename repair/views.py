@@ -327,18 +327,22 @@ class SendTrackingRepairView(View):
                 sending_something = True
 
         if params.getlist('send_email', "off")[0] == "on":
-            if repair.address.client.email is not None and repair.address.client.email != "":
-                sending_something = True
-                url_body = "https://customerservice.mundiaguabalear.com/?id=" + repair.online_id
-                subject = u'Reparación %s registrada' % repair.__str__()
-                body = u'Su reparación %s ha sido registrada con éxito, puede consultar su estado ' \
-                       u'en el siguiente enlace %s, si no le funciona el enlace cópielo y péguelo en su navegador.' \
-                       u'\n\nTambién puede visitar nuestra web ' \
-                       u'www.mundiaguabalear.com con el id de reparación ' \
-                       u'%s.\n\nQuedamos a su disposición para cualquier duda o ' \
-                       u'consulta.' % (repair.__str__(), url_body, repair.online_id)
+            email_pk = int(params.getlist('email_id', "0")[0])
+            if email_pk != 0:
+                from client.models import Email
+                email = Email.objects.get(pk=email_pk)
+                if email.client.pk == repair.address.client.pk:
+                    sending_something = True
+                    url_body = "https://customerservice.mundiaguabalear.com/?id=" + repair.online_id
+                    subject = u'Reparación %s registrada' % repair.__str__()
+                    body = u'Su reparación %s ha sido registrada con éxito, puede consultar su estado ' \
+                           u'en el siguiente enlace %s, si no le funciona el enlace cópielo y péguelo en su navegador.' \
+                           u'\n\nTambién puede visitar nuestra web ' \
+                           u'www.mundiaguabalear.com con el id de reparación ' \
+                           u'%s.\n\nQuedamos a su disposición para cualquier duda o ' \
+                           u'consulta.' % (repair.__str__(), url_body, repair.online_id)
 
-                send_mail_client.delay(repair.address.client.email, subject, body, request.user.pk)
+                    send_mail_client.delay(email_pk, subject, body, request.user.pk)
 
         if sending_something:
             messages.success(self.request.user, "Se han notificado los datos de seguimiento al cliente.")

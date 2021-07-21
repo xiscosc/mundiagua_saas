@@ -17,16 +17,18 @@ def send_message(pk, body):
 
 
 @shared_task
-def send_mail_client(address, subject, body, user_pk):
+def send_mail_client(address_pk, subject, body, user_pk):
     from core.models import User
+    from client.models import Email
     user = User.objects.get(pk=user_pk)
+    address = Email.objects.get(pk=address_pk)
     try:
         from django.core.mail import EmailMultiAlternatives
         email = EmailMultiAlternatives(
             subject,
             body,
             'Mundiagua SL <consultas@mundiaguabalear.com>',
-            [address],
+            [address.email],
         )
         htmly = get_template('email.html')
         html_content = htmly.render({'subject': subject, 'body': body})
@@ -36,9 +38,9 @@ def send_mail_client(address, subject, body, user_pk):
         result = False
 
     if result:
-        messages.success(user, "Email enviado correctamente a " + address)
+        messages.success(user, "Email enviado correctamente a " + address.email)
     else:
-        messages.warning(user, "Error enviando mail a " + address)
+        messages.warning(user, "Error enviando mail a " + address.email)
 
 
 @shared_task

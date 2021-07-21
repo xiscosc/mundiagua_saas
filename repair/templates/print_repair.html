@@ -14,18 +14,14 @@
         </tr>
         <tr>
             <td><strong>Dirección</strong></td>
-            <td>{{ repair.address }}</td>
+            <td>{{ repair.address.printable }}</td>
         </tr>
         <tr>
             <td><strong>Teléfonos</strong></td>
             <td>
                 {% for phone in  repair.address.client.get_phones %}
-                    {{ phone }},
+                    {{ phone.printable }},
                 {% endfor %}</td>
-        </tr>
-        <tr>
-            <td><strong>Email</strong></td>
-            <td>{{ repair.address.client.email|default_if_none:"" }}</td>
         </tr>
     </table>
 
