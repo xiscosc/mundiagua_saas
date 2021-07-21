@@ -2,11 +2,16 @@ from django.conf.urls import url
 from .views import CreateClientView, CreateAddressView, CreatePhoneView, ClientView, EditClientView, EditAddressView, \
     EditPhoneView, DeletePhoneView, DeleteAddresView, SendSMSView, AllClientsView, PreSearchClientView, \
     SearchClientView, AddressGeoUpdateView, SendEmailView, SearchClientToReplaceView, SearchClientToMergeView, \
-    ClientMergeView, CreateEmailView, EditEmailView, DeleteEmailView
+    ClientMergeView, CreateEmailView, EditEmailView, DeleteEmailView, InterventionsFromCustomerView, \
+    BudgetsFromCustomerView, EngineRepairsFromCustomerView, RepairsFromCustomerView
 
 urlpatterns = [
     url(r'^new/$', CreateClientView.as_view(), name="client-new"),
     url(r'^view/(?P<pk>\d+)/$', ClientView.as_view(), name="client-view"),
+    url(r'^view/(?P<pk>\d+)/interventions/$', InterventionsFromCustomerView.as_view(), name="client-view-interventions"),
+    url(r'^view/(?P<pk>\d+)/budgets/$', BudgetsFromCustomerView.as_view(), name="client-view-budgets"),
+    url(r'^view/(?P<pk>\d+)/enginerepairs/$', EngineRepairsFromCustomerView.as_view(), name="client-view-enginerepairs"),
+    url(r'^view/(?P<pk>\d+)/repairs/$', RepairsFromCustomerView.as_view(), name="client-view-repairs"),
     url(r'^edit/(?P<pk>\d+)/$', EditClientView.as_view(), name="client-edit"),
     url(r'^address/new/(?P<id>\d+)/$', CreateAddressView.as_view(), name="client-address-new"),
     url(r'^address/add/(?P<id>\d+)/$', CreateAddressView.as_view(), name="client-address-add"),

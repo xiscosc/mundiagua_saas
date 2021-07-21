@@ -115,13 +115,62 @@ class ClientView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ClientView, self).get_context_data(**kwargs)
-        repairs_ath = AthRepair.objects.filter(address__client=context['object'])
-        repairs_idegis = IdegisRepair.objects.filter(address__client=context['object'])
-        context['interventions'] = Intervention.objects.filter(address__client=context['object']).order_by("-date")
-        context['repairs'] = sorted(chain(repairs_ath, repairs_idegis), key=attrgetter('date'), reverse=True)
-        context['engines'] = EngineRepair.objects.filter(address__client=context['object']).order_by("-date")
-        context['budgets'] = BudgetStandard.objects.filter(address__client=context['object']).order_by("-date")
+        repairs_ath = AthRepair.objects.filter(address__client=context['object']).count()
+        repairs_idegis = IdegisRepair.objects.filter(address__client=context['object']).count()
+        context['interventions'] = Intervention.objects.filter(address__client=context['object']).count()
+        context['repairs'] = repairs_ath + repairs_idegis
+        context['engines'] = EngineRepair.objects.filter(address__client=context['object']).count()
+        context['budgets'] = BudgetStandard.objects.filter(address__client=context['object']).count()
         return context
+
+
+class InterventionsFromCustomerView(View):
+    def get(self, request, *args, **kwargs):
+        customer = Client.objects.get(pk=kwargs['pk'])
+        pk_list = []
+        for i in Intervention.objects.filter(address__client=customer).order_by("-date").values('id'):
+            pk_list.append(i['id'])
+        request.session['search_intervention'] = pk_list
+        request.session['search_intervention_text'] = "Averías de " + str(customer)
+        return HttpResponseRedirect(reverse_lazy('intervention:intervention-search'))
+
+
+class BudgetsFromCustomerView(View):
+    def get(self, request, *args, **kwargs):
+        customer = Client.objects.get(pk=kwargs['pk'])
+        pk_list = []
+        for i in BudgetStandard.objects.filter(address__client=customer).order_by("-date").values('id'):
+            pk_list.append(i['id'])
+        request.session['search_budgets'] = pk_list
+        request.session['search_budgets_text'] = "Presupuestos de " + str(customer)
+        request.session['search_budgets_lines_enabled'] = False
+        return HttpResponseRedirect(reverse_lazy('budget:budget-search'))
+
+
+class EngineRepairsFromCustomerView(View):
+    def get(self, request, *args, **kwargs):
+        customer = Client.objects.get(pk=kwargs['pk'])
+        pk_list = []
+        for i in EngineRepair.objects.filter(address__client=customer).order_by("-date").values('id'):
+            pk_list.append(i['id'])
+        request.session['search_repairs_engine'] = pk_list
+        request.session['search_repairs_engine_text'] = "Reparaciones de motor de " + str(customer)
+        return HttpResponseRedirect(reverse_lazy('engine:engine-search'))
+
+
+class RepairsFromCustomerView(View):
+    def get(self, request, *args, **kwargs):
+        customer = Client.objects.get(pk=kwargs['pk'])
+        pk_list_ath = []
+        pk_list_idegis = []
+        for i in AthRepair.objects.filter(address__client=customer).order_by("-date").values('id'):
+            pk_list_ath.append(i['id'])
+        for i in IdegisRepair.objects.filter(address__client=customer).order_by("-date").values('id'):
+            pk_list_idegis.append(i['id'])
+        request.session['search_repair_ath'] = pk_list_ath
+        request.session['search_repair_idegis'] = pk_list_idegis
+        request.session['search_repair_text'] = "Reparaciones de " + str(customer)
+        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': 0, 'starred': 0}))
 
 
 class EditClientView(UpdateView):

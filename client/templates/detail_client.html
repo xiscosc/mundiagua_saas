@@ -95,90 +95,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingTwo">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Averías
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                        <div class="panel-body">
-                            {% if interventions|length > 0 %}
-                                {% include 'list_intervention_include.html' with interventions=interventions %}
-                            {% else %}
-                                <h5>No hay averías que mostrar</h5>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingThree">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Reparaciones
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                         aria-labelledby="headingThree">
-                        <div class="panel-body">
-                            {% if repairs|length > 0 %}
-                                {% include 'list_repair_include.html' with repairs=repairs %}
-                            {% else %}
-                                <h5>No hay reparaciones que mostrar</h5>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingFour">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                Presupuestos
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
-                         aria-labelledby="headingFour">
-                        <div class="panel-body">
-                            {% if budgets|length > 0 %}
-                                {% include 'list_budget_include.html' with budgets=budgets %}
-                            {% else %}
-                                <h5>No hay presupuestos que mostrar</h5>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingFive">
-                        <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                Reparaciones de motores
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel"
-                         aria-labelledby="headingFive">
-                        <div class="panel-body">
-                            {% if engines|length > 0 %}
-                                {% include 'list_engine_include.html' with engines=engines %}
-                            {% else %}
-                                <h5>No hay reparaciones de motores que mostrar</h5>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
+    {% if request.user_agent.is_pc %}
+        <div class="row row-new-instance">
+            <div class="col-md-12">
+                <a href="{% url 'client:client-view-interventions' client.pk %}" class="btn btn-danger"><span
+                        class="badge">{{ interventions }}</span> Ver Averías</a>
+                <a href="{% url 'client:client-view-repairs' client.pk %}" class="btn btn-primary"><span
+                        class="badge">{{ repairs }}</span> Ver reparaciones</a>
+                <a href="{% url 'client:client-view-budgets' client.pk %}" class="btn btn-info"><span
+                        class="badge">{{ budgets }}</span> Ver presupuestos</a>
+                <a href="{% url 'client:client-view-enginerepairs' client.pk %}" class="btn btn-success"><span
+                        class="badge">{{ budgets }}</span> Ver reparaciones de motor</a>
+            </div>
+        </div>
+
+    {% endif %}
 
 
 {% endblock %}
