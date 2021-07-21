@@ -24,10 +24,13 @@
             </div>
 
 
-        <form method="post">
+        <form method="post" id="merge_form">
             {% csrf_token %}
             <div class="row">
-                <button type="submit" class="btn btn-warning btn-lg btn-block"> Fusionar</button>
+                <button type="submit" id="btn_form" class="btn btn-warning btn-lg btn-block"> Fusionar</button>
+                <div style="display: none" id="progress">
+                    {% include 'progress_bar.html' with w=100 %}
+                </div>
             </div>
         </form>
 
@@ -35,5 +38,17 @@
     </div>
 
     </br>
+
+{% endblock %}
+
+{% block extrajs %}
+<script type="application/javascript">
+    $('#btn_form').on( "click", function( event ) {
+        event.preventDefault();
+        $('#progress').show();
+        $('#btn_form').hide();
+        $('#merge_form').submit();
+    });
+</script>
 
 {% endblock %}
