@@ -159,6 +159,10 @@
         </div>
     {% endif %}
     {% include 'paginator.html' with obj=interventions %}
-    {% include 'list_intervention_table_include.html' with interventions=interventions %}
+    {% if request.user_agent.is_pc %}
+        {% include 'list_intervention_table_include.html' with interventions=interventions %}
+    {% else %}
+        {% include 'list_intervention_include.html' with interventions=interventions %}
+    {% endif %}
     {% include 'paginator.html' with obj=interventions %}
 {% endblock %}

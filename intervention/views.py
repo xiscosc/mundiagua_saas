@@ -166,7 +166,10 @@ class ListInterventionView(TemplateView):
         context['search_zone'] = list_data['search_zone']
         context['search_tag'] = list_data['search_tag']
 
-        paginator = Paginator(list_data['interventions'], settings.DEFAULT_INTERVENTION_PAGINATOR)
+        elements_per_page = settings.DEFAULT_INTERVENTION_PAGINATOR
+        if not self.request.user_agent.is_pc:
+            elements_per_page = settings.DEFAULT_NUM_PAGINATOR
+        paginator = Paginator(list_data['interventions'], elements_per_page)
 
         context['interventions'] = get_page_from_paginator(paginator, page)
 
@@ -237,7 +240,10 @@ class SearchInterventionView(TemplateView):
         context['title'] = "Búsqueda - " + search_text
         interventions_pk = self.request.session.get('search_intervention', list())
         interventions = Intervention.objects.filter(pk__in=interventions_pk).order_by("-date")
-        paginator = Paginator(interventions, settings.DEFAULT_INTERVENTION_PAGINATOR)
+        elements_per_page = settings.DEFAULT_INTERVENTION_PAGINATOR
+        if not self.request.user_agent.is_pc:
+            elements_per_page = settings.DEFAULT_NUM_PAGINATOR
+        paginator = Paginator(interventions, elements_per_page)
         context['interventions'] = get_page_from_paginator(paginator, page)
         return context
 
@@ -304,7 +310,10 @@ class OwnListInterventionView(TemplateView):
         context['title'] = "Mis averías asignadas"
         interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS,
                                                     assigned=self.request.user).order_by("-date")
-        paginator = Paginator(interventions, settings.DEFAULT_INTERVENTION_PAGINATOR)
+        elements_per_page = settings.DEFAULT_INTERVENTION_PAGINATOR
+        if not self.request.user_agent.is_pc:
+            elements_per_page = settings.DEFAULT_NUM_PAGINATOR
+        paginator = Paginator(interventions, elements_per_page)
         context['interventions'] = get_page_from_paginator(paginator, page)
 
         return context
