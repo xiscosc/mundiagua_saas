@@ -10,12 +10,6 @@ class ImageForm(forms.Form):
     )
 
 
-class DocumentForm(forms.Form):
-    document = forms.FileField(
-        label='Selecciona un documento'
-    )
-
-
 class NewInterventionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -24,7 +18,7 @@ class NewInterventionForm(forms.ModelForm):
 
     class Meta:
         model = Intervention
-        fields = ['address', 'description', 'zone', 'tags']
+        fields = ['address', 'short_description', 'description', 'zone', 'tags']
         widgets = {
             'tags': CheckboxSelectMultiple(),
         }
@@ -33,7 +27,7 @@ class NewInterventionForm(forms.ModelForm):
 class EarlyInterventionModificationForm(forms.ModelForm):
     class Meta:
         model = Intervention
-        fields = ['description', 'tags']
+        fields = ['description', 'short_description', 'tags']
         widgets = {
             'tags': CheckboxSelectMultiple(),
         }
@@ -42,7 +36,7 @@ class EarlyInterventionModificationForm(forms.ModelForm):
 class InterventionModificationForm(forms.ModelForm):
     class Meta:
         model = Intervention
-        fields = ['tags']
+        fields = ['short_description', 'tags']
         widgets = {
             'tags': CheckboxSelectMultiple(),
         }

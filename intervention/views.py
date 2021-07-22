@@ -20,7 +20,7 @@ from intervention.models import Intervention, Zone, InterventionStatus, Interven
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention, \
     generate_report, generate_document_s3_key
-from intervention.forms import ImageForm, DocumentForm, NewInterventionForm, EarlyInterventionModificationForm, \
+from intervention.forms import ImageForm, NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
 from intervention.tasks import send_file_telegram_task, delete_file_from_telegram
 
@@ -166,7 +166,7 @@ class ListInterventionView(TemplateView):
         context['search_zone'] = list_data['search_zone']
         context['search_tag'] = list_data['search_tag']
 
-        paginator = Paginator(list_data['interventions'], settings.DEFAULT_NUM_PAGINATOR)
+        paginator = Paginator(list_data['interventions'], settings.DEFAULT_INTERVENTION_PAGINATOR)
 
         context['interventions'] = get_page_from_paginator(paginator, page)
 
@@ -237,7 +237,7 @@ class SearchInterventionView(TemplateView):
         context['title'] = "Búsqueda - " + search_text
         interventions_pk = self.request.session.get('search_intervention', list())
         interventions = Intervention.objects.filter(pk__in=interventions_pk).order_by("-date")
-        paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
+        paginator = Paginator(interventions, settings.DEFAULT_INTERVENTION_PAGINATOR)
         context['interventions'] = get_page_from_paginator(paginator, page)
         return context
 
@@ -304,7 +304,7 @@ class OwnListInterventionView(TemplateView):
         context['title'] = "Mis averías asignadas"
         interventions = Intervention.objects.filter(status=settings.ASSIGNED_STATUS,
                                                     assigned=self.request.user).order_by("-date")
-        paginator = Paginator(interventions, settings.DEFAULT_NUM_PAGINATOR)
+        paginator = Paginator(interventions, settings.DEFAULT_INTERVENTION_PAGINATOR)
         context['interventions'] = get_page_from_paginator(paginator, page)
 
         return context

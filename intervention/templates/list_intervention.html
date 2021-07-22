@@ -6,7 +6,6 @@
         <a href="{% url 'intervention:intervention-map' %}"><i class="fa fa-map-marker"> </i> Ver mapa</a>{% endif %}
     </small> {% endif %}{% endblock %}
 {% block content %}
-
     {% if list_navigation %}
         <div class="row">
             <div class="col-lg-12">
@@ -160,8 +159,6 @@
         </div>
     {% endif %}
     {% include 'paginator.html' with obj=interventions %}
-    {% include 'list_intervention_include.html' with interventions=interventions %}
+    {% include 'list_intervention_table_include.html' with interventions=interventions %}
     {% include 'paginator.html' with obj=interventions %}
-
-
 {% endblock %}

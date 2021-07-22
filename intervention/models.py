@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+from datetime import datetime
 
 from django.urls import reverse_lazy
 from django.db import models
@@ -97,6 +98,7 @@ class Tag(InterventionInfo):
 
 class Intervention(models.Model):
     description = models.TextField(verbose_name="Descripción")
+    short_description = models.CharField(verbose_name="Descripción corta", max_length=255, default="", blank=True)
     address = models.ForeignKey('client.Address', verbose_name="Dirección", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     zone = models.ForeignKey(Zone, default=1, verbose_name="Zona", on_delete=models.CASCADE)
@@ -119,6 +121,10 @@ class Intervention(models.Model):
 
     def get_modifications(self):
         return InterventionModification.objects.filter(intervention=self)
+
+    def get_days_since(self):
+        delta = datetime.now().date() - self.date.date()
+        return delta.days
 
     def generate_url(self):
         intern_url = str(reverse_lazy('intervention:intervention-view', kwargs={'pk': self.pk}))

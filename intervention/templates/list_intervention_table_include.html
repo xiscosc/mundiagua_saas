@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-lg-12">
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Descripción</th>
+                <th>Zona</th>
+                <th>Etiquetas</th>
+                {% if request.user.is_officer  and search_status.pk != 3 and search_status.pk != 4 %}
+                    <th></th>
+                {% endif %}
+            </tr>
+            {% for intervention in interventions %}
+                <tr>
+                    <td><a href="{% url 'intervention:intervention-view' intervention.pk %}"
+                           class="btn btn-danger btn-xs">{{ intervention }}</a>
+                        {% if intervention.starred %}
+                            <div style="background-color: indianred; border-color: darkred" class="zone zone-xs">
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ intervention.address.client }}
+                        {% if request.user.is_officer %}
+                            <a href="{% url 'client:client-view' intervention.address.client.pk %}"
+                               class="btn btn-xs btn-info"><i class="fa fa-eye"></i></a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ intervention.date|date:"d-m-Y" }} (<strong>{{ intervention.get_days_since }}d</strong>)
+                    </td>
+                    <td>
+                        {{ intervention.status|lower|capfirst }}
+                        {% if intervention.status_id == 2 and request.user.is_officer %} a
+                            <strong>{{ intervention.assigned.get_full_name }}</strong> {% endif %}
+                    </td>
+                    <td>
+                        {{ intervention.short_description }}
+                    </td>
+                    <td>
+                        {% include 'zone_include.html' with zone=intervention.zone class="zone-xs" %}
+                    </td>
+                    <td>
+                        {% for tag in intervention.tags.all %}
+                            {% include 'zone_include.html' with zone=tag class="zone-xs" %}
+                        {% endfor %}
+                    </td>
+                    {% if request.user.is_officer  and search_status.pk != 3 and search_status.pk != 4 %}
+                        <td>
+                            <a href="{% url 'intervention:intervention-terminate' intervention.pk %}"
+                               class="btn btn-primary btn-xs">
+                                Terminar
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
