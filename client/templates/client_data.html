@@ -271,7 +271,7 @@
                                             <li><a href="#" class="btn-sms" data-phone="{{ phone.pk }}"><i
                                                     class="fa fa-send-o"></i> Enviar SMS</a></li>
                                         {% endif %}
-                                        {% if not creating_new_instance %}
+                                        {% if not creating_new_instance and not request.user_agent.is_pc %}
                                             <li><a href="https://api.whatsapp.com/send?phone=
                                                     {{ phone.international_code }}{{ phone.phone }}"
                                                    target="_blank">
