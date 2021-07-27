@@ -51,11 +51,14 @@ class Phone(models.Model):
     def __str__(self):
         return self.alias + " - " + self.phone
 
+    def full_international_format(self):
+        return "+" + self.international_code + " " + self.phone
+
     def printable(self):
         if self.international_code == "34":
             return self.phone
         else:
-            return "+" + self.international_code + " " + self.phone
+            return self.full_international_format()
 
 
 class Address(models.Model):
@@ -90,6 +93,16 @@ class Address(models.Model):
 
 class SMSStatus(models.Model):
     name = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+
+class WhatsAppTemplate(models.Model):
+    wa_key = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    template = models.TextField()
+    placeholders = models.IntegerField()
 
     def __str__(self):
         return self.name

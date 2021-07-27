@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}Enviar WhatsApp a {{ phone.client }}{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="customer">Teléfono: </label>
+                <input id="customer" class="form-control" disabled type="text" value="{{ phone.alias }} - {{ phone.full_international_format }}">
+                <label for="template">Plantilla: </label>
+                <select id="template" class="form-control">
+                    {% for template in templates %}
+                        <option value="{{ template.pk }}">{{ template }}</option>
+                    {% endfor %}
+                </select>
+                <label for="message">Mensaje: </label>
+                <textarea id="message" rows="5" disabled class="form-control">asdasfsdfgdsgs dsf sdfgs dgfsd fh sgh</textarea>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

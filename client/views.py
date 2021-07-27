@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from itertools import chain
-from operator import attrgetter
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.forms.models import model_to_dict
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
-from client.models import Client, Address, Phone, SMS, Email
+from client.models import Client, Address, Phone, SMS, Email, WhatsAppTemplate
+from client.utils import send_whatsapp_template
 from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
@@ -473,3 +473,33 @@ class ClientMergeView(TemplateView):
         context['client_new'] = Client.objects.get(pk=kwargs['pk2'])
         context['title'] = "Fusión de clientes - Confirmación"
         return context
+
+
+class ClientWhatsAppTemplateView(View):
+
+    def get(self, request, *args, **kwargs):
+        templates = WhatsAppTemplate.objects.all()
+        template_dict = list(map(lambda t: model_to_dict(t, fields=[field.name for field in t._meta.fields]), templates))
+        return JsonResponse(data=template_dict, safe=False)
+
+    def post(self, request, *args, **kwargs):
+        params = request.POST.copy()
+        phone_pk = params.getlist('whatsapp_phone_pk')[0]
+        template_pk = params.getlist('whatsapp_template_pk')[0]
+        phone = Phone.objects.get(pk=phone_pk)
+        template = WhatsAppTemplate.objects.get(pk=template_pk)
+        placeholders = []
+        for x in range(template.placeholders):
+            id = x + 1
+            p = params.getlist('whatsapp_placeholder_' + str(id))[0]
+            if p == "" or p is None:
+                messages.warning(self.request.user, "Error enviando WhatsApp, campos incompletos")
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            placeholders.append(p)
+
+        code, response = send_whatsapp_template(template, placeholders, phone)
+        if 200 <= code < 300:
+            messages.success(self.request.user, "WhatsApp enviado correctamente")
+        else:
+            messages.warning(self.request.user, "Error enviando WhatsApp")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

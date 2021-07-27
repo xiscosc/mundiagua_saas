@@ -1,6 +1,7 @@
 /**
  * Created by xiscosastre on 5/5/16.
  */
+let templates = [];
 
 $('#sms_body').keyup(function () {
     var val = $(this).val();
@@ -37,6 +38,11 @@ $('#sms_send').on('click', function () {
     $('#form_sms').submit();
 });
 
+$('#whatsapp_send').on('click', function () {
+    $(this).prop('disabled', true).html("Enviando...");
+    $('#form_whatsapp').submit();
+});
+
 $('.btn-email').on('click', function () {
     try {
         //$('#email_field').val($('#email_source').html());
@@ -48,14 +54,37 @@ $('.btn-email').on('click', function () {
     $('#modal_mail').modal('show');
 });
 
-$(function () {
-    $('.whatsapp-pc').each(function (index) {
-        $(this).popover({
-            html: true,
-            content: "El envío de mensajes por <strong>WhatsApp</strong> sólo esta disponible para móviles, " +
-            "<strong>próximamente</strong> lo estará para PC",
-            trigger: 'focus',
-            placement: 'left'
+function createPlaceholders(num) {
+    $('#whatsapp_placeholders').html("");
+    for (let i = 0; i < num; i++) {
+        let id = i + 1;
+        let label = '<label for="whatsapp_placeholder_' + id + '">Campo {{' + id + '}}:</label>';
+        let field = '<input required="" type="text" class="form-control" id="whatsapp_placeholder_' + id + '" name="whatsapp_placeholder_' + id + '" />';
+        $('#whatsapp_placeholders').append(label + field);
+    }
+}
+
+$('.btn-whatsapp').on('click', function () {
+    templates = [];
+    $('#whatsapp_template_pk').html("");
+    $('#modal_whatsapp').modal('show');
+    $('#whatsapp_phone_pk').val($(this).data('phone'));
+    $.get("/client/whatsapp/templates/", function (data) {
+        data.forEach(function (t) {
+            templates[t.id] = t
+            let option = '<option value="' + t.id + '">' + t.name + '</option>';
+            $('#whatsapp_template_pk').append(option);
         });
+        let id = $('#whatsapp_template_pk').val();
+        let t = templates[id];
+        $('#whatsapp_body').html(t.template);
+        createPlaceholders(t.placeholders);
     });
+});
+
+$('#whatsapp_template_pk').on('change', function () {
+    let id = $(this).val();
+    let t = templates[id];
+    $('#whatsapp_body').html(t.template);
+    createPlaceholders(t.placeholders);
 });
