@@ -491,7 +491,7 @@ class ClientWhatsAppTemplateView(View):
         placeholders = []
         for x in range(template.placeholders):
             id = x + 1
-            p = params.getlist('whatsapp_placeholder_' + str(id))[0]
+            p = str(params.getlist('whatsapp_placeholder_' + str(id))[0])
             if p == "" or p is None:
                 messages.warning(self.request.user, "Error enviando WhatsApp, campos incompletos")
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
