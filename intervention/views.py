@@ -20,7 +20,7 @@ from intervention.models import Intervention, Zone, InterventionStatus, Interven
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
     generate_data_intervention_assigned, terminate_intervention, get_intervention_list, bill_intervention, \
     generate_report, generate_document_s3_key
-from intervention.forms import ImageForm, NewInterventionForm, EarlyInterventionModificationForm, \
+from intervention.forms import NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
 from intervention.tasks import send_file_telegram_task, delete_file_from_telegram
 
@@ -317,24 +317,6 @@ class OwnListInterventionView(TemplateView):
         context['interventions'] = get_page_from_paginator(paginator, page)
 
         return context
-
-
-class UploadImageView(View):
-    def get_success_url(self):
-        return reverse_lazy('intervention:intervention-view', kwargs={'pk': self.kwargs['pk']})
-
-    def post(self, request, *args, **kwargs):
-        form = ImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = InterventionImage(image=request.FILES['image'], intervention_id=self.kwargs['pk'],
-                                      user=self.request.user)
-            image.save()
-            messages.success(self.request.user, "Imagen guardada correctamente")
-        else:
-            messages.warning(self.request.user, "Error, no se ha podido guardar la imagen")
-
-        return HttpResponseRedirect(self.get_success_url())
-
 
 
 class ToggleStarredInterventionView(View):

@@ -103,6 +103,7 @@ class WhatsAppTemplate(models.Model):
     name = models.CharField(max_length=255)
     template = models.TextField()
     placeholders = models.IntegerField()
+    has_attachment = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

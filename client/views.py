@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 from client.models import Client, Address, Phone, SMS, Email, WhatsAppTemplate
-from client.utils import send_whatsapp_template
+from client.utils import send_whatsapp_template, generate_whatsapp_document_s3_key, get_whatsapp_upload_signed_url
 from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
@@ -475,6 +475,14 @@ class ClientMergeView(TemplateView):
         return context
 
 
+class PreUploadWhatsAppFile(View):
+    def post(self, request, *args, **kwargs):
+        filename = request.POST['whatsapp_file_name']
+        key = generate_whatsapp_document_s3_key(filename)
+        body = {'key': key, 's3Data': get_whatsapp_upload_signed_url(key)}
+        return JsonResponse(body)
+
+
 class ClientWhatsAppTemplateView(View):
 
     def get(self, request, *args, **kwargs):
@@ -484,22 +492,28 @@ class ClientWhatsAppTemplateView(View):
 
     def post(self, request, *args, **kwargs):
         params = request.POST.copy()
-        phone_pk = params.getlist('whatsapp_phone_pk')[0]
-        template_pk = params.getlist('whatsapp_template_pk')[0]
-        phone = Phone.objects.get(pk=phone_pk)
-        template = WhatsAppTemplate.objects.get(pk=template_pk)
-        placeholders = []
-        for x in range(template.placeholders):
-            id = x + 1
-            p = str(params.getlist('whatsapp_placeholder_' + str(id))[0])
-            if p == "" or p is None:
-                messages.warning(self.request.user, "Error enviando WhatsApp, campos incompletos")
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-            placeholders.append(p)
+        try:
+            phone_pk = params.get('whatsapp_phone_pk')
+            template_pk = params.get('whatsapp_template_pk')
+            phone = Phone.objects.get(pk=phone_pk)
+            template = WhatsAppTemplate.objects.get(pk=template_pk)
+            placeholders = []
+            file_name = params.get('whatsapp_file_name')
+            s3_key = params.get('whatsapp_file_key')
+            for x in range(template.placeholders):
+                id = x + 1
+                p = str(params.get('whatsapp_placeholder_' + str(id), ""))
+                if p == "" or p is None:
+                    messages.warning(self.request.user, "Error enviando WhatsApp, campos incompletos")
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+                placeholders.append(p)
 
-        code, response = send_whatsapp_template(template, placeholders, phone)
-        if 200 <= code < 300:
-            messages.success(self.request.user, "WhatsApp enviado correctamente")
-        else:
-            messages.warning(self.request.user, "Error enviando WhatsApp")
+            code, response = send_whatsapp_template(template, placeholders, phone, file_name, s3_key)
+            if 200 <= code < 300:
+                messages.success(self.request.user, "WhatsApp enviado correctamente")
+            else:
+                messages.warning(self.request.user, "Error enviando WhatsApp")
+        except:
+            messages.warning(self.request.user, "Error enviando WhatsApp, campos incorrectos")
+
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

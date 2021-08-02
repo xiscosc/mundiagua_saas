@@ -4,12 +4,6 @@ from django.forms.widgets import CheckboxSelectMultiple
 from .models import Intervention, Zone
 
 
-class ImageForm(forms.Form):
-    image = forms.ImageField(
-        label='Selecciona una foto'
-    )
-
-
 class NewInterventionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):

@@ -56,6 +56,7 @@
 
                     <div id="whatsapp_placeholders"></div>
                 </form>
+                <div id="whatsapp_file_placeholder" data-token="{{ csrf_token }}" data-url="{% url 'client:client-whatsapp-file' %}"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Descartar</button>

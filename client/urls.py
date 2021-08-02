@@ -3,11 +3,13 @@ from .views import CreateClientView, CreateAddressView, CreatePhoneView, ClientV
     EditPhoneView, DeletePhoneView, DeleteAddresView, SendSMSView, AllClientsView, PreSearchClientView, \
     SearchClientView, AddressGeoUpdateView, SendEmailView, SearchClientToReplaceView, SearchClientToMergeView, \
     ClientMergeView, CreateEmailView, EditEmailView, DeleteEmailView, InterventionsFromCustomerView, \
-    BudgetsFromCustomerView, EngineRepairsFromCustomerView, RepairsFromCustomerView, ClientWhatsAppTemplateView
+    BudgetsFromCustomerView, EngineRepairsFromCustomerView, RepairsFromCustomerView, ClientWhatsAppTemplateView,\
+    PreUploadWhatsAppFile
 
 urlpatterns = [
     url(r'^new/$', CreateClientView.as_view(), name="client-new"),
     url(r'^whatsapp/templates/$', ClientWhatsAppTemplateView.as_view(), name="client-whatsapp-templates"),
+    url(r'^whatsapp/file/$', PreUploadWhatsAppFile.as_view(), name="client-whatsapp-file"),
     url(r'^view/(?P<pk>\d+)/$', ClientView.as_view(), name="client-view"),
     url(r'^view/(?P<pk>\d+)/interventions/$', InterventionsFromCustomerView.as_view(), name="client-view-interventions"),
     url(r'^view/(?P<pk>\d+)/budgets/$', BudgetsFromCustomerView.as_view(), name="client-view-budgets"),

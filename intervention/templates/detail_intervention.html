@@ -62,12 +62,10 @@
             <div class="modal-body">
                 <div id="body_upload">
                     <div id="file_selection" style="display: none">
-                        <h5>Novedad: Puede subir más de un archivo a la vez</h5>
                         <p>Seleccione los archivos que desea subir</p>
                         <input multiple data-token="{{ csrf_token }}" data-url="{% url 'intervention:intervention-preupload-document' intervention.pk %}" type="file" id="document" />
                     </div>
                     <div id="image_selection" style="display: none">
-                        <h5>Novedad: Puede subir más de una foto a la vez</h5>
                         <p>Seleccione las fotos que desea subir</p>
                         <input multiple data-token="{{ csrf_token }}" data-url="{% url 'intervention:intervention-preupload-image' intervention.pk %}" type="file" accept="image/*" id="image" />
                     </div>

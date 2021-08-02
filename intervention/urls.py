@@ -5,7 +5,7 @@ from django.views.decorators.cache import cache_page
 from .views import HomeView, SearchClientView, CreateInterventionView, InterventionView, UpdateInterventionView, \
     ListInterventionView, TerminateIntervention, SearchInterventionView, PreSearchInterventionView, \
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
-    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, UploadImageView, \
+    PrintListInterventionView, MorrisYearVs, OwnListInterventionView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
     MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, DocumentView, \
     RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView, PreUploadDocumentView, \
@@ -37,7 +37,6 @@ urlpatterns = [
         PrintListInterventionView.as_view(), name="intervention-print-list"),
     url(r'^list/own/$',
         OwnListInterventionView.as_view(), name="intervention-list-own"),
-    url(r'^new/image/(?P<pk>\d+)/$', UploadImageView.as_view(), name="intervention-image-upload"),
     url(r'^starred/(?P<pk>\d+)/$', ToggleStarredInterventionView.as_view(), name="intervention-starred"),
     url(r'^status-job/(?P<pk>\d+)/$', AddStatusJobView.as_view(), name="intervention-status-job"),
     url(r'^reports/$', ReportInterventionView.as_view(), name="intervention-reports"),
