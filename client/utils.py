@@ -23,7 +23,7 @@ def send_whatsapp_template(template: WhatsAppTemplate, placeholders: List[str], 
         for placeholder in placeholders:
             params.append({'type': 'text', 'text': placeholder})
 
-        url = get_whatsapp_download_proxy_url(s3_key)
+        url = get_whatsapp_download_signed_url(s3_key)
         hsm['components'] = [
             {'type': 'header', 'parameters': [{'type': 'document', 'document': {'url': url, 'caption': file_name}}]},
             {'type': 'body', 'parameters': params},
