@@ -106,7 +106,6 @@ PUBLIC_URLS = (
     r'repair-status/(?P<online>\w+)/',
     r'clientes/',
     r'core/sms-gsm/notify',
-    r'client/whatsapp/file/download/(?P<key>[\w&.\-]+)',
 
     # API URLS ACCESS WILL BE MANAGED IN ANOTHER PLACE
     r'api/*'

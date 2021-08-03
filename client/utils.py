@@ -59,11 +59,6 @@ def get_whatsapp_download_signed_url(s3_key: str):
     return s3.generate_presigned_url('get_object', Params=s3_params, ExpiresIn=600)
 
 
-def get_whatsapp_download_proxy_url(s3_key: str):
-    intern_url = str(reverse_lazy('client:client-whatsapp-file-download', kwargs={'key': s3_key}))
-    return settings.DOMAIN + intern_url
-
-
 def generate_whatsapp_document_s3_key(filename):
     _, file_extension = os.path.splitext(filename)
     if file_extension != ".pdf":

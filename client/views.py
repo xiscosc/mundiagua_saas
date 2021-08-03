@@ -485,18 +485,6 @@ class PreUploadWhatsAppFile(View):
         return JsonResponse(body)
 
 
-class ClientWhatsAppFileDownloadView(View):
-    def get(self, request, *args, **kwargs):
-        key = kwargs['key']
-        url = get_whatsapp_download_signed_url(key)
-        protocol = urlparse(url).scheme
-        # Let NGINX handle it
-        response = HttpResponse()
-        response['X-Accel-Redirect'] = '/file_whatsapp_download/' + protocol + '/' + url.replace(protocol + '://', '')
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(key)
-        return response
-
-
 class ClientWhatsAppTemplateView(View):
 
     def get(self, request, *args, **kwargs):
