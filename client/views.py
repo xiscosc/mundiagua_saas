@@ -8,7 +8,8 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 from client.models import Client, Address, Phone, SMS, Email, WhatsAppTemplate
-from client.utils import send_whatsapp_template, generate_whatsapp_document_s3_key, get_whatsapp_upload_signed_url
+from client.utils import send_whatsapp_template, generate_whatsapp_document_s3_key, get_whatsapp_upload_signed_url, \
+    get_whatsapp_download_signed_url
 from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
@@ -17,6 +18,7 @@ from repair.models import AthRepair, IdegisRepair
 from budget.models import BudgetStandard, BudgetRepair
 from core.tasks import send_mail_client
 from async_messages import messages
+from urllib.parse import urlparse
 
 
 class CreateClientView(CreateView):
@@ -481,6 +483,18 @@ class PreUploadWhatsAppFile(View):
         key = generate_whatsapp_document_s3_key(filename)
         body = {'key': key, 's3Data': get_whatsapp_upload_signed_url(key)}
         return JsonResponse(body)
+
+
+class ClientWhatsAppFileDownloadView(View):
+    def get(self, request, *args, **kwargs):
+        key = kwargs['key']
+        url = get_whatsapp_download_signed_url(key)
+        protocol = urlparse(url).scheme
+        # Let NGINX handle it
+        response = HttpResponse()
+        response['X-Accel-Redirect'] = '/file_whatsapp_download/' + protocol + '/' + url.replace(protocol + '://', '')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(key)
+        return response
 
 
 class ClientWhatsAppTemplateView(View):
