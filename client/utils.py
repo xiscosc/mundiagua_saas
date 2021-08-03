@@ -1,5 +1,6 @@
 import os
 import uuid
+import mimetypes
 from typing import List
 
 import requests
@@ -46,7 +47,10 @@ def send_whatsapp_template(template: WhatsAppTemplate, placeholders: List[str], 
 
 def get_whatsapp_upload_signed_url(s3_key: str):
     s3 = create_amazon_client('s3')
-    return s3.generate_presigned_post(settings.S3_WHATSAPP, s3_key, ExpiresIn=60)
+    mimetype = mimetypes.guess_type(s3_key)[0]
+    fields = {'Content-Type': mimetype}
+    conditions = [["starts-with", "$Content-Type", ""]]
+    return s3.generate_presigned_post(settings.S3_WHATSAPP, s3_key, ExpiresIn=60, Fields=fields, Conditions=conditions)
 
 
 def get_whatsapp_download_signed_url(s3_key: str):
@@ -62,4 +66,6 @@ def get_whatsapp_download_proxy_url(s3_key: str):
 
 def generate_whatsapp_document_s3_key(filename):
     _, file_extension = os.path.splitext(filename)
+    if file_extension != ".pdf":
+        raise Exception("WhatsApp - Trying to send non pdf: {}".format(file_extension))
     return "%s%s" % (uuid.uuid1().__str__(), file_extension)

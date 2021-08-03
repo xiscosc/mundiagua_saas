@@ -29,11 +29,8 @@ function uploadFileToS3(file, s3Data) {
     formData.append('key', s3Data.fields.key)
     formData.append('policy', s3Data.fields.policy)
     formData.append('signature', s3Data.fields.signature)
+    formData.append('Content-Type', s3Data.fields["Content-Type"])
     formData.append('file', file)
-
-    if (s3Data.fields.ContentType) {
-        formData.append('ContentType', s3Data.fields.ContentType)
-    }
 
     let id = generateId(file.name);
 

@@ -74,7 +74,7 @@ function createPlaceholders(num, has_attachment) {
 
     if (has_attachment) {
         let label = '<label for="whatsapp_file">Archivo adjunto:</label>';
-        let field = '<input required="" type="file" class="form-control" id="whatsapp_file" name="whatsapp_file" />';
+        let field = '<input required="" accept="application/pdf" type="file" class="form-control" id="whatsapp_file" name="whatsapp_file" />';
         let field_name = '<input required="" type="hidden" class="form-control" id="whatsapp_file_name" name="whatsapp_file_name" />';
         let field_key = '<input required="" type="hidden" class="form-control" id="whatsapp_file_key" name="whatsapp_file_key" />';
         $('#whatsapp_placeholders').append(field_name);
@@ -104,6 +104,7 @@ function uploadWhatsAppFileToS3(s3Data) {
     formData.append('key', s3Data.fields.key)
     formData.append('policy', s3Data.fields.policy)
     formData.append('signature', s3Data.fields.signature)
+    formData.append('Content-Type', s3Data.fields["Content-Type"])
     formData.append('file', $('#whatsapp_file')[0].files[0])
 
     $.ajax({

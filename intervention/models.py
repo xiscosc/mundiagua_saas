@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import mimetypes
 import os
 from datetime import datetime
 
@@ -216,7 +217,11 @@ class InterventionFile(models.Model):
 
     def get_upload_signed_url(self):
         s3 = create_amazon_client('s3')
-        return s3.generate_presigned_post(self.get_upload_bucket(), self.s3_key, ExpiresIn=60, Fields=self.get_upload_args())
+        mimetype = mimetypes.guess_type(self.s3_key)[0]
+        fields = {'Content-Type': mimetype}
+        conditions = [["starts-with", "$Content-Type", ""]]
+        return s3.generate_presigned_post(self.get_upload_bucket(), self.s3_key, ExpiresIn=60, Fields=fields,
+                                          Conditions=conditions)
 
     def remove_form_s3(self):
         s3 = create_amazon_client('s3')
@@ -236,9 +241,6 @@ class InterventionFile(models.Model):
     def send_file_to_telegram(self):
         pass
 
-    def get_upload_args(self):
-        return {}
-
     def __str__(self):
         return "V" + str(self.intervention.pk) + " | " + str(self.pk) + " | " + self.filename()
 
@@ -256,9 +258,6 @@ class InterventionImage(InterventionFile):
         super(InterventionImage, self).remove_form_s3()
         s3 = create_amazon_client('s3')
         s3.delete_object(Bucket=self.get_bucket(), Key=self.thumbnail_s3_key)
-
-    def get_upload_args(self):
-        return {'ContentType': 'image/jpeg'}
 
     def get_thumbnail_signed_url(self):
         if self.thumbnail_s3_key is None:
