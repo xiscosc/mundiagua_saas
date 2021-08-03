@@ -91,14 +91,14 @@ function triggerS3Upload() {
         .done(function( data ) {
             $('#whatsapp_file_name').val(fileName);
             $('#whatsapp_file_key').val(data.key);
-            uploadFileToS3(data.s3Data)
+            uploadWhatsAppFileToS3(data.s3Data)
         })
         .fail(function (data) {
             alert("Ha ocurrido un error, recargue la página");
         });
 }
 
-function uploadFileToS3(s3Data) {
+function uploadWhatsAppFileToS3(s3Data) {
     var formData = new FormData();
     formData.append('AWSAccessKeyId', s3Data.fields.AWSAccessKeyId)
     formData.append('key', s3Data.fields.key)
