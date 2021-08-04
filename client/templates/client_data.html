@@ -306,6 +306,7 @@
                                         <li><a href="tel:+{{ phone.international_code }}{{ phone.phone }}"><i
                                                 class="fa fa-volume-control-phone"></i> Llamar</a></li>
 
+                                    {% if phone.is_mobile %}
                                         {% if sms %}
                                             <li><a href="#" class="btn-sms" data-phone="{{ phone.pk }}"><i
                                                     class="fa fa-send-o"></i> Enviar SMS</a></li>
@@ -320,6 +321,8 @@
                                                     <i class="fa fa-whatsapp"></i> Enviar WhatsApp
                                                 </a></li>
                                         {% endif %}
+
+                                    {% endif %}
 
                                     </ul>
                                 </div>

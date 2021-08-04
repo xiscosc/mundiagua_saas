@@ -54,6 +54,13 @@ class Phone(models.Model):
     def full_international_format(self):
         return "+" + self.international_code + " " + self.phone
 
+    def is_mobile(self):
+        if int(self.international_code) == 34:
+            if int(self.phone[0]) == 9 or int(self.phone[0]) == 8:
+                return False
+
+        return True
+
     def printable(self):
         if self.international_code == "34":
             return self.phone
