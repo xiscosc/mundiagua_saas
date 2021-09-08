@@ -35,7 +35,6 @@ DJANGO_APPS = [
 
 OTHER_APPS = [
     'colorfield',
-    'djangobower',
     'bootstrapform',
     'bootstrap_pagination',
     'async_messages',
@@ -61,15 +60,6 @@ MY_APPS = [
 
 
 INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
-
-BOWER_INSTALLED_APPS = (
-    'https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git',
-    'material-avatar',
-    'bootstrap3-typeahead',
-    'metisMenu',
-    'remarkable-bootstrap-notify',
-    'animate.css',
-)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -165,7 +155,7 @@ STATICFILES_DIRS = [
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
+    'npm.finders.NpmFinder',
 ]
 
 
@@ -287,7 +277,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "2021.3"
 APP_VERSION_INCLUDES = 2021036
-APP_COMPLETE_VERSION = "2021.3.4.202100803"
+APP_COMPLETE_VERSION = "2021.3.5.20210908"
 TEMPLATE_COLOR = '#1d3f72'
 
 #CACHE TIMES IN SEC

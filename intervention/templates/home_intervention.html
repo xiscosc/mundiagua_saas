@@ -234,14 +234,14 @@
 {% endblock %}
 {% block chartjs %}
     <!-- Morris Charts JavaScript -->
-    <script src="{% static 'raphael/raphael.min.js' %}"></script>
-    <script src="{% static 'morrisjs/morris.min.js' %}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
     <script src="{% static 'base/js/intervention/morris-data.js' %}"></script>
     <script src="{% static 'base/js/intervention/map.js' %}"></script>
     {% include 'map_include.html' with interventions=interventions %}
 {% endblock %}
 {% block extracss %}
-    <link href="{% static 'morrisjs/morris.css' %}" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" rel="stylesheet">
     <link href="{% static 'base/css/intervention/home.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'base/css/intervention/map.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
