@@ -222,8 +222,6 @@ HIJACK_LOGIN_REDIRECT_URL = '/'  # Where admins are redirected to after hijackin
 HIJACK_LOGOUT_REDIRECT_URL = '/spectrum/core/user/'  # Where admins are redirected to after releasing a user
 
 
-CELERY_RESULT_BACKEND = 'cache+memcached://127.0.0.1:11211/'
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
