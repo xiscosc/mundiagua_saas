@@ -41,8 +41,6 @@ OTHER_APPS = [
     'hijack',
     'compat',
     'hijack_admin',
-    'easy_thumbnails',
-    'debug_toolbar',
     'tinymce',
     'rest_framework',
     'corsheaders',
@@ -77,7 +75,6 @@ MIDDLEWARE = [
     'core.middleware.staff.StaffMiddleware',
     'core.middleware.gsmkey.GsmKey',
     'django_user_agents.middleware.UserAgentMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
