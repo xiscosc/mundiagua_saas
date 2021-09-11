@@ -8,7 +8,7 @@ django_heroku.settings(locals())
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-NPM_ROOT_PATH = os.path.join(BASE_DIR, 'npm-dependencies')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware'] + list(MIDDLEWARE)
 
 DATABASES = {
