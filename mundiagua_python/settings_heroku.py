@@ -25,7 +25,7 @@ django_heroku.settings(locals())
 SENDGRID_API_KEY = "key"
 DEBUG = os.getenv('DEBUG') == 'True'
 DOMAIN = os.getenv('DOMAIN')
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
