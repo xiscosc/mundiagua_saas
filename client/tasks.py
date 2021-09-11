@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from async_messages import messages
-from celery import shared_task
 
 
-@shared_task
 def send_sms(pk):
     from client.models import SMS
     sms = SMS.objects.get(pk=pk)

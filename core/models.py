@@ -117,7 +117,7 @@ def post_save_message(sender, **kwargs):
         ins.to_user.has_notification = 1
         ins.to_user.save()
         body = ins.body + "\n\n" + ins.from_user.get_full_name()
-        send_message.delay(ins.pk, body)
+        send_message(ins.pk, body)
 
 
 post_save.connect(post_save_message, sender='core.Message')

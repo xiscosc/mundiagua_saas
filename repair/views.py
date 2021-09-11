@@ -323,7 +323,7 @@ class SendTrackingRepairView(View):
         if params.getlist('send_sms', "off")[0] == "on":
             phone_pk = int(params.getlist('phone_id', "0")[0])
             if phone_pk != 0:
-                send_sms_tracking.delay(repair.pk, type, phone_pk, request.user.pk)
+                send_sms_tracking(repair.pk, type, phone_pk, request.user.pk)
                 sending_something = True
 
         if params.getlist('send_email', "off")[0] == "on":
@@ -342,7 +342,7 @@ class SendTrackingRepairView(View):
                            u'%s.\n\nQuedamos a su disposición para cualquier duda o ' \
                            u'consulta.' % (repair.__str__(), url_body, repair.online_id)
 
-                    send_mail_client.delay(email_pk, subject, body, request.user.pk)
+                    send_mail_client(email_pk, subject, body, request.user.pk)
 
         if sending_something:
             messages.success(self.request.user, "Se han notificado los datos de seguimiento al cliente.")

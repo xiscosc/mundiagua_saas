@@ -47,7 +47,7 @@ def update_intervention(intervention_pk, request):
 
     try:
         pktosend = int(params.getlist('user_to_send')[0])
-        send_intervention.delay(intervention.pk, pktosend, request.user.pk)
+        send_intervention(intervention.pk, pktosend, request.user.pk)
         intervention_save = False
     except IndexError:
         pass

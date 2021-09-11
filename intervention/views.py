@@ -451,10 +451,10 @@ class MakeVisibleDocumentView(View):
         instance.save()
 
         if not instance.only_officer and instance.intervention.status.id == 2:
-            send_file_telegram_task.delay(instance.pk, 'document')
+            send_file_telegram_task(instance.pk, 'document')
 
         if instance.only_officer and instance.intervention.status.id == 2 and instance.sent_to_telegram:
-            delete_file_from_telegram.delay(instance.intervention.assigned.telegram_token, instance.telegram_message, instance.intervention.pk)
+            delete_file_from_telegram(instance.intervention.assigned.telegram_token, instance.telegram_message, instance.intervention.pk)
             instance.telegram_message = None
             instance.sent_to_telegram = False
             instance.save()

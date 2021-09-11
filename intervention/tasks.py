@@ -1,8 +1,5 @@
 from async_messages import messages
-from celery import shared_task
 
-
-@shared_task
 def send_intervention_assigned(pk):
     from intervention.models import Intervention
     intervention = Intervention.objects.get(pk=pk)
@@ -11,7 +8,6 @@ def send_intervention_assigned(pk):
         messages.warning(intervention._current_user, "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name())
 
 
-@shared_task
 def send_intervention(pk, pkto, pkuser):
     from intervention.models import Intervention
     from core.models import User
@@ -24,7 +20,6 @@ def send_intervention(pk, pkto, pkuser):
                          "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name())
 
 
-@shared_task
 def send_file_telegram_task(pk, t):
     from intervention.models import InterventionDocument, InterventionImage
     if t == 'document':
@@ -34,7 +29,6 @@ def send_file_telegram_task(pk, t):
     instance.send_file_to_telegram()
 
 
-@shared_task
 def delete_telegram_messages_from_intervention(pk, pk_assigned_old):
     from intervention.models import Intervention
     from core.models import User
@@ -53,7 +47,6 @@ def delete_telegram_messages_from_intervention(pk, pk_assigned_old):
         delete_telegram_messages(user.telegram_token, ids, instance)
 
 
-@shared_task
 def delete_file_from_telegram(token, message_id, instance_pk):
     from core.utils import delete_telegram_messages
     from intervention.models import Intervention

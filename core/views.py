@@ -196,7 +196,7 @@ class GetSmsView(View):
 
 class NotifySmsView(View):
     def get(self, request, *args, **kwargs):
-        notify_sms_received.delay()
+        notify_sms_received()
         return JsonResponse(data="OK", safe=False)
 
 

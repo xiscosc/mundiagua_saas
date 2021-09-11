@@ -169,7 +169,7 @@ class SMS(models.Model):
 def post_save_sms(sender, **kwargs):
     sms = kwargs['instance']
     if kwargs['created']:
-        send_sms.delay(sms.pk)
+        send_sms(sms.pk)
 
 
 post_save.connect(post_save_sms, sender=SMS)

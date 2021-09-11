@@ -10,7 +10,6 @@ sendgrid-django==4.0.4
 django-bootstrap-pagination==1.6.4
 django-hijack
 django-hijack-admin
-celery==5.0.2
 python-memcached
 boto3==1.17.95
 xlwt

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from celery import shared_task
 from django.conf import settings
 from pyshorteners import Shortener
 
@@ -7,7 +6,6 @@ from client.models import SMS
 from repair.models import AthRepair, IdegisRepair
 
 
-@shared_task
 def send_sms_tracking(pk_repair, is_ath, phone_pk, user_pk):
     shortener = Shortener(api_key=settings.BITLY_API_KEY)
 

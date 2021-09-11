@@ -312,7 +312,7 @@ class SendEmailView(View):
         if email_pk == '':
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-        send_mail_client.delay(email_pk, subject, body, request.user.pk)
+        send_mail_client(email_pk, subject, body, request.user.pk)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

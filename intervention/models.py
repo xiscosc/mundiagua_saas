@@ -324,10 +324,10 @@ def post_save_intervention(sender, **kwargs):
                                       intervention=intervention)
                 if intervention.status_id == settings.ASSIGNED_STATUS:
                     log.assigned = intervention.assigned
-                    send_intervention_assigned.delay(intervention.pk)
+                    send_intervention_assigned(intervention.pk)
                 log.save()
                 if intervention._old_status_id == settings.ASSIGNED_STATUS:
-                    delete_telegram_messages_from_intervention.delay(intervention.pk, intervention._old_assigned_id)
+                    delete_telegram_messages_from_intervention(intervention.pk, intervention._old_assigned_id)
         except:
             pass
 
