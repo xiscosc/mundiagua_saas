@@ -1,0 +1,5 @@
+-r requirements_psql.txt
+whitenoise
+gunicorn
+django-heroku
+sentry-sdk
