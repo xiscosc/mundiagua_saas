@@ -35,7 +35,7 @@ cryptography
 drf-jwt
 pyjwt
 django-npm
-whitenoise
+django-storages
 gunicorn
 django-heroku
 sentry-sdk

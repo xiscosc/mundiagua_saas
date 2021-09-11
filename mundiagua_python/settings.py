@@ -45,6 +45,7 @@ OTHER_APPS = [
     'rest_framework',
     'corsheaders',
     'social_django',
+    'storages',
 ]
 
 MY_APPS = [

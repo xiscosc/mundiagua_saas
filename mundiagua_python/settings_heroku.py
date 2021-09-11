@@ -2,14 +2,12 @@ from .settings import *
 import os
 import django_heroku
 
-django_heroku.settings(locals())
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware'] + list(MIDDLEWARE)
 
 DATABASES = {
     'default': {
@@ -73,4 +71,14 @@ FB_WHATSAPP_NAMESPACE = os.getenv('FB_WHATSAPP_NAMESPACE')
 MESSAGEBIRD_WHATSAPP_CHANNEL = os.getenv('MESSAGEBIRD_WHATSAPP_CHANNEL')
 MESSAGEBIRD_API_KEY = os.getenv('MESSAGEBIRD_API_KEY')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY = AWS_SECRET_KEY
+
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = os.getenv('AWS_S3_CUSTOM_DOMAIN')
+
+AWS_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+django_heroku.settings(locals())
