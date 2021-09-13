@@ -35,7 +35,3 @@ cryptography
 drf-jwt
 pyjwt
 django-npm
-django-storages
-gunicorn
-django-heroku
-sentry-sdk

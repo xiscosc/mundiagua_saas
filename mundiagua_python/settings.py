@@ -45,7 +45,6 @@ OTHER_APPS = [
     'rest_framework',
     'corsheaders',
     'social_django',
-    'storages',
 ]
 
 MY_APPS = [
@@ -263,8 +262,6 @@ TECHNICIAN_VIEWS = (
     'sms-gsm',
     'sms-gsm-sender',
 )
-
-THUMBNAIL_SIZE = (100, 100)
 
 MEDIA_URL = "/media/"
 

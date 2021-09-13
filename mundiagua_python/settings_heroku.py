@@ -20,6 +20,7 @@ DATABASES = {
     }
 }
 
+INSTALLED_APPS = list(INSTALLED_APPS) + ['storages']
 django_heroku.settings(locals())
 
 SENDGRID_API_KEY = "key"

@@ -1,0 +1,4 @@
+django-storages
+gunicorn
+django-heroku
+sentry-sdk
