@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Enviar {{ document_name }} al cliente <span class="label pull-right label-success">Nuevo</span>
+            </div>
+            <div class="panel-body">
+                <div class="row" id="pdf-buttons">
+                    <div class="col-md-6"><button class="pull-right btn btn-lg btn-success" id="btn-pdf-whatsapp"><i class="fa fa-whatsapp"></i> Enviar PDF por Whatsapp </button> </div>
+                    <div class="col-md-6"><button class="btn btn-lg btn-primary" id="btn-pdf-mail"><i class="fa fa-envelope-open"></i> Enviar PDF por Email </button> </div>
+                </div>
+                <div class="row" id="pdf-whatsapp-phone-buttons" style="display: none">
+                    <div class="col-md-12 center-block text-center">
+                        {% for phone in client.get_phones %}
+                            {% if phone.is_mobile %}
+                                <button class="btn btn-lg btn-success btn-pdf-whatsapp-send" data-phone-pk="{{ phone.pk }}"><i class="fa fa-whatsapp"></i> Enviar a {{ phone }} </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <form id="pdf-wwhatsapp-form" method="post" action="{% url 'client:client-whatsapp-pdf' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="whatsapp_placeholder" id="whatsapp_placeholder">
+                    <input type="hidden" name="phone_field" id="phone_field">
+                    <input type="hidden" name="attachment_id" id="attachment_id_whatsapp">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

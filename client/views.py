@@ -8,17 +8,15 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View, TemplateView
 from client.models import Client, Address, Phone, SMS, Email, WhatsAppTemplate
-from client.utils import send_whatsapp_template, generate_whatsapp_document_s3_key, get_whatsapp_upload_signed_url, \
-    get_whatsapp_download_signed_url
+from client.utils import send_whatsapp_template, generate_whatsapp_document_s3_key, get_whatsapp_upload_signed_url
 from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
 from budget.models import BudgetStandard, BudgetRepair
-from core.tasks import send_mail_client
+from core.tasks import send_mail_client, send_mail_client_with_pdf, send_whatsapp_client_with_pdf
 from async_messages import messages
-from urllib.parse import urlparse
 
 
 class CreateClientView(CreateView):
@@ -308,14 +306,28 @@ class SendEmailView(View):
         body = request.POST.get('email_body', '')
         subject = request.POST.get('email_subject', '')
         email_pk = request.POST.get('email_field', '')
+        attachment_id = request.POST.get('attachment_id', '')
 
         if email_pk == '':
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-        send_mail_client(email_pk, subject, body, request.user.pk)
+        if attachment_id == '':
+            send_mail_client(email_pk, subject, body, request.user.pk)
+        else:
+            send_mail_client_with_pdf(email_pk, subject, body, request.user.pk, attachment_id)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
+class GenerateAndSendPdfWithWhatsAppView(View):
+    def post(self, request, *args, **kwargs):
+        body = request.POST.get('whatsapp_placeholder', '')
+        phone_pk = request.POST.get('phone_field', '')
+        attachment_id = request.POST.get('attachment_id', '')
+
+        send_whatsapp_client_with_pdf(phone_pk, [body], request.user.pk, attachment_id)
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 class AllClientsView(TemplateView):
     template_name = "list_client.html"

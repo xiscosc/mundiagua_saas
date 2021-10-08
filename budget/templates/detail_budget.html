@@ -10,6 +10,8 @@
 
     {% include 'client_data.html' with client=budget.address.client sms=True address=budget.address %}
 
+    {% include 'client_send_pdf.html' with document_name="presupuesto" client=budget.address.client %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -69,7 +71,6 @@
             </div>
         </div>
     </div>
-
 
     {% if not repair %}
         <div class="row">
@@ -244,6 +245,17 @@
 
 {% endblock %}
 {% block extrajs %}
+    <script type="application/javascript">
+        const a_default_email_subject = "Presupuesto {{ budget }}";
+        const a_default_email_body = "Tal como nos ha solicitado, le adjuntamos el presupuesto {{ budget }}. Si tiene alguna pregunta no dude en consultarnos.";
+        const a_default_attachment_name = "{{ budget }}.pdf"
+        {% if repair %}
+            const a_default_attachment_id = "budgetrepair_{{ budget.pk }}"
+        {% else %}
+            const a_default_attachment_id = "budget_{{ budget.pk }}"
+        {% endif %}
+        const a_default_whatsapp_placeholder = "presupuesto {{ budget }}"
+    </script>
     <script src="{% static 'base/js/client/sms_email.js' %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}"></script>
 {% endblock %}

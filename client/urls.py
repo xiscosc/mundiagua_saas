@@ -4,7 +4,7 @@ from .views import CreateClientView, CreateAddressView, CreatePhoneView, ClientV
     SearchClientView, AddressGeoUpdateView, SendEmailView, SearchClientToReplaceView, SearchClientToMergeView, \
     ClientMergeView, CreateEmailView, EditEmailView, DeleteEmailView, InterventionsFromCustomerView, \
     BudgetsFromCustomerView, EngineRepairsFromCustomerView, RepairsFromCustomerView, ClientWhatsAppTemplateView,\
-    PreUploadWhatsAppFile
+    PreUploadWhatsAppFile, GenerateAndSendPdfWithWhatsAppView
 
 urlpatterns = [
     url(r'^new/$', CreateClientView.as_view(), name="client-new"),
@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^email/delete/(?P<pk>\d+)/$', DeleteEmailView.as_view(), name="client-email-delete"),
     url(r'^sms/send/$', SendSMSView.as_view(), name="client-sms-send"),
     url(r'^email/send/$', SendEmailView.as_view(), name="client-email-send"),
+    url(r'^whatsapp/pdf/$', GenerateAndSendPdfWithWhatsAppView.as_view(), name="client-whatsapp-pdf"),
     url(r'^all/$', AllClientsView.as_view(), name="client-all"),
     url(r'^psearch/$', PreSearchClientView.as_view(), name="client-psearch"),
     url(r'^search/$', SearchClientView.as_view(), name="client-search"),

@@ -14,6 +14,8 @@
 
     {% include 'client_data.html' with client=repair.address.client sms=True address=repair.address %}
 
+    {% include 'client_send_pdf.html' with document_name="justificante de reparación" client=repair.address.client %}
+
     <div class="modal fade" id="modal_new_repair" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -290,6 +292,17 @@
         var from_model_val = {% if repair.is_ath %}"repair-ath"{% else %}"repair-idegis"{% endif %};
         var default_subject = "Reparación completada";
         var from_model_id_val = {{ repair.pk }};
+    </script>
+    <script type="application/javascript">
+        const a_default_email_subject = "Justificante de la reparación {{ repair }}";
+        const a_default_email_body = "Tal como nos ha solicitado, le adjuntamos el justificante de la reparación {{ repair }}. Si tiene pregunta consulta no dude en consultarnos. También puede consultar el estado de la reparación en https://customerservice.mundiaguabalear.com/repair/{{ repair.online_id }} .";
+        const a_default_attachment_name = "{{ repair }}.pdf"
+        {% if repair.is_ath %}
+            const a_default_attachment_id = "repairath_{{ repair.pk }}"
+        {% else %}
+            const a_default_attachment_id = "repairidegis_{{ repair.pk }}"
+        {% endif %}
+        const a_default_whatsapp_placeholder = "reparación {{ repair }}"
     </script>
     <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>

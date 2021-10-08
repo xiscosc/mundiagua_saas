@@ -5,7 +5,6 @@ from typing import List
 
 import requests
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from client.models import WhatsAppTemplate, Phone
 from core.utils import create_amazon_client

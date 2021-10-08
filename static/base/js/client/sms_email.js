@@ -38,6 +38,24 @@ $('#sms_send').on('click', function () {
     $('#form_sms').submit();
 });
 
+$('#email_send_button').on('click', function () {
+    $(this).prop('disabled', true).html("Enviando...");
+    $('#form_email').submit();
+});
+
+$('#btn-pdf-whatsapp').on('click', function () {
+    $('#pdf-buttons').hide();
+    $('#pdf-whatsapp-phone-buttons').show();
+});
+
+$('.btn-pdf-whatsapp-send').on('click', function () {
+    $(this).prop('disabled', true).html("Enviando...");
+    $('#whatsapp_placeholder').val(a_default_whatsapp_placeholder);
+    $('#phone_field').val($(this).data('phone-pk'));
+    $('#attachment_id_whatsapp').val(a_default_attachment_id);
+    $('#pdf-wwhatsapp-form').submit();
+});
+
 $('#whatsapp_send').on('click', function () {
     let id = $('#whatsapp_template_pk').val();
     let t = templates[id];
@@ -52,10 +70,27 @@ $('#whatsapp_send').on('click', function () {
 });
 
 $('.btn-email').on('click', function () {
+    $('#email_body').val("");
+    $('#mail-attachment-group').hide();
+    $('#email_subject').val("");
+    $('#attachment_id').val("");
+    $('#mail-attachment-name').html("");
     try {
-        //$('#email_field').val($('#email_source').html());
         $('#email_body').val(default_sms);
         $('#email_subject').val(default_subject);
+    } catch (err) {
+        console.log(err);
+    }
+    $('#modal_mail').modal('show');
+});
+
+$('#btn-pdf-mail').on('click', function () {
+    try {
+        $('#mail-attachment-group').show();
+        $('#mail-attachment-name').html(a_default_attachment_name);
+        $('#email_body').val(a_default_email_body);
+        $('#email_subject').val(a_default_email_subject);
+        $('#attachment_id').val(a_default_attachment_id);
     } catch (err) {
         console.log(err);
     }
