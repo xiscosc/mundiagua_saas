@@ -14,7 +14,7 @@
 
     {% include 'client_data.html' with client=repair.address.client sms=True address=repair.address %}
 
-    {% include 'client_send_pdf.html' with document_name="justificante de reparación" client=repair.address.client %}
+    {% include 'client_send_pdf.html' with document_name="hoja de reparación" client=repair.address.client %}
 
     <div class="modal fade" id="modal_new_repair" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
