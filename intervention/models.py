@@ -101,7 +101,7 @@ class Intervention(models.Model):
     description = models.TextField(verbose_name="Descripción", db_index=True)
     short_description = models.CharField(verbose_name="Descripción corta", max_length=255, default="", blank=True, db_index=True)
     address = models.ForeignKey('client.Address', verbose_name="Dirección", on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True, db_index=True)
+    date = models.DateTimeField(auto_now_add=True)
     zone = models.ForeignKey(Zone, default=1, verbose_name="Zona", on_delete=models.CASCADE)
     status = models.ForeignKey(InterventionStatus, default=5, on_delete=models.CASCADE)
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by', on_delete=models.CASCADE)
