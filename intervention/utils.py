@@ -236,12 +236,22 @@ def generate_report(request):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
+    intervention_ids = interventions.values_list('id', flat=True)
+    logs = InterventionLog.objects.filter(intervention_id__in=intervention_ids, status_id=2)
+    log_dict = dict.fromkeys(intervention_ids, "")
+    for log in logs:
+        log_dict[log.intervention_id] += log.assigned.get_full_name() + ", "
+
     for i in interventions:
-        logs = InterventionLog.objects.filter(intervention=i, status_id=2)
-        operarios = ""
-        for l in logs:
-            operarios = operarios + l.assigned.get_full_name() + ", "
-        row = ["V"+str(i.pk), str(i.address.client), i.date.strftime('%Y-%m-%d %H:%M'), str(i.short_description), str(i.status), operarios, str(i.zone)]
+        row = [
+            "V"+str(i.pk),
+            str(i.address.client),
+            i.date.strftime('%Y-%m-%d %H:%M'),
+            str(i.short_description),
+            str(i.status),
+            log_dict[i.pk],
+            str(i.zone)
+        ]
         row_num += 1
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
