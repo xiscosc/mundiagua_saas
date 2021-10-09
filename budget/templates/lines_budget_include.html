@@ -37,11 +37,6 @@
         </td>
 
     </tr>
-    {% if budget.tax > 0 %}
-        <tr>
-
-        </tr>
-    {% endif %}
     <tr>
         <td class="text-right">
             <small>Productos {{ budget.get_subtotal|floatformat:2 }}€ | IVA {{ budget.tax|floatformat:2 }}% {{ budget.get_tax_import|floatformat:2 }}€ |</small>
