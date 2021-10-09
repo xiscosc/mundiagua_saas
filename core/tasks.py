@@ -31,20 +31,23 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
         template_props = {'budget': budget, 'logo': '1'}
         template = 'print_budget.html'
     elif type == "budgetrepair":
+        from repair.utils import generate_repair_qr_code
         from budget.models import BudgetRepair
         budget = BudgetRepair.objects.get(pk=pk)
         logo_type = '1' if budget.get_repair().is_ath() else '0'
-        template_props = {'budget': budget, 'logo': '1', 'type': logo_type}
+        template_props = {'budget': budget, 'logo': '1', 'type': logo_type, 'qr': generate_repair_qr_code(budget.get_repair().online_id)}
         template = 'print_budget.html'
     elif type == "repairath":
         from repair.models import AthRepair
+        from repair.utils import generate_repair_qr_code
         repair = AthRepair.objects.get(pk=pk)
-        template_props = {'repair': repair, 'logo': '1', 'type': '1'}
+        template_props = {'repair': repair, 'logo': '1', 'type': '1', 'qr': generate_repair_qr_code(repair.online_id)}
         template = 'print_repair.html'
     elif type == "repairidegis":
         from repair.models import IdegisRepair
+        from repair.utils import generate_repair_qr_code
         repair = IdegisRepair.objects.get(pk=pk)
-        template_props = {'repair': repair, 'logo': '1', 'type': '0'}
+        template_props = {'repair': repair, 'logo': '1', 'type': '0', 'qr': generate_repair_qr_code(repair.online_id)}
         template = 'print_repair.html'
     else:
         raise Exception('Incorrect attachment type')

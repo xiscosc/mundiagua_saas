@@ -1,42 +1,40 @@
 {% extends 'print_base.html' %}
 {% load static %}
-{% block title %}Reparación {{ repair }} | Consulta Online <strong>{{ repair.online_id }}</strong>{% endblock %}
+{% block title %}Reparación {{ repair }}{% endblock %}
 {% block content %}
 
-    <table class="table table-bordered table-hover table-striped">
+    <table class="table">
         <tr>
-            <td><strong>Cliente</strong></td>
-            <td>{{ repair.address.client }}</td>
-        </tr>
-        <tr>
-            <td><strong>DNI/CIF</strong></td>
-            <td>{{ repair.address.client.dni|default_if_none:"" }}</td>
-        </tr>
-        <tr>
-            <td><strong>Dirección</strong></td>
-            <td>{{ repair.address.printable }}</td>
-        </tr>
-        <tr>
-            <td><strong>Teléfonos</strong></td>
             <td>
-                {% for phone in  repair.address.client.get_phones %}
-                    {{ phone.printable }},
-                {% endfor %}</td>
+                <strong>{{ repair.address.client }} {% if repair.address.client.dni %} | {{ repair.address.client.dni}}{% endif %}</strong>
+                <p></p>
+                <p>{{ repair.address.printable }}</p>
+                <p>
+                    {% for phone in  repair.address.client.get_phones %}
+                        {{ phone.printable }}
+                    {% endfor %}
+                </p>
+            </td>
+            <td class="text-center">
+                <div style="margin: auto">
+                    {{ qr|safe }}
+                </div>
+            </td>
         </tr>
     </table>
 
     <table class="table table-bordered table-hover table-striped">
         <tr>
             <td><strong>Aceptación</strong></td>
-            <td>{{ repair.date }}</td>
+            <td>{{ repair.date|date:"d-m-Y" }}</td>
             <td><strong>Año del equipo</strong></td>
-            <td>{{ repair.year }}</td>
+            <td>{{ repair.year|default_if_none:"-" }}</td>
         </tr>
         <tr>
             <td><strong>Modelo</strong></td>
-            <td>{{ repair.model }}</td>
+            <td>{{ repair.model|default_if_none:"-" }}</td>
             <td><strong>SN</strong></td>
-            <td>{{ repair.serial_number }}</td>
+            <td>{{ repair.serial_number|default_if_none:"-" }}</td>
         </tr>
     </table>
 

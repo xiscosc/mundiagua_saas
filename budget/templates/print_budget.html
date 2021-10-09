@@ -3,41 +3,25 @@
 {% block title %}Presupuesto {{ budget }}{% endblock %}
 {% block content %}
 
-    <table class="table table-bordered table-hover table-striped">
+    <table class="table">
         <tr>
-            <td><strong>Fecha</strong></td>
-            <td>{{ budget.date }}</td>
-        </tr>
-        <tr>
-            <td><strong>Cliente</strong></td>
-            <td>{{ budget.address.client }}</td>
-        </tr>
-        <tr>
-            <td><strong>DNI/CIF</strong></td>
-            <td>{{ budget.address.client.dni|default_if_none:"" }}</td>
-        </tr>
-        <tr>
-            <td><strong>Dirección</strong></td>
-            <td>{{ budget.address.printable }}</td>
-        </tr>
-        <tr>
-            <td><strong>Teléfonos</strong></td>
             <td>
-                {% for phone in  budget.address.client.get_phones %}
-                    {{ phone.printable }},
-                {% endfor %}</td>
+                <p><strong>{{ budget.date|date:"d-m-Y" }} {% if budget.get_repair %} | Reparación {{ budget.get_repair }} {% endif %}</strong></p>
+                <p><strong>{{ budget.address.client }} {% if budget.address.client.dni %} | {{ budget.address.client.dni}}{% endif %}</strong></p>
+                <p></p>
+                <p>{{ budget.address.printable }}</p>
+                <p>
+                    {% for phone in  budget.address.client.get_phones %}
+                        {{ phone.printable }}
+                    {% endfor %}
+                </p>
+            </td>
+            <td class="text-center">
+                <div style="margin: auto">
+                    {{ qr|safe }}
+                </div>
+            </td>
         </tr>
-        {% if type == '0' or type == '1' %}
-            <tr>
-                <td><strong>Modelo</strong></td>
-                <td>{{ budget.get_repair.model }}</td>
-            </tr>
-            <tr>
-                <td><strong>Número de serie</strong></td>
-                <td>{{ budget.get_repair.serial_number }}</td>
-            </tr>
-
-        {% endif %}
     </table>
 
     <table class="table table-bordered table-hover table-striped">

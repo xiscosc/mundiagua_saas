@@ -1,6 +1,5 @@
 # UTILS
 import hashlib
-import os
 import re
 import string
 import time

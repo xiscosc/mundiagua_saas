@@ -13,6 +13,7 @@ from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair
+from repair.utils import generate_repair_qr_code
 from budget.utils import get_data_typeahead
 
 
@@ -343,6 +344,7 @@ class BudgetRepairPrintView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(BudgetRepairPrintView, self).get_context_data(**kwargs)
         context['budget'] = BudgetRepair.objects.get(pk=kwargs['pk'])
+        context['qr'] = generate_repair_qr_code(context['budget'].get_repair().online_id)
         return context
 
 

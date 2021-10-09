@@ -23,7 +23,7 @@
                             <strong>Modelo</strong>
                         </td>
                         <td>
-                            {{ repair.model }}
+                            {{ repair.model|default_if_none:'-' }}
                         </td>
                     </tr>
                     <tr>
@@ -31,7 +31,7 @@
                             <strong>Estado / SAT</strong>
                         </td>
                         <td>
-                           {{ repair.status }} / {{ repair.technical_service }}
+                           {{ repair.status }} / {{ repair.technical_service|default_if_none:'-' }}
                         </td>
                     </tr>
                     <tr>

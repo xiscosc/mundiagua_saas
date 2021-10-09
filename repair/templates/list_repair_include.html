@@ -49,7 +49,7 @@
                             <strong>Modelo</strong>
                         </td>
                         <td>
-                            {{ repair.model }}
+                            {{ repair.model|default_if_none:'-' }}
                         </td>
                     </tr>
                     <tr>

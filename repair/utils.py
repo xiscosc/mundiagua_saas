@@ -1,5 +1,9 @@
 from django.db.models import Count
 from django.db.models import Q
+from django.conf import settings
+import qrcode
+import qrcode.image.svg
+from io import BytesIO
 
 
 def add_list_filters(repair_class, status, starred, budget):
@@ -20,3 +24,11 @@ def add_list_filters(repair_class, status, starred, budget):
         repairs = repairs.filter(status_id=status)
 
     return repairs
+
+
+def generate_repair_qr_code(online_id):
+    factory = qrcode.image.svg.SvgImage
+    img = qrcode.make(settings.CUSTOMER_REPAIR_URL + str(online_id), image_factory=factory, box_size=5)
+    stream = BytesIO()
+    img.save(stream)
+    return stream.getvalue().decode()

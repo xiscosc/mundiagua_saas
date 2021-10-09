@@ -16,7 +16,7 @@ from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSe
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, AthRepairLog, IdegisRepairLog
 from repair.tasks import send_sms_tracking
-from repair.utils import add_list_filters
+from repair.utils import add_list_filters, generate_repair_qr_code
 from core.tasks import send_mail_client
 
 
@@ -220,6 +220,8 @@ class PrintRepairView(TemplateView):
             context['repair'] = AthRepair.objects.get(pk=kwargs['pk'])
         else:
             context['repair'] = IdegisRepair.objects.get(pk=kwargs['pk'])
+
+        context['qr'] = generate_repair_qr_code(context['repair'].online_id)
         return context
 
 
