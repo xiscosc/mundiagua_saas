@@ -32,24 +32,21 @@
 
 <table class="table table-bordered">
     <tr>
-        <td rowspan="{% if budget.tax > 0 %}3{% else %}2{% endif %}">
+        <td>
             {{ budget.conditions|linebreaks }}
         </td>
-        <td class="text-center"><em><strong>SUBTOTAL</strong></em></td>
-        <td class="text-right">
-            <em><strong>{{ budget.get_subtotal|floatformat:2 }}€</strong></em></td>
+
     </tr>
     {% if budget.tax > 0 %}
         <tr>
-            <td class="text-center"><em><strong>IVA {{ budget.tax|floatformat:2 }}%</strong></em>
-            </td>
-            <td class="text-right">
-                <em><strong>{{ budget.get_tax_import|floatformat:2 }}€</strong></em></td>
+
         </tr>
     {% endif %}
     <tr>
-        <td class="text-center"><em><strong>TOTAL</strong></em></td>
-        <td class="text-right"><em><strong>{{ budget.get_total|floatformat:2 }}€</strong></em>
+        <td class="text-right">
+            <small>Productos {{ budget.get_subtotal|floatformat:2 }}€ | IVA {{ budget.tax|floatformat:2 }}% {{ budget.get_tax_import|floatformat:2 }}€ |</small>
+            <strong>Total {{ budget.get_total|floatformat:2 }}€</strong>
         </td>
+
     </tr>
 </table>
