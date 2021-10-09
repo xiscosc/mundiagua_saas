@@ -15,11 +15,13 @@
                     {% endfor %}
                 </p>
             </td>
+            {% if logo == '1' or logo == '0' %}
             <td class="text-center">
                 <div style="margin: auto">
                     {{ qr|safe }}
                 </div>
             </td>
+            {% endif %}
         </tr>
     </table>
 

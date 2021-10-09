@@ -28,7 +28,7 @@ def add_list_filters(repair_class, status, starred, budget):
 
 def generate_repair_qr_code(online_id):
     factory = qrcode.image.svg.SvgImage
-    img = qrcode.make(settings.CUSTOMER_REPAIR_URL + str(online_id), image_factory=factory, box_size=5)
+    img = qrcode.make(settings.CUSTOMER_REPAIR_URL + str(online_id), image_factory=factory, box_size=6)
     stream = BytesIO()
     img.save(stream)
     return stream.getvalue().decode()
