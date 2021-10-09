@@ -219,7 +219,7 @@ def generate_report(request):
             date2 = datetime.strptime(date2, "%Y-%m-%d").date()
             interventions = interventions.filter(date__range=(date1, date2))
 
-    columns = ['ID', 'CLIENTE', 'FECHA', 'ESTADO', 'OPERARIOS', "ZONA"]
+    columns = ['ID', 'CLIENTE', 'FECHA', 'DESCRIPCION', 'ESTADO', 'OPERARIOS', "ZONA"]
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('INFORME')
@@ -241,7 +241,7 @@ def generate_report(request):
         operarios = ""
         for l in logs:
             operarios = operarios + l.assigned.get_full_name() + ", "
-        row = ["V"+str(i.pk), str(i.address.client), i.date.strftime('%Y-%m-%d %H:%M') , str(i.status), operarios, str(i.zone)]
+        row = ["V"+str(i.pk), str(i.address.client), i.date.strftime('%Y-%m-%d %H:%M'), str(i.short_description), str(i.status), operarios, str(i.zone)]
         row_num += 1
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
