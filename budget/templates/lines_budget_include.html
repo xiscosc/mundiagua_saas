@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td class="text-right">
-            <small>Productos {{ budget.get_subtotal|floatformat:2 }}€ | IVA {{ budget.tax|floatformat:2 }}% {{ budget.get_tax_import|floatformat:2 }}€ |</small>
+            <small>Productos {{ budget.get_subtotal|floatformat:2 }}€ | IVA {{ budget.tax|floatformat:0 }}% {{ budget.get_tax_import|floatformat:2 }}€ |</small>
             <strong>Total {{ budget.get_total|floatformat:2 }}€</strong>
         </td>
 
