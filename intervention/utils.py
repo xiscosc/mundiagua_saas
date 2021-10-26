@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import calendar
-import time
 import xlwt
 import uuid
 import os
 from datetime import date, datetime
+from functools import reduce
 
 from async_messages import messages
 from django.conf import settings
@@ -187,7 +187,7 @@ def generate_document_s3_key(intervention: Intervention, filename):
 
 def generate_report(request):
     response = HttpResponse(content_type='application/ms-excel')
-    name = '"informe_'+str(time.time())+'.xls"'
+    name = '"informe-'+uuid.uuid1().__str__()+'.xls"'
     response['Content-Disposition'] = 'attachment; filename='+name
 
     interventions = Intervention.objects.all().order_by("id")
@@ -219,7 +219,7 @@ def generate_report(request):
             date2 = datetime.strptime(date2, "%Y-%m-%d").date()
             interventions = interventions.filter(date__range=(date1, date2))
 
-    columns = ['ID', 'CLIENTE', 'FECHA', 'DESCRIPCION', 'ESTADO', 'OPERARIOS', "ZONA"]
+    columns = ['ID', 'CLIENTE', 'FECHA', 'DESCRIPCION', 'ESTADO', 'ETIQUETAS', "ZONA"]
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('INFORME')
@@ -233,23 +233,21 @@ def generate_report(request):
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
+    tag_dict = {tag.pk: str(tag) + ", " for tag in Tag.objects.all()}
+
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    intervention_ids = interventions.values_list('id', flat=True)
-    logs = InterventionLog.objects.filter(intervention_id__in=intervention_ids, status_id=2)
-    log_dict = dict.fromkeys(intervention_ids, "")
-    for log in logs:
-        log_dict[log.intervention_id] += log.assigned.get_full_name() + ", "
-
     for i in interventions:
+        tag_ids = i.tags.values_list('id', flat=True)
+        tag_str = reduce(lambda a, b: a + tag_dict[b], tag_ids, '')
         row = [
             "V"+str(i.pk),
             str(i.address.client),
             i.date.strftime('%Y-%m-%d %H:%M'),
             str(i.short_description),
             str(i.status),
-            log_dict[i.pk],
+            tag_str,
             str(i.zone)
         ]
         row_num += 1
