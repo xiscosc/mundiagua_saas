@@ -20,6 +20,11 @@
                 <div style="margin: auto">
                     {{ qr|safe }}
                 </div>
+                <div>
+                    {% if budget.get_repair %}
+                        <strong>{{ budget.get_repair.online_id }}</strong>
+                    {% endif %}
+                </div>
             </td>
         </tr>
     </table>
