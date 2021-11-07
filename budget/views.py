@@ -12,8 +12,8 @@ from core.utils import get_page_from_paginator
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
-from repair.models import AthRepair, IdegisRepair
-from repair.utils import generate_repair_qr_code
+from repair.models import AthRepair, IdegisRepair, RepairType, ZodiacRepair
+from repair.utils import generate_repair_qr_code, get_repair_by_type
 from budget.utils import get_data_typeahead
 
 
@@ -197,13 +197,19 @@ class ListBudgetRepairView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ListBudgetRepairView, self).get_context_data(**kwargs)
         page = int(self.request.GET.get('page', 1))
+        type = RepairType(self.kwargs['type'])
 
-        if int(kwargs['type']) == 1:
+        if type == RepairType.ATH:
             context['title'] = "Presupuestos de  A" + kwargs['pk']
             budgets = BudgetRepair.objects.filter(ath_repair_id=kwargs['pk']).order_by("-intern_id")
-        else:
+        elif type == RepairType.IDEGIS:
             context['title'] = "Presupuestos de  X" + kwargs['pk']
             budgets = BudgetRepair.objects.filter(idegis_repair_id=kwargs['pk']).order_by("-intern_id")
+        elif type == RepairType.ZODIAC:
+            context['title'] = "Presupuestos de  Z" + kwargs['pk']
+            budgets = BudgetRepair.objects.filter(zodiac_repair_id=kwargs['pk']).order_by("-intern_id")
+        else:
+            raise NotImplementedError()
 
         paginator = Paginator(budgets, settings.DEFAULT_BUDGETS_PAGINATOR)
         context['budgets'] = get_page_from_paginator(paginator, page)
@@ -217,12 +223,16 @@ class CreateBudgetRepairView(CreateBaseView):
     def get_context_data(self, **kwargs):
         context = super(CreateBudgetRepairView, self).get_context_data(**kwargs)
         context['is_budget_repair'] = True
-        if int(self.kwargs['type']) == 1:
+        type = RepairType(self.kwargs['type'])
+        if type == RepairType.ATH:
             context['title'] = "Crear presupuesto de  A" + self.kwargs['pk']
             context['repair'] = AthRepair.objects.get(pk=self.kwargs['pk'])
-        else:
+        elif type == RepairType.IDEGIS:
             context['title'] = "Crear presupuesto de  X" + self.kwargs['pk']
             context['repair'] = IdegisRepair.objects.get(pk=self.kwargs['pk'])
+        elif type == RepairType.ZODIAC:
+            context['title'] = "Crear presupuesto de  Z" + self.kwargs['pk']
+            context['repair'] = ZodiacRepair.objects.get(pk=self.kwargs['pk'])
         context['subtitle'] = "Datos del presupuesto"
         return context
 
@@ -231,8 +241,9 @@ class CreateBudgetRepairView(CreateBaseView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        if int(self.kwargs['type']) == 1:
-            repair = AthRepair.objects.get(pk=self.kwargs['pk'])
+        type = RepairType(self.kwargs['type'])
+        repair = get_repair_by_type(self.kwargs['pk'], type)
+        if type == RepairType.ATH:
             obj.ath_repair = repair
             try:
                 other_b = BudgetRepair.objects.filter(ath_repair_id=self.kwargs['pk']).order_by("-date")[:1]
@@ -240,11 +251,18 @@ class CreateBudgetRepairView(CreateBaseView):
                 obj.intern_id = next_id
             except:
                 pass
-        else:
-            repair = IdegisRepair.objects.get(pk=self.kwargs['pk'])
+        elif type == RepairType.IDEGIS:
             obj.idegis_repair = repair
             try:
                 other_b = BudgetRepair.objects.filter(idegis_repair=self.kwargs['pk']).order_by("-date")[:1]
+                next_id = other_b[0].intern_id + 1
+                obj.intern_id = next_id
+            except:
+                pass
+        elif type == RepairType.ZODIAC:
+            obj.zodiac_repair = repair
+            try:
+                other_b = BudgetRepair.objects.filter(zodiac_repair=self.kwargs['pk']).order_by("-date")[:1]
                 next_id = other_b[0].intern_id + 1
                 obj.intern_id = next_id
             except:

@@ -46,11 +46,11 @@
     <table class="table table-bordered table-hover table-striped">
         <tr>
             <td><strong>Garantía:</strong> {{ repair.warranty|yesno:"Sí,No" }}</td>
-            {% if repair.is_ath %}
+            {% if repair.type == 'ATH' %}
                 <td><strong>Bypass:</strong> {{ repair.bypass|yesno:"Sí,No" }}</td>
                 <td><strong>Conector 1":</strong> {{ repair.connector|yesno:"Sí,No" }}</td>
                 <td><strong>Transformador:</strong> {{ repair.transformer|yesno:"Sí,No" }}</td>
-            {% else %}
+            {% elif repair.type == 'IDEGIS' %}
                 <td><strong>Electrodo:</strong> {{ repair.electrode|yesno:"Sí,No" }}</td>
                 <td><strong>Sonda ORP:</strong> {{ repair.orp|yesno:"Sí,No" }}</td>
                 <td><strong>Sonda PH:</strong> {{ repair.ph|yesno:"Sí,No" }}</td>

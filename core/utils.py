@@ -17,6 +17,7 @@ import telegram
 
 INTERVENTION_REGEX = '[v|V][0-9]+'
 IDEGIS_REGEX = '[x|X][0-9]+'
+ZODIAC_REGEX = '[z|Z][0-9]+'
 ATH_REGEX = '[a|A][0-9]+'
 CLIENT_REGEX = '[c|C][0-9]+'
 ENGINE_REGEX = '[e|B][0-9]+'
@@ -106,6 +107,13 @@ def get_return_from_id(search_text):
         idstr = ath_m.group()
         id = int(re.sub("[^0-9]", "", idstr))
         return {"found": True, "url": reverse_lazy('repair:repair-ath-view', kwargs={"pk": id})}
+
+    zodiac_r = re.compile(ZODIAC_REGEX)
+    zodiac_m = zodiac_r.match(search_text)
+    if zodiac_m is not None:
+        idstr = zodiac_m.group()
+        id = int(re.sub("[^0-9]", "", idstr))
+        return {"found": True, "url": reverse_lazy('repair:repair-zodiac-view', kwargs={"pk": id})}
 
     client_r = re.compile(CLIENT_REGEX)
     client_m = client_r.match(search_text)
@@ -288,6 +296,12 @@ def autolink_intervention(intervention, text, user):
     for id in search_objects_in_text(IDEGIS_REGEX, text):
         try:
             intervention.repairs_idegis.add(id)
+            added = True
+        except:
+            error = True
+    for id in search_objects_in_text(ZODIAC_REGEX, text):
+        try:
+            intervention.repairs_zodiac.add(id)
             added = True
         except:
             error = True

@@ -4,7 +4,7 @@
 {% load core_tags %}
 {% block page_title %}Reparación
     <small>{{ repair }}</small>
-    <a href="{% url 'repair:repair-starred' repair.is_ath repair.pk %}"
+    <a href="{% url 'repair:repair-starred' repair.type.value repair.pk %}"
        class="btn btn-circle {% if repair.starred %}btn-danger{% else %}btn-default{% endif %}">
         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
     </a>
@@ -15,63 +15,6 @@
     {% include 'client_data.html' with client=repair.address.client sms=True address=repair.address %}
 
     {% include 'client_send_pdf.html' with document_name="hoja de reparación" client=repair.address.client %}
-
-    <div class="modal fade" id="modal_new_repair" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Envío de información de seguimiento al cliente</h4>
-                </div>
-                <form method="post" action="{% url 'repair:repair-send-tracking' repair.pk %}">
-
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h5>Se procederá a enviar un email y/o SMS al cliente con la información de la
-                                    reparación
-                                    y su seguimiento</h5>
-                            </div>
-                        </div>
-                        {% csrf_token %}
-                        <input type="hidden" name="type_repair" value="{{ repair.is_ath }}">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h4><input type="checkbox" name="send_sms" checked/> Envío por SMS</h4>
-                                <p>Seleccione un teléfono:</p>
-                                <select class="form-control" name="phone_id">
-                                    {% for phone in repair.address.client.get_phones %}
-                                        <option value="{{ phone.pk }}">{{ phone }}</option>
-                                        {{ phone }}
-                                    {% endfor %}
-                                </select>
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <h4><input type="checkbox" checked name="send_email"/> Envío por email</h4>
-                                <p>Seleccione un email:</p>
-                                <select class="form-control" name="email_id">
-                                    {% for email in repair.address.client.get_emails %}
-                                        <option value="{{ email.pk }}">{{ email }}</option>
-                                        {{ phone }}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default sms_close" data-dismiss="modal">No enviar nada
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="sms_send">Enviar</button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -87,16 +30,16 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
-                                    <li><a href="{% url 'repair:repair-print' 1 repair.is_ath repair.pk %}"
+                                    <li><a href="{% url 'repair:repair-print' 1 repair.type.value repair.pk %}"
                                            target="_blank">Con
                                         logo</a>
                                     </li>
-                                    <li><a href="{% url 'repair:repair-print' 0 repair.is_ath repair.pk %}"
+                                    <li><a href="{% url 'repair:repair-print' 0 repair.type.value repair.pk %}"
                                            target="_blank">Sin
                                         logo</a>
                                     </li>
                                     <li class="divider"></li>
-                                    <li><a href="{% url 'repair:repair-print' 2 repair.is_ath repair.pk %}"
+                                    <li><a href="{% url 'repair:repair-print' 2 repair.type.value repair.pk %}"
                                            target="_blank">Interno</a>
                                     </li>
                                 </ul>
@@ -128,13 +71,10 @@
                                 <strong>ID Online</strong>
                             </td>
                             <td>
-                                <a href="https://customerservice.mundiaguabalear.com/?id={{ repair.online_id }}" target="_blank"
+                                <a href="https://customerservice.mundiaguabalear.com/repair/{{ repair.online_id }}" target="_blank"
                                    class="btn btn-default">
                                     <strong>{{ repair.online_id }}</strong>
                                 </a>
-                                <button class="btn btn-primary" id="btn-tracking">
-                                    <i class="fa fa-send"></i> Enviar datos al cliente
-                                </button>
                             </td>
                         </tr>
                         <tr>
@@ -150,12 +90,16 @@
                                 <strong>Historial</strong>
                             </td>
                             <td>
-                                {% if repair.is_ath %}
+                                {% if repair.type.value == 'ath' %}
                                     {% for log in repair.athrepairlog_set.all %}
                                         {{ log }}<br>
                                     {% endfor %}
-                                {% else %}
+                                {% elif repair.type.value == 'idegis' %}
                                     {% for log in repair.idegisrepairlog_set.all %}
+                                        {{ log }}<br>
+                                    {% endfor %}
+                                {% elif repair.type.value == 'zodiac' %}
+                                    {% for log in repair.zodiacrepairlog_set.all %}
                                         {{ log }}<br>
                                     {% endfor %}
                                 {% endif %}
@@ -169,7 +113,7 @@
                                             class="fa fa-bar-chart"></span> Ver Presupuesto (Formato PM)</a>
                                 {% endif %}
                                 <a class="btn btn-info"
-                                   href="{% url 'budget:budget-repair-list' repair.is_ath repair.pk %}"><span
+                                   href="{% url 'budget:budget-repair-list' repair.type.value repair.pk %}"><span
                                         class="badge">{{ repair.get_budgets|length }}</span> Ver Presupuestos</a>
                             </td>
                         </tr>
@@ -187,7 +131,7 @@
                     <h3 class="panel-title">Averías vinculadas
                         <div class="pull-right">
                             <form class="form-inline" method="post" style="margin-top: -5px"
-                                  action="{% url 'repair:repair-link-intervention' repair.pk repair.is_ath %}">
+                                  action="{% url 'repair:repair-link-intervention' repair.pk repair.type.value %}">
                                 {% csrf_token %}
                                 <input required type="text" class="form-control input-sm" placeholder="Número de avería"
                                        name="intervention">
@@ -208,7 +152,7 @@
                                     | {{ intervention.date|date:"d-m-Y" }} {{ intervention.date|time:"H:i" }}
                                     <div class="pull-right" style="display: inline-flex">
                                         <a class="btn btn-danger btn-circle btn-circle-inline"
-                                           href="{% url 'repair:repair-unlink-intervention' repair.pk repair.is_ath intervention.pk 1 %}"
+                                           href="{% url 'repair:repair-unlink-intervention' repair.pk repair.type.value intervention.pk 1 %}"
                                         >
                                             <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
                                         </a>
@@ -237,7 +181,7 @@
                 <div class="panel-body" id="body_averia">
                     <div class="row" id="forms">
                         <form method="post" action="{% url 'repair:repair-update-status' repair.pk %}">
-                            <input type="hidden" name="type_repair" value="{{ repair.is_ath }}"/>
+                            <input type="hidden" name="type_repair" value="{{ repair.type.value }}"/>
                             {% csrf_token %}
                             <div class="col-md-9">
                                 <select class="form-control" name="status_repair">
@@ -289,7 +233,7 @@
 {% block extrajs %}
     <script type="application/javascript">
         var default_sms = "{{ sms_value }}";
-        var from_model_val = {% if repair.is_ath %}"repair-ath"{% else %}"repair-idegis"{% endif %};
+        var from_model_val = {% if repair.type.value %}"repair-ath"{% else %}"repair-idegis"{% endif %};
         var default_subject = "Reparación completada";
         var from_model_id_val = {{ repair.pk }};
     </script>
@@ -297,11 +241,7 @@
         const a_default_email_subject = "Justificante de la reparación {{ repair }}";
         const a_default_email_body = "Tal como nos ha solicitado, le adjuntamos el justificante de la reparación {{ repair }}. Si tiene pregunta consulta no dude en consultarnos. También puede consultar el estado de la reparación en https://customerservice.mundiaguabalear.com/repair/{{ repair.online_id }} .";
         const a_default_attachment_name = "{{ repair }}.pdf"
-        {% if repair.is_ath %}
-            const a_default_attachment_id = "repairath_{{ repair.pk }}"
-        {% else %}
-            const a_default_attachment_id = "repairidegis_{{ repair.pk }}"
-        {% endif %}
+        const a_default_attachment_id = "repair{{repair.type.value}}_{{ repair.pk }}"
         const a_default_whatsapp_placeholder = "reparación {{ repair }}"
     </script>
     <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>

@@ -99,7 +99,8 @@ class Tag(InterventionInfo):
 
 class Intervention(models.Model):
     description = models.TextField(verbose_name="Descripción", db_index=True)
-    short_description = models.CharField(verbose_name="Descripción corta", max_length=255, default="", blank=True, db_index=True)
+    short_description = models.CharField(verbose_name="Descripción corta", max_length=255, default="", blank=True,
+                                         db_index=True)
     address = models.ForeignKey('client.Address', verbose_name="Dirección", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True, db_index=True)
     zone = models.ForeignKey(Zone, default=1, verbose_name="Zona", on_delete=models.CASCADE)
@@ -111,6 +112,7 @@ class Intervention(models.Model):
     starred = models.BooleanField(default=False)
     repairs_ath = models.ManyToManyField('repair.AthRepair')
     repairs_idegis = models.ManyToManyField('repair.IdegisRepair')
+    repairs_zodiac = models.ManyToManyField('repair.ZodiacRepair')
     budgets = models.ManyToManyField('budget.BudgetStandard')
     tags = models.ManyToManyField(Tag, verbose_name="Etiquetas", blank=True)
 
@@ -162,7 +164,7 @@ class Intervention(models.Model):
         return self.count_media() > 0
 
     def count_links(self):
-        return self.repairs_ath.all().count() + self.repairs_idegis.all().count() + self.budgets.all().count()
+        return self.repairs_ath.all().count() + self.repairs_idegis.all().count() + self.budgets.all().count() + self.repairs_zodiac.all().count()
 
     def has_links(self):
         return self.count_links() > 0
@@ -298,7 +300,8 @@ class InterventionDocument(InterventionFile):
                     self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
 
                 if self.in_s3:
-                    message = send_telegram_document_with_s3_url(user.telegram_token, self.get_signed_url(), self.filename())
+                    message = send_telegram_document_with_s3_url(user.telegram_token, self.get_signed_url(),
+                                                                 self.filename())
                     if message:
                         self.telegram_message = message.message_id
                         self.sent_to_telegram = True

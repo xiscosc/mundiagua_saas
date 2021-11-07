@@ -14,7 +14,7 @@ from async_messages import messages
 from core.models import User, SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from core.utils import ATH_REGEX, IDEGIS_REGEX, BUDGET_REGEX, BUDGET_REGEX_2ND_FORMAT, BUDGET_REGEX_3RD_FORMAT, \
-    get_page_from_paginator
+    get_page_from_paginator, ZODIAC_REGEX
 from intervention.models import Intervention, Zone, InterventionStatus, InterventionModification, InterventionImage, \
     InterventionDocument, InterventionSubStatus, InterventionLogSub, Tag
 from intervention.utils import update_intervention, generate_data_year_vs, generate_data_intervention_input, \
@@ -23,6 +23,7 @@ from intervention.utils import update_intervention, generate_data_year_vs, gener
 from intervention.forms import NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
 from intervention.tasks import send_file_telegram_task, delete_file_from_telegram
+from repair.models import RepairType
 
 
 class HomeView(TemplateView):
@@ -489,18 +490,19 @@ class LinkToInterventionView(View):
         import re
         data = re.compile(regex_text).match(text)
         if data is not None:
-
             idstr = data.group()
             id = re.sub("[^0-9]", "", idstr)
             if trim:
                 id = id[2:]
             id = int(id)
             intervention = Intervention.objects.get(pk=self.kwargs['pk'])
-            if type == "ath":
+            if type == RepairType.ATH:
                 intervention.repairs_ath.add(id)
-            elif type == "idegis":
+            elif type == RepairType.IDEGIS:
                 intervention.repairs_idegis.add(id)
-            else:
+            elif type == RepairType.ZODIAC:
+                intervention.repairs_zodiac.add(id)
+            elif type == 'budget':
                 intervention.budgets.add(id)
             messages.success(self.request.user, "Vinculación correcta")
             return True
@@ -514,10 +516,13 @@ class LinkToInterventionView(View):
         try:
             found = False
 
-            found = found | self.link_intervention(IDEGIS_REGEX, search_text, "idegis")
+            found = found | self.link_intervention(IDEGIS_REGEX, search_text, RepairType.IDEGIS)
 
             if not found:
-                found = found | self.link_intervention(ATH_REGEX, search_text, "ath")
+                found = found | self.link_intervention(ATH_REGEX, search_text, RepairType.ATH)
+
+            if not found:
+                found = found | self.link_intervention(ZODIAC_REGEX, search_text, RepairType.ZODIAC)
 
             if not found:
                 found = found | self.link_intervention(BUDGET_REGEX, search_text, "budget")

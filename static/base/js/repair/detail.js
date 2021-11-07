@@ -13,13 +13,3 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-$(function () {
-    $('#btn-tracking').on('click', function () {
-        $('#modal_new_repair').modal('show');
-    });
-
-    if (getUrlParameter("new")){
-        $('#modal_new_repair').modal('show');
-    }
-});
-

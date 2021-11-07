@@ -30,12 +30,14 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                        aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li {% if type == "0" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 0 status_id budget starred %}">Todos los tipos</a></li>
-                                        <li {% if type == "1" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 1 status_id budget starred %}">Sólo ATH</a></li>
-                                        <li {% if type == "2" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 2 status_id budget starred %}">Sólo Idegis</a></li>
+                                        <li {% if type == "all" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 'all' status_id budget starred %}">Todos los tipos</a></li>
+                                        <li {% if type == "ath" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 'ath' status_id budget starred %}">Sólo ATH</a></li>
+                                        <li {% if type == "idegis" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 'idegis' status_id budget starred %}">Sólo Idegis</a></li>
+                                        <li {% if type == "zodiac" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-list' 'zodiac' status_id budget starred %}">Sólo Zodiac</a></li>
                                     </ul>
 
                                 </li>
@@ -91,12 +93,14 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                        aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li {% if type == "0" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 0  starred %}">Todos los tipos</a></li>
-                                        <li {% if type == "1" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 1  starred%}">Sólo ATH</a></li>
-                                        <li {% if type == "2" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 2  starred %}">Sólo Idegis</a></li>
+                                        <li {% if type == "all" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 'all'  starred %}">Todos los tipos</a></li>
+                                        <li {% if type == "ath" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 'ath'  starred%}">Sólo ATH</a></li>
+                                        <li {% if type == "idegis" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 'idegis'  starred %}">Sólo Idegis</a></li>
+                                        <li {% if type == "zodiac" %}class="active"{% endif %}><a
+                                                href="{% url 'repair:repair-search' 'zodiac'  starred %}">Sólo Zodiac</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
@@ -120,14 +124,19 @@
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right navbar-filters">
-                            {% if type == "0" or type == "1" %}
+                            {% if type == "all" or type == "ath" %}
                                 <li class="li-filters">
                                     <img src="{% static 'base/img/ath.png' %}" class="img-list-repair-ath">
                                 </li>
                             {% endif %}
-                            {% if type == "0" or type == "2" %}
+                            {% if type == "all" or type == "idegis" %}
                                 <li class="li-filters">
                                     <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
+                                </li>
+                            {% endif %}
+                            {% if type == "all" or type == "zodiac" %}
+                                <li class="li-filters">
+                                    <img src="{% static 'base/img/zodiac.png' %}" class="img-list-repair">
                                 </li>
                             {% endif %}
                             {% if starred == '1' %}

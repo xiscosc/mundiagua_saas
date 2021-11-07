@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from enum import Enum
 from django.db import models
 from django.db.models.signals import post_save
 
@@ -8,6 +8,13 @@ from budget.models import BudgetRepair
 from client.models import SMS
 from intervention.models import Intervention
 from core.utils import generate_md5_id, get_time_zone, INTERVENTION_REGEX, search_objects_in_text
+
+
+class RepairType(Enum):
+    ATH = 'ath'
+    IDEGIS = 'idegis'
+    ZODIAC = 'zodiac'
+    ALL = 'all'
 
 
 class RepairStatus(models.Model):
@@ -45,10 +52,7 @@ class Repair(models.Model):
 
     @property
     def type(self):
-        if self.is_ath():
-            return 'ATH'
-        else:
-            return 'IDEGIS'
+        raise NotImplementedError()
 
 
 class AthRepair(Repair):
@@ -59,8 +63,9 @@ class AthRepair(Repair):
     def __str__(self):
         return "A"+str(self.pk)
 
-    def is_ath(self):
-        return 1
+    @property
+    def type(self):
+        return RepairType.ATH
 
     def get_budgets(self):
         return BudgetRepair.objects.filter(ath_repair=self)
@@ -77,8 +82,21 @@ class IdegisRepair(Repair):
     def get_budgets(self):
         return BudgetRepair.objects.filter(idegis_repair=self)
 
-    def is_ath(self):
-        return 0
+    @property
+    def type(self):
+        return RepairType.IDEGIS
+
+
+class ZodiacRepair(Repair):
+    def __str__(self):
+        return "Z" + str(self.pk)
+
+    @property
+    def type(self):
+        return RepairType.ZODIAC
+
+    def get_budgets(self):
+        return BudgetRepair.objects.filter(zodiac_repair=self)
 
 
 class RepairLog(models.Model):
@@ -100,9 +118,13 @@ class IdegisRepairLog(RepairLog):
     repair = models.ForeignKey(IdegisRepair, on_delete=models.CASCADE)
 
 
+class ZodiacRepairLog(RepairLog):
+    repair = models.ForeignKey(ZodiacRepair, on_delete=models.CASCADE)
+
+
 # SIGNALS
 
-def link_to_intervention(instance, type):
+def link_to_intervention(instance):
     from async_messages import messages
     added = False
     error = False
@@ -111,10 +133,14 @@ def link_to_intervention(instance, type):
 
     for id in ids:
         try:
-            if type == "ath":
+            if instance.type == RepairType.ATH:
                 Intervention.objects.get(pk=int(id)).repairs_ath.add(instance)
-            else:
+            elif instance.type == RepairType.IDEGIS:
                 Intervention.objects.get(pk=int(id)).repairs_idegis.add(instance)
+            elif instance.type == RepairType.ZODIAC:
+                Intervention.objects.get(pk=int(id)).repairs_zodiac.add(instance)
+            else:
+                raise NotImplementedError()
             added = True
         except:
             error = True
@@ -132,7 +158,7 @@ def post_save_ath_repair(sender, **kwargs):
         log.save()
         ins.online_id = generate_md5_id("A", ins.pk)
         ins.save()
-    link_to_intervention(ins, "ath")
+    link_to_intervention(ins)
 
 
 def post_save_idegis_repair(sender, **kwargs):
@@ -142,8 +168,19 @@ def post_save_idegis_repair(sender, **kwargs):
         log.save()
         ins.online_id = generate_md5_id("X", ins.pk)
         ins.save()
-    link_to_intervention(ins, "idegis")
+    link_to_intervention(ins)
+
+
+def post_save_zodiac_repair(sender, **kwargs):
+    ins = kwargs['instance']
+    if kwargs['created']:
+        log = ZodiacRepairLog(repair=ins, status=ins.status)
+        log.save()
+        ins.online_id = generate_md5_id("Z", ins.pk)
+        ins.save()
+    link_to_intervention(ins)
 
 
 post_save.connect(post_save_ath_repair, sender=AthRepair)
 post_save.connect(post_save_idegis_repair, sender=IdegisRepair)
+post_save.connect(post_save_zodiac_repair, sender=ZodiacRepair)

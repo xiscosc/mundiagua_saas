@@ -25,6 +25,18 @@
     float: right;
 }
 
+.btn-zodiac {
+    color: yellow;
+    background-color: darkblue;
+    border-color: midnightblue;
+}
+
+.btn-zodiac:hover {
+    color: darkorange;
+    background-color: midnightblue;
+    border-color: darkblue;
+}
+
 .img-list-repair{
     height:35px;
 }

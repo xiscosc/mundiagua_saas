@@ -56,7 +56,11 @@
                                         </th>
                                         <th></th>
                                         {% if new_url2 %}
-                                            <th></th>{% endif %}
+                                            <th></th>
+                                        {% endif %}
+                                        {% if new_url3 %}
+                                            <th></th>
+                                        {% endif %}
 
                                     </tr>
 
@@ -90,6 +94,18 @@
                                                         <a href="{% url new_url2 client.pk %}"
                                                            class="btn btn-block {{ btn_class2 }}"><i
                                                                 class="fa fa-plus"></i> {{ btn_text2 }}</a>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            {% if new_url3 %}
+                                                <td>
+                                                    {% if client.blocked %}
+                                                        <div class="text-center"><h5 style="color: darkred">CLIENTE
+                                                            BLOQUEADO</h5></div>
+                                                    {% else %}
+                                                        <a href="{% url new_url3 client.pk %}"
+                                                           class="btn btn-block {{ btn_class3 }}"><i
+                                                                class="fa fa-plus"></i> {{ btn_text3 }}</a>
                                                     {% endif %}
                                                 </td>
                                             {% endif %}

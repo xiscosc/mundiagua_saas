@@ -385,29 +385,6 @@ class AddressGeoUpdateView(View):
         return HttpResponse('OK')
 
 
-class PublicClientView(TemplateView):
-    template_name = "public_client.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(PublicClientView, self).get_context_data(**kwargs)
-        online_id = kwargs['online']
-        context['max_status'] = 7
-
-        try:
-            if online_id[:1] == 'x' or online_id[:1] == 'X':
-                context['repair'] = IdegisRepair.objects.get(online_id=online_id.upper())
-            elif online_id[:1] == 'a' or online_id[:1] == 'A':
-                context['repair'] = AthRepair.objects.get(online_id=online_id.upper())
-            elif online_id[:1] == 'e' or online_id[:1] == 'E':
-                context['repair'] = EngineRepair.objects.get(online_id=online_id.upper())
-                context['is_engine'] = True
-            else:
-                context['error'] = True
-        except:
-            context['error'] = True
-
-        return context
-
 
 class RedirectOldClientView(View):
     def dispatch(self, request, *args, **kwargs):

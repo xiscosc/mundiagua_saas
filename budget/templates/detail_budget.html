@@ -27,11 +27,11 @@
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 {% if repair %}
-                                    <li><a href="{% url 'budget:budget-repair-print' 1 repair.is_ath budget.pk %}"
+                                    <li><a href="{% url 'budget:budget-repair-print' 1 repair.type.value budget.pk %}"
                                            target="_blank">Con
                                         logo</a>
                                     </li>
-                                    <li><a href="{% url 'budget:budget-repair-print' 0 repair.is_ath budget.pk %}"
+                                    <li><a href="{% url 'budget:budget-repair-print' 0 repair.type.value budget.pk %}"
                                            target="_blank">Sin
                                         logo</a>
                                     </li>
@@ -127,13 +127,17 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         Información de la reparación {{ repair }}
-                        {% if repair.is_ath %}
+                        {% if repair.type.value == 'ath' %}
                             <a class="btn btn-circle btn-circle-inline btn-left btn-warning"
                                href="{% url 'repair:repair-ath-view' repair.pk %}"><i class="fa fa-edit"></i>
                             </a>
-                        {% else %}
+                        {% elif repair.type.value == 'idegis' %}
                             <a class="btn btn-circle btn-circle-inline btn-left btn-warning"
                                href="{% url 'repair:repair-idegis-view' repair.pk %}"><i class="fa fa-edit"></i>
+                            </a>
+                        {% elif repair.type.value == 'zodiac' %}
+                            <a class="btn btn-circle btn-circle-inline btn-left btn-warning"
+                               href="{% url 'repair:repair-zodiac-view' repair.pk %}"><i class="fa fa-edit"></i>
                             </a>
                         {% endif %}
 

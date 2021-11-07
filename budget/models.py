@@ -61,13 +61,18 @@ class BudgetStandard(Budget):
 class BudgetRepair(Budget):
     idegis_repair = models.ForeignKey('repair.IdegisRepair', null=True, on_delete=models.CASCADE)
     ath_repair = models.ForeignKey('repair.AthRepair', null=True, on_delete=models.CASCADE)
+    zodiac_repair = models.ForeignKey('repair.ZodiacRepair', null=True, on_delete=models.CASCADE)
     intern_id = models.IntegerField(default=1)
 
     def get_repair(self):
         if self.idegis_repair is not None:
             return self.idegis_repair
-        else:
+        elif self.ath_repair is not None:
             return self.ath_repair
+        elif self.zodiac_repair is not None:
+            return self.zodiac_repair
+        else:
+            raise NotImplementedError()
 
     def __str__(self):
         return "P" + str(self.get_repair()) + "-" + str(self.intern_id)
