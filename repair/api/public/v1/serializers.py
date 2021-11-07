@@ -36,6 +36,7 @@ class ZodiacLogStatusSerializer(serializers.ModelSerializer):
 class AthRepairSerializer(serializers.ModelSerializer):
     status = RepairStatusSerializer(read_only=True)
     history = AthLogStatusSerializer(read_only=True, many=True, source='athrepairlog_set')
+    type = serializers.CharField(source='type_str')
 
     class Meta:
         model = AthRepair
@@ -45,6 +46,7 @@ class AthRepairSerializer(serializers.ModelSerializer):
 class IdegisRepairSerializer(serializers.HyperlinkedModelSerializer):
     status = RepairStatusSerializer(read_only=True)
     history = IdegisLogStatusSerializer(read_only=True, many=True, source='idegisrepairlog_set')
+    type = serializers.CharField(source='type_str')
 
     class Meta:
         model = IdegisRepair
@@ -54,6 +56,7 @@ class IdegisRepairSerializer(serializers.HyperlinkedModelSerializer):
 class ZodiacRepairSerializer(serializers.HyperlinkedModelSerializer):
     status = RepairStatusSerializer(read_only=True)
     history = ZodiacLogStatusSerializer(read_only=True, many=True, source='zodiacrepairlog_set')
+    type = serializers.CharField(source='type_str')
 
     class Meta:
         model = ZodiacRepair

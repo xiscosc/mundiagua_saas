@@ -54,6 +54,10 @@ class Repair(models.Model):
     def type(self):
         raise NotImplementedError()
 
+    @property
+    def type_str(self):
+        return self.type.value
+
 
 class AthRepair(Repair):
     bypass = models.BooleanField(default=False, verbose_name="ByPass")
