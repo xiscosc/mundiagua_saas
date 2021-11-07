@@ -195,7 +195,7 @@ class PreSearchRepairView(PreSearchView):
         request.session['search_repair_idegis'] = repairs_idegis
         request.session['search_repair_zodiac'] = repairs_zodiac
         request.session['search_repair_text'] = search_text
-        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': 0, 'starred': 0}))
+        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': RepairType.ALL.value, 'starred': 0}))
 
 
 class SearchRepairView(TemplateView):

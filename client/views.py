@@ -13,7 +13,7 @@ from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
-from repair.models import AthRepair, IdegisRepair
+from repair.models import AthRepair, IdegisRepair, ZodiacRepair, RepairType
 from budget.models import BudgetStandard, BudgetRepair
 from core.tasks import send_mail_client, send_mail_client_with_pdf, send_whatsapp_client_with_pdf
 from async_messages import messages
@@ -117,8 +117,9 @@ class ClientView(DetailView):
         context = super(ClientView, self).get_context_data(**kwargs)
         repairs_ath = AthRepair.objects.filter(address__client=context['object']).count()
         repairs_idegis = IdegisRepair.objects.filter(address__client=context['object']).count()
+        repairs_zodiac = ZodiacRepair.objects.filter(address__client=context['object']).count()
         context['interventions'] = Intervention.objects.filter(address__client=context['object']).count()
-        context['repairs'] = repairs_ath + repairs_idegis
+        context['repairs'] = repairs_ath + repairs_idegis + repairs_zodiac
         context['engines'] = EngineRepair.objects.filter(address__client=context['object']).count()
         context['budgets'] = BudgetStandard.objects.filter(address__client=context['object']).count()
         return context
@@ -161,16 +162,11 @@ class EngineRepairsFromCustomerView(View):
 class RepairsFromCustomerView(View):
     def get(self, request, *args, **kwargs):
         customer = Client.objects.get(pk=kwargs['pk'])
-        pk_list_ath = []
-        pk_list_idegis = []
-        for i in AthRepair.objects.filter(address__client=customer).order_by("-date").values('id'):
-            pk_list_ath.append(i['id'])
-        for i in IdegisRepair.objects.filter(address__client=customer).order_by("-date").values('id'):
-            pk_list_idegis.append(i['id'])
-        request.session['search_repair_ath'] = pk_list_ath
-        request.session['search_repair_idegis'] = pk_list_idegis
+        request.session['search_repair_ath'] = AthRepair.objects.filter(address__client=customer).order_by("-date").values_list('id', flat=True)
+        request.session['search_repair_idegis'] = IdegisRepair.objects.filter(address__client=customer).order_by("-date").values_list('id', flat=True)
+        request.session['search_repair_zodiac'] = ZodiacRepair.objects.filter(address__client=customer).order_by("-date").values_list('id', flat=True)
         request.session['search_repair_text'] = "Reparaciones de " + str(customer)
-        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': 0, 'starred': 0}))
+        return HttpResponseRedirect(reverse_lazy('repair:repair-search', kwargs={'type': RepairType.ALL.value, 'starred': 0}))
 
 
 class EditClientView(UpdateView):
