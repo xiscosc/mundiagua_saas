@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
-from repair.api.public.v1.serializers import AthRepairSerializer, IdegisRepairSerializer
-from repair.models import AthRepair, IdegisRepair
+from repair.api.public.v1.serializers import AthRepairSerializer, IdegisRepairSerializer, ZodiacRepairSerializer
+from repair.models import AthRepair, IdegisRepair, ZodiacRepair
 
 
 @permission_classes([AllowAny])
@@ -21,6 +21,10 @@ class RepairStatusViewSet(viewsets.ViewSet):
             queryset = AthRepair.objects.all()
             repair = get_object_or_404(queryset, online_id=pk)
             serializer = AthRepairSerializer(repair)
+        elif first_letter == 'Z':
+            queryset = ZodiacRepair.objects.all()
+            repair = get_object_or_404(queryset, online_id=pk)
+            serializer = ZodiacRepairSerializer(repair)
         else:
             raise Http404
 
