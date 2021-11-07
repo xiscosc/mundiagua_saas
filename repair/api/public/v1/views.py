@@ -15,15 +15,15 @@ class RepairStatusViewSet(viewsets.ViewSet):
         first_letter = pk[:1].upper()
         if first_letter == 'X':
             queryset = IdegisRepair.objects.all()
-            repair = get_object_or_404(queryset, online_id=pk)
+            repair = get_object_or_404(queryset, online_id__iexact=pk)
             serializer = IdegisRepairSerializer(repair)
         elif first_letter == 'A':
             queryset = AthRepair.objects.all()
-            repair = get_object_or_404(queryset, online_id=pk)
+            repair = get_object_or_404(queryset, online_id__iexact=pk)
             serializer = AthRepairSerializer(repair)
         elif first_letter == 'Z':
             queryset = ZodiacRepair.objects.all()
-            repair = get_object_or_404(queryset, online_id=pk)
+            repair = get_object_or_404(queryset, online_id__iexact=pk)
             serializer = ZodiacRepairSerializer(repair)
         else:
             raise Http404

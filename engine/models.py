@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 from client.models import SMS
-from core.utils import generate_md5_id, get_time_zone
+from core.utils import generate_repair_online_id, get_time_zone
 
 
 class EngineStatus(models.Model):
@@ -48,7 +48,7 @@ def post_save_engine_repair(sender, **kwargs):
         ins = kwargs['instance']
         log = EngineRepairLog(repair=ins, status=ins.status)
         log.save()
-        ins.online_id = generate_md5_id("E", ins.pk)
+        ins.online_id = generate_repair_online_id("E")
         ins.save()
 
 post_save.connect(post_save_engine_repair, sender=EngineRepair)

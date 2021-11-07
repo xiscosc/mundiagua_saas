@@ -5,6 +5,7 @@ import string
 import time
 from datetime import date, datetime
 import requests
+import uuid
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -39,11 +40,8 @@ def send_data_to_user(user, subject, body, is_link=False, from_user=None):
     return result
 
 
-def generate_md5_id(char, id):
-    line = str(time.time()) + str(id) + char + str(time.time())
-    hash = hashlib.md5(line.encode("utf-8")).hexdigest()
-    hash_numbers = re.sub("[^0-9]", "", hash)
-    return char + hash_numbers[:6]
+def generate_repair_online_id(char):
+    return (char + str(uuid.uuid4())[:6]).upper()
 
 
 def send_mail_m(user, subject, body, is_link=False, fallback=False, from_user=None):

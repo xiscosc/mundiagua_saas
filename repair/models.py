@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from budget.models import BudgetRepair
 from client.models import SMS
 from intervention.models import Intervention
-from core.utils import generate_md5_id, get_time_zone, INTERVENTION_REGEX, search_objects_in_text
+from core.utils import generate_repair_online_id, get_time_zone, INTERVENTION_REGEX, search_objects_in_text
 
 
 class RepairType(Enum):
@@ -160,7 +160,7 @@ def post_save_ath_repair(sender, **kwargs):
     if kwargs['created']:
         log = AthRepairLog(repair=ins, status=ins.status)
         log.save()
-        ins.online_id = generate_md5_id("A", ins.pk)
+        ins.online_id = generate_repair_online_id("A")
         ins.save()
     link_to_intervention(ins)
 
@@ -170,7 +170,7 @@ def post_save_idegis_repair(sender, **kwargs):
     if kwargs['created']:
         log = IdegisRepairLog(repair=ins, status=ins.status)
         log.save()
-        ins.online_id = generate_md5_id("X", ins.pk)
+        ins.online_id = generate_repair_online_id("X")
         ins.save()
     link_to_intervention(ins)
 
@@ -180,7 +180,7 @@ def post_save_zodiac_repair(sender, **kwargs):
     if kwargs['created']:
         log = ZodiacRepairLog(repair=ins, status=ins.status)
         log.save()
-        ins.online_id = generate_md5_id("Z", ins.pk)
+        ins.online_id = generate_repair_online_id("Z")
         ins.save()
     link_to_intervention(ins)
 
