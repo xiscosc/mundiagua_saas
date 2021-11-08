@@ -5,7 +5,8 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 
-from repair.models import AthRepair, ZodiacRepair, RepairType, IdegisRepair, AthRepairLog, ZodiacRepairLog
+from repair.models import AthRepair, ZodiacRepair, RepairType, IdegisRepair, AthRepairLog, ZodiacRepairLog, \
+    IdegisRepairLog
 
 
 def add_list_filters(repair_class, status, starred, budget):
@@ -78,7 +79,7 @@ def add_log_to_repair(repair, st_id):
     elif type == RepairType.ZODIAC:
         return ZodiacRepairLog(status_id=st_id, repair=repair)
     elif type == RepairType.IDEGIS:
-        return IdegisRepair(status_id=st_id, repair=repair)
+        return IdegisRepairLog(status_id=st_id, repair=repair)
     else:
         raise NotImplementedError()
 
