@@ -16,8 +16,8 @@ function addNewLine(is_edit) {
     $('#table-budget').append(get_new_line(is_edit));
     $('tr').show('slow');
     $ta = $('.txt-typeahead');
-    $ta.typeahead('destroy');
-    $ta.typeahead({source: data_typeahead});
+    // $ta.typeahead('destroy');
+    // $ta.typeahead({source: data_typeahead});
     activateEreaseButton();
     $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
     $ta.last().focus();
@@ -31,7 +31,7 @@ function get_new_line(is_edit) {
         str = str + '<input type="hidden" value="0" name="pk_line" />';
     }
     str = str + '<td><button class="btn btn-danger btn-delete-line"><i class="fa fa-remove"></i></button></td>' +
-    '<td><textarea class="form-control txt-typeahead" rows="3" name="product" required></textarea></td>' +
+    '<td><textarea class="form-control" rows="3" name="product" required></textarea></td>' +
     '<td><input type="text" class="form-control"  name="price" required autocomplete="off"></td>' +
     '<td><input type="text" class="form-control" name="quantity" required autocomplete="off"></td>' +
     '<td><input type="text" class="form-control"  name="dto" required autocomplete="off"></td>' +
@@ -43,13 +43,13 @@ function get_new_line(is_edit) {
 
 $(function () {
 
-    $.get("/budget/typeahead/", function (data) {
-        data_typeahead = data;
-        $ta = $('.txt-typeahead');
-        $ta.typeahead('destroy');
-        $ta.typeahead({source: data_typeahead});
-        activateEreaseButton();
-    });
+    // $.get("/budget/typeahead/", function (data) {
+    //     data_typeahead = data;
+    //     $ta = $('.txt-typeahead');
+    //     $ta.typeahead('destroy');
+    //     $ta.typeahead({source: data_typeahead});
+    //     activateEreaseButton();
+    // });
 
     $(window).keydown(function (event) {
         if (event.keyCode == 13) {
