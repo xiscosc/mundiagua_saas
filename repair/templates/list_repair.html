@@ -37,7 +37,7 @@
                                         <li {% if type == "idegis" %}class="active"{% endif %}><a
                                                 href="{% url 'repair:repair-list' 'idegis' status_id budget starred %}">Sólo Idegis</a></li>
                                         <li {% if type == "zodiac" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 'zodiac' status_id budget starred %}">Sólo Zodiac</a></li>
+                                                href="{% url 'repair:repair-list' 'zodiac' status_id budget starred %}">Sólo Fluidra</a></li>
                                     </ul>
 
                                 </li>
@@ -136,7 +136,7 @@
                             {% endif %}
                             {% if type == "all" or type == "zodiac" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/zodiac.png' %}" class="img-list-repair">
+                                    <img src="{% static 'base/img/fluidra.png' %}" class="img-list-repair">
                                 </li>
                             {% endif %}
                             {% if starred == '1' %}

@@ -30,7 +30,7 @@ class SearchClientView(SearchClientBaseView):
         context['btn_text2'] = "Crear reparación Idegis"
         context['btn_class2'] = "btn-default"
         context['new_url3'] = "repair:repair-zodiac-new"
-        context['btn_text3'] = "Crear reparación Zodiac"
+        context['btn_text3'] = "Crear reparación Fluidra"
         context['btn_class3'] = "btn-zodiac"
         return context
 
@@ -57,7 +57,7 @@ class CreateZodiacRepairView(CreateBaseView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateZodiacRepairView, self).get_context_data(**kwargs)
-        context['title'] = "Nueva reparación - ZODIAC"
+        context['title'] = "Nueva reparación - FLUIDRA"
         context['subtitle'] = "Datos de la reparación"
         return context
 
