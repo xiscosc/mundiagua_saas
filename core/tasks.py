@@ -92,12 +92,16 @@ def send_mail_client(email_pk, subject, body, user_pk):
     from client.models import Email
     user = User.objects.get(pk=user_pk)
     address = Email.objects.get(pk=email_pk)
+    if user.has_company_email():
+        sender = '%s <%s>' % (user.get_full_name(), user.email)
+    else:
+        sender = 'Consultas Mundiagua <consultas@mundiaguabalear.com>'
     try:
         from django.core.mail import EmailMultiAlternatives
         email = EmailMultiAlternatives(
             subject,
             body,
-            'Mundiagua SL <consultas@mundiaguabalear.com>',
+            sender,
             [address.email],
         )
         htmly = get_template('email.html')
