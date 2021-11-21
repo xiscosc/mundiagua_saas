@@ -5,7 +5,7 @@ html {
 body {
   /* Margin bottom by footer height */
     margin-bottom: 20px;
-    background-image: url("/static/base/img/mallorca2.jpg");
+    background-image: url("/static/base/img/mallorca3.jpg");
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -36,9 +36,9 @@ body {
    margin-top: 3% !important;
 }
 
-.login-panel-body {
-    background-color: ghostwhite;
-    border-radius: 15px;
+.login-panel {
+    background-color: ghostwhite !important;
+    border-radius: 15px !important;
 }
 
 .row-login {

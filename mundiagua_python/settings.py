@@ -228,11 +228,7 @@ CACHES = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
-NON_STAFF_VIEWS = ('message-new',
-                   'message-inbox',
-                   'message-sent',
-                   'message-ajax',
-                   'intervention-list-own',
+NON_STAFF_VIEWS = ('intervention-list-own',
                    'intervention-view',
                    'intervention-view-document',
                    'intervention-view-image-url',
@@ -269,8 +265,8 @@ SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 APP_VERSION = "2021.4"
-APP_VERSION_INCLUDES = 2021044
-APP_COMPLETE_VERSION = "2021.4.1.20211107"
+APP_VERSION_INCLUDES = 2021045
+APP_COMPLETE_VERSION = "2021.4.2.20211121"
 TEMPLATE_COLOR = '#1d3f72'
 
 #CACHE TIMES IN SEC

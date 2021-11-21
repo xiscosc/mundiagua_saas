@@ -6,17 +6,7 @@ from async_messages import messages
 from django.template.loader import get_template
 from django.conf import settings
 
-from core.utils import send_data_to_user, create_amazon_client
-
-
-def send_message(pk, body):
-    from core.models import Message
-    ins = Message.objects.get(pk=pk)
-    result = send_data_to_user(ins.to_user, ins.subject, body, from_user=ins.from_user)
-    if result:
-        messages.success(ins.from_user, "Mensaje a " + ins.to_user.get_full_name() + " enviado correctamente")
-    else:
-        messages.warning(ins.from_user, "No se ha podido enviar el mensaje a " + ins.to_user.get_full_name())
+from core.utils import create_amazon_client
 
 
 def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body, subject=None, whatsapp_template=None):

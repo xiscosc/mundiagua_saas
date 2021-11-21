@@ -83,29 +83,7 @@
 
                 <!-- /.dropdown-user -->
             </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-envelope fa-fw" {% if request.user.has_notification > 0 %}
-                       style="color: brown" {% endif %}></i> <i class="fa fa-caret-down"
-                        {% if request.user.has_notification > 0 %} style="color: brown" {% endif %}></i>
-                </a>
-                <ul class="dropdown-menu dropdown-messages" id="message-ajax">
-                    <li>
-                        <a class="text-center" href="{% url 'core:message-inbox' %}">
-                            <strong>Ver todos los mensajes</strong>
-                            <i class="fa fa-angle-right"></i>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a class="text-center" href="{% url 'core:message-new' %}">
-                            <i class="fa fa-plus"></i>
-                            <strong>Nuevo mensaje</strong>
-                        </a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-messages -->
-            </li>
+
             <!-- /.dropdown -->
             <!-- /.dropdown -->
             <li class="dropdown">
@@ -379,30 +357,9 @@
 
 <script src="{% static 'bootstrap-notify/bootstrap-notify.min.js' %}"></script>
 
-<script src="{% static 'base/js/core/message-ajax.js' %}{% app_version_includes %}"></script>
-
-<script src="{% static 'base/js/core/notifications.js' %}{% app_version_includes %}"></script>
 {% block extrajs %} {% endblock %}
 
 {% block extrajs_include %} {% endblock %}
-
-{% if messages %}
-    <script type="text/javascript">
-        {% for message in messages %}
-            make_notification("{{ message }}", "{{ message.tags }}", false);
-        {% endfor %}
-    </script>
-{% endif %}
-{% if request.user.has_notification == 1 and not request.user.has_pb %}
-    <script type="text/javascript">
-        make_notification(
-            "Tiene nuevos mensajes sin leer, <strong>pulse aquí para verlos</strong>",
-            "info",
-            "{% url 'core:message-inbox' %}"
-        );
-    </script>
-{% endif %}
-
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load core_tags %}
 {% load bootstrap %}
 {% block page_title %}{% if title %}{{ title }}{% else %}Listado de reparaciones{% endif %}{% endblock %}
 {% block content %}
@@ -126,17 +127,17 @@
                         <ul class="nav navbar-nav navbar-right navbar-filters">
                             {% if type == "all" or type == "ath" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/ath.png' %}" class="img-list-repair-ath">
+                                    <img src="{% static 'base/img/ath.png' %}{% app_version_includes %}" class="img-list-repair-ath">
                                 </li>
                             {% endif %}
                             {% if type == "all" or type == "idegis" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
+                                    <img src="{% static 'base/img/idegis.png' %}{% app_version_includes %}" class="img-list-repair">
                                 </li>
                             {% endif %}
                             {% if type == "all" or type == "zodiac" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/fluidra.png' %}" class="img-list-repair">
+                                    <img src="{% static 'base/img/fluidra.png' %}{% app_version_includes %}" class="img-list-repair">
                                 </li>
                             {% endif %}
                             {% if starred == '1' %}

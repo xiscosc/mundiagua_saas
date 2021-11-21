@@ -1,4 +1,5 @@
 {% load static %}
+{% load core_tags %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,11 +22,11 @@
     <tr>
         <td width="336" style="text-align: left"><img src="{% static 'base/img/logo_color.png' %}" width="320" height="108" /></td>
         {% if type == "ath" %}
-            <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/ath.png' %}" /></p><p>SAT Oficial</p></td>
+            <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/ath.png' %}{% app_version_includes %}" /></p><p>SAT Oficial</p></td>
         {% elif type == "idegis" %}
-            <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/idegis.png' %}" /></p><p>SAT Oficial</p></td>
+            <td width="227" style="text-align: center"><p><img style="width: 35%" src="{% static 'base/img/idegis.png' %}{% app_version_includes %}" /></p><p>SAT Oficial</p></td>
         {% elif type == "zodiac" %}
-            <td width="227" style="text-align: center"><p><img style="width: 45%" src="{% static 'base/img/fluidra.png' %}" /></p><p>SAT Oficial</p></td>
+            <td width="227" style="text-align: center"><p><img style="width: 45%" src="{% static 'base/img/fluidra.png' %}{% app_version_includes %}" /></p><p>SAT Oficial</p></td>
         {% endif %}
         <td width="182"><p style="font-size: 13px; text-align: right;">www.mundiaguabalear.com<br />
                 C/General Weyler 58<br />

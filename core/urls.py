@@ -1,9 +1,8 @@
 from django.urls import path
 from .views import SystemVariableView, SystemVariableUpdateView, ChangeLogView, UserView, RepairStatusSystemView, \
     SystemRepairStatusUpdateView, SystemRepairStatusCreateView, EngineRepairStatusSystemView, \
-    SystemEngineRepairStatusUpdateView, SystemEngineRepairStatusCreateView, NewMessageView, MessagesListView, \
-    MessagesSentListView, MessagesAjaxView, GetAllSmsView, GetSmsBySenderView, GetSmsView, SMSListView, \
-    SMSSenderListView, NotifySmsView
+    SystemEngineRepairStatusUpdateView, SystemEngineRepairStatusCreateView, GetAllSmsView, GetSmsBySenderView, \
+    GetSmsView, SMSListView, SMSSenderListView, NotifySmsView
 
 urlpatterns = [
     path('variable/', SystemVariableView.as_view(), name="variable"),
@@ -17,10 +16,6 @@ urlpatterns = [
     path('enginerepairstatus/edit/<pk>', SystemEngineRepairStatusUpdateView.as_view(),
          name="engine-repair-status-edit"),
     path('enginerepairstatus/new/', SystemEngineRepairStatusCreateView.as_view(), name="engine-repair-status-new"),
-    path('message/new/', NewMessageView.as_view(), name="message-new"),
-    path('message/inbox/', MessagesListView.as_view(), name="message-inbox"),
-    path('message/sent/', MessagesSentListView.as_view(), name="message-sent"),
-    path('message/ajax/', MessagesAjaxView.as_view(), name="message-ajax"),
     path('sms-api/sms/all/list', GetAllSmsView.as_view(), name="sms-api-all"),
     path('sms-api/sms/sender/<sender>', GetSmsBySenderView.as_view(), name="sms-api-sender"),
     path('sms-api/sms/<id>', GetSmsView.as_view(), name="sms-api-id"),

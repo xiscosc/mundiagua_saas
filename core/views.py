@@ -1,4 +1,3 @@
-from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render
@@ -9,8 +8,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth import logout
 from client.models import Client, Address
 from core.forms import SystemVariableRichForm, SystemVariablePlainForm
-from core.models import User, Message, SystemVariable
-from core.utils import get_return_from_id, has_to_change_password, get_page_from_paginator, get_sms_api
+from core.models import SystemVariable
+from core.utils import get_return_from_id, get_sms_api
 from core.tasks import notify_sms_received
 from engine.models import EngineRepair, EngineStatus
 from repair.models import RepairStatus
@@ -78,72 +77,6 @@ class IndexView(View):
         else:
             return HttpResponseRedirect(settings.LOGIN_URL)
         return HttpResponseRedirect(reverse_lazy(response))
-
-
-class NewMessageView(CreateView):
-    template_name = "new_message.html"
-    model = Message
-    fields = ['to_user', 'subject', 'body']
-    success_url = reverse_lazy('core:message-sent')
-
-    def get_form(self, form_class=None):
-        form = super(NewMessageView, self).get_form(form_class=form_class)
-        users = User.objects.filter(is_active=True).exclude(pk=self.request.user.pk)
-        form.fields['to_user'].choices = [(u.pk, u.get_full_name()) for u in users]
-        return form
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.from_user = self.request.user
-        return super(NewMessageView, self).form_valid(form)
-
-
-class MessageListBaseView(TemplateView):
-    template_name = "list_message.html"
-
-    def get_data(self):
-        pass
-
-    def get_context_data(self, **kwargs):
-        context = super(MessageListBaseView, self).get_context_data(**kwargs)
-        page = int(self.request.GET.get('page', 1))
-        messages = self.get_data()
-        paginator = Paginator(messages, 10)
-        context['messages_mundiagua'] = get_page_from_paginator(paginator, page)
-        return context
-
-
-class MessagesListView(MessageListBaseView):
-
-    def get_data(self):
-        return Message.objects.filter(to_user=self.request.user).order_by("-date")
-
-    def get_context_data(self, **kwargs):
-        context = super(MessagesListView, self).get_context_data(**kwargs)
-        context['inbox'] = True
-        if self.request.user.has_notification > 0:
-            self.request.user.has_notification = 0
-            self.request.user.save()
-        return context
-
-
-class MessagesSentListView(MessageListBaseView):
-
-    def get_data(self):
-        return Message.objects.filter(from_user=self.request.user).order_by("-date")
-
-
-class MessagesAjaxView(TemplateView):
-    template_name = "ajax_messages.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(MessagesAjaxView, self).get_context_data(**kwargs)
-        context['messages_mundiagua'] = Message.objects.filter(to_user=self.request.user).order_by("-date")[:3]
-        context['has_notification'] = self.request.user.has_notification
-        if context['has_notification'] == 1:
-            self.request.user.has_notification = 2
-            self.request.user.save()
-        return context
 
 
 class GetAllSmsView(View):

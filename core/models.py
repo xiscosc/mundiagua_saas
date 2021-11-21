@@ -1,15 +1,12 @@
 from __future__ import unicode_literals
-from datetime import date
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-from django.db.models.signals import post_save
 
 from tinymce import models as tinymce_models
 
-from core.tasks import send_message
-from core.utils import has_to_change_password, generate_telegram_auth, send_telegram_message, send_data_to_user
+from core.utils import generate_telegram_auth
 
 
 class MyUserManager(BaseUserManager):
@@ -50,7 +47,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_officer = models.BooleanField(default=True)
     is_technician = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    has_notification = models.IntegerField(default=0)
     last_password_update = models.DateField(default="2015-01-01")
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
@@ -86,15 +82,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     assigned_interventions = property(get_assigned_interventions)
 
 
-class Message(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
-    from_user = models.ForeignKey(User, blank=False, related_name='%(class)s_from', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(User, blank=False, related_name='%(class)s_to', verbose_name="Destinatario",
-                                on_delete=models.CASCADE)
-    subject = models.CharField(max_length=200, blank=False, verbose_name="Asunto")
-    body = models.TextField(blank=False, verbose_name="Cuerpo del mensaje")
-
-
 class SystemVariable(models.Model):
     type = models.CharField(max_length=15, blank=False, null=False)
     key = models.CharField(max_length=25, blank=False, null=False, unique=True)
@@ -111,16 +98,3 @@ class SystemVariable(models.Model):
 
     def __str__(self):  # __unicode__ on Python 2
         return self.type + " - " + self.key
-
-
-# SIGNALS
-def post_save_message(sender, **kwargs):
-    if kwargs['created']:
-        ins = kwargs['instance']
-        ins.to_user.has_notification = 1
-        ins.to_user.save()
-        body = ins.body + "\n\n" + ins.from_user.get_full_name()
-        send_message(ins.pk, body)
-
-
-post_save.connect(post_save_message, sender='core.Message')

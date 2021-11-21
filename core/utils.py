@@ -2,12 +2,10 @@
 import hashlib
 import re
 import string
-import time
-from datetime import date, datetime
+from datetime import datetime
 import requests
 import uuid
 
-from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import send_mail
@@ -132,10 +130,6 @@ def get_return_from_id(search_text):
 
 def get_time_zone():
     return timezone(settings.TIME_ZONE)
-
-
-def has_to_change_password(d):
-    return date.today() > (d + relativedelta(years=1, days=1))
 
 
 def create_amazon_client(service):

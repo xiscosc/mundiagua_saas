@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load core_tags %}
 
 {% for repair in repairs %}
                 <table class="table table-bordered table-hover table-striped">
@@ -18,11 +18,11 @@
                         </td>
                         <td>
                             {% if repair.type.value == 'ath' %}
-                                <img src="{% static 'base/img/ath.png' %}" class="img-list-repair-ath">
+                                <img src="{% static 'base/img/ath.png' %}{% app_version_includes %}" class="img-list-repair-ath">
                             {% elif repair.type.value == 'idegis' %}
-                                <img src="{% static 'base/img/idegis.png' %}" class="img-list-repair">
+                                <img src="{% static 'base/img/idegis.png' %}{% app_version_includes %}" class="img-list-repair">
                             {% elif repair.type.value == 'zodiac' %}
-                                <img src="{% static 'base/img/fluidra.png' %}" class="img-list-repair">
+                                <img src="{% static 'base/img/fluidra.png' %}{% app_version_includes %}" class="img-list-repair">
                             {% endif %}
 
                             {% if repair.get_budgets|length > 0 %}
