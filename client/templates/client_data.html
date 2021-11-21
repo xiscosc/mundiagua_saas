@@ -87,6 +87,14 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="email_subject">Remitente</label>
+                        {% if request.user.has_company_email %}
+                            <input type="text" class="form-control" disabled value="{{ request.user.get_full_name }} - {{ request.user.email }}">
+                        {% else %}
+                            <input type="text" class="form-control" disabled value="Consultas Mundiagua - consultas@mundiaguabalear.com">
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
                         <label for="email_subject">Asunto</label>
                         <input type="text" class="form-control" id="email_subject" name="email_subject"
                                placeholder="Asunto" required>

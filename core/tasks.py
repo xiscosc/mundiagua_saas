@@ -58,9 +58,12 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
         'bodyMessage': body
     }
 
+    user = User.objects.get(pk=user_pk)
     if task_type == 'email' and subject is not None:
         from client.models import Email
         message['subject'] = subject
+        if user.has_company_email():
+            message['from'] = {'name': user.get_full_name(), 'email': user.email}
         message['recipient'] = Email.objects.get(pk=recipient_pk).email
         success_message = "Email con PDF enviado correctamente a " + message['recipient']
     elif task_type == 'whatsapp' and whatsapp_template is not None:
@@ -72,7 +75,7 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
         raise Exception('Incomplete pdf task body')
 
     create_amazon_client('sqs').send_message(QueueUrl=settings.PDF_QUEUE, MessageBody=json.dumps(message))
-    messages.success(User.objects.get(pk=user_pk), success_message)
+    messages.success(user, success_message)
 
 
 def send_mail_client_with_pdf(email_pk, subject, body, user_pk, attachment_id):

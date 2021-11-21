@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         # The user is identified by their email address
-        return (self.first_name + " " + self.last_name)
+        return self.first_name + " " + self.last_name
 
     def get_short_name(self):
         # The user is identified by their email address
@@ -72,6 +72,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def is_staff(self):
         return self.is_superuser
+
+    def has_company_email(self):
+        return self.email.endswith("@mundiaguabalear.com")
 
     def get_assigned_interventions(self):
         from intervention.models import Intervention
