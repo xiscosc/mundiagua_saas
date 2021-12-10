@@ -2,15 +2,7 @@
 {% load bootstrap %}
 {% load static %}
 {% load staticfiles %}
-{% block title %}Información de <strong>{{ request.user.get_full_name }}</strong>
-    <div class="pull-right">
-        <div class="fa fa-envelope"></div>
-        {% if request.user.telegram_token %}
-            <img src="{% static 'base/img/telegram.png' %}" height="24" width="24" data-toggle="tooltip"
-                 data-placement="top">
-        {% endif %}
-    </div>
-{% endblock %}
+{% block title %}Información de <strong>{{ request.user.get_full_name }}</strong>{% endblock %}
 {% block contentpanel %}
     <fieldset>
         <ul>
@@ -18,14 +10,16 @@
             <li><strong>Teléfono</strong>: {{ request.user.phone }}</li>
             <li><strong>Tipo de usuario</strong>: {% if request.user.is_superuser %}
                 Administrador {% elif request.user.is_officer %} Oficina {% else %} Operario {% endif %}</li>
-            <li><strong>Código Telegram:</strong> <code>/register {{ request.user.id }}-{{ request.user.get_telegram_auth }}</code></li>
         </ul>
-
-        {% if not request.user.telegram_token %}
-            <h4>Registro Telegram</h4>
-            <p><a class="btn btn-info" href="https://t.me/{{ telegran_name }}"><i class="fa fa-send"></i> Abrir Telegram</a>
-                Código de registro: <code>/register {{ request.user.id }}-{{ request.user.get_telegram_auth }}</code>
-            </p>
-        {% endif %}
     </fieldset>
+{% endblock %}
+
+{% block telegrampanel %}
+    {% if not request.user.external_messaging_id %}
+        <p>Usted no se encunetra registrado en Telegram</p>
+        <p><a class="btn btn-success" href="{% url 'core:user-manage-telegram-link' %}">Iniciar registro</a></p>
+    {% else %}
+        <p>Usted se encunetra registrado en Telegram, si tiene problemas puede probar a desvincular sus dispositivos.</p>
+        <p><a class="btn btn-primary" href="https://t.me/{{ telegran_name }}?start={{ request.user.external_messaging_id }}">Vincular nuevo dispositivo</a> <a class="btn btn-danger" href="{% url 'core:user-manage-telegram-unlink' %}">Desvincular todos los dispositivos</a></p>
+    {% endif %}
 {% endblock %}

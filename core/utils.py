@@ -1,18 +1,14 @@
 # UTILS
-import hashlib
 import re
 import string
-from datetime import datetime
 import requests
 import uuid
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.mail import send_mail
 from django.core.paginator import InvalidPage
 from django.urls import reverse_lazy
 from pytz import timezone
-import telegram
 
 INTERVENTION_REGEX = '[v|V][0-9]+'
 IDEGIS_REGEX = '[x|X][0-9]+'
@@ -23,41 +19,10 @@ ENGINE_REGEX = '[e|B][0-9]+'
 BUDGET_REGEX = '[p|P][0-9]+'
 BUDGET_REGEX_2ND_FORMAT = '[p|P][m|M][0-9][0-9]/[0-9]+'
 BUDGET_REGEX_3RD_FORMAT = '[p|P][m|M][0-9][0-9]-[0-9]+'
-TELEGRAM_TOKEN_REGEX = '\d+-\w{10}'
-
-
-def send_data_to_user(user, subject, body, is_link=False, from_user=None):
-
-    result = False
-    if user.telegram_token:
-        result = send_telegram_message(user.telegram_token, body, subject)
-
-    if not result:
-        return send_mail_m(user, subject, body, is_link=is_link, fallback=False, from_user=from_user)
-
-    return result
 
 
 def generate_repair_online_id(char):
     return (char + str(uuid.uuid4())[:6]).upper()
-
-
-def send_mail_m(user, subject, body, is_link=False, fallback=False, from_user=None):
-    ex_body = ""
-    if fallback:
-        ex_body = "MENSAJE ENVIADO POR SISTEMA DE RECUPERACION - PUSHBULLET HA FALLADO\n\n"
-    if is_link:
-        ex_body += "Consulta el siguiente enlace: "
-
-    if from_user is None:
-        from_email = "intranet@mundiaguabalear.com"
-    else:
-        from_email = from_user.email
-    try:
-        return send_mail(subject=subject, message=ex_body + body,
-                     from_email=from_email, recipient_list=[user.email])
-    except:
-        return False
 
 
 def get_return_from_id(search_text):
@@ -182,19 +147,6 @@ def search_objects_in_text(regex, text, trim=False):
     return ids
 
 
-def generate_telegram_auth(id, email):
-    now = datetime.now()
-    key = str(id) + email + str(now.hour)
-    data = hashlib.sha256(key.encode()).hexdigest()
-    return data[:5] + data[-5:]
-
-
-def is_telegram_token(token):
-    import re
-    data = re.compile(TELEGRAM_TOKEN_REGEX).findall(token)
-    return len(data) == 1
-
-
 def format_filename(s):
     """Take a string and return a valid filename constructed from the string.
 Uses a whitelist approach: any characters not present in valid_chars are
@@ -223,40 +175,6 @@ def send_telegram_message(token, message, subject=None):
         return True
     except:
         return False
-
-
-def send_telegram_picture_with_s3_url(token, url):
-    try:
-        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-        return bot.send_photo(chat_id=token, photo=url)
-    except:
-        return False
-
-
-def send_telegram_document_with_s3_url(token, url, filename):
-    try:
-        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-        return bot.send_document(chat_id=token, document=url, filename=filename)
-    except:
-        return False
-
-
-def delete_telegram_messages(token, ids, intervention):
-    removed = 0
-    try:
-        bot = telegram.Bot(token=settings.TELEGRAM_TOKEN)
-    except:
-        return False
-
-    for id in ids:
-        try:
-            bot.delete_message(chat_id=token, message_id=id)
-            removed += 1
-        except:
-            pass
-
-    if removed > 0:
-        bot.send_message(chat_id=token, text="Se han elminado los archivos de " + str(intervention))
 
 
 def get_page_from_paginator(paginator, page):

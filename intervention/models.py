@@ -11,11 +11,9 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
-from core.utils import send_data_to_user, create_amazon_client, format_filename, \
-    send_telegram_message, send_telegram_document_with_s3_url, send_telegram_picture_with_s3_url, autolink_intervention
-from intervention.tasks import send_intervention_assigned, \
-    delete_telegram_messages_from_intervention
-
+from core.tasks import send_data_to_user
+from core.utils import create_amazon_client, autolink_intervention
+from intervention.tasks import send_intervention_assigned
 
 class InterventionStatus(models.Model):
     name = models.CharField(max_length=50)
@@ -201,8 +199,6 @@ class InterventionFile(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     in_s3 = models.BooleanField(default=False)
     s3_key = models.CharField(max_length=120, default=None, null=True)
-    telegram_message = models.BigIntegerField(default=None, null=True)
-    sent_to_telegram = models.BooleanField(default=False)
     original_name = models.CharField(max_length=120)
 
     def get_bucket(self):
@@ -240,9 +236,6 @@ class InterventionFile(models.Model):
         except:
             return None
 
-    def send_file_to_telegram(self):
-        pass
-
     def __str__(self):
         return "V" + str(self.intervention.pk) + " | " + str(self.pk) + " | " + self.filename()
 
@@ -272,40 +265,12 @@ class InterventionImage(InterventionFile):
         except:
             return None
 
-    def send_file_to_telegram(self):
-        user = self.intervention.assigned
-        if user and user.telegram_token and user != self.user:
-            send_telegram_message(user.telegram_token, "Nueva imagen añadida a la avería " + str(
-                self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
-
-            if self.in_s3:
-                message = send_telegram_picture_with_s3_url(user.telegram_token, self.get_signed_url())
-                if message:
-                    self.telegram_message = message.message_id
-                    self.sent_to_telegram = True
-                    self.save()
-
 
 class InterventionDocument(InterventionFile):
     only_officer = models.BooleanField(default=True)
 
     def get_bucket(self):
         return settings.S3_DOCUMENTS
-
-    def send_file_to_telegram(self):
-        user = self.intervention.assigned
-        if not self.sent_to_telegram and user and user.telegram_token and user != self.user:
-            if user.is_officer or not self.only_officer:
-                send_telegram_message(user.telegram_token, "Nueva documento añadido a la avería " + str(
-                    self.intervention) + " " + self.intervention.address.client.name + " " + self.intervention.generate_url())
-
-                if self.in_s3:
-                    message = send_telegram_document_with_s3_url(user.telegram_token, self.get_signed_url(),
-                                                                 self.filename())
-                    if message:
-                        self.telegram_message = message.message_id
-                        self.sent_to_telegram = True
-                        self.save()
 
 
 def post_save_intervention_modification(sender, **kwargs):
@@ -329,8 +294,6 @@ def post_save_intervention(sender, **kwargs):
                     log.assigned = intervention.assigned
                     send_intervention_assigned(intervention.pk)
                 log.save()
-                if intervention._old_status_id == settings.ASSIGNED_STATUS:
-                    delete_telegram_messages_from_intervention(intervention.pk, intervention._old_assigned_id)
         except:
             pass
 

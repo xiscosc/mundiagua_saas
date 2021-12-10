@@ -6,8 +6,6 @@ from django.db import models
 
 from tinymce import models as tinymce_models
 
-from core.utils import generate_telegram_auth
-
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, first_name, last_name, password=None):
@@ -51,6 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=9, blank=True, null=True)
     objects = MyUserManager()
     telegram_token = models.CharField(max_length=254, null=True, blank=True, unique=True)
+    external_messaging_id = models.UUIDField(null=True, default=None)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -75,9 +74,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_assigned_interventions(self):
         from intervention.models import Intervention
         return Intervention.objects.filter(assigned=self, status_id=2).count()
-
-    def get_telegram_auth(self):
-        return generate_telegram_auth(self.id, self.email)
 
     assigned_interventions = property(get_assigned_interventions)
 

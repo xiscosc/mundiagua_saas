@@ -2,13 +2,17 @@ from django.urls import path
 from .views import SystemVariableView, SystemVariableUpdateView, ChangeLogView, UserView, RepairStatusSystemView, \
     SystemRepairStatusUpdateView, SystemRepairStatusCreateView, EngineRepairStatusSystemView, \
     SystemEngineRepairStatusUpdateView, SystemEngineRepairStatusCreateView, GetAllSmsView, GetSmsBySenderView, \
-    GetSmsView, SMSListView, SMSSenderListView, NotifySmsView
+    GetSmsView, SMSListView, SMSSenderListView, NotifySmsView, LinkUserTelegramView, UnlinkUserTelegramView, \
+    LinkUserTelegramDoneView
 
 urlpatterns = [
     path('variable/', SystemVariableView.as_view(), name="variable"),
     path('variable/edit/<pk>', SystemVariableUpdateView.as_view(), name="variable-edit"),
     path('changelog/', ChangeLogView.as_view(), name="changelog"),
     path('user/', UserView.as_view(), name="user-manage"),
+    path('user/telegram/unlink', UnlinkUserTelegramView.as_view(), name="user-manage-telegram-unlink"),
+    path('user/telegram/link', LinkUserTelegramView.as_view(), name="user-manage-telegram-link"),
+    path('user/telegram/link/done', LinkUserTelegramDoneView.as_view(), name="user-manage-telegram-link-done"),
     path('repairstatus/', RepairStatusSystemView.as_view(), name="repair-status"),
     path('repairstatus/edit/<pk>', SystemRepairStatusUpdateView.as_view(), name="repair-status-edit"),
     path('repairstatus/new/', SystemRepairStatusCreateView.as_view(), name="repair-status-new"),

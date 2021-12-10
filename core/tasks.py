@@ -3,10 +3,85 @@ import io
 import json
 
 from async_messages import messages
+from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.conf import settings
 
 from core.utils import create_amazon_client
+
+
+def send_data_to_user(user, subject, body, is_link=False, from_user=None):
+
+    result = False
+    if user.external_messaging_id:
+        result = send_telegram_message(user, subject + "\n\n" + body)
+    if not result:
+        return send_mail_m(user, subject, body, is_link=is_link, from_user=from_user)
+
+    return result
+
+
+def send_mail_m(user, subject, body, is_link=False, from_user=None):
+    ex_body = ""
+    if is_link:
+        ex_body += "Consulta el siguiente enlace: "
+
+    if from_user is None:
+        from_email = "intranet@mundiaguabalear.com"
+    else:
+        from_email = from_user.email
+    try:
+        return send_mail(subject=subject, message=ex_body + body,
+                         from_email=from_email, recipient_list=[user.email])
+    except:
+        return False
+
+
+def send_telegram_message(user, message):
+    task = {
+        'userId': user.external_messaging_id.__str__(),
+        'action': 'send',
+        'input': message
+    }
+
+    send_telegram_task(task)
+    return True
+
+
+def delete_telegram_user(user):
+    if user.external_messaging_id:
+        task = {
+            'userId': user.external_messaging_id.__str__(),
+            'action': 'delete',
+        }
+
+        send_telegram_task(task)
+        user.external_messaging_id = None
+        user.save()
+
+
+def add_telegram_user(user):
+    if not user.external_messaging_id:
+        id = uuid.uuid1().__str__()
+        telegram_info = {
+            'userId': id,
+            'telegramId': 0,
+            'status': 'UNLINKED',
+            'name': user.get_full_name()
+        }
+        task = {
+            'userId': id,
+            'action': 'create',
+            'input': telegram_info
+        }
+
+        send_telegram_task(task)
+        user.external_messaging_id = id
+        user.save()
+
+
+def send_telegram_task(task):
+    create_amazon_client('sns').publish(TopicArn=settings.TELEGRAM_TOPIC, Message=json.dumps(task))
 
 
 def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body, subject=None, whatsapp_template=None):

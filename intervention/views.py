@@ -22,7 +22,6 @@ from intervention.utils import update_intervention, generate_data_year_vs, gener
     generate_report, generate_document_s3_key
 from intervention.forms import NewInterventionForm, EarlyInterventionModificationForm, \
     InterventionModificationForm
-from intervention.tasks import send_file_telegram_task, delete_file_from_telegram
 from repair.models import RepairType
 
 
@@ -451,15 +450,6 @@ class MakeVisibleDocumentView(View):
         pk_intervention = instance.intervention_id
         instance.only_officer = not instance.only_officer
         instance.save()
-
-        if not instance.only_officer and instance.intervention.status.id == 2:
-            send_file_telegram_task(instance.pk, 'document')
-
-        if instance.only_officer and instance.intervention.status.id == 2 and instance.sent_to_telegram:
-            delete_file_from_telegram(instance.intervention.assigned.telegram_token, instance.telegram_message, instance.intervention.pk)
-            instance.telegram_message = None
-            instance.sent_to_telegram = False
-            instance.save()
 
         messages.success(request.user, "Visibilidad de archivo modificada")
         return HttpResponseRedirect(reverse_lazy('intervention:intervention-view', kwargs={'pk': pk_intervention}))

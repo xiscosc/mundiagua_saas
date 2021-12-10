@@ -10,7 +10,7 @@ from client.models import Client, Address
 from core.forms import SystemVariableRichForm, SystemVariablePlainForm
 from core.models import SystemVariable
 from core.utils import get_return_from_id, get_sms_api
-from core.tasks import notify_sms_received
+from core.tasks import notify_sms_received, add_telegram_user, delete_telegram_user
 from engine.models import EngineRepair, EngineStatus
 from repair.models import RepairStatus
 from urllib.parse import urlencode
@@ -303,3 +303,24 @@ class LogoutView(View):
         return_to = urlencode({'returnTo': request.build_absolute_uri('/')})
         logout_url = 'https://%s/v2/logout?client_id=%s&%s' % (settings.SOCIAL_AUTH_AUTH0_DOMAIN, settings.SOCIAL_AUTH_AUTH0_KEY, return_to)
         return HttpResponseRedirect(logout_url)
+
+
+class LinkUserTelegramView(View):
+    def get(self, request, *args, **kwargs):
+        add_telegram_user(request.user)
+        return HttpResponseRedirect(reverse_lazy('core:user-manage-telegram-link-done'))
+
+
+class LinkUserTelegramDoneView(TemplateView):
+    template_name = "user_telegram_done.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(LinkUserTelegramDoneView, self).get_context_data(**kwargs)
+        context['telegran_name'] = settings.TELEGRAM_NAME
+        return context
+
+
+class UnlinkUserTelegramView(View):
+    def get(self, request, *args, **kwargs):
+        delete_telegram_user(request.user)
+        return HttpResponseRedirect(reverse_lazy('core:user-manage'))

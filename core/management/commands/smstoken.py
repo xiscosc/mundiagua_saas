@@ -4,7 +4,7 @@ from django.core.management import BaseCommand
 from django.conf import settings
 
 from core.models import User
-from core.utils import send_data_to_user
+from core.tasks import send_data_to_user
 
 
 class Command(BaseCommand):
