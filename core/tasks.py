@@ -64,7 +64,7 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
     else:
         raise Exception('Incomplete pdf task body')
 
-    create_amazon_client('sqs').send_message(QueueUrl=settings.PDF_QUEUE, MessageBody=json.dumps(message))
+    create_amazon_client('sns').publish(TopicArn=settings.PDF_TOPIC, Message=json.dumps(message))
     messages.success(user, success_message)
 
 
