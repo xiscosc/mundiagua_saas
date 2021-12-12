@@ -1,6 +1,6 @@
 Django>=2.2,<3
 django-bootstrap-form==3.4
-django-colorfield==0.1.10
+django-colorfield==0.5.0
 requests==2.25.1
 django-async-messages-redux==0.4.1
 sendgrid-django==4.2.0
