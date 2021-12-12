@@ -28,7 +28,7 @@ social-auth-app-django==4.0.0
 python-jose==3.3.0
 python-dotenv==0.15.0
 cryptography==3.4.6
-drf-jwt==1.19.0
+drf-jwt==1.19.1
 PyJWT==2.0.1
 django-npm==1.0.0
 qrcode==7.3.1
