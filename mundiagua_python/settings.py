@@ -39,8 +39,8 @@ OTHER_APPS = [
     'bootstrap_pagination',
     'async_messages',
     'hijack',
+    'hijack.contrib.admin',
     'compat',
-    'hijack_admin',
     'tinymce',
     'rest_framework',
     'corsheaders',
@@ -66,8 +66,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'hijack.middleware.HijackUserMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
-    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'async_messages.middleware.AsyncMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -212,13 +212,6 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
-HIJACK_REGISTER_ADMIN = False
-HIJACK_ALLOW_GET_REQUESTS = True
-HIJACK_USE_BOOTSTRAP = True
-HIJACK_LOGIN_REDIRECT_URL = '/'  # Where admins are redirected to after hijacking a user
-HIJACK_LOGOUT_REDIRECT_URL = '/spectrum/core/user/'  # Where admins are redirected to after releasing a user
-
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -241,7 +234,6 @@ NON_STAFF_VIEWS = ('intervention-list-own',
                    'login',
                    'login-google',
                    'login-google-process',
-                   'release_hijack',
                    'intervention-image-upload',
                    'intervention-status-job',
                    'changelog',
@@ -252,7 +244,8 @@ NON_STAFF_VIEWS = ('intervention-list-own',
                    'user-manage',
                    'password-change',
                    'password-change-done',
-                   'sms-gsm-notify'
+                   'sms-gsm-notify',
+                   'release'
                    )
 
 TECHNICIAN_VIEWS = (

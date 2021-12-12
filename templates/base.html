@@ -1,6 +1,5 @@
 {% load static %}
 {% load staticfiles %}
-{% load hijack_tags %}
 {% load core_tags %}
 <!DOCTYPE html>
 <html lang="es">
@@ -32,9 +31,6 @@
     <!-- Animate.css -->
     <link href="{% static 'animate.css/animate.min.css' %}" rel="stylesheet" type="text/css">
 
-
-    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}"/>
-
     <link href="{% static 'base/css/mundiagua.css' %}{% app_version_includes %}" rel="stylesheet" type="text/css">
 
     <meta name="theme-color" content="{% template_color %}"/>
@@ -51,8 +47,6 @@
 </head>
 
 <body>
-
-{% hijack_notification %}
 
 <div id="wrapper">
 
