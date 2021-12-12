@@ -221,10 +221,6 @@ class InterventionFile(models.Model):
         return s3.generate_presigned_post(self.get_upload_bucket(), self.s3_key, ExpiresIn=60, Fields=fields,
                                           Conditions=conditions)
 
-    def remove_form_s3(self):
-        s3 = create_amazon_client('s3')
-        s3.delete_object(Bucket=self.get_bucket(), Key=self.s3_key)
-
     class Meta:
         abstract = True
 
@@ -248,11 +244,6 @@ class InterventionImage(InterventionFile):
 
     def get_upload_bucket(self):
         return settings.S3_PROCESSING_IMAGES
-
-    def remove_form_s3(self):
-        super(InterventionImage, self).remove_form_s3()
-        s3 = create_amazon_client('s3')
-        s3.delete_object(Bucket=self.get_bucket(), Key=self.thumbnail_s3_key)
 
     def get_thumbnail_signed_url(self):
         if self.thumbnail_s3_key is None:

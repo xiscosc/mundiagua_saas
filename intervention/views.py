@@ -433,7 +433,6 @@ class RemoveFileView(View):
 
             pk_intervention = instance.intervention_id
             if instance.user == request.user:
-                instance.remove_form_s3()
                 instance.delete()
                 messages.success(request.user, "Archivo eliminado")
                 return HttpResponseRedirect(
