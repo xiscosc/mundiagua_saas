@@ -24,7 +24,7 @@ django-filter==2.4.0
 nexmo==2.5.2
 pycurl==7.43.0.6
 Unidecode==1.2.0
-social-auth-app-django==4.0.0
+social-auth-app-django==5.0.0
 python-jose==3.3.0
 python-dotenv==0.19.2
 cryptography==3.4.6
