@@ -40,7 +40,6 @@ OTHER_APPS = [
     'async_messages',
     'hijack',
     'hijack.contrib.admin',
-    'compat',
     'tinymce',
     'rest_framework',
     'corsheaders',
