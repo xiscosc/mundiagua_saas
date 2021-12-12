@@ -111,12 +111,9 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
     else:
         raise Exception('Incorrect attachment type')
 
-    htmly = get_template(template)
-    html_content = htmly.render(template_props)
-    html_content = html_content.replace("/static/", settings.DOMAIN + '/static/')
-    encoded_string = html_content.encode()
+    encoded_html = get_template(template).render(template_props).encode()
     key = uuid.uuid1().__str__()
-    create_amazon_client('s3').upload_fileobj(io.BytesIO(encoded_string), settings.S3_PDF_UPLOAD, key)
+    create_amazon_client('s3').upload_fileobj(io.BytesIO(encoded_html), settings.S3_PDF_UPLOAD, key)
     message = {
         'type': task_type,
         'bodyKey': key,
