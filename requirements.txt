@@ -21,7 +21,7 @@ djangorestframework==3.12.2
 Markdown==3.3.4
 django-filter==2.4.0
 nexmo==2.5.2
-pycurl==7.43.0.6
+pycurl==7.44.1
 Unidecode==1.2.0
 social-auth-app-django==5.0.0
 python-jose==3.3.0
