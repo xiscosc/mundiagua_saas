@@ -346,14 +346,21 @@
 
 {% block chartjs %} {% endblock %}
 
-<!-- Custom Theme JavaScript -->
 <script src="{% static 'startbootstrap-sb-admin-2/dist/js/sb-admin-2.js' %}"></script>
-
 <script src="{% static 'bootstrap-notify/bootstrap-notify.min.js' %}"></script>
+<script src="{% static 'base/js/core/notifications.js' %}{% app_version_includes %}"></script>
 
 {% block extrajs %} {% endblock %}
 
 {% block extrajs_include %} {% endblock %}
+
+{% if messages %}
+    <script type="text/javascript">
+        {% for message in messages %}
+            make_notification("{{ message }}", "{{ message.tags }}", false);
+        {% endfor %}
+    </script>
+{% endif %}
 
 </body>
 </html>
