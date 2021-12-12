@@ -2,7 +2,6 @@ Django>=2.2,<3
 django-bootstrap-form==3.2.1
 django-colorfield==0.1.10
 requests==2.25.1
-websocket-client==0.58.0
 django-async-messages-redux==0.4.1
 sendgrid-django==4.0.4
 django-bootstrap-pagination==1.7.1
