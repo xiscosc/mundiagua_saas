@@ -31,9 +31,6 @@ AWS_REGION = "eu-west-1"
 GMAPS_API_KEY = ""
 GOOGLE_CLIENT_ID = "ff.apps.googleusercontent.com"
 
-BITLY_API_KEY = "..."
-
-
 NUMBER_TEMPLATES = 5
 
 IMAGE_NOT_FOUND = "base/img/image_not_available.png"
