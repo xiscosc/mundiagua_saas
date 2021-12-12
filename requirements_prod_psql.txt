@@ -1,3 +1,0 @@
--r requirements_psql.txt
-gunicorn
-sentry-sdk
