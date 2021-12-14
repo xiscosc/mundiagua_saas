@@ -10,6 +10,7 @@ from intervention.models import Intervention
 
 
 class Budget(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
     introduction = models.TextField(verbose_name="Descripción")
@@ -82,6 +83,7 @@ class BudgetRepair(Budget):
 
 
 class BudgetLine(models.Model):
+    id = models.AutoField(primary_key=True)
     product = models.TextField()
     unit_price = models.DecimalField(decimal_places=2, max_digits=20)
     quantity = models.DecimalField(decimal_places=2, max_digits=20)

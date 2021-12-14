@@ -18,6 +18,7 @@ class RepairType(Enum):
 
 
 class RepairStatus(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, verbose_name='Nombre')
     description = models.TextField(verbose_name='Descripción')
     percentage = models.IntegerField(default=0, verbose_name='Porcentaje de reparación completada')
@@ -27,6 +28,7 @@ class RepairStatus(models.Model):
 
 
 class Repair(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente", on_delete=models.CASCADE)
     created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
@@ -104,6 +106,7 @@ class ZodiacRepair(Repair):
 
 
 class RepairLog(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey(RepairStatus, on_delete=models.CASCADE)
 

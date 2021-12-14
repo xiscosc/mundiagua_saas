@@ -8,6 +8,7 @@ from core.utils import generate_repair_online_id, get_time_zone
 
 
 class EngineStatus(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, verbose_name="Nombre")
     percentage = models.IntegerField(default=0, verbose_name="Porcentaje")
 
@@ -16,6 +17,7 @@ class EngineStatus(models.Model):
 
 
 class EngineRepair(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente", on_delete=models.CASCADE)
     created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
@@ -35,6 +37,7 @@ class EngineRepair(models.Model):
 
 
 class EngineRepairLog(models.Model):
+    id = models.AutoField(primary_key=True)
     repair = models.ForeignKey(EngineRepair, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey(EngineStatus, on_delete=models.CASCADE)
@@ -50,5 +53,6 @@ def post_save_engine_repair(sender, **kwargs):
         log.save()
         ins.online_id = generate_repair_online_id("E")
         ins.save()
+
 
 post_save.connect(post_save_engine_repair, sender=EngineRepair)

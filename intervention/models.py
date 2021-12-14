@@ -15,7 +15,9 @@ from core.tasks import send_data_to_user
 from core.utils import create_amazon_client, autolink_intervention
 from intervention.tasks import send_intervention_assigned
 
+
 class InterventionStatus(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -44,6 +46,7 @@ class InterventionStatus(models.Model):
 
 
 class InterventionSubStatus(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -51,6 +54,7 @@ class InterventionSubStatus(models.Model):
 
 
 class InterventionInfo(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
     color = ColorField(default='#FF0000')
 
@@ -96,6 +100,7 @@ class Tag(InterventionInfo):
 
 
 class Intervention(models.Model):
+    id = models.AutoField(primary_key=True)
     description = models.TextField(verbose_name="Descripción", db_index=True)
     short_description = models.CharField(verbose_name="Descripción corta", max_length=255, default="", blank=True,
                                          db_index=True)
@@ -172,6 +177,7 @@ class Intervention(models.Model):
 
 
 class InterventionModification(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     note = models.TextField(null=True)
     created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
@@ -179,6 +185,7 @@ class InterventionModification(models.Model):
 
 
 class InterventionLog(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('core.User', related_name='%(class)s_by', on_delete=models.CASCADE)
     assigned = models.ForeignKey('core.User', null=True, related_name='%(class)s_assigned', on_delete=models.CASCADE)
@@ -187,6 +194,7 @@ class InterventionLog(models.Model):
 
 
 class InterventionLogSub(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
     sub_status = models.ForeignKey(InterventionSubStatus, on_delete=models.CASCADE)
@@ -194,6 +202,7 @@ class InterventionLogSub(models.Model):
 
 
 class InterventionFile(models.Model):
+    id = models.AutoField(primary_key=True)
     intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
     user = models.ForeignKey('core.User', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)

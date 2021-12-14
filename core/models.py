@@ -37,6 +37,7 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100, blank=False, null=False)
     last_name = models.CharField(max_length=100, blank=False, null=False)
     username = models.CharField(max_length=254, unique=True)
@@ -79,6 +80,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class SystemVariable(models.Model):
+    id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=15, blank=False, null=False)
     key = models.CharField(max_length=25, blank=False, null=False, unique=True)
     description = models.TextField(blank=True, null=True)

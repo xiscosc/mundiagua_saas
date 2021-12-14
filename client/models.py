@@ -9,6 +9,7 @@ from core.utils import create_nexmo_client, check_nexmo_message_sent, encode_nex
 
 
 class Client(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     intern_code = models.CharField(max_length=45, null=True, blank=True, verbose_name="COD Interno")
     dni = models.CharField(max_length=45, null=True, blank=True, verbose_name="DNI/CIF")
@@ -34,6 +35,7 @@ class Client(models.Model):
 
 
 class Email(models.Model):
+    id = models.AutoField(primary_key=True)
     alias = models.CharField(max_length=45)
     email = models.EmailField()
     client = models.ForeignKey(Client, related_name="emails", on_delete=models.CASCADE)
@@ -43,6 +45,7 @@ class Email(models.Model):
 
 
 class Phone(models.Model):
+    id = models.AutoField(primary_key=True)
     alias = models.CharField(max_length=45)
     international_code = models.CharField(max_length=10, default=34, verbose_name="Código país")
     phone = models.CharField(max_length=45, verbose_name="Teléfono")
@@ -72,6 +75,7 @@ class Phone(models.Model):
 
 
 class Address(models.Model):
+    id = models.AutoField(primary_key=True)
     alias = models.CharField(max_length=45)
     address = models.TextField(verbose_name="Dirección")
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
@@ -81,15 +85,15 @@ class Address(models.Model):
 
     def get_url_gmaps(self):
 
-        if self.latitude is not None and self.longitude is not None and self.latitude is not "" \
-                and self.longitude is not "":
+        if self.latitude is not None and self.longitude is not None and self.latitude != "" \
+                and self.longitude != "":
             return "https://maps.google.com/maps?q=loc:" + self.latitude + "," + self.longitude
         else:
             return False
 
     def get_geo(self):
-        if self.latitude is not None and self.longitude is not None and self.latitude is not "" \
-                and self.longitude is not "":
+        if self.latitude is not None and self.longitude is not None and self.latitude != "" \
+                and self.longitude != "":
             return [self.latitude, self.longitude]
         else:
             return False
@@ -102,6 +106,7 @@ class Address(models.Model):
 
 
 class SMSStatus(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=15)
 
     def __str__(self):
@@ -109,6 +114,7 @@ class SMSStatus(models.Model):
 
 
 class WhatsAppTemplate(models.Model):
+    id = models.AutoField(primary_key=True)
     wa_key = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     template = models.TextField()
@@ -120,6 +126,7 @@ class WhatsAppTemplate(models.Model):
 
 
 class SMS(models.Model):
+    id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField(max_length=160)
