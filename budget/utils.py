@@ -1,9 +1,6 @@
-def get_data_typeahead(type):
-    data = []
-    lines = type.objects.extra(where=["CHAR_LENGTH(product) < 140"])
-    for l in lines:
-        p = l.product.rstrip(' ')
-        p = p.rstrip('.')
-        p = p.rstrip(' ')
-        data.append(p)
-    return data
+def parse_budget_amount(value):
+    value = value.replace(',', '.')
+    count = value.count('.')
+    if count > 1:
+        value = value.replace('.', '', count - 1)
+    return value

@@ -1,15 +1,12 @@
 from django.conf.urls import url
-from django.conf import settings
-from django.views.decorators.cache import cache_page
 
-from .views import SearchClientView, CreateBudgetView, CreateLineBudgetView, TypeAheadBudgetView, BudgetDetailView, \
+from .views import SearchClientView, CreateBudgetView, CreateLineBudgetView, BudgetDetailView, \
     EditLineBudgetView, ListBudgetView, PreSearchBudgetView, SearchBudgetView, ListBudgetRepairView, \
     CreateBudgetRepairView, CreateLineBudgetRepairView, BudgetRepairDetailView, EditLineBudgetRepairView, \
     BudgetPrintView, BudgetRepairPrintView, LinkInterventionView, UnlinkInterventionView
 
 urlpatterns = [
     url(r'^search-client/$', SearchClientView.as_view(), name="budget-search-client"),
-    url(r'^typeahead/$', cache_page(settings.CACHE_TIME_TYPEAHEAD)(TypeAheadBudgetView.as_view()), name="budget-typeahead"),
     url(r'^new/(?P<id>\d+)/$', CreateBudgetView.as_view(), name="budget-new"),
     url(r'^new/lines/(?P<pk>\d+)/$', CreateLineBudgetView.as_view(), name="budget-new-lines"),
     url(r'^edit/lines/(?P<pk>\d+)/$', EditLineBudgetView.as_view(), name="budget-edit-lines"),

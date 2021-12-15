@@ -4,17 +4,17 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, View, UpdateView
 
 from budget.models import BudgetStandard, BudgetLineStandard, BudgetRepair, BudgetLineRepair
+from budget.utils import parse_budget_amount
 from core.utils import get_page_from_paginator
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from engine.models import EngineRepair
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairType, ZodiacRepair
 from repair.utils import generate_repair_qr_code, get_repair_by_type
-from budget.utils import get_data_typeahead
 
 
 class SearchClientView(SearchClientBaseView):
@@ -61,23 +61,14 @@ class CreateLineBudgetView(TemplateView):
         prices = [d.replace(',', '.') for d in params.getlist('price')]
         quantities = [d.replace(',', '.') for d in params.getlist('quantity')]
 
+
+
         for x in range(len(products)):
             line = BudgetLineStandard(product=products[x], discount=dtos[x], quantity=quantities[x],
                                       unit_price=prices[x], budget_id=kwargs['pk'])
             line.save()
 
         return HttpResponseRedirect(reverse_lazy("budget:budget-view", kwargs={'pk': kwargs['pk']}))
-
-
-class TypeAheadBudgetView(View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.is_ajax():
-            raise Http404("This is an ajax view, friend.")
-        return super(TypeAheadBudgetView, self).dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        data = list(set(get_data_typeahead(BudgetLineStandard) + get_data_typeahead(BudgetLineRepair)))
-        return JsonResponse(data=data, safe=False)
 
 
 class BudgetDetailBase(UpdateView):
@@ -109,9 +100,9 @@ class EditLineBudgetView(TemplateView):
         params = request.POST.copy()
         pk_lines = params.getlist('pk_line')
         products = params.getlist('product')
-        dtos = [d.replace(',', '.') for d in params.getlist('dto')]
-        prices = [d.replace(',', '.') for d in params.getlist('price')]
-        quantities = [d.replace(',', '.') for d in params.getlist('quantity')]
+        dtos = [parse_budget_amount(d) for d in params.getlist('dto')]
+        prices = [parse_budget_amount(d) for d in params.getlist('price')]
+        quantities = [parse_budget_amount(d) for d in params.getlist('quantity')]
         pk_created = []
 
         for x in range(len(products)):
