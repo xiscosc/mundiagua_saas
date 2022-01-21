@@ -16,7 +16,7 @@ django-user-agents==0.4.0
 oauth2client==4.1.3
 django-tinymce4-lite==1.8.0
 django-cors-headers==3.10.1
-djangorestframework==3.12.4
+djangorestframework==3.13.1
 nexmo==2.5.2
 pycurl==7.44.1
 Unidecode==1.3.2
