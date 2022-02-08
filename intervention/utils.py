@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import calendar
+from tokenize import group
 import xlwt
 import uuid
 import os
@@ -27,7 +28,8 @@ def update_intervention(intervention_pk, request):
         if int(params.getlist('intervention_status')[0]) != settings.ASSIGNED_STATUS:
             intervention.assigned = None
         else:
-            intervention.assigned_id = int(params.getlist('intervention_assigned')[0])
+            intervention.assigned_id = int(
+                params.getlist('intervention_assigned')[0])
     except IndexError:
         pass
 
@@ -68,9 +70,12 @@ def generate_data_year_vs():
     for x in range(12):
         month = x + 1
         month_str = months[x]
-        current_year_count = Intervention.objects.filter(date__year=year, date__month=month).count()
-        last_year_count = Intervention.objects.filter(date__year=last_year, date__month=month).count()
-        data.append({"y": month_str, "a": current_year_count, "b": last_year_count})
+        current_year_count = Intervention.objects.filter(
+            date__year=year, date__month=month).count()
+        last_year_count = Intervention.objects.filter(
+            date__year=last_year, date__month=month).count()
+        data.append(
+            {"y": month_str, "a": current_year_count, "b": last_year_count})
 
     labels = ["Año " + str(year), "Año " + str(last_year)]
 
@@ -85,11 +90,13 @@ def generate_data_intervention_input(month=None, year=None):
     else:
         current_date = date(year=int(year), month=int(month), day=1)
 
-    max_num = calendar.monthrange(current_date.year, current_date.month)[1].real
+    max_num = calendar.monthrange(
+        current_date.year, current_date.month)[1].real
     for i in range(max_num):
         day = i + 1
         d = date(current_date.year, current_date.month, day)
-        total = Intervention.objects.filter(date__day=day, date__year=d.year.real, date__month=d.month.real).count()
+        total = Intervention.objects.filter(
+            date__day=day, date__year=d.year.real, date__month=d.month.real).count()
         data.append({'t': total, 'y': d.strftime("%Y-%m-%d")})
 
     return data
@@ -120,12 +127,14 @@ def prepare_intervention_modify(intervention_pk, request, status):
 
 def terminate_intervention(intervention_pk, request):
     intervention = prepare_intervention_modify(intervention_pk, request, 3)
-    messages.success(request.user, "Avería " + str(intervention) + " marcada como terminada")
+    messages.success(request.user, "Avería " +
+                     str(intervention) + " marcada como terminada")
 
 
 def bill_intervention(intervention_pk, request):
     intervention = prepare_intervention_modify(intervention_pk, request, 5)
-    messages.success(request.user, "Avería " + str(intervention) + " marcada para facturar")
+    messages.success(request.user, "Avería " +
+                     str(intervention) + " marcada para facturar")
 
 
 def get_intervention_list(status_id, user_id, zone_id, starred, tag_id):
@@ -135,24 +144,28 @@ def get_intervention_list(status_id, user_id, zone_id, starred, tag_id):
 
     # NO USER NO ZONE
     if user_id == 0 and zone_id == 0:
-        interventions = Intervention.objects.filter(status=status_id).order_by("-date")
+        interventions = Intervention.objects.filter(
+            status=status_id).order_by("-date")
     # NO USER WITH ZONE
     elif user_id == 0 and zone_id != 0:
-        interventions = Intervention.objects.filter(status=status_id, zone=zone_id).order_by("-date")
+        interventions = Intervention.objects.filter(
+            status=status_id, zone=zone_id).order_by("-date")
         try:
             search_zone = Zone.objects.get(pk=zone_id)
         except Zone.DoesNotExist:
             pass
     # USER WITH NO ZONE
     elif user_id != 0 and zone_id == 0:
-        interventions = Intervention.objects.filter(status=status_id, assigned=user_id).order_by("-date")
+        interventions = Intervention.objects.filter(
+            status=status_id, assigned=user_id).order_by("-date")
         try:
             search_user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             pass
     # USER AND ZONE
     elif user_id != 0 and zone_id != 0:
-        interventions = Intervention.objects.filter(status=status_id, zone=zone_id, assigned=user_id).order_by("-date")
+        interventions = Intervention.objects.filter(
+            status=status_id, zone=zone_id, assigned=user_id).order_by("-date")
         try:
             search_user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
@@ -186,30 +199,52 @@ def generate_document_s3_key(intervention: Intervention, filename):
 
 
 def generate_report(request):
+    from django.db import connection
     response = HttpResponse(content_type='application/ms-excel')
     name = '"informe-'+uuid.uuid1().__str__()+'.xls"'
     response['Content-Disposition'] = 'attachment; filename='+name
+    columns = ['ID', 'CLIENTE', 'FECHA',
+               'DESCRIPCION', 'ESTADO', 'ETIQUETAS', "ZONA"]
 
-    interventions = Intervention.objects.all().order_by("id")
     date = int(request.POST.get('date', 0))
     worker = int(request.POST.get('worker', 0))
     zone = int(request.POST.get('zone', 0))
     status = int(request.POST.get('status', 0))
+    select = """
+                SELECT ii.id, min(cc."name") as customer_name, ii."date", short_description, min(iis."name") as status, string_agg(it."name", ', ') as tags, min(iz."name") as zone FROM intervention_intervention ii
+                    INNER JOIN client_address ca ON ii.address_id = ca.id
+                    INNER JOIN client_client cc ON cc.id = ca.client_id
+                    INNER JOIN intervention_zone iz ON ii.zone_id = iz.id
+                    INNER JOIN intervention_interventionstatus iis ON iis.id = ii.status_id
+                    LEFT JOIN intervention_intervention_tags iit ON iit.intervention_id = ii.id
+                    LEFT JOIN intervention_tag it ON it.id = iit.tag_id 
+    """
 
-    if zone is not 0:
-        zones = [int(x) for x in request.POST.getlist("zone_pk[]")]
-        if len(zones) is not 0:
-            interventions = interventions.filter(zone_id__in=zones)
+    order_and_group = """
+                    GROUP BY ii.id
+                    ORDER BY ii.id DESC
+    """
 
-    if status is not 0:
-        statuses = [int(x) for x in request.POST.getlist("status_pk[]")]
-        if len(statuses) is not 0:
-            interventions = interventions.filter(status_id__in=statuses)
+    where_clauses = []
 
     if worker is not 0:
         workers = [int(x) for x in request.POST.getlist("worker_pk[]")]
         if len(workers) is not 0:
-            interventions = interventions.filter(interventionlog__assigned_id__in=workers)
+            worker_ids = ",".join(str(id) for id in workers)
+            select += " LEFT JOIN intervention_interventionlog iil ON ii.id = iil.intervention_id  "
+            where_clauses.append("iil.assigned_id IN (%s)" % worker_ids)
+
+    if zone is not 0:
+        zones = [int(x) for x in request.POST.getlist("zone_pk[]")]
+        if len(zones) is not 0:
+            zone_ids = ",".join(str(id) for id in zones)
+            where_clauses.append("iz.id IN (%s)" % zone_ids)
+
+    if status is not 0:
+        statuses = [int(x) for x in request.POST.getlist("status_pk[]")]
+        if len(statuses) is not 0:
+            status_ids = ",".join(str(id) for id in statuses)
+            where_clauses.append("iis.id IN (%s)" % status_ids)
 
     if date is not 0:
         date1 = request.POST.get('date1', "")
@@ -217,13 +252,16 @@ def generate_report(request):
         if date1 is not "" and date2 is not "":
             date1 = datetime.strptime(date1, "%Y-%m-%d").date()
             date2 = datetime.strptime(date2, "%Y-%m-%d").date()
-            interventions = interventions.filter(date__range=(date1, date2))
+            where_clauses.append(
+                "ii.date BETWEEN '%s'::DATE AND '%s'::DATE" % (date1, date2))
 
-    columns = ['ID', 'CLIENTE', 'FECHA', 'DESCRIPCION', 'ESTADO', 'ETIQUETAS', "ZONA"]
+    query = select
+    if len(where_clauses) > 0:
+        query += " WHERE " + " AND ".join(where_clauses)
 
+    query += order_and_group
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('INFORME')
-
     # Sheet header, first row
     row_num = 0
 
@@ -233,26 +271,13 @@ def generate_report(request):
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
-    tag_dict = {tag.pk: str(tag) + ", " for tag in Tag.objects.all()}
-
-    # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
-
-    for i in interventions:
-        tag_ids = i.tags.values_list('id', flat=True)
-        tag_str = reduce(lambda a, b: a + tag_dict[b], tag_ids, '')
-        row = [
-            "V"+str(i.pk),
-            str(i.address.client),
-            i.date.strftime('%Y-%m-%d %H:%M'),
-            str(i.short_description),
-            str(i.status),
-            tag_str,
-            str(i.zone)
-        ]
-        row_num += 1
-        for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        for row in cursor.fetchall():
+            row_num += 1
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
 
     wb.save(response)
     return response
