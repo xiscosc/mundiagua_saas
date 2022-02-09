@@ -222,7 +222,7 @@ def generate_report(request):
 
     order_and_group = """
                     GROUP BY ii.id
-                    ORDER BY ii.id DESC
+                    ORDER BY ii.id ASC
     """
 
     where_clauses = []
@@ -276,8 +276,13 @@ def generate_report(request):
         cursor.execute(query)
         for row in cursor.fetchall():
             row_num += 1
-            for col_num in range(len(row)):
-                ws.write(row_num, col_num, str(row[col_num]), font_style)
+            ws.write(row_num, 0, "V" + str(row[0]), font_style)
+            ws.write(row_num, 1, str(row[1]), font_style)
+            ws.write(row_num, 2, str(row[2]), font_style)
+            ws.write(row_num, 3, str(row[3]), font_style)
+            ws.write(row_num, 4, str(row[4]), font_style)
+            ws.write(row_num, 5, str(row[5]), font_style)
+            ws.write(row_num, 6, str(row[6]), font_style)
 
     wb.save(response)
     return response
