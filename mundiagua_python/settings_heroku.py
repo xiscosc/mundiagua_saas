@@ -95,13 +95,6 @@ CUSTOMER_REPAIR_URL = "https://customerservice.mundiaguabalear.com/repair/"
 #CACHE
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': os.environ.get('MEMCACHED_URL'),
-    }
-}
-
-CACHES = {
-    'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS'),
         'OPTIONS': {
