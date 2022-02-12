@@ -27,8 +27,8 @@ DATABASES = {
 
 # DOMAIN CONFIG
 DOMAIN = "https://" + os.environ.get('DOMAIN')
-ALLOWED_HOSTS = ['in.mundiaguabalear.com', 'in6.mundiagua.cloud', os.environ.get('DOMAIN')]
-CSRF_TRUSTED_ORIGINS = ['in.mundiaguabalear.com', 'www.mundiaguabalear.com', 'in6.mundiagua.cloud', os.environ.get('DOMAIN')]
+ALLOWED_HOSTS = [os.environ.get('DOMAIN')]
+CSRF_TRUSTED_ORIGINS = ['www.mundiaguabalear.com', os.environ.get('DOMAIN')]
 USE_X_FORWARDED_HOST = True
 
 # AWS
