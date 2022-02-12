@@ -49,7 +49,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 AWS_S3_ACCESS_KEY_ID = AWS_ACCESS_KEY
 AWS_S3_SECRET_ACCESS_KEY = AWS_SECRET_KEY
-AWS_STORAGE_BUCKET_NAME = "mundiagua-django-static-prod"
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STATIC_BUCKET')
 AWS_S3_REGION_NAME = AWS_REGION
 
 
@@ -120,5 +120,6 @@ sentry_sdk.init(
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True,
-    release=APP_COMPLETE_VERSION
+    release=APP_COMPLETE_VERSION,
+    environment=os.environ.get('SENTRY_ENV')
 )
