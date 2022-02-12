@@ -100,6 +100,18 @@ CACHES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS'),
+        'OPTIONS': {
+            'binary': True,
+            'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+            'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD'),
+        }
+    }
+}
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
