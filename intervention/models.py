@@ -286,16 +286,16 @@ def post_save_intervention(sender, **kwargs):
         log.save()
         autolink_intervention(intervention, intervention.description, intervention.created_by)
     else:
-        try:
-            if intervention._old_status_id != intervention.status_id or intervention._old_assigned_id != intervention.assigned_id:
-                log = InterventionLog(status_id=intervention.status_id, created_by=intervention._current_user,
-                                      intervention=intervention)
+        old_status_id = intervention._signal_info['old_status_id']
+        old_assigned_id = intervention._signal_info['old_assigned_id']
+        current_user_id = intervention._signal_info['current_user_id']
+        if old_status_id != intervention.status_id or old_assigned_id != intervention.assigned_id:
+                log = InterventionLog(status_id=intervention.status_id, created_by_id=current_user_id, intervention=intervention)
                 if intervention.status_id == settings.ASSIGNED_STATUS:
                     log.assigned = intervention.assigned
-                    send_intervention_assigned(intervention.pk)
+                    send_intervention_assigned(intervention.pk, current_user_id)
                 log.save()
-        except:
-            pass
+
 
 
 post_save.connect(post_save_intervention, sender=Intervention)

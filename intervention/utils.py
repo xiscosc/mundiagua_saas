@@ -19,8 +19,7 @@ from intervention.tasks import send_intervention
 def update_intervention(intervention_pk, request):
     params = request.POST.copy()
     intervention = Intervention.objects.get(pk=intervention_pk)
-    intervention._old_status_id = intervention.status_id
-    intervention._old_assigned_id = intervention.assigned_id
+    singal_info  = { 'old_status_id': intervention.status_id, 'old_assigned_id': intervention.assigned_id, 'current_user_id': request.user.pk }
     intervention_save = True
 
     try:
@@ -55,7 +54,7 @@ def update_intervention(intervention_pk, request):
         pass
 
     if intervention_save:
-        intervention._current_user = request.user
+        intervention._signal_info = singal_info
         intervention.save()
 
     messages.success(request.user, "Modificación realizada correctamente")
@@ -116,9 +115,7 @@ def generate_data_intervention_assigned():
 
 def prepare_intervention_modify(intervention_pk, request, status):
     intervention = Intervention.objects.get(pk=intervention_pk)
-    intervention._old_status_id = intervention.status_id
-    intervention._old_assigned_id = intervention.assigned_id
-    intervention._current_user = request.user
+    intervention._signal_info = { 'old_status_id': intervention.status_id, 'old_assigned_id': intervention.assigned_id, 'current_user_id': request.user.pk }
     intervention.assigned = None
     intervention.status_id = status
     intervention.save()

@@ -1,12 +1,13 @@
 from async_messages import messages
 
 
-def send_intervention_assigned(pk):
+def send_intervention_assigned(pk, current_user_id):
     from intervention.models import Intervention
     intervention = Intervention.objects.get(pk=pk)
     result_send = intervention.send_to_user(intervention.assigned)
     if not result_send:
-        messages.warning(intervention._current_user, "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name())
+        from core.models import User
+        messages.warning(User.objects.get(pk=current_user_id), "Error enviando " + str(intervention) + " a " + intervention.assigned.get_full_name())
 
 
 def send_intervention(pk, pkto, pkuser):
