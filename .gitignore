@@ -66,10 +66,7 @@ migrations/
 
 components/
 media/
-npm-dependencies/node_modules
-npm-dependencies/package-lock.json
 settings_linux.py
 settings_mac.py
 settings_prod.py
 node_modules
-package-lock.json
