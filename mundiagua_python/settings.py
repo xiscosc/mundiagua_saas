@@ -99,7 +99,7 @@ PUBLIC_URLS = (
 
 ROOT_URLCONF = 'mundiagua_python.urls'
 WSGI_APPLICATION = 'mundiagua_python.wsgi.application'
-
+NPM_ROOT_PATH = 'static_deps'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

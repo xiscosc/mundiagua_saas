@@ -69,4 +69,4 @@ media/
 settings_linux.py
 settings_mac.py
 settings_prod.py
-node_modules
+static_deps/node_modules
