@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models
-from django.db.models.signals import post_save
 from client.tasks import send_sms
 from core.models import User
-from core.utils import create_nexmo_client, check_nexmo_message_sent, encode_nexmo_body
 
 
 class Client(models.Model):
@@ -144,39 +139,7 @@ class SMS(models.Model):
         return phone_processed.replace(".", "").replace(" ", "")
 
     def send(self):
-        number = self.process_phone_for_nexmo()
-        if number:
-            try:
-                result = create_nexmo_client().send_message({
-                    'from': 'MUNDIAGUA',
-                    'to': number,
-                    'text': encode_nexmo_body(self.body),
-                })
-
-                if check_nexmo_message_sent(result):
-                    self.sent_status_id = 2
-                    dict = {"success": True}
-                else:
-                    self.sent_status_id = 3
-                    dict = {"success": False, "reason": "error"}
-            except:
-                self.sent_status_id = 3
-                dict = {"success": False, "reason": "error"}
-        else:
-            self.sent_status_id = 4
-            dict = {"success": False, "reason": "incorrect_phone"}
-
-        self.save()
-        return dict
+        send_sms(self)
 
     def __str__(self):
         return self.date.__str__() + " - " + self.sender.__str__()
-
-
-def post_save_sms(sender, **kwargs):
-    sms = kwargs['instance']
-    if kwargs['created']:
-        send_sms(sms.pk)
-
-
-post_save.connect(post_save_sms, sender=SMS)

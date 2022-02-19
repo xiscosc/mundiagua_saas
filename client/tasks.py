@@ -1,11 +1,33 @@
-# -*- coding: utf-8 -*-
 from async_messages import messages
+from core.utils import create_nexmo_client, encode_nexmo_body, check_nexmo_message_sent
 
 
-def send_sms(pk):
-    from client.models import SMS
-    sms = SMS.objects.get(pk=pk)
-    result = sms.send()
+def send_sms(sms):
+    if sms.sent_status_id != 1:
+        raise Exception("SMS %d ya fue enviado una vez" % sms.id)
+    number = sms.process_phone_for_nexmo()
+    if number:
+        try:
+            result = create_nexmo_client().send_message({
+                'from': 'MUNDIAGUA',
+                'to': number,
+                'text': encode_nexmo_body(sms.body),
+            })
+
+            if check_nexmo_message_sent(result):
+                sms.sent_status_id = 2
+                result = {"success": True}
+            else:
+                sms.sent_status_id = 3
+                result = {"success": False, "reason": "error"}
+        except:
+            sms.sent_status_id = 3
+            result = {"success": False, "reason": "error"}
+    else:
+        sms.sent_status_id = 4
+        result = {"success": False, "reason": "incorrect_phone"}
+
+    sms.save()
     if result['success']:
         messages.success(sms.sender, "SMS a " + sms.phone.client.name + " enviado correctamente")
     else:
