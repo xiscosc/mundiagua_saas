@@ -1,5 +1,6 @@
 from .settings import *
 import sentry_sdk
+import dj_database_url
 import os
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -15,14 +16,7 @@ IMAGE_NOT_FOUND = "base/img/image_not_available.png"
 
 # DATABASES
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST'),
-        'PORT': os.environ.get('POSTGRES_PORT'),
-    }
+    'default': dj_database_url.parse(os.environ.get('DB_URL'), conn_max_age=600)
 }
 
 # DOMAIN CONFIG
