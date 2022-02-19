@@ -285,7 +285,7 @@ def post_save_intervention(sender, **kwargs):
         log = InterventionLog(created_by=intervention.created_by, status=intervention.status, intervention=intervention)
         log.save()
         autolink_intervention(intervention, intervention.description, intervention.created_by)
-    else:
+    elif hasattr(intervention, '_singal_info'):
         old_status_id = intervention._signal_info['old_status_id']
         old_assigned_id = intervention._signal_info['old_assigned_id']
         current_user_id = intervention._signal_info['current_user_id']
