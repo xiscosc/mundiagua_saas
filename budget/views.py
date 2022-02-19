@@ -39,7 +39,7 @@ class CreateBudgetView(CreateBaseView):
 
     def get_success_url(self):
         engine_pk = int(self.request.session.get('engine_budget', 0))
-        if engine_pk is not 0:
+        if engine_pk != 0:
             engine = EngineRepair.objects.get(pk=engine_pk)
             engine.budget_id = self.object.pk
             engine.save()

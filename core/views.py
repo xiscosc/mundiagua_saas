@@ -47,7 +47,7 @@ class CreateBaseView(CreateView):
         context = super(CreateBaseView, self).get_context_data(**kwargs)
 
         engine_pk = int(self.request.GET.get('engine', 0))
-        if engine_pk is not 0:
+        if engine_pk != 0:
             self.request.session['engine_budget'] = engine_pk
             context['engine'] = EngineRepair.objects.get(pk=engine_pk)
         else:

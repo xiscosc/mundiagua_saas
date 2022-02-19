@@ -227,29 +227,29 @@ def generate_report(request):
 
     where_clauses = []
 
-    if worker is not 0:
+    if worker != 0:
         workers = [int(x) for x in request.POST.getlist("worker_pk[]")]
-        if len(workers) is not 0:
+        if len(workers) != 0:
             worker_ids = ",".join(str(id) for id in workers)
             select += " LEFT JOIN intervention_interventionlog iil ON ii.id = iil.intervention_id  "
             where_clauses.append("iil.assigned_id IN (%s)" % worker_ids)
 
-    if zone is not 0:
+    if zone != 0:
         zones = [int(x) for x in request.POST.getlist("zone_pk[]")]
-        if len(zones) is not 0:
+        if len(zones) != 0:
             zone_ids = ",".join(str(id) for id in zones)
             where_clauses.append("iz.id IN (%s)" % zone_ids)
 
-    if status is not 0:
+    if status != 0:
         statuses = [int(x) for x in request.POST.getlist("status_pk[]")]
-        if len(statuses) is not 0:
+        if len(statuses) != 0:
             status_ids = ",".join(str(id) for id in statuses)
             where_clauses.append("iis.id IN (%s)" % status_ids)
 
-    if date is not 0:
+    if date != 0:
         date1 = request.POST.get('date1', "")
         date2 = request.POST.get('date2', "")
-        if date1 is not "" and date2 is not "":
+        if date1 != "" and date2 != "":
             date1 = datetime.strptime(date1, "%Y-%m-%d").date()
             date2 = datetime.strptime(date2, "%Y-%m-%d").date()
             where_clauses.append(
