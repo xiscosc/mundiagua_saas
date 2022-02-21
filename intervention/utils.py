@@ -13,13 +13,13 @@ from django.http import HttpResponse
 
 from core.models import User
 from intervention.models import Intervention, InterventionModification, InterventionLog, InterventionStatus, Zone, Tag
-from intervention.tasks import send_intervention
+from intervention.tasks import send_intervention, send_intervention_assigned
 
 
 def update_intervention(intervention_pk, request):
     params = request.POST.copy()
     intervention = Intervention.objects.get(pk=intervention_pk)
-    singal_info  = { 'old_status_id': intervention.status_id, 'old_assigned_id': intervention.assigned_id, 'current_user_id': request.user.pk }
+    old_status_id = intervention.status_id
     intervention_save = True
 
     try:
@@ -54,8 +54,8 @@ def update_intervention(intervention_pk, request):
         pass
 
     if intervention_save:
-        intervention._signal_info = singal_info
         intervention.save()
+        generate_intervention_log(intervention, old_status_id, request.user.pk)
 
     messages.success(request.user, "Modificación realizada correctamente")
 
@@ -115,11 +115,21 @@ def generate_data_intervention_assigned():
 
 def prepare_intervention_modify(intervention_pk, request, status):
     intervention = Intervention.objects.get(pk=intervention_pk)
-    intervention._signal_info = { 'old_status_id': intervention.status_id, 'old_assigned_id': intervention.assigned_id, 'current_user_id': request.user.pk }
+    old_status_id = intervention.status_id
     intervention.assigned = None
     intervention.status_id = status
     intervention.save()
+    generate_intervention_log(intervention, old_status_id, request.user.pk)
     return intervention
+
+
+def generate_intervention_log(intervention, old_status_id, user_id):
+    #Only generate a log if there is a state change
+    if old_status_id != intervention.status_id:
+        log = InterventionLog(status_id=intervention.status_id, created_by_id=user_id, intervention=intervention, assigned=intervention.assigned)
+        log.save()
+        if intervention.assigned is not None:
+            send_intervention_assigned(intervention, user_id)
 
 
 def terminate_intervention(intervention_pk, request):

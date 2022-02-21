@@ -13,7 +13,6 @@ from django.conf import settings
 from client.models import SMS
 from core.tasks import send_data_to_user
 from core.utils import create_amazon_client, autolink_intervention
-from intervention.tasks import send_intervention_assigned
 
 
 class InterventionStatus(models.Model):
@@ -285,17 +284,6 @@ def post_save_intervention(sender, **kwargs):
         log = InterventionLog(created_by=intervention.created_by, status=intervention.status, intervention=intervention)
         log.save()
         autolink_intervention(intervention, intervention.description, intervention.created_by)
-    elif hasattr(intervention, '_singal_info'):
-        old_status_id = intervention._signal_info['old_status_id']
-        old_assigned_id = intervention._signal_info['old_assigned_id']
-        current_user_id = intervention._signal_info['current_user_id']
-        if old_status_id != intervention.status_id or old_assigned_id != intervention.assigned_id:
-                log = InterventionLog(status_id=intervention.status_id, created_by_id=current_user_id, intervention=intervention)
-                if intervention.status_id == settings.ASSIGNED_STATUS:
-                    log.assigned = intervention.assigned
-                    send_intervention_assigned(intervention.pk, current_user_id)
-                log.save()
-
 
 
 post_save.connect(post_save_intervention, sender=Intervention)

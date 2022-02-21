@@ -1,9 +1,7 @@
 from async_messages import messages
 
 
-def send_intervention_assigned(pk, current_user_id):
-    from intervention.models import Intervention
-    intervention = Intervention.objects.get(pk=pk)
+def send_intervention_assigned(intervention, current_user_id):
     result_send = intervention.send_to_user(intervention.assigned)
     if not result_send:
         from core.models import User
