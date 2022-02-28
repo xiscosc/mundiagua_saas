@@ -6,11 +6,10 @@ from typing import List
 import requests
 from django.conf import settings
 
-from client.models import WhatsAppTemplate, Phone
 from core.utils import create_amazon_client
 
 
-def send_whatsapp_template(template: WhatsAppTemplate, placeholders: List[str], phone: Phone, file_name, s3_key):
+def send_whatsapp_template(template, placeholders: List[str], phone, file_name, s3_key):
 
     hsm = {'language': {'code': 'es'}, 'namespace': settings.FB_WHATSAPP_NAMESPACE, 'templateName': template.wa_key}
     if s3_key is None or file_name is None:
