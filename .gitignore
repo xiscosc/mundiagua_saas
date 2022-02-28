@@ -70,3 +70,7 @@ settings_linux.py
 settings_mac.py
 settings_prod.py
 static_deps/node_modules
+
+*/.DS_Store
+.DS_Store
+.vscode
