@@ -77,7 +77,7 @@ class Address(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     latitude = models.CharField(max_length=45, null=True, blank=True)
     longitude = models.CharField(max_length=45, null=True, blank=True)
-    default_zone = models.ForeignKey('intervention.Zone', null=True, on_delete=models.CASCADE)
+    #default_zone = models.ForeignKey('intervention.Zone', null=True, on_delete=models.CASCADE)
 
     def calculate_default_zone(self):
         return get_zone_using_interventions(self)

@@ -184,9 +184,27 @@ def get_page_from_paginator(paginator, page):
         return paginator.page(paginator.num_pages)
 
 
+def get_sms_token():
+    token = cache.get(settings.SMS_TOKEN_CACHE_KEY)
+    if token:
+        return token
+    else:
+        url = settings.SMS_SERVICE_URL + '/user_token'
+        body = {'username': settings.SMS_USERNAME, 'password': settings.SMS_PASSWORD}
+        r = requests.post(url=url, json=body)
+        if r.status_code == 200:
+            token = r.json()['token']
+            if token:
+                cache.set(settings.SMS_TOKEN_CACHE_KEY, token, settings.SMS_TOKEN_EXPIRE_TIME)
+                return token
+    
+    return None
+        
+    
+
 def get_sms_api(url, limit=0, offset=0):
     host = settings.SMS_SERVICE_URL + url
-    headers = {'Authorization': cache.get(settings.SMS_TOKEN_CACHE_KEY)}
+    headers = {'Authorization': get_sms_token()}
     params = {'limit': limit, 'offset': offset}
     r = requests.get(url=host, headers=headers, params=params)
     return r.status_code, r.json()
