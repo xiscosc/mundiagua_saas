@@ -63,3 +63,23 @@ def generate_whatsapp_document_s3_key(filename):
     if file_extension != ".pdf":
         raise Exception("WhatsApp - Trying to send non pdf: {}".format(file_extension))
     return "%s%s" % (uuid.uuid1().__str__(), file_extension)
+
+
+def get_zone_using_interventions(address):
+    from django.db import connection
+    from intervention.models import Zone
+    select = '''select i.zone_id as zid, count(*) c from client_address a
+                inner join intervention_intervention i on i.address_id = a.id
+                where address_id = %s
+                group by zid
+                order by c desc
+                limit 1;
+                ''' % address.pk
+
+    with connection.cursor() as cursor:
+        cursor.execute(select)
+        first_row=cursor.fetchone()
+        if first_row:
+            return Zone.objects.get(pk=first_row[0])
+        else:
+            return None

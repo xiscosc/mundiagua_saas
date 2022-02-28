@@ -1,5 +1,6 @@
 from django.db import models
 from client.tasks import send_sms
+from client.utils import get_zone_using_interventions
 from core.models import User
 
 
@@ -77,6 +78,9 @@ class Address(models.Model):
     latitude = models.CharField(max_length=45, null=True, blank=True)
     longitude = models.CharField(max_length=45, null=True, blank=True)
     default_zone = models.ForeignKey('intervention.Zone', null=True, on_delete=models.CASCADE)
+
+    def calculate_default_zone(self):
+        return get_zone_using_interventions(self)
 
     def get_url_gmaps(self):
 

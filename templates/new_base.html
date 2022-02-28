@@ -83,8 +83,8 @@
             ;
             var default_zones = {
             {% for ad in client.get_addresses  %}
-                {% if ad.default_zone %}
-                    {{ ad.pk }}: "{{ ad.default_zone.pk }}",
+                {% if ad.calculate_default_zone %}
+                    {{ ad.pk }}: "{{ ad.calculate_default_zone.pk }}",
                 {% endif %}
             {% endfor %}
             }

@@ -61,8 +61,8 @@
                                                     {{ address.address|linebreaksbr }}
                                                 </td>
                                                 <td>
-                                                    {% if address.default_zone %}
-                                                        {% include 'zone_include.html' with zone=address.default_zone %}
+                                                    {% if address.calculate_default_zone %}
+                                                        {% include 'zone_include.html' with zone=address.calculate_default_zone %}
                                                     {% else %}
                                                         <div style="background-color: lightgrey; color: black !important;"
                                                              class="zone">Sin zona
