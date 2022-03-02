@@ -122,15 +122,26 @@ function triggerS3Upload() {
     let url = $('#whatsapp_file_placeholder').data('url');
     let token = $('#whatsapp_file_placeholder').data('token');
     let fileName = $('#whatsapp_file').val().replace(/C:\\fakepath\\/i, '');
-    $.post(url, {whatsapp_file_name: fileName, csrfmiddlewaretoken: token})
+    if (fileName.endsWith("pdf")) {
+        $.post(url, {whatsapp_file_name: fileName, csrfmiddlewaretoken: token})
         .done(function( data ) {
             $('#whatsapp_file_name').val(fileName);
             $('#whatsapp_file_key').val(data.key);
             uploadWhatsAppFileToS3(data.s3Data)
         })
         .fail(function (data) {
-            alert("Ha ocurrido un error, recargue la página");
+            showWhatsAppError("Se ha experimentado un error interno al crear el fichero adjunto.");
         });
+    } else {
+        showWhatsAppError("El archivo adjunto no es un PDF. Por favor cambie el archivo adjunto.");
+    }
+}
+
+function showWhatsAppError(reason) {
+    $('#whatsapp_error_reason').html(reason);
+    $('#modal_whatsapp').modal('hide');
+    $('#modal_whatsapp_error').modal('show');
+    $('#whatsapp_send').prop('disabled', false).html("Enviar");
 }
 
 function uploadWhatsAppFileToS3(s3Data) {
@@ -152,7 +163,7 @@ function uploadWhatsAppFileToS3(s3Data) {
         // the actual file is sent raw
         data: formData,
         success: function() { $('#form_whatsapp').submit(); },
-        error: function () { alert("Ha ocurrido un error, recargue la página"); },
+        error: function () { showWhatsAppError("Se ha experimentado un error interno al enviar el fichero adjunto."); },
     })
 }
 
