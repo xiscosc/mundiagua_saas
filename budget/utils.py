@@ -76,7 +76,7 @@ def get_current_intern_id(budget: BudgetRepair) -> int:
         current_id = BudgetRepair.objects.filter(ath_repair=budget.ath_repair).count()
     else:
         current_id = BudgetRepair.objects.filter(
-            odiac_repair=budget.zodiac_repair
+            zodiac_repair=budget.zodiac_repair
         ).count()
 
     return current_id
