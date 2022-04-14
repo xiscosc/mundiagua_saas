@@ -11,6 +11,16 @@
                             {% endif %}
                         </td>
                         <td>
+                            {% if type %}
+                                <a type="button" class="btn btn-primary btn-left" href="{% url 'budget:budget-repair-duplicate' budget.id %}">
+                                    <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Duplicar
+                            </a>
+                            {% else %}
+                                <a type="button" class="btn btn-primary btn-left" href="{% url 'budget:budget-duplicate' budget.id %}">
+                                    <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Duplicar
+                                </a>
+                            {% endif %}
+                            
                             {% if budget.invalid %}
                                 <button type="button" class="btn btn-default btn-left" style="color: #d44950;" disabled="">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> NULO

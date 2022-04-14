@@ -2,10 +2,25 @@
 {% load static %}
 {% load bootstrap %}
 {% block page_title %}Presupuesto
-    <small>{{ budget }}</small>{% if budget.invalid %}
-    <button type="button" class="btn btn-default" style="color: #d44950;" disabled="">
+    <small>{{ budget }} </small>
+    
+    {% if not repair%}
+    <a href="{% url 'budget:budget-duplicate' budget.id %}" type="button" class="btn btn-xs btn-primary btn-left">
+        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Duplicar
+    </a>
+    {% else %}
+    <a href="{% url 'budget:budget-repair-duplicate' budget.id %}" type="button" class="btn btn-xs btn-primary btn-left">
+        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Duplicar
+    </a>
+    {% endif %}
+
+
+    {% if budget.invalid %}
+    <button type="button" class="btn btn-default btn-xs" style="color: #d44950;" disabled="">
         <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> NULO
-    </button>{% endif %}{% endblock %}
+    </button>
+    {% endif %}
+    {% endblock page_title %}
 {% block content %}
 
     {% include 'client_data.html' with client=budget.address.client sms=True address=budget.address %}

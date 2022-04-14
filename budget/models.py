@@ -12,12 +12,18 @@ from intervention.models import Intervention
 class Budget(models.Model):
     id = models.AutoField(primary_key=True)
     date = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
+    created_by = models.ForeignKey("core.User", on_delete=models.CASCADE)
     introduction = models.TextField(verbose_name="Descripción")
-    conditions = models.TextField(verbose_name="Condiciones",
-                                  default="Para aceptar el presupuesto se tiene que devolver firmado.")
-    tax = models.DecimalField(default=21.00, verbose_name="Impuesto", decimal_places=2, max_digits=5)
-    address = models.ForeignKey('client.Address', verbose_name="Dirección del cliente", on_delete=models.CASCADE)
+    conditions = models.TextField(
+        verbose_name="Condiciones",
+        default="Para aceptar el presupuesto se tiene que devolver firmado.",
+    )
+    tax = models.DecimalField(
+        default=21.00, verbose_name="Impuesto", decimal_places=2, max_digits=5
+    )
+    address = models.ForeignKey(
+        "client.Address", verbose_name="Dirección del cliente", on_delete=models.CASCADE
+    )
     invalid = models.BooleanField(default=False, verbose_name="Nulo")
 
     class Meta:
@@ -29,8 +35,8 @@ class Budget(models.Model):
     def get_subtotal(self):
         lines = self.get_lines()
         stotal = Decimal(0.00)
-        for l in lines:
-            stotal = stotal + l.total_line()
+        for line in lines:
+            stotal = stotal + line.total_line()
 
         return stotal
 
@@ -43,14 +49,13 @@ class Budget(models.Model):
     def has_discount(self):
         lines = self.get_lines()
         dto = Decimal(0.00)
-        for l in lines:
-            dto = dto + l.discount
+        for line in lines:
+            dto = dto + line.discount
 
         return dto > 0
 
 
 class BudgetStandard(Budget):
-
     def __str__(self):
         year = str(self.date.year)[-2:]
         return "PM" + year + "-" + str(self.pk)
@@ -60,9 +65,15 @@ class BudgetStandard(Budget):
 
 
 class BudgetRepair(Budget):
-    idegis_repair = models.ForeignKey('repair.IdegisRepair', null=True, on_delete=models.CASCADE)
-    ath_repair = models.ForeignKey('repair.AthRepair', null=True, on_delete=models.CASCADE)
-    zodiac_repair = models.ForeignKey('repair.ZodiacRepair', null=True, on_delete=models.CASCADE)
+    idegis_repair = models.ForeignKey(
+        "repair.IdegisRepair", null=True, on_delete=models.CASCADE
+    )
+    ath_repair = models.ForeignKey(
+        "repair.AthRepair", null=True, on_delete=models.CASCADE
+    )
+    zodiac_repair = models.ForeignKey(
+        "repair.ZodiacRepair", null=True, on_delete=models.CASCADE
+    )
     intern_id = models.IntegerField(default=1)
 
     def get_repair(self):
@@ -96,10 +107,16 @@ class BudgetLine(models.Model):
         return Decimal(self.unit_price) * Decimal(self.quantity)
 
     def total_discount(self):
-        return Decimal(self.total_line_without_discount()) * Decimal(self.discount) * Decimal(0.01)
+        return (
+            Decimal(self.total_line_without_discount())
+            * Decimal(self.discount)
+            * Decimal(0.01)
+        )
 
     def total_line(self):
-        return Decimal(self.total_line_without_discount()) - Decimal(self.total_discount())
+        return Decimal(self.total_line_without_discount()) - Decimal(
+            self.total_discount()
+        )
 
 
 class BudgetLineStandard(BudgetLine):
@@ -112,6 +129,7 @@ class BudgetLineRepair(BudgetLine):
 
 def link_to_intervention(instance):
     from async_messages import messages
+
     added = False
     error = False
     ids = search_objects_in_text(INTERVENTION_REGEX, instance.introduction)
@@ -125,13 +143,18 @@ def link_to_intervention(instance):
             error = True
 
     if added:
-        messages.success(instance.created_by, "Se han autonvinculado avería(s) a este presupuesto")
+        messages.success(
+            instance.created_by, "Se han autonvinculado avería(s) a este presupuesto"
+        )
     if error:
-        messages.warning(instance.created_by, "Ha ocurrido un error durante la autovinculación en este presupuesto")
+        messages.warning(
+            instance.created_by,
+            "Ha ocurrido un error durante la autovinculación en este presupuesto",
+        )
 
 
 def post_save_budget_standard(sender, **kwargs):
-    link_to_intervention(kwargs['instance'])
+    link_to_intervention(kwargs["instance"])
 
 
 post_save.connect(post_save_budget_standard, sender=BudgetStandard)

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% load core_tags %}
+
+{% block page_title %} Duplicar presupuesto {{budget}} {% endblock page_title %}
+{% block content %} 
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Información</h3>
+            </div>
+            <div class="panel-body">
+                <li>La campos condiciones y descripción serán copiados</li>
+                <li>Todas las líneas de productos serán copiadas</li>
+                <li>La fecha del presupuesto será la de hoy</li>
+                <li>Puede elegir si copiar el presupuesto para el mismo cliente u otro distinto</li>
+                <li>Si desea copiar el presupuesto para el mismo cliente pero diferente dirección, seleccione la opción otro cliente</li>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Mismo cliente y misma dirección</h3>
+            </div>
+            <div class="panel-body">
+                {% if not repair %}
+                <a href="{% url 'budget:budget-duplicate-loading' budget.id budget.address.id %}" id="btn_form" class="btn btn-primary btn-lg btn-block"> Duplicar para el mismo cliente</a>
+                {% else %}
+                <a href="{% url 'budget:budget-repair-duplicate-loading' budget.id  %}" id="btn_form" class="btn btn-primary btn-lg btn-block"> Duplicar para la misma reparación</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Otro cliente</h3>
+            </div>
+            {% if not repair %}
+            <div class="panel-body">
+                <a href="{% url 'budget:budget-duplicate-search' budget.id %}" type="submit" id="btn_form" class="btn btn-success btn-lg btn-block"> Buscar otro cliente</a>
+            </div>
+            {% else %}
+                <br />
+                <ul>
+                    <li>No se pueden duplicar presupuestos de reparación a otros clientes</li>
+                </ul>
+                <br />
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock content%}

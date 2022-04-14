@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block page_title %}
+    Duplicando presupuesto...
+{% endblock page_title %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% include 'progress_bar.html' with w=100 %}
+        </div>
+    </div>
+{% endblock %}
+{% block extrajs %}
+<script type="application/javascript">
+    window.location.href = "{{ url }}";
+</script>
+{% endblock extrajs %}
