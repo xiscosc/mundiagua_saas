@@ -51,32 +51,37 @@
 
     <!-- Modal -->
     <div class="modal fade" id="modal_upload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h5 class="modal-title">Subida de archivos</h5>
-            </div>
-            <div class="modal-body">
-                <div id="body_upload">
-                    <div id="file_selection" style="display: none">
-                        <p>Seleccione los archivos que desea subir</p>
-                        <input multiple data-token="{{ csrf_token }}" data-url="{% url 'intervention:intervention-preupload-document' intervention.pk %}" type="file" id="document" />
-                    </div>
-                    <div id="image_selection" style="display: none">
-                        <p>Seleccione las fotos que desea subir</p>
-                        <input multiple data-token="{{ csrf_token }}" data-url="{% url 'intervention:intervention-preupload-image' intervention.pk %}" type="file" accept="image/*" id="image" />
-                    </div>
-                    <div id="file_progress"></div>
-                    <div id="preview_progress" style="display: none">
-                        <h5>Procesando imágenes...</h5>
-                        {% include 'progress_bar.html' with w=100 %}
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title">Subida de archivos</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="body_upload">
+                        <div id="file_selection" style="display: none">
+                            <p>Seleccione los archivos que desea subir</p>
+                            <input multiple data-token="{{ csrf_token }}"
+                                   data-url="{% url 'intervention:intervention-preupload-document' intervention.pk %}"
+                                   type="file" id="document"/>
+                        </div>
+                        <div id="image_selection" style="display: none">
+                            <p>Seleccione las fotos que desea subir</p>
+                            <input multiple data-token="{{ csrf_token }}"
+                                   data-url="{% url 'intervention:intervention-preupload-image' intervention.pk %}"
+                                   type="file" accept="image/*" id="image"/>
+                        </div>
+                        <div id="file_progress">
+                        </div>
+                        <div id="preview_progress" style="display: none">
+                            <h5>Procesando imágenes...</h5>
+                            {% include 'progress_bar.html' with w=100 %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
 
@@ -139,7 +144,8 @@
                                    data-remove="noremove"
                                         {% endif %}
                                 >
-                                    <img src="{{ i.get_thumbnail_signed_url }}" style="height: 100px; width: 100px" onerror="imgError(this);" alt=""/>
+                                    <img src="{{ i.get_thumbnail_signed_url }}" style="height: 100px; width: 100px"
+                                         onerror="imgError(this);" alt=""/>
                                 </a>
                                 {% if i.s3_key == "no_key" %}
                                     <button class="btn btn-warning btn-circle btn-circle-inline btn-s3" disabled>
@@ -379,25 +385,25 @@
 
                                         </div>
                                         <div class="col-xs-12 col-md-10">
-                                                <select class="form-control" name="intervention_status"
-                                                        id="intervention_status">
-                                                    {% for st in status %}
-                                                        {% if st.pk == 2 %}
-                                                            <option value="{{ st.pk }}" selected>{{ st.name }}</option>
-                                                        {% else %}
-                                                            <option value="{{ st.pk }}">{{ st.name }}</option>
-                                                        {% endif %}
+                                            <select class="form-control" name="intervention_status"
+                                                    id="intervention_status">
+                                                {% for st in status %}
+                                                    {% if st.pk == 2 %}
+                                                        <option value="{{ st.pk }}" selected>{{ st.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ st.pk }}">{{ st.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            {% if show_users %}
+                                                <select class="form-control" name="intervention_assigned"
+                                                        id="intervention_assigned">
+                                                    {% for u in users %}
+                                                        <option value="{{ u.pk }}">Asignar
+                                                            a {{ u.get_full_name }}</option>
                                                     {% endfor %}
                                                 </select>
-                                                {% if show_users %}
-                                                    <select class="form-control" name="intervention_assigned"
-                                                            id="intervention_assigned">
-                                                        {% for u in users %}
-                                                            <option value="{{ u.pk }}">Asignar
-                                                                a {{ u.get_full_name }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                {% endif %}
+                                            {% endif %}
                                         </div>
                                         <div class="col-xs-12 col-md-2">
                                             <button type="submit" class="btn btn-block btn-danger">

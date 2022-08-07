@@ -2,10 +2,10 @@
  * Created by xiscosastre on 26/4/16.
  */
 
-var img_counter = 0;
-var upload_counter = 0;
-var upload_counter_finished = 0;
-var uploading_images = false;
+let img_counter = 0;
+let upload_counter = 0;
+let upload_counter_finished = 0;
+let uploading_images = false;
 
 function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -49,8 +49,9 @@ function uploadFileToS3(file, s3Data) {
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function(evt) {
                 if (evt.lengthComputable) {
-                    var percentComplete = (evt.loaded / evt.total) * 100;
-                    $("#" + id + '_p').html(Math.floor( percentComplete ) + "%")
+                    const percentComplete = Math.floor((evt.loaded / evt.total) * 100);
+                    $("#" + id + '_p').css('width',percentComplete + "%")
+                    $("#" + id + '_s').html(percentComplete + "%")
                 }
             }, false);
             return xhr;
@@ -59,14 +60,14 @@ function uploadFileToS3(file, s3Data) {
 }
 
 function setUploadToError(id) {
-    $("#" + id + '_s').removeClass('glyphicon-refresh-animate');
-    $("#" + id + '_b').removeClass('btn-default').addClass('btn-danger');
+    $("#" + id + '_s').html('Error');
+    $("#" + id + '_p').removeClass('progress-bar-info').addClass('progress-bar-danger');
 }
 
 function finishUpload(id) {
-    $("#" + id + '_s').hide();
-    $("#" + id + '_d').show();
-    $("#" + id + '_b').removeClass('btn-default').addClass('btn-success');
+    $("#" + id + '_s').html('100%');
+    $("#" + id + '_p').css('width',"100%")
+    $("#" + id + '_p').removeClass('progress-bar-info').addClass('progress-bar-success');
     upload_counter_finished++;
     if (upload_counter_finished >= upload_counter) {
         if (uploading_images) {
@@ -121,11 +122,19 @@ function set_image(element) {
 
 function prepareUploadToS3(file, url, token) {
     let id = generateId(file.name);
-    let uploadElement = '<button style="margin: 3px" disabled class="btn btn-default" id="' + id + '_b">' +
-        file.name + ' <div id="' + id + '_p">0%</div>' +
-        ' <span id="' + id + '_s" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>' +
-        '<span id="' + id + '_d" class="glyphicon glyphicon-check" style="display: none"></span></button>';
-    $('#file_progress').append(uploadElement);
+    const displayName = file.name.length <= 40 ? file.name : file.name.substring(0, 40) + "..."
+    const uploadBar = '<h5>' + displayName + ' <small id="' + id +'_s">0%</small></h5>\n' +
+        '                            <div class="row">\n' +
+        '                                <div class="col-md-12 col-xs-12 col-lg-12">\n' +
+        '                                    <div class="progress">\n' +
+        '                                        <div id="' + id +'_p" class="progress-bar progress-bar-striped progress-bar-info active"\n' +
+        '                                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"\n' +
+        '                                             style="width:0%">\n' +
+        '                                        </div>\n' +
+        '                                    </div>\n' +
+        '                                </div>\n' +
+        '                            </div>\n'
+    $('#file_progress').append(uploadBar);
     $.post(url, {fileName: file.name, csrfmiddlewaretoken: token})
         .done(function( data ) {
             uploadFileToS3(file, data)
