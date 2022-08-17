@@ -72,7 +72,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.login.EnforceLoginMiddleware',
     'core.middleware.staff.StaffMiddleware',
-    'core.middleware.gsmkey.GsmKey',
     'django_user_agents.middleware.UserAgentMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
@@ -298,8 +297,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'statusbar': True,
 }
 
-GSM_WATCH_STATUS_CACHE_KEY = 'gsmstatus'
-GSM_WATCH_TIME_CACHE_KEY = 'gsmtime'
 SMS_TOKEN_CACHE_KEY = 'smstoken'
 SMS_TOKEN_EXPIRE_TIME = 60 * 60 * 3
 
