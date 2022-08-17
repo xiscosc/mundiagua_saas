@@ -89,18 +89,10 @@ CUSTOMER_REPAIR_URL = "https://customerservice.mundiaguabalear.com/repair/"
 #CACHE
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS'),
-        'OPTIONS': {
-            'binary': True,
-            'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-            'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD'),
-        }
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }
-
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN'),
