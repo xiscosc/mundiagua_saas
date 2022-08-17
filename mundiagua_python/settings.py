@@ -207,14 +207,6 @@ DEFAULT_MODIFICATIONS_PAGINATOR = 18
 
 EMAIL_BACKEND = "django_ses.SESBackend"
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 NON_STAFF_VIEWS = ('intervention-list-own',
                    'intervention-view',

@@ -5,12 +5,11 @@ import os
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # STATIC FILES
-DEBUG =  False
+DEBUG = int(os.environ.get('DEBUG')) == 1
 NUMBER_TEMPLATES = 10
 IMAGE_NOT_FOUND = "base/img/image_not_available.png"
 
