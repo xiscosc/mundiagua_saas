@@ -170,13 +170,8 @@ class ClientView(DetailView):
 class InterventionsFromCustomerView(View):
     def get(self, request, *args, **kwargs):
         customer = Client.objects.get(pk=kwargs["pk"])
-        pk_list = []
-        for i in (
-            Intervention.objects.filter(address__client=customer)
-            .order_by("-date")
-            .values("id")
-        ):
-            pk_list.append(i["id"])
+        pk_list = list(
+            Intervention.objects.filter(address__client=customer).order_by("-date").values_list('id', flat=True))
         request.session["search_intervention"] = pk_list
         request.session["search_intervention_text"] = "Averías de " + str(customer)
         return HttpResponseRedirect(reverse_lazy("intervention:intervention-search"))
@@ -185,13 +180,8 @@ class InterventionsFromCustomerView(View):
 class BudgetsFromCustomerView(View):
     def get(self, request, *args, **kwargs):
         customer = Client.objects.get(pk=kwargs["pk"])
-        pk_list = []
-        for i in (
-            BudgetStandard.objects.filter(address__client=customer)
-            .order_by("-date")
-            .values("id")
-        ):
-            pk_list.append(i["id"])
+        pk_list = list(
+            BudgetStandard.objects.filter(address__client=customer).order_by("-date").values_list('id', flat=True))
         request.session["search_budgets"] = pk_list
         request.session["search_budgets_text"] = "Presupuestos de " + str(customer)
         request.session["search_budgets_lines_enabled"] = False
@@ -201,13 +191,8 @@ class BudgetsFromCustomerView(View):
 class EngineRepairsFromCustomerView(View):
     def get(self, request, *args, **kwargs):
         customer = Client.objects.get(pk=kwargs["pk"])
-        pk_list = []
-        for i in (
-            EngineRepair.objects.filter(address__client=customer)
-            .order_by("-date")
-            .values("id")
-        ):
-            pk_list.append(i["id"])
+        pk_list = list(
+            EngineRepair.objects.filter(address__client=customer).order_by("-date").values_list('id', flat=True))
         request.session["search_repairs_engine"] = pk_list
         request.session[
             "search_repairs_engine_text"
@@ -218,20 +203,20 @@ class EngineRepairsFromCustomerView(View):
 class RepairsFromCustomerView(View):
     def get(self, request, *args, **kwargs):
         customer = Client.objects.get(pk=kwargs["pk"])
-        request.session["search_repair_ath"] = (
+        request.session["search_repair_ath"] = list(
             AthRepair.objects.filter(address__client=customer)
-            .order_by("-date")
-            .values_list("id", flat=True)
+                .order_by("-date")
+                .values_list("id", flat=True)
         )
-        request.session["search_repair_idegis"] = (
+        request.session["search_repair_idegis"] = list(
             IdegisRepair.objects.filter(address__client=customer)
-            .order_by("-date")
-            .values_list("id", flat=True)
+                .order_by("-date")
+                .values_list("id", flat=True)
         )
-        request.session["search_repair_zodiac"] = (
+        request.session["search_repair_zodiac"] = list(
             ZodiacRepair.objects.filter(address__client=customer)
-            .order_by("-date")
-            .values_list("id", flat=True)
+                .order_by("-date")
+                .values_list("id", flat=True)
         )
         request.session["search_repair_text"] = "Reparaciones de " + str(customer)
         return HttpResponseRedirect(
@@ -518,7 +503,7 @@ class SearchClientToMergeView(TemplateView):
         context["show_results"] = len(context["clients"])
         client = Client.objects.get(pk=kwargs["pk"])
         context["subtitle"] = (
-            "Paso 2: Seleccionar cliente a fusionar con %s" % client.name
+                "Paso 2: Seleccionar cliente a fusionar con %s" % client.name
         )
         context["client_obj"] = client
         return render(request, self.template_name, context)
@@ -528,7 +513,7 @@ class SearchClientToMergeView(TemplateView):
         try:
             client = Client.objects.get(pk=kwargs["pk"])
             context["subtitle"] = (
-                "Paso 2: Seleccionar cliente a fusionar con %s" % client.name
+                    "Paso 2: Seleccionar cliente a fusionar con %s" % client.name
             )
         except:
             pass
