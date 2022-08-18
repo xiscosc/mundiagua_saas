@@ -287,11 +287,8 @@ class PreSearchInterventionView(PreSearchView):
             | Q(address__client__name__icontains=search_text)
             | Q(address__address__icontains=search_text)
             | Q(address__client__intern_code__icontains=search_text)
-        )
-        pk_list = []
-        for i in interventions:
-            pk_list.append(i.pk)
-        request.session["search_intervention"] = pk_list
+        ).values_list('id', flat=True)
+        request.session["search_intervention"] = list(interventions)
         request.session["search_intervention_text"] = search_text
         return HttpResponseRedirect(reverse_lazy("intervention:intervention-search"))
 

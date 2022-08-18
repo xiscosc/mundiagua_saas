@@ -96,13 +96,9 @@ class PreSearchEngineRepairView(PreSearchView):
         repairs = EngineRepair.objects.filter(
             Q(address__client__name__icontains=search_text) | Q(
                 address__address__icontains=search_text) | Q(address__client__phones__phone__icontains=search_text) | Q(
-                address__client__intern_code__icontains=search_text))
+                address__client__intern_code__icontains=search_text)).values_list('id', flat=True)
 
-        pk_list = []
-        for i in repairs:
-            pk_list.append(i.pk)
-
-        request.session['search_repairs_engine'] = pk_list
+        request.session['search_repairs_engine'] = list(repairs)
         request.session['search_repairs_engine_text'] = search_text
         return HttpResponseRedirect(reverse_lazy('engine:engine-search'))
 
