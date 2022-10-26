@@ -11,8 +11,9 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
+from core.aws.s3_utils import get_s3_download_signed_url, get_s3_upload_signed_url
 from core.tasks import send_data_to_user
-from core.utils import create_amazon_client, autolink_intervention
+from core.utils import autolink_intervention
 
 
 class InterventionStatus(models.Model):
@@ -222,23 +223,13 @@ class InterventionFile(models.Model):
         return os.path.splitext(self.filename())[1][1:]
 
     def get_upload_signed_url(self):
-        s3 = create_amazon_client('s3')
-        mimetype = mimetypes.guess_type(self.s3_key)[0]
-        fields = {'Content-Type': mimetype}
-        conditions = [["starts-with", "$Content-Type", ""]]
-        return s3.generate_presigned_post(self.get_upload_bucket(), self.s3_key, ExpiresIn=60, Fields=fields,
-                                          Conditions=conditions)
+        return get_s3_upload_signed_url(self.s3_key, self.get_upload_bucket())
 
     class Meta:
         abstract = True
 
     def get_signed_url(self):
-        s3 = create_amazon_client('s3')
-        try:
-            params = {'Bucket': self.get_bucket(), 'Key': self.s3_key}
-            return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=120)
-        except:
-            return None
+        return get_s3_download_signed_url(self.s3_key, self.get_bucket())
 
     def __str__(self):
         return "V" + str(self.intervention.pk) + " | " + str(self.pk) + " | " + self.filename()
@@ -257,12 +248,7 @@ class InterventionImage(InterventionFile):
         if self.thumbnail_s3_key is None:
             return None
 
-        s3 = create_amazon_client('s3')
-        try:
-            params = {'Bucket': self.get_bucket(), 'Key': self.thumbnail_s3_key}
-            return s3.generate_presigned_url('get_object', Params=params, ExpiresIn=3600)
-        except:
-            return None
+        return get_s3_download_signed_url(self.thumbnail_s3_key, self.get_bucket())
 
 
 class InterventionDocument(InterventionFile):

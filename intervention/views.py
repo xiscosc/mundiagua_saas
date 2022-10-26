@@ -14,6 +14,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from async_messages import messages
 
+from core.aws.s3_utils import generate_s3_document_key
 from core.models import User, SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from core.utils import (
@@ -45,7 +46,6 @@ from intervention.utils import (
     get_intervention_list,
     bill_intervention,
     generate_report,
-    generate_document_s3_key,
 )
 from intervention.forms import (
     NewInterventionForm,
@@ -552,7 +552,7 @@ class PreUploadDocumentView(View):
     def post(self, request, *args, **kwargs):
         intervention = Intervention.objects.get(pk=self.kwargs["pk"])
         filename = request.POST["fileName"]
-        key = generate_document_s3_key(intervention, filename)
+        key = generate_s3_document_key(intervention, filename)
         document = InterventionDocument(
             intervention=intervention,
             user=request.user,
@@ -568,7 +568,7 @@ class PreUploadImageView(View):
     def post(self, request, *args, **kwargs):
         intervention = Intervention.objects.get(pk=self.kwargs["pk"])
         filename = request.POST["fileName"]
-        key = generate_document_s3_key(intervention, filename)
+        key = generate_s3_document_key(intervention, filename)
         image = InterventionImage(
             intervention=intervention,
             user=request.user,

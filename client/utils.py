@@ -1,12 +1,11 @@
 import os
 import uuid
-import mimetypes
 from typing import List
 
 import requests
 from django.conf import settings
 
-from core.utils import create_amazon_client
+from core.aws.s3_utils import get_s3_download_signed_url, get_s3_upload_signed_url
 
 
 def send_whatsapp_template(template, placeholders: List[str], phone, file_name, s3_key):
@@ -44,17 +43,11 @@ def send_whatsapp_template(template, placeholders: List[str], phone, file_name, 
 
 
 def get_whatsapp_upload_signed_url(s3_key: str):
-    s3 = create_amazon_client('s3')
-    mimetype = mimetypes.guess_type(s3_key)[0]
-    fields = {'Content-Type': mimetype}
-    conditions = [["starts-with", "$Content-Type", ""]]
-    return s3.generate_presigned_post(settings.S3_WHATSAPP, s3_key, ExpiresIn=60, Fields=fields, Conditions=conditions)
+    return get_s3_upload_signed_url(s3_key, settings.S3_WHATSAPP)
 
 
 def get_whatsapp_download_signed_url(s3_key: str):
-    s3 = create_amazon_client('s3')
-    s3_params = {'Bucket': settings.S3_WHATSAPP, 'Key': s3_key}
-    return s3.generate_presigned_url('get_object', Params=s3_params, ExpiresIn=600)
+    return get_s3_download_signed_url(s3_key, settings.S3_WHATSAPP, 600)
 
 
 def generate_whatsapp_document_s3_key(filename):

@@ -198,12 +198,6 @@ def get_intervention_list(status_id, user_id, zone_id, starred, tag_id):
             'search_zone': search_zone, 'search_tag': search_tag}
 
 
-def generate_document_s3_key(intervention: Intervention, filename):
-    folder = intervention.__str__()
-    id = uuid.uuid1().__str__()
-    _, file_extension = os.path.splitext(filename)
-    return "%s/%s%s" % (folder, id, file_extension)
-
 
 def generate_report(request):
     from django.db import connection
