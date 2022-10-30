@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import calendar
-from tokenize import group
 import xlwt
 import uuid
-import os
 from datetime import date, datetime
-from functools import reduce
 
 from async_messages import messages
 from django.conf import settings

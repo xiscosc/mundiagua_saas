@@ -6,15 +6,13 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
     Http404,
-    HttpResponse,
-    HttpResponseForbidden, QueryDict,
+    QueryDict,
 )
 from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator
 from django.db.models import Q
 from async_messages import messages
 
-from core.aws.s3_utils import generate_s3_document_key
 from core.files.utils import get_items_in_json_response, store_file_metadata_from_post, delete_file_metadata, \
     get_file_metadata, get_file_download_url, update_file_metadata
 from core.models import User, SystemVariable
@@ -33,8 +31,6 @@ from intervention.models import (
     Zone,
     InterventionStatus,
     InterventionModification,
-    InterventionImage,
-    InterventionDocument,
     InterventionSubStatus,
     InterventionLogSub,
     Tag,
