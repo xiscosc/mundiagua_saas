@@ -168,3 +168,10 @@
 .row-new-instance{
     margin-bottom: 10px;
 }
+
+.gallery-th {
+    border-radius: 6px;
+    height: 100px;
+    width: 100px;
+    margin: 2px;
+}

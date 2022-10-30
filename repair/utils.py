@@ -6,7 +6,7 @@ import qrcode.image.svg
 from io import BytesIO
 
 from repair.models import AthRepair, ZodiacRepair, RepairType, IdegisRepair, AthRepairLog, ZodiacRepairLog, \
-    IdegisRepairLog
+    IdegisRepairLog, Repair
 
 
 def add_list_filters(repair_class, status, starred, budget):
@@ -37,7 +37,7 @@ def generate_repair_qr_code(online_id):
     return stream.getvalue().decode()
 
 
-def get_repair_by_type(pk, type):
+def get_repair_by_type(pk, type) -> Repair:
     if type == RepairType.ATH:
         return AthRepair.objects.get(pk=pk)
     elif type == RepairType.ZODIAC:

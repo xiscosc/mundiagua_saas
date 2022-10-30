@@ -8,11 +8,31 @@
        class="btn btn-circle {% if repair.starred %}btn-danger{% else %}btn-default{% endif %}">
         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
     </a>
+    {% include 'new_file_include.html' %}
 {% endblock %}
 {% block content %}
-
+    {% url 'repair:repair-files' repair.pk repair.type.value 'image' as img_url %}
+    {% url 'repair:repair-files' repair.pk repair.type.value 'document' as doc_url %}
+    {% include 'upload_modal_include.html' with images_url=img_url documents_url=doc_url %}
 
     {% include 'client_data.html' with client=repair.address.client sms=True address=repair.address %}
+
+    <div class="row" id="documents-row" style="display: none">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Documentos de la reparación</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group" id="documents-row-body">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% include 'image_list_include.html' with title="Imágenes de la reparación" %}
 
     {% include 'client_send_pdf.html' with document_name="hoja de reparación" client=repair.address.client %}
 
@@ -71,7 +91,8 @@
                                 <strong>ID Online</strong>
                             </td>
                             <td>
-                                <a href="https://customerservice.mundiaguabalear.com/repair/{{ repair.online_id }}" target="_blank"
+                                <a href="https://customerservice.mundiaguabalear.com/repair/{{ repair.online_id }}"
+                                   target="_blank"
                                    class="btn btn-default">
                                     <strong>{{ repair.online_id }}</strong>
                                 </a>
@@ -232,19 +253,23 @@
 {% endblock %}
 {% block extrajs %}
     <script type="application/javascript">
-        var default_sms = "{{ sms_value }}";
-        var from_model_val = {% if repair.type.value %}"repair-ath"{% else %}"repair-idegis"{% endif %};
-        var default_subject = "Reparación completada";
-        var from_model_id_val = {{ repair.pk }};
-    </script>
-    <script type="application/javascript">
+        const default_sms = "{{ sms_value }}";
+        const from_model_val = {% if repair.type.value %}"repair-ath"{% else %}"repair-idegis"{% endif %};
+        const default_subject = "Reparación completada";
+        const from_model_id_val = {{ repair.pk }};
+
         const a_default_email_subject = "Justificante de la reparación {{ repair }}";
         const a_default_email_body = "Tal como nos ha solicitado, le adjuntamos el justificante de la reparación {{ repair }}. Si tiene alguna pregunta no dude en consultarnos. También puede consultar el estado de la reparación en https://customerservice.mundiaguabalear.com/repair/{{ repair.online_id }} .";
         const a_default_attachment_name = "{{ repair }}.pdf"
         const a_default_attachment_id = "repair{{repair.type.value}}_{{ repair.pk }}"
         const a_default_whatsapp_placeholder = "reparación {{ repair }}"
+
+        const image_list_url = "{% url 'repair:repair-files' repair.pk repair.type.value 'image' %}"
+        const document_list_url = "{% url 'repair:repair-files' repair.pk repair.type.value 'document' %}"
+        const doc_id_check = {{ request.user.id }}
     </script>
     <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/repair/detail.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/core/files.js' %}{% app_version_includes %}"></script>
 {% endblock %}

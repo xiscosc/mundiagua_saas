@@ -1,0 +1,34 @@
+<!-- Upload Modal -->
+    <div class="modal fade" id="modal_upload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title">Subida de archivos</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="body_upload">
+                        <div id="file_selection" style="display: none">
+                            <p>Seleccione los archivos que desea subir</p>
+                            <input multiple data-token="{{ csrf_token }}"
+                                   data-url="{{ documents_url }}"
+                                   type="file" id="document"/>
+                        </div>
+                        <div id="image_selection" style="display: none">
+                            <p>Seleccione las fotos que desea subir</p>
+                            <input multiple data-token="{{ csrf_token }}"
+                                   data-url="{{ images_url }}"
+                                   type="file" accept="image/*" id="image"/>
+                        </div>
+                        <div id="file_progress">
+                        </div>
+                        <div id="preview_progress" style="display: none">
+                            <h5>Procesando imágenes...</h5>
+                            {% include 'progress_bar.html' with w=100 %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

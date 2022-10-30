@@ -5,7 +5,8 @@
 {% block page_title %}Avería
     <small>{{ intervention }}</small>
     {% include 'starred_include.html' with intervention=intervention %}
-    {% include 'new_file_include.html' with intervention=intervention %}{% endblock %}
+    {% include 'new_file_include.html' %}
+{% endblock %}
 {% block content %}
 
     <!-- Modal -->

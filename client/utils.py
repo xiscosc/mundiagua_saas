@@ -5,7 +5,7 @@ from typing import List
 import requests
 from django.conf import settings
 
-from core.aws.s3_utils import get_s3_download_signed_url, get_s3_upload_signed_url
+from core.aws.s3_utils import get_s3_download_signed_url, get_s3_upload_signed_post
 
 
 def send_whatsapp_template(template, placeholders: List[str], phone, file_name, s3_key):
@@ -43,7 +43,7 @@ def send_whatsapp_template(template, placeholders: List[str], phone, file_name, 
 
 
 def get_whatsapp_upload_signed_url(s3_key: str):
-    return get_s3_upload_signed_url(s3_key, settings.S3_WHATSAPP)
+    return get_s3_upload_signed_post(s3_key, settings.S3_WHATSAPP)
 
 
 def get_whatsapp_download_signed_url(s3_key: str):

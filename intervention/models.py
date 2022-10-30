@@ -11,7 +11,7 @@ from colorfield.fields import ColorField
 from django.db.models.signals import post_save
 from django.conf import settings
 from client.models import SMS
-from core.aws.s3_utils import get_s3_download_signed_url, get_s3_upload_signed_url
+from core.aws.s3_utils import get_s3_download_signed_url, get_s3_upload_signed_post
 from core.tasks import send_data_to_user
 from core.utils import autolink_intervention
 
@@ -223,7 +223,7 @@ class InterventionFile(models.Model):
         return os.path.splitext(self.filename())[1][1:]
 
     def get_upload_signed_url(self):
-        return get_s3_upload_signed_url(self.s3_key, self.get_upload_bucket())
+        return get_s3_upload_signed_post(self.s3_key, self.get_upload_bucket())
 
     class Meta:
         abstract = True
