@@ -12,13 +12,13 @@ from core.models import User
 
 
 def get_items_in_json_response(m: Model, file_type: str, user: User, download_url_name: str,
-                               url_kwargs: dict, delete_url_name: str) -> HttpResponse:
+                               url_kwargs: dict, meta_url_name: str) -> HttpResponse:
     try:
         fs = _get_fs(file_type)
         files = fs.get_model_items(m)
         if not user.is_officer:
             files = list(filter(lambda x: x.visible_to_all, files))
-        return JsonResponse(data=files_to_json(fs, files, download_url_name, url_kwargs, delete_url_name), safe=False)
+        return JsonResponse(data=files_to_json(fs, files, download_url_name, url_kwargs, meta_url_name), safe=False)
     except ValueError:
         return HttpResponseBadRequest()
 
@@ -32,7 +32,7 @@ def _get_fs(file_type: str) -> UploadFileService:
 
 
 def files_to_json(fs: UploadFileService, files: list[DecoupledFile], download_url_name: str, url_kwargs: dict,
-                  delete_url_name: str) -> list[object]:
+                  meta_url_name: str) -> list[object]:
     json_fs = []
     for f in files:
         kwargs = url_kwargs.copy()
@@ -48,7 +48,7 @@ def files_to_json(fs: UploadFileService, files: list[DecoupledFile], download_ur
             'userName': f.user.__str__(),
             'userId': f.user.id,
             'createdAt': f.date,
-            'deleteUrl': reverse_lazy(delete_url_name, kwargs=kwargs),
+            'metaUrl': reverse_lazy(meta_url_name, kwargs=kwargs),
         }
         json_fs.append(json_f)
 
@@ -77,15 +77,32 @@ def store_file_metadata_from_post(post_data, m: Model, file_type: str, user: Use
 
 
 def get_file_metadata(file_id: str, m: Model, file_type: str, user, download_url_name: str,
-                      url_kwargs: dict, delete_url_name: str) -> HttpResponse:
+                      url_kwargs: dict, meta_url_name: str) -> HttpResponse:
     try:
         fs = _get_fs(file_type)
         file = fs.get_item(m, file_id)
         if not file or (not user.is_officer and not file.visible_to_all):
             return HttpResponseNotFound()
 
-        return JsonResponse(data=files_to_json(fs, [file], download_url_name, url_kwargs, delete_url_name)[0],
+        return JsonResponse(data=files_to_json(fs, [file], download_url_name, url_kwargs, meta_url_name)[0],
                             safe=False)
+    except ValueError:
+        return HttpResponseBadRequest()
+
+
+def update_file_metadata(file_id: str, m: Model, file_type: str, user, visible: bool) -> HttpResponse:
+    try:
+        if not user.is_officer:
+            return HttpResponseForbidden()
+
+        fs = _get_fs(file_type)
+        file = fs.get_item(m, file_id)
+        if not file:
+            return HttpResponseNotFound()
+
+        file.set_visible_to_all(visible)
+        fs.store_file(file)
+        return JsonResponse(data={}, safe=False)
     except ValueError:
         return HttpResponseBadRequest()
 

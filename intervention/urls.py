@@ -7,9 +7,8 @@ from .views import HomeView, SearchClientView, CreateInterventionView, Intervent
     ListModificationView, MorrisInterventionAssigned, MorrisInterventionInput, PrintInterventionView, \
     PrintListInterventionView, MorrisYearVs, OwnListInterventionView, \
     ToggleStarredInterventionView, BillIntervention, AddStatusJobView, ReportInterventionView, MapInterventionView, \
-    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, DocumentView, \
-    RemoveFileView, MakeVisibleDocumentView, LinkToInterventionView, ImageUrlView, PreUploadDocumentView, \
-    PreUploadImageView
+    MapAssignedInterventionView, ForbiddenInterventionView, EditInterventionView, LinkToInterventionView, \
+    InterventionFilesView, InterventionFileView, InterventionFileDownloadView
 
 urlpatterns = [
     url(r'^home/$', HomeView.as_view(), name="intervention-home"),
@@ -44,11 +43,11 @@ urlpatterns = [
     url(r'^map/(?P<pk>\d+)/$', MapAssignedInterventionView.as_view(), name="intervention-map-assigned"),
     url(r'^forbidden/$', ForbiddenInterventionView.as_view(), name="intervention-forbidden"),
     url(r'^edit-data/(?P<pk>\d+)/$', EditInterventionView.as_view(), name="intervention-edit-data"),
-    url(r'^getimageurl/(?P<pk>\d+)/$', ImageUrlView.as_view(), name="intervention-view-image-url"),
-    url(r'^viewdocument/(?P<pk>\d+)/$', DocumentView.as_view(), name="intervention-view-document"),
-    url(r'^preupload/document/(?P<pk>\d+)/$', PreUploadDocumentView.as_view(), name="intervention-preupload-document"),
-    url(r'^preupload/image/(?P<pk>\d+)/$', PreUploadImageView.as_view(), name="intervention-preupload-image"),
-    url(r'^removefile/(?P<pk>\d+)/$', RemoveFileView.as_view(), name="intervention-remove-file"),
-    url(r'^makevisibledocument/(?P<pk>\d+)/$', MakeVisibleDocumentView.as_view(), name="intervention-make-document-visible"),
-    url(r'^link/(?P<pk>\d+)/$', LinkToInterventionView.as_view(), name="intervention-link")
-    ]
+    url(r'^link/(?P<pk>\d+)/$', LinkToInterventionView.as_view(), name="intervention-link"),
+    url(r'^(?P<pk>\d+)/files/(?P<file_type>document|image)/$', InterventionFilesView.as_view(),
+        name="intervention-files"),
+    url(r'(?P<pk>\d+)/files/(?P<file_type>document|image)/(?P<file_id>[0-9a-f-]+)/$', InterventionFileView.as_view(),
+        name="intervention-file"),
+    url(r'(?P<pk>\d+)/files/(?P<file_type>document|image)/(?P<file_id>[0-9a-f-]+)/download/$',
+        InterventionFileDownloadView.as_view(), name="intervention-file-download")
+]

@@ -103,15 +103,7 @@ function finishUpload(id) {
 }
 
 function appendImage(i) {
-    const iHtml = `<a href="${i.downloadUrl}" class="link_image" target="_blank">` +
-        `<img class="gallery-th" src="${i.thDownloadUrl}" alt="Imagen de ${i.userName}"/>` +
-        '</a>';
-
-    $('#images-row-body').append(iHtml)
-}
-
-function appendDocument(i) {
-    let d = `<button class="btn btn-danger btn-circle btn-circle-inline btn-delete-doc" data-url="${i.deleteUrl}" data-id="doc-${i.fileId}"  href="">
+    let d = `<button class="btn btn-danger btn-circle btn-circle-inline btn-delete-img img-${i.fileId}" data-url="${i.metaUrl}" data-id="img-${i.fileId}"  href="">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
           </button>`
 
@@ -119,9 +111,34 @@ function appendDocument(i) {
         d = ""
     }
 
-    const p = `<li id="doc-${i.fileId}" class="list-group-item"> <strong>${i.originalFileName}</strong> | ${i.userName}, ${i.createdAt}
+    const iHtml = `<a href="${i.downloadUrl}" class="link_image img-${i.fileId}" target="_blank">
+            <img class="gallery-th" src="${i.thDownloadUrl}" alt="Imagen de ${i.userName}"/>
+        </a>${d}`;
+
+    $('#images-row-body').append(iHtml)
+}
+
+function appendDocument(i) {
+    let d = `<button class="btn btn-danger btn-circle btn-circle-inline btn-delete-doc" data-url="${i.metaUrl}" data-id="doc-${i.fileId}"  href="">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+          </button>`
+
+    let visible = `  <button disabled class='btn btn-xs btn-warning'><span class="fa fa-exclamation-circle"></span> Visible para operarios</button>`
+
+    if (i.userId !== doc_id_check) {
+        d = ""
+    }
+
+    if (i.visible !== true) {
+        visible = ""
+    }
+
+    const p = `<li id="doc-${i.fileId}" class="list-group-item"> <strong>${i.originalFileName}</strong> | ${i.userName}, ${i.createdAt} ${visible}
                                     <div class="pull-right" style="display: inline-flex">` + d +
-        `<a class="btn btn-success btn-circle btn-circle-inline"
+        `<button class="btn btn-info btn-circle btn-circle-inline btn-toggle-visibility" data-url="${i.metaUrl}" data-visible="${i.visible}">
+                                                <span class="fa fa-eye" aria-hidden="true"/>
+                                            </button>
+                                            <a class="btn btn-success btn-circle btn-circle-inline"
                                                href="${i.downloadUrl}"
                                                target="_blank">
                                                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
@@ -132,7 +149,7 @@ function appendDocument(i) {
     $('#documents-row-body').append(p)
 }
 
-function initDeleteDocuments() {
+function initDocumentButtons() {
     $('.btn-delete-doc').on('click', function () {
         const deleteUrl = $(this).data('url')
         const lineId = $(this).data('id')
@@ -148,6 +165,44 @@ function initDeleteDocuments() {
             }
         })
     })
+
+    $('.btn-toggle-visibility').on('click', function () {
+        const putUrl = $(this).data('url')
+        const v = $(this).data('visible');
+        console.log(v)
+        const body = {
+            visible: !v
+        }
+        console.log(body)
+        $.ajax({
+            type: 'PUT',
+            url: putUrl,
+            data: body,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", $('#document').data('token'));
+            },
+            success: function () {
+                location.reload();
+            }
+        })
+    })
+}
+
+function initDeleteImages() {
+    $('.btn-delete-img').on('click', function () {
+        const deleteUrl = $(this).data('url')
+        const lineId = $(this).data('id')
+        $.ajax({
+            type: 'DELETE',
+            url: deleteUrl,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", $('#document').data('token'));
+            },
+            success: function () {
+                $('.' + lineId).remove()
+            }
+        })
+    })
 }
 
 
@@ -160,6 +215,8 @@ function loadImages() {
         if (data.length > 0) {
             $('#images-row').fadeIn('fast');
         }
+
+        initDeleteImages();
     });
 }
 
@@ -173,7 +230,7 @@ function loadDocuments() {
             $('#documents-row').fadeIn('fast');
         }
 
-        initDeleteDocuments();
+        initDocumentButtons();
     });
 }
 

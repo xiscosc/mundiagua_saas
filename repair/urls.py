@@ -28,10 +28,10 @@ urlpatterns = [
     url(r'^unlink/(?P<pk>\d+)/(?P<type>idegis|ath|zodiac)/(?P<pk_intervention>\d+)/(?P<to_repair>\d+)/$',
         UnlinkInterventionView.as_view(),
         name="repair-unlink-intervention"),
-    url(r'^files/(?P<pk>\d+)/(?P<type>idegis|ath|zodiac)/(?P<file_type>document|image)/$',
+    url(r'^(?P<type>idegis|ath|zodiac)/(?P<pk>\d+)/files/(?P<file_type>document|image)/$',
         RepairFilesView.as_view(), name="repair-files"),
-    url(r'files/(?P<pk>\d+)/(?P<type>idegis|ath|zodiac)/(?P<file_type>document|image)/(?P<file_id>[0-9a-f-]+)/$',
+    url(r'(?P<type>idegis|ath|zodiac)/(?P<pk>\d+)/files/(?P<file_type>document|image)/(?P<file_id>[0-9a-f-]+)/$',
         RepairFileView.as_view(), name="repair-file"),
-    url(r'files/(?P<pk>\d+)/(?P<type>idegis|ath|zodiac)/(?P<file_type>document|image)/(?P<file_id>[0-9a-f-]+)/download/$',
+    url(r'(?P<type>idegis|ath|zodiac)/(?P<pk>\d+)/files/(?P<file_type>document|image)/(?P<file_id>[0-9a-f-]+)/download/$',
         RepairFileDownloadView.as_view(), name="repair-file-download")
 ]

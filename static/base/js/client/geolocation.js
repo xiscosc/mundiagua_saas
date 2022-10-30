@@ -26,13 +26,13 @@ function sendPosition(position) {
     $token = $form.children().first();
     $button = $('#btn_geo');
 
-    var parametros = {
+    const body = {
         "lat": position.coords.latitude,
         "lon": position.coords.longitude,
         "csrfmiddlewaretoken": $token.val()
     };
     $.ajax({
-        data: parametros,
+        data: body,
         url: $form.prop('action'),
         type: 'post',
         success: function (response) {

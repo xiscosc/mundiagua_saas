@@ -50,42 +50,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modal_upload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title">Subida de archivos</h5>
-                </div>
-                <div class="modal-body">
-                    <div id="body_upload">
-                        <div id="file_selection" style="display: none">
-                            <p>Seleccione los archivos que desea subir</p>
-                            <input multiple data-token="{{ csrf_token }}"
-                                   data-url="{% url 'intervention:intervention-preupload-document' intervention.pk %}"
-                                   type="file" id="document"/>
-                        </div>
-                        <div id="image_selection" style="display: none">
-                            <p>Seleccione las fotos que desea subir</p>
-                            <input multiple data-token="{{ csrf_token }}"
-                                   data-url="{% url 'intervention:intervention-preupload-image' intervention.pk %}"
-                                   type="file" accept="image/*" id="image"/>
-                        </div>
-                        <div id="file_progress">
-                        </div>
-                        <div id="preview_progress" style="display: none">
-                            <h5>Procesando imágenes...</h5>
-                            {% include 'progress_bar.html' with w=100 %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     {% if intervention.get_modifications|length > 0 %}
         <div class="row">
             <div class="col-md-12">
@@ -124,146 +88,12 @@
 
     {% include 'client_data.html' with client=intervention.address.client sms=request.user.is_officer address=intervention.address %}
 
-    {% if intervention.get_images|length > 0 %}
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Imágenes de la avería</h3>
-                    </div>
-                    <div class="panel-body">
-                        {% for i in intervention.get_images %}
-                            {% if i.thumbnail_s3_key %}
-                                <a href="#" class="link_image"
-                                   data-url="{% url 'intervention:intervention-view-image-url' i.pk %}"
-                                   data-date="{{ i.date }}"
-                                   data-name="{{ i.user.get_full_name }}"
-                                        {% if request.user == i.user %}
-                                   data-remove="{% url 'intervention:intervention-remove-file' i.pk %}?type=1"
-                                        {% else %}
-                                   data-remove="noremove"
-                                        {% endif %}
-                                >
-                                    <img src="{{ i.get_thumbnail_signed_url }}" style="height: 100px; width: 100px"
-                                         onerror="imgError(this);" alt=""/>
-                                </a>
-                                {% if i.s3_key == "no_key" %}
-                                    <button class="btn btn-warning btn-circle btn-circle-inline btn-s3" disabled>
-                                        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                                    </button>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-
-    {% if request.user.is_officer and intervention.get_documents|length > 0 %}
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Documentos de la avería</h3>
-                    </div>
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            {% for d in intervention.get_documents %}
-                                <li class="list-group-item">
-                                    <strong>{{ d.filename }}</strong>
-                                    | {{ d.user.get_full_name }}, {{ d.date|date:"d-m-Y" }} {{ d.date|time:"H:i" }}
-                                    <div class="pull-right" style="display: inline-flex">
-                                        {% if d.only_officer %}
-                                            <a class="btn btn-warning btn-xs btn-circle-inline"
-                                               href="{% url 'intervention:intervention-make-document-visible' d.pk %}">
-                                                <i class="fa fa-eye"></i> Mostrar a operario
-                                            </a>
-                                        {% else %}
-                                            <a class="btn btn-info btn-xs btn-circle-inline"
-                                               href="{% url 'intervention:intervention-make-document-visible' d.pk %}">
-                                                <i class="fa fa-eye-slash"></i> Ocultar a operario
-                                            </a>
-                                        {% endif %}
-                                        {% if d.s3_key == "no_key" %}
-                                            <button class="btn btn-danger btn-circle btn-circle-inline" disabled>
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                            </button>
-                                            <button class="btn btn-warning btn-circle btn-circle-inline" disabled>
-                                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                                            </button>
-                                        {% else %}
-                                            {% if request.user == d.user %}
-                                                <a class="btn btn-danger btn-circle btn-circle-inline"
-                                                   href="{% url 'intervention:intervention-remove-file' d.pk %}?type=0">
-                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                                </a>
-                                            {% else %}
-                                                <button class="btn btn-danger btn-circle btn-circle-inline" disabled>
-                                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                                </button>
-                                            {% endif %}
-                                            <a class="btn btn-success btn-circle btn-circle-inline"
-                                               href="{% url 'intervention:intervention-view-document' d.pk %}"
-                                               target="_blank">
-                                                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
-                                            </a>
-                                        {% endif %}
-
-                                    </div>
-
-                                </li>
-                            {% endfor %}
-
-                        </ul>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
-
-    {% if not request.user.is_officer and intervention.get_no_officer_documents|length > 0 %}
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Documentos de la avería</h3>
-                    </div>
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            {% for d in intervention.get_no_officer_documents %}
-                                <li class="list-group-item">
-                                    <strong>{{ d.filename }}</strong>
-                                    | {{ d.user.get_full_name }}, {{ d.date|date:"d-m-Y" }} {{ d.date|time:"H:i" }}
-                                    <div class="pull-right" style="display: inline-flex">
-                                        {% if d.s3_key == "no_key" %}
-                                            <button class="btn btn-warning btn-circle btn-circle-inline" disabled>
-                                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                                            </button>
-                                        {% else %}
-                                            <a class="btn btn-success btn-circle btn-circle-inline"
-                                               href="{% url 'intervention:intervention-view-document' d.pk %}"
-                                               target="_blank">
-                                                <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
-
+    <!-- Media upload -->
+    {% url 'intervention:intervention-files' intervention.pk 'image' as img_url %}
+    {% url 'intervention:intervention-files' intervention.pk 'document' as doc_url %}
+    {% include 'upload_modal_include.html' with images_url=img_url documents_url=doc_url %}
+    {% include 'documents_list_include.html' with title="Documentos de la avería" %}
+    {% include 'image_list_include.html' with title="Imágenes de la avería" %}
 
     {% if request.user.is_officer %}
         <div class="row">
@@ -688,14 +518,20 @@
 {% endblock %}
 {% block extrajs %}
     <script type="application/javascript">
-        var default_sms = "{{ sms_value }}";
-        var from_model_val = "intervention";
-        var default_subject = "Aviso ATH";
-        var from_model_id_val = {{ intervention.pk }};
+        const default_sms = "{{ sms_value }}";
+        const from_model_val = "intervention";
+        const default_subject = "Aviso ATH";
+        const from_model_id_val = {{ intervention.pk }};
+
+        // Media upload JS
+        const image_list_url = "{% url 'intervention:intervention-files' intervention.pk  'image' %}"
+        const document_list_url = "{% url 'intervention:intervention-files' intervention.pk 'document' %}"
+        const doc_id_check = {{ request.user.id }}
     </script>
     <script src="{% static 'base/js/intervention/detail.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>
+    <script src="{% static 'base/js/core/files.js' %}{% app_version_includes %}"></script>
 {% endblock %}
 {% block extracss %}
     <link href="{% static 'base/css/intervention/detail.css' %}{% app_version_includes %}" rel="stylesheet"

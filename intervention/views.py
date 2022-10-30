@@ -7,7 +7,7 @@ from django.http import (
     JsonResponse,
     Http404,
     HttpResponse,
-    HttpResponseForbidden,
+    HttpResponseForbidden, QueryDict,
 )
 from django.views.generic import TemplateView, DetailView, View, UpdateView
 from django.core.paginator import Paginator
@@ -15,6 +15,8 @@ from django.db.models import Q
 from async_messages import messages
 
 from core.aws.s3_utils import generate_s3_document_key
+from core.files.utils import get_items_in_json_response, store_file_metadata_from_post, delete_file_metadata, \
+    get_file_metadata, get_file_download_url, update_file_metadata
 from core.models import User, SystemVariable
 from core.views import SearchClientBaseView, CreateBaseView, PreSearchView
 from core.utils import (
@@ -125,8 +127,8 @@ class InterventionView(DetailView):
             try:
                 intervention = Intervention.objects.get(pk=kwargs["pk"])
                 if (
-                    intervention.status_id == 2
-                    and intervention.assigned_id == request.user.id
+                        intervention.status_id == 2
+                        and intervention.assigned_id == request.user.id
                 ):
                     return super(InterventionView, self).dispatch(
                         request, *args, **kwargs
@@ -479,108 +481,6 @@ class ForbiddenInterventionView(TemplateView):
     template_name = "forbidden_intervention.html"
 
 
-class ImageUrlView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            image = InterventionImage.objects.get(pk=self.kwargs["pk"])
-            return HttpResponse(image.get_signed_url())
-        except:
-            import os
-
-            return settings.STATIC_URL + settings.IMAGE_NOT_FOUND
-
-
-class DocumentView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            document = InterventionDocument.objects.get(pk=self.kwargs["pk"])
-            if not request.user.is_officer:
-                if (
-                    document.intervention.status_id != 2
-                    or document.intervention.assigned_id != request.user.id
-                    or document.only_officer
-                ):
-                    return HttpResponseRedirect(
-                        reverse_lazy("intervention:intervention-forbidden")
-                    )
-
-            return HttpResponseRedirect(document.get_signed_url())
-        except:
-            raise Http404("Archivo no disponible")
-
-
-class RemoveFileView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            type = int(request.GET.get("type", 0))
-            if type == 0:
-                instance = InterventionDocument.objects.get(pk=self.kwargs["pk"])
-            else:
-                instance = InterventionImage.objects.get(pk=self.kwargs["pk"])
-
-            pk_intervention = instance.intervention_id
-            if instance.user == request.user:
-                instance.delete()
-                messages.success(request.user, "Archivo eliminado")
-                return HttpResponseRedirect(
-                    reverse_lazy(
-                        "intervention:intervention-view", kwargs={"pk": pk_intervention}
-                    )
-                )
-            else:
-                return HttpResponseForbidden("Archivo no disponible")
-        except:
-            raise Http404("Archivo no disponible")
-
-
-class MakeVisibleDocumentView(View):
-    def get(self, request, *args, **kwargs):
-        instance = InterventionDocument.objects.get(pk=self.kwargs["pk"])
-        pk_intervention = instance.intervention_id
-        instance.only_officer = not instance.only_officer
-        instance.save()
-
-        messages.success(request.user, "Visibilidad de archivo modificada")
-        return HttpResponseRedirect(
-            reverse_lazy(
-                "intervention:intervention-view", kwargs={"pk": pk_intervention}
-            )
-        )
-
-
-class PreUploadDocumentView(View):
-    def post(self, request, *args, **kwargs):
-        intervention = Intervention.objects.get(pk=self.kwargs["pk"])
-        filename = request.POST["fileName"]
-        key = generate_s3_document_key(intervention, filename)
-        document = InterventionDocument(
-            intervention=intervention,
-            user=request.user,
-            in_s3=True,
-            s3_key=key,
-            original_name=filename,
-        )
-        document.save()
-        return JsonResponse(document.get_upload_signed_url())
-
-
-class PreUploadImageView(View):
-    def post(self, request, *args, **kwargs):
-        intervention = Intervention.objects.get(pk=self.kwargs["pk"])
-        filename = request.POST["fileName"]
-        key = generate_s3_document_key(intervention, filename)
-        image = InterventionImage(
-            intervention=intervention,
-            user=request.user,
-            in_s3=True,
-            s3_key=key,
-            original_name=filename,
-            thumbnail_s3_key="th/" + key,
-        )
-        image.save()
-        return JsonResponse(image.get_upload_signed_url())
-
-
 class LinkToInterventionView(View):
     def link_intervention(self, regex_text, text, type, trim=False):
         import re
@@ -659,3 +559,37 @@ class LinkToInterventionView(View):
         return HttpResponseRedirect(
             reverse_lazy("intervention:intervention-view", kwargs={"pk": kwargs["pk"]})
         )
+
+
+class InterventionFilesView(View):
+    def get(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=kwargs['pk'])
+        return get_items_in_json_response(intervention, kwargs['file_type'], request.user,
+                                          'intervention:intervention-file-download', kwargs,
+                                          'intervention:intervention-file')
+
+    def post(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=kwargs['pk'])
+        return store_file_metadata_from_post(request.POST, intervention, kwargs['file_type'], request.user)
+
+
+class InterventionFileView(View):
+    def delete(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=kwargs['pk'])
+        return delete_file_metadata(kwargs['file_id'], intervention, kwargs['file_type'], request.user)
+
+    def put(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=kwargs['pk'])
+        visible = QueryDict(request.body).get('visible', 'false') == 'true'
+        return update_file_metadata(kwargs['file_id'], intervention, kwargs['file_type'], request.user, visible)
+
+    def get(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=kwargs['pk'])
+        return get_file_metadata(kwargs['file_id'], intervention, kwargs['file_type'], request.user,
+                                 'intervention:intervention-file-download', kwargs, 'intervention:intervention-file')
+
+
+class InterventionFileDownloadView(View):
+    def get(self, request, *args, **kwargs):
+        intervention = Intervention.objects.get(pk=kwargs['pk'])
+        return get_file_download_url(kwargs['file_id'], intervention, kwargs['file_type'], request.user)

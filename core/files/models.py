@@ -25,6 +25,9 @@ class DecoupledFile:
         else:
             self.date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
+    def set_visible_to_all(self, visible: bool):
+        self.visible_to_all = visible
+
 
 class DecoupledImage(DecoupledFile):
     def __init__(self, file_id: str, s3_key: str, original_filename: str, th_key: str, user: User, model: str,

@@ -11,27 +11,13 @@
     {% include 'new_file_include.html' %}
 {% endblock %}
 {% block content %}
-    {% url 'repair:repair-files' repair.pk repair.type.value 'image' as img_url %}
-    {% url 'repair:repair-files' repair.pk repair.type.value 'document' as doc_url %}
-    {% include 'upload_modal_include.html' with images_url=img_url documents_url=doc_url %}
-
     {% include 'client_data.html' with client=repair.address.client sms=True address=repair.address %}
 
-    <div class="row" id="documents-row" style="display: none">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Documentos de la reparación</h3>
-                    </div>
-                    <div class="panel-body">
-                        <ul class="list-group" id="documents-row-body">
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <!-- Media upload -->
+    {% url 'repair:repair-files' repair.type.value repair.pk 'image' as img_url %}
+    {% url 'repair:repair-files' repair.type.value repair.pk 'document' as doc_url %}
+    {% include 'upload_modal_include.html' with images_url=img_url documents_url=doc_url %}
+    {% include 'documents_list_include.html' with title="Documentos de la reparación" %}
     {% include 'image_list_include.html' with title="Imágenes de la reparación" %}
 
     {% include 'client_send_pdf.html' with document_name="hoja de reparación" client=repair.address.client %}
@@ -264,8 +250,9 @@
         const a_default_attachment_id = "repair{{repair.type.value}}_{{ repair.pk }}"
         const a_default_whatsapp_placeholder = "reparación {{ repair }}"
 
-        const image_list_url = "{% url 'repair:repair-files' repair.pk repair.type.value 'image' %}"
-        const document_list_url = "{% url 'repair:repair-files' repair.pk repair.type.value 'document' %}"
+        // Media upload JS
+        const image_list_url = "{% url 'repair:repair-files' repair.type.value repair.pk  'image' %}"
+        const document_list_url = "{% url 'repair:repair-files' repair.type.value repair.pk 'document' %}"
         const doc_id_check = {{ request.user.id }}
     </script>
     <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>

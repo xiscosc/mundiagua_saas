@@ -7,11 +7,11 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, QueryDict
 from django.views.generic import UpdateView, View
 
 from core.files.utils import get_items_in_json_response, store_file_metadata_from_post, delete_file_metadata, \
-    get_file_metadata, get_file_download_url
+    get_file_metadata, get_file_download_url, update_file_metadata
 from core.models import SystemVariable
 from core.utils import get_page_from_paginator
 from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSearchView
@@ -327,6 +327,11 @@ class RepairFileView(View):
         repair = get_repair_by_type(kwargs['pk'], RepairType(kwargs['type']))
         return get_file_metadata(kwargs['file_id'], repair, kwargs['file_type'], request.user,
                                  'repair:repair-file-download', kwargs, 'repair:repair-file')
+
+    def put(self, request, *args, **kwargs):
+        repair = get_repair_by_type(kwargs['pk'], RepairType(kwargs['type']))
+        visible = QueryDict(request.body).get('visible', 'false') == 'true'
+        return update_file_metadata(kwargs['file_id'], repair, kwargs['file_type'], request.user, visible)
 
 
 class RepairFileDownloadView(View):
