@@ -1,13 +1,12 @@
 import uuid
-import io
-import json
 
 from async_messages import messages
 from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.conf import settings
 
-from core.utils import create_amazon_client
+from core.aws.s3_utils import upload_s3_file
+from core.aws.sns_utils import send_sns_message
 
 
 def send_data_to_user(user, subject, body, is_link=False, from_user=None):
@@ -81,7 +80,7 @@ def add_telegram_user(user):
 
 
 def send_telegram_task(task):
-    create_amazon_client('sns').publish(TopicArn=settings.TELEGRAM_TOPIC, Message=json.dumps(task))
+    send_sns_message(settings.TELEGRAM_TOPIC, task)
 
 
 def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body, subject=None, whatsapp_template=None):
@@ -113,7 +112,8 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
 
     encoded_html = get_template(template).render(template_props).encode()
     key = uuid.uuid1().__str__()
-    create_amazon_client('s3').upload_fileobj(io.BytesIO(encoded_html), settings.S3_PDF_UPLOAD, key)
+    upload_s3_file(key, settings.S3_PDF_UPLOAD, encoded_html)
+
     message = {
         'type': task_type,
         'bodyKey': key,
@@ -136,7 +136,7 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
     else:
         raise Exception('Incomplete pdf task body')
 
-    create_amazon_client('sns').publish(TopicArn=settings.PDF_TOPIC, Message=json.dumps(message))
+    send_sns_message(settings.PDF_TOPIC, message)
     messages.success(user, success_message)
 
 

@@ -97,18 +97,6 @@ def get_time_zone():
     return timezone(settings.TIME_ZONE)
 
 
-def create_amazon_client(service):
-    import boto3
-    try:
-        client = boto3.client(service,
-                              aws_access_key_id=settings.AWS_ACCESS_KEY,
-                              aws_secret_access_key=settings.AWS_SECRET_KEY,
-                              region_name=settings.AWS_REGION
-                              )
-        return client
-    except:
-        return None
-
 
 def create_nexmo_client():
     import nexmo

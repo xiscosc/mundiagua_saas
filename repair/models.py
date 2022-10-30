@@ -67,7 +67,7 @@ class AthRepair(Repair):
     transformer = models.BooleanField(default=False, verbose_name="Transformador")
 
     def __str__(self):
-        return "A"+str(self.pk)
+        return "A" + str(self.pk)
 
     @property
     def type(self):

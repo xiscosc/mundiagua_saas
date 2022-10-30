@@ -214,6 +214,9 @@ NON_STAFF_VIEWS = ('intervention-list-own',
                    'intervention-view-image-url',
                    'intervention-forbidden',
                    'intervention-remove-file',
+                   'intervention-files',
+                   'intervention-file',
+                   'intervention-file-download',
                    'client-address-edit-geo',
                    'home',
                    'logout',
@@ -248,9 +251,9 @@ MEDIA_URL = "/media/"
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-APP_VERSION = "2022.1"
-APP_VERSION_INCLUDES = 20220807
-APP_COMPLETE_VERSION = "2022.1.2.20220924"
+APP_VERSION = "2022.2"
+APP_VERSION_INCLUDES = 20221030
+APP_COMPLETE_VERSION = "2022.2.0.20221030"
 TEMPLATE_COLOR = '#1d3f72'
 
 # CACHE TIMES IN SEC
