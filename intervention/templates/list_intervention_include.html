@@ -108,11 +108,6 @@
                             {% for tag in intervention.tags.all %}
                                     {% include 'zone_include.html' with zone=tag class="zone-xs" %}
                             {% endfor %}
-                            {% if intervention.has_media %}
-                                <div style="background-color: green; border-color: darkgreen" class="zone zone-xs">
-                                    <i class="fa fa-paperclip"></i> Adjuntos
-                                </div>
-                            {% endif %}
 
                             {% if intervention.repairs_ath.all|length > 0 or  intervention.repairs_idegis.all|length > 0 or intervention.budgets.all|length > 0 %}
                                 <div style="background-color: cornflowerblue; border-color: dodgerblue" class="zone zone-xs">

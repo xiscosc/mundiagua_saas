@@ -9,19 +9,6 @@ from core.aws.s3_utils import generate_s3_document_key
 from core.files.models import DecoupledFile, FileType, DecoupledImage, DecoupledDocument
 from core.files.service import UploadFileService, ImageUploadService, DocumentUploadService
 from core.models import User
-from intervention.models import Intervention
-
-
-def intervention_images_to_fs(intervention: Intervention, ifs: ImageUploadService):
-    for i in intervention.get_images():
-        f = DecoupledImage(uuid.uuid1().__str__(), i.s3_key, i.filename(), i.thumbnail_s3_key, i.user, i.intervention.__str__(), i.date.strftime("%d/%m/%Y %H:%M:%S"))
-        ifs.store_file(f)
-
-
-def intervention_documents_to_fs(intervention: Intervention, ifs: DocumentUploadService):
-    for i in intervention.get_documents():
-        f = DecoupledDocument(uuid.uuid1().__str__(), i.s3_key, i.filename(), i.user, i.intervention.__str__(), not i.only_officer, i.date.strftime("%d/%m/%Y %H:%M:%S"))
-        ifs.store_file(f)
 
 
 def get_items_in_json_response(m: Model, file_type: str, user: User, download_url_name: str,

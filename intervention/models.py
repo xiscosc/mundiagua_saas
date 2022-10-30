@@ -143,15 +143,6 @@ class Intervention(models.Model):
     def count_modifications(self):
         return InterventionModification.objects.filter(intervention=self).count()
 
-    def get_images(self):
-        return InterventionImage.objects.filter(intervention=self)
-
-    def get_documents(self):
-        return InterventionDocument.objects.filter(intervention=self)
-
-    def get_no_officer_documents(self):
-        return self.get_documents().filter(only_officer=False)
-
     def get_history_sub(self):
         return InterventionLogSub.objects.filter(intervention=self).order_by("date")
 
@@ -159,12 +150,6 @@ class Intervention(models.Model):
         from datetime import datetime, timedelta
         diff = datetime.today() - self.date.replace(tzinfo=None)
         return timedelta(hours=4) > diff
-
-    def count_media(self):
-        return self.get_images().count() + self.get_documents().count()
-
-    def has_media(self):
-        return self.count_media() > 0
 
     def count_links(self):
         return self.repairs_ath.all().count() + self.repairs_idegis.all().count() + self.budgets.all().count() + self.repairs_zodiac.all().count()
@@ -199,63 +184,6 @@ class InterventionLogSub(models.Model):
     created_by = models.ForeignKey('core.User', on_delete=models.CASCADE)
     sub_status = models.ForeignKey(InterventionSubStatus, on_delete=models.CASCADE)
     intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
-
-
-class InterventionFile(models.Model):
-    id = models.AutoField(primary_key=True)
-    intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
-    user = models.ForeignKey('core.User', on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
-    in_s3 = models.BooleanField(default=False)
-    s3_key = models.CharField(max_length=120, default=None, null=True)
-    original_name = models.CharField(max_length=120)
-
-    def get_bucket(self):
-        return None
-
-    def get_upload_bucket(self):
-        return self.get_bucket()
-
-    def filename(self):
-        return self.original_name
-
-    def get_extension(self):
-        return os.path.splitext(self.filename())[1][1:]
-
-    def get_upload_signed_url(self):
-        return get_s3_upload_signed_post(self.s3_key, self.get_upload_bucket())
-
-    class Meta:
-        abstract = True
-
-    def get_signed_url(self):
-        return get_s3_download_signed_url(self.s3_key, self.get_bucket())
-
-    def __str__(self):
-        return "V" + str(self.intervention.pk) + " | " + str(self.pk) + " | " + self.filename()
-
-
-class InterventionImage(InterventionFile):
-    thumbnail_s3_key = models.CharField(max_length=120, default=None, null=True)
-
-    def get_bucket(self):
-        return settings.S3_IMAGES
-
-    def get_upload_bucket(self):
-        return settings.S3_PROCESSING_IMAGES
-
-    def get_thumbnail_signed_url(self):
-        if self.thumbnail_s3_key is None:
-            return None
-
-        return get_s3_download_signed_url(self.thumbnail_s3_key, self.get_bucket())
-
-
-class InterventionDocument(InterventionFile):
-    only_officer = models.BooleanField(default=True)
-
-    def get_bucket(self):
-        return settings.S3_DOCUMENTS
 
 
 def post_save_intervention_modification(sender, **kwargs):
