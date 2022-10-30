@@ -1,4 +1,3 @@
-let img_counter = 0;
 let upload_counter = 0;
 let upload_counter_finished = 0;
 let uploading_images = false;
@@ -107,7 +106,7 @@ function appendImage(i) {
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
           </button>`
 
-    if (i.userId !== doc_id_check) {
+    if (i.userId !== doc_id_check || !doc_t_check) {
         d = ""
     }
 
@@ -125,20 +124,25 @@ function appendDocument(i) {
 
     let visible = `  <button disabled class='btn btn-xs btn-warning'><span class="fa fa-exclamation-circle"></span> Visible para operarios</button>`
 
-    if (i.userId !== doc_id_check) {
+    let vToggle = `<button class="btn btn-info btn-circle btn-circle-inline btn-toggle-visibility" data-url="${i.metaUrl}" data-visible="${i.visible}">
+                                                <span class="fa fa-eye" aria-hidden="true"/>
+                                            </button>`
+
+    if (!doc_t_check) {
+        vToggle = ""
+    }
+
+    if (i.userId !== doc_id_check || !doc_t_check) {
         d = ""
     }
 
-    if (i.visible !== true) {
+    if (i.visible !== true || !doc_t_check) {
         visible = ""
     }
 
     const p = `<li id="doc-${i.fileId}" class="list-group-item"> <strong>${i.originalFileName}</strong> | ${i.userName}, ${i.createdAt} ${visible}
                                     <div class="pull-right" style="display: inline-flex">` + d +
-        `<button class="btn btn-info btn-circle btn-circle-inline btn-toggle-visibility" data-url="${i.metaUrl}" data-visible="${i.visible}">
-                                                <span class="fa fa-eye" aria-hidden="true"/>
-                                            </button>
-                                            <a class="btn btn-success btn-circle btn-circle-inline"
+        `  ${vToggle} <a class="btn btn-success btn-circle btn-circle-inline"
                                                href="${i.downloadUrl}"
                                                target="_blank">
                                                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"/>

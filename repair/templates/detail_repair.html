@@ -254,6 +254,7 @@
         const image_list_url = "{% url 'repair:repair-files' repair.type.value repair.pk  'image' %}"
         const document_list_url = "{% url 'repair:repair-files' repair.type.value repair.pk 'document' %}"
         const doc_id_check = {{ request.user.id }}
+        const doc_t_check = {{ request.user.is_officer|yesno:"true,false" }}
     </script>
     <script src="{% static 'base/js/client/sms_email.js' %}{% app_version_includes %}"></script>
     <script src="{% static 'base/js/client/geolocation.js' %}{% app_version_includes %}"></script>
