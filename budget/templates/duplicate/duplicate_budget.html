@@ -32,7 +32,7 @@
             </div>
             <div class="panel-body">
                 {% if not repair %}
-                <a href="{% url 'budget:budget-duplicate-loading' budget.id budget.address.id %}" id="btn_form" class="btn btn-primary btn-lg btn-block"> Duplicar para el mismo cliente</a>
+                <a href="{% url 'budget:budget-duplicate-loading' budget.id budget.address.id %}" id="btn_form" class="btn btn-primary btn-lg btn-block"> Duplicar para el mismo cliente y dirección</a>
                 {% else %}
                 <a href="{% url 'budget:budget-repair-duplicate-loading' budget.id  %}" id="btn_form" class="btn btn-primary btn-lg btn-block"> Duplicar para la misma reparación</a>
                 {% endif %}
@@ -48,7 +48,7 @@
             </div>
             {% if not repair %}
             <div class="panel-body">
-                <a href="{% url 'budget:budget-duplicate-search' budget.id %}" type="submit" id="btn_form" class="btn btn-success btn-lg btn-block"> Buscar otro cliente</a>
+                <a href="{% url 'budget:budget-duplicate-search' budget.id %}" type="submit" id="btn_form" class="btn btn-success btn-lg btn-block"> Buscar otro cliente u otra dirección</a>
             </div>
             {% else %}
                 <br />
