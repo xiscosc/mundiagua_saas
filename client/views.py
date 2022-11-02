@@ -463,15 +463,6 @@ class AddressGeoUpdateView(View):
         return HttpResponse("OK")
 
 
-class RedirectOldClientView(View):
-    def dispatch(self, request, *args, **kwargs):
-        data = request.GET.get("id", "none")
-        data = "".join(data.split())
-        return HttpResponseRedirect(
-            reverse_lazy("public-status-repair", kwargs={"online": data})
-        )
-
-
 class SearchClientToReplaceView(TemplateView):
     template_name = "merge_client.html"
 

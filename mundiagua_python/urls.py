@@ -2,7 +2,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from client.views import RedirectOldClientView
 from core.views import IndexView, LogoutView, PrivacyView, LoginErrorView, LoginErrorAuthView, LoginView,\
     RedirectLoginView
 
@@ -23,7 +22,6 @@ urlpatterns = [
     path('login/password/', RedirectLoginView.as_view()),
     path('login/', LoginView.as_view(), name="login"),
     path('', IndexView.as_view(), name='home'),
-    path('clientes/', RedirectOldClientView.as_view(), name="old-status-repair"),
     path('hijack/', include('hijack.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('api/', include('mundiagua_python.api_urls')),

@@ -88,8 +88,6 @@ PUBLIC_URLS = (
     r'privacy/',
     r'complete/*',
     r'admin/',
-    r'repair-status/(?P<online>\w+)/',
-    r'clientes/',
     r'core/sms-gsm/notify',
 
     # API URLS ACCESS WILL BE MANAGED IN ANOTHER PLACE
@@ -210,8 +208,6 @@ EMAIL_BACKEND = "django_ses.SESBackend"
 
 NON_STAFF_VIEWS = ('intervention-list-own',
                    'intervention-view',
-                   'intervention-view-document',
-                   'intervention-view-image-url',
                    'intervention-forbidden',
                    'intervention-remove-file',
                    'intervention-files',
