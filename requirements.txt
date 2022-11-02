@@ -1,6 +1,6 @@
 Django>=3.2.16,<4
 django-bootstrap-form==3.4
-django-colorfield==0.6.3
+django-colorfield==0.7.2
 requests==2.28.1
 django-async-messages-redux==0.4.1
 django-bootstrap-pagination==1.7.1
