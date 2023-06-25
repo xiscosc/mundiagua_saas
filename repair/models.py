@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from enum import Enum
+from datetime import datetime
 from django.db import models
 from django.db.models.signals import post_save
 
@@ -59,6 +60,10 @@ class Repair(models.Model):
     @property
     def type_str(self):
         return self.type.value
+
+    def get_days_since(self):
+        delta = datetime.now().date() - self.date.date()
+        return delta.days
 
 
 class AthRepair(Repair):

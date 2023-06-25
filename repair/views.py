@@ -172,8 +172,12 @@ class ListRepairView(TemplateView):
             repairs = repairs.order_by("-date")
         else:
             raise NotImplementedError()
+        
+        elements_per_page = settings.DEFAULT_REPAIR_PAGINATOR
+        if not self.request.user_agent.is_pc:
+            elements_per_page = settings.DEFAULT_NUM_PAGINATOR
 
-        paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
+        paginator = Paginator(repairs, elements_per_page)
         context['repairs'] = get_page_from_paginator(paginator, page)
         return context
 

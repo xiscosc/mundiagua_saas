@@ -2,18 +2,25 @@
 {% load static %}
 {% load core_tags %}
 {% load bootstrap %}
-{% block page_title %}{% if title %}{{ title }}{% else %}Listado de reparaciones{% endif %}{% endblock %}
+{% block page_title %}
+    {% if title %}
+        {{ title }}
+    {% else %}
+        Listado de reparaciones
+    {% endif %}
+{% endblock %}
 {% block content %}
-
-
     <div class="row">
         <div class="col-lg-12">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <button type="button"
+                                class="navbar-toggle collapsed"
+                                data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1"
+                                aria-expanded="false">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
@@ -21,100 +28,122 @@
                         </button>
                         <a class="navbar-brand" href="#">Filtros</a>
                     </div>
-
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             {% if list_navigation %}
-
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"> Tipo <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li {% if type == "all" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 'all' status_id budget starred %}">Todos los tipos</a></li>
-                                        <li {% if type == "ath" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 'ath' status_id budget starred %}">Sólo ATH</a></li>
-                                        <li {% if type == "idegis" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 'idegis' status_id budget starred %}">Sólo Idegis</a></li>
-                                        <li {% if type == "zodiac" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' 'zodiac' status_id budget starred %}">Sólo Fluidra</a></li>
-                                    </ul>
-
-                                </li>
-
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"> Estado <span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                    <li {% if status_id == "0" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' type 0 budget starred %}">Todos los estados</a></li>
-                                    {% for s in status %}
-                                     <li {% if status_id == s.pk|stringformat:"i" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' type s.pk budget starred %}">{{ s.name }}</a></li>
-                                    {% endfor %}
-                                    </ul>
-                                </li>
-
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"> Presupuesto <span class="caret"></span></a>
-                                     <ul class="dropdown-menu">
-                                        <li {% if budget == "0" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' type status_id 0 starred %}">Todas</a></li>
-                                        <li {% if budget == "1" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' type status_id 1 starred %}">Con presupuesto</a></li>
-                                        <li {% if budget == "2" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-list' type status_id 2 starred %}">Sin presupuesto</a></li>
-                                    </ul>
-                                </li>
-
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"> Prioritarias<span
-                                            class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li {% if starred == '0' %} class="active" {% endif %}>
-                                            <a href="{% url 'repair:repair-list' type status_id budget 0 %}">
-                                                Ver todas
-                                            </a>
+                                        <li {% if type == "all" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' 'all' status_id budget starred %}">Todos los tipos</a>
                                         </li>
-                                        <li {% if starred == '1' %} class="active" {% endif %}>
-                                            <a href="{% url 'repair:repair-list' type status_id budget 1 %}">
-                                                Ver sólo prioritarias
-                                            </a>
+                                        <li {% if type == "ath" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' 'ath' status_id budget starred %}">Sólo ATH</a>
+                                        </li>
+                                        <li {% if type == "idegis" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' 'idegis' status_id budget starred %}">Sólo Idegis</a>
+                                        </li>
+                                        <li {% if type == "zodiac" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' 'zodiac' status_id budget starred %}">Sólo Fluidra</a>
                                         </li>
                                     </ul>
                                 </li>
-
-
+                                <li class="dropdown">
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"> Estado <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if status_id == "0" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' type 0 budget starred %}">Todos los estados</a>
+                                        </li>
+                                        {% for s in status %}
+                                            <li {% if status_id == s.pk|stringformat:"i" %}class="active"{% endif %}>
+                                                <a href="{% url 'repair:repair-list' type s.pk budget starred %}">{{ s.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"> Presupuesto <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if budget == "0" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' type status_id 0 starred %}">Todas</a>
+                                        </li>
+                                        <li {% if budget == "1" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' type status_id 1 starred %}">Con presupuesto</a>
+                                        </li>
+                                        <li {% if budget == "2" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' type status_id 2 starred %}">Sin presupuesto</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"> Prioritarias<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li {% if starred == '0' %} class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' type status_id budget 0 %}">Ver todas</a>
+                                        </li>
+                                        <li {% if starred == '1' %} class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-list' type status_id budget 1 %}">Ver sólo prioritarias</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             {% else %}
-
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"> Tipo <span class="caret"></span></a>
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"> Tipo <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li {% if type == "all" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 'all'  starred %}">Todos los tipos</a></li>
-                                        <li {% if type == "ath" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 'ath'  starred%}">Sólo ATH</a></li>
-                                        <li {% if type == "idegis" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 'idegis'  starred %}">Sólo Idegis</a></li>
-                                        <li {% if type == "zodiac" %}class="active"{% endif %}><a
-                                                href="{% url 'repair:repair-search' 'zodiac'  starred %}">Sólo Zodiac</a></li>
+                                        <li {% if type == "all" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-search' 'all'  starred %}">Todos los tipos</a>
+                                        </li>
+                                        <li {% if type == "ath" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-search' 'ath'  starred %}">Sólo ATH</a>
+                                        </li>
+                                        <li {% if type == "idegis" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-search' 'idegis'  starred %}">Sólo Idegis</a>
+                                        </li>
+                                        <li {% if type == "zodiac" %}class="active"{% endif %}>
+                                            <a href="{% url 'repair:repair-search' 'zodiac'  starred %}">Sólo Zodiac</a>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"> Prioritarias<span
-                                            class="caret"></span></a>
+                                    <a href="#"
+                                       class="dropdown-toggle"
+                                       data-toggle="dropdown"
+                                       role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"> Prioritarias<span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li {% if starred == '0' %} class="active" {% endif %}>
+                                        <li {% if starred == '0' %} class="active"{% endif %}>
                                             <a href="{% url 'repair:repair-search' type 0 %}">
                                                 Ver todas
                                             </a>
                                         </li>
-                                        <li {% if starred == '1' %} class="active" {% endif %}>
+                                        <li {% if starred == '1' %} class="active"{% endif %}>
                                             <a href="{% url 'repair:repair-search' type 1 %}">
                                                 Ver sólo prioritarias
                                             </a>
@@ -123,21 +152,23 @@
                                 </li>
                             {% endif %}
                         </ul>
-
                         <ul class="nav navbar-nav navbar-right navbar-filters">
                             {% if type == "all" or type == "ath" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/ath.png' %}{% app_version_includes %}" class="img-list-repair-ath">
+                                    <img src="{% static 'base/img/ath.png' %}{% app_version_includes %}"
+                                         class="img-list-repair-ath">
                                 </li>
                             {% endif %}
                             {% if type == "all" or type == "idegis" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/idegis.png' %}{% app_version_includes %}" class="img-list-repair">
+                                    <img src="{% static 'base/img/idegis.png' %}{% app_version_includes %}"
+                                         class="img-list-repair">
                                 </li>
                             {% endif %}
                             {% if type == "all" or type == "zodiac" %}
                                 <li class="li-filters">
-                                    <img src="{% static 'base/img/fluidra.png' %}{% app_version_includes %}" class="img-list-repair">
+                                    <img src="{% static 'base/img/fluidra.png' %}{% app_version_includes %}"
+                                         class="img-list-repair">
                                 </li>
                             {% endif %}
                             {% if starred == '1' %}
@@ -147,21 +178,23 @@
                                     </button>
                                 </li>
                             {% endif %}
-
                         </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div><!-- /.container-fluid -->
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </div>
+                <!-- /.container-fluid -->
             </nav>
         </div>
     </div>
-
     {% include 'paginator.html' with obj=repairs %}
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-12">
-            {% include 'list_repair_include.html' with repairs=repairs %}
+            {% if request.user_agent.is_pc %}
+                {% include 'list_repair_table_include.html' with repairs=repairs %}
+            {% else %}
+                {% include 'list_repair_include.html' with repairs=repairs %}
+            {% endif %}
         </div>
     </div>
     {% include 'paginator.html' with obj=repairs %}
-
-
 {% endblock %}
