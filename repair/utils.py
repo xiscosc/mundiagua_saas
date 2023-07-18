@@ -176,7 +176,7 @@ def generate_report(request):
         cursor.execute(final_query)
         for row in cursor.fetchall():
             row_num += 1
-            ws.write(row_num, 0, _get_id(row[0]), font_style)
+            ws.write(row_num, 0, _get_id(str(row[1]), row[0]), font_style)
             ws.write(row_num, 1, str(row[1]), font_style)
             ws.write(row_num, 2, str(row[2]), font_style)
             ws.write(row_num, 3, str(row[3]), font_style)
