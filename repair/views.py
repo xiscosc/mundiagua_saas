@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponseRedirect, JsonResponse, QueryDict
+from django.http import HttpResponseRedirect, QueryDict
 from django.views.generic import UpdateView, View
 
 from core.files.utils import get_items_in_json_response, store_file_metadata_from_post, delete_file_metadata, \
@@ -18,7 +18,7 @@ from core.views import SearchClientBaseView, CreateBaseView, TemplateView, PreSe
 from intervention.models import Intervention
 from repair.models import AthRepair, IdegisRepair, RepairStatus, ZodiacRepair, RepairType
 from repair.utils import add_list_filters, generate_repair_qr_code, get_repair_view_by_type, get_repair_by_type, \
-    add_repair_to_intervention, remove_repair_from_intervention, add_log_to_repair
+    add_repair_to_intervention, remove_repair_from_intervention, add_log_to_repair, generate_report
 
 
 class SearchClientView(SearchClientBaseView):
@@ -342,3 +342,15 @@ class RepairFileDownloadView(View):
     def get(self, request, *args, **kwargs):
         repair = get_repair_by_type(kwargs['pk'], RepairType(kwargs['type']))
         return get_file_download_url(kwargs['file_id'], repair, kwargs['file_type'], request.user)
+
+
+class ReportRepairView(TemplateView):
+    template_name = "report_repair.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportRepairView, self).get_context_data(**kwargs)
+        context["statuses"] = RepairStatus.objects.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return generate_report(request)

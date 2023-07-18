@@ -142,6 +142,9 @@
                                 <li>
                                     <a href="{% url 'repair:repair-list' 'all' 0 0 0 %}">Todas las reparaciones</a>
                                 </li>
+                                <li>
+                                    <a href="{% url 'repair:repair-reports' %}">Informes</a>
+                                </li>
                                 <li class="sidebar-search">
                                     <form method="post" action="{% url 'repair:repair-psearch' %}">
                                         {% csrf_token %}

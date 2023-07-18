@@ -3,10 +3,11 @@ from django.conf.urls import url
 from .views import SearchClientView, CreateAthRepairView, CreateIdegisRepairView, AthRepairView, IdegisRepairView, \
     UpdateStatusRepair, ListRepairView, PreSearchRepairView, SearchRepairView, PrintRepairView, ToggleStarredRepairView, \
     LinkInterventionView, UnlinkInterventionView, CreateZodiacRepairView, ZodiacRepairView, RepairFilesView, \
-    RepairFileView, RepairFileDownloadView
+    RepairFileView, RepairFileDownloadView, ReportRepairView
 
 urlpatterns = [
     url(r'^search-client/$', SearchClientView.as_view(), name="repair-search-client"),
+    url(r'^reports/$', ReportRepairView.as_view(), name="repair-reports"),
     url(r'^ath/new/(?P<id>\d+)/$', CreateAthRepairView.as_view(), name="repair-ath-new"),
     url(r'^idegis/new/(?P<id>\d+)/$', CreateIdegisRepairView.as_view(), name="repair-idegis-new"),
     url(r'^zodiac/new/(?P<id>\d+)/$', CreateZodiacRepairView.as_view(), name="repair-zodiac-new"),
