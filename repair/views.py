@@ -238,7 +238,11 @@ class SearchRepairView(TemplateView):
         else:
             raise NotImplementedError()
 
-        paginator = Paginator(repairs, settings.DEFAULT_NUM_PAGINATOR)
+        elements_per_page = settings.DEFAULT_REPAIR_PAGINATOR
+        if not self.request.user_agent.is_pc:
+            elements_per_page = settings.DEFAULT_NUM_PAGINATOR
+
+        paginator = Paginator(repairs, elements_per_page)
         context['repairs'] = get_page_from_paginator(paginator, page)
         return context
 
