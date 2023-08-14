@@ -33,7 +33,6 @@ S3_DOCUMENTS = os.environ.get('AWS_S3_DOCUMENTS')
 S3_IMAGES = os.environ.get('AWS_S3_IMAGES')
 S3_PROCESSING_IMAGES = os.environ.get('AWS_S3_IMAGES_PROCESSING')
 S3_PDF_UPLOAD = os.environ.get('AWS_S3_PDF')
-S3_PDF_DOWNLOAD = os.environ.get('AWS_S3_PDF_DOWNLOAD')
 # AWS SNS TOPICS
 PDF_TOPIC = os.environ.get('AWS_PDF_TOPIC')
 TELEGRAM_TOPIC = os.environ.get('AWS_TELEGRAM_TOPIC')
