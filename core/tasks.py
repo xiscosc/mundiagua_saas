@@ -83,7 +83,7 @@ def send_telegram_task(task):
     send_sns_message(settings.TELEGRAM_TOPIC, task)
 
 
-def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body, subject=None, whatsapp_template=None):
+def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body, subject=None):
     from core.models import User
 
     id_data = attachment_id.split("_")
@@ -128,25 +128,18 @@ def send_pdf_document_task(attachment_id, user_pk, recipient_pk, task_type, body
             message['from'] = {'name': user.get_full_name(), 'email': user.email}
         message['recipient'] = Email.objects.get(pk=recipient_pk).email
         success_message = "Email con PDF enviado correctamente a " + message['recipient']
-    elif task_type == 'whatsapp' and whatsapp_template is not None:
-        from client.models import Phone
-        message['template'] = whatsapp_template
-        message['recipient'] = Phone.objects.get(pk=recipient_pk).full_international_format().replace(' ', '')
-        success_message = "Mensaje con PDF enviado correctamente por WhatsApp"
+    elif task_type == 'download':
+        pass
     else:
         raise Exception('Incomplete pdf task body')
 
     send_sns_message(settings.PDF_TOPIC, message)
     messages.success(user, success_message)
+    return key
 
 
 def send_mail_client_with_pdf(email_pk, subject, body, user_pk, attachment_id):
     send_pdf_document_task(attachment_id, user_pk, email_pk, 'email', body, subject)
-
-
-def send_whatsapp_client_with_pdf(phone_pk, placeholders, user_pk, attachment_id):
-    body = {'placeholders': placeholders}
-    send_pdf_document_task(attachment_id, user_pk, phone_pk, 'whatsapp', body, whatsapp_template='invoice_quote_update')
 
 
 def send_mail_client(email_pk, subject, body, user_pk):

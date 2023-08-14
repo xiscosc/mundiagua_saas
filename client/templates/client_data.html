@@ -26,60 +26,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal_whatsapp_error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" style="color: darkred;" id="myModalLabel">Error enviando WhatsApp <i class="fa fa-whatsapp"></i></h4>
-            </div>
-            <div class="modal-body">
-                <h5>Se ha producido un error al enviar el mensaje de WhatsApp</h5>
-                <p>Motivo: <i id="whatsapp_error_reason">.</i></p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" id="modal_whatsapp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close sms_close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Envío de WhatsApp <i class="fa fa-whatsapp"></i></h4>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning" role="alert"><strong>Alerta!</strong>
-                    El programa no puede verifcar si este número de teléfono dispone de WhatsApp instalado. Si el usuario
-                    no tiene WhatsApp, este programa no podrá avisarte ni emitirá ningun fallo.
-                </div>
-                <div class="alert alert-danger" role="alert">
-                    Todos los campos son obligatorios
-                </div>
-                <form id="form_whatsapp" method="post" action="{% url 'client:client-whatsapp-templates' %}">
-                    {% csrf_token %}
-                    <label for="whatsapp_template_pk">Plantilla:</label>
-                    <select class="form-control" id="whatsapp_template_pk" name="whatsapp_template_pk">
-
-                    </select>
-                    <label for="whatsapp_body">Vista previa:</label>
-                    <textarea maxlength="160" class="form-control" rows="5" name="whatsapp_body"
-                              id="whatsapp_body" disabled></textarea>
-                    <input type="hidden" id="whatsapp_phone_pk" name="whatsapp_phone_pk"/>
-
-                    <div id="whatsapp_placeholders"></div>
-                </form>
-                <div id="whatsapp_file_placeholder" data-token="{{ csrf_token }}" data-url="{% url 'client:client-whatsapp-file' %}"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Descartar</button>
-                <button type="button" class="btn btn-primary" id="whatsapp_send">Enviar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="modal_mail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -348,17 +295,12 @@
                                             <li><a href="#" class="btn-sms" data-phone="{{ phone.pk }}"><i
                                                     class="fa fa-send-o"></i> Enviar SMS</a></li>
                                         {% endif %}
-                                        {% if sms and request.user_agent.is_pc %}
-                                            <li><a href="#" class="btn-whatsapp" data-phone="{{ phone.pk }}"><i
-                                                    class="fa fa-whatsapp"></i> Enviar WhatsApp</a></li>
-                                        {% else %}
-                                            <li>
-                                                <a href="https://api.whatsapp.com/send?phone={{ phone.international_code }}{{ phone.phone }}"
-                                                   target="_blank">
-                                                    <i class="fa fa-whatsapp"></i> Enviar WhatsApp
-                                                </a></li>
-                                        {% endif %}
-
+                                        <li>
+                                            <a href="https://api.whatsapp.com/send?phone={{ phone.international_code }}{{ phone.phone }}"
+                                               target="_blank">
+                                                <i class="fa fa-whatsapp"></i> Enviar WhatsApp
+                                            </a>
+                                        </li>
                                     {% endif %}
 
                                     </ul>

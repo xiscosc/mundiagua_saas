@@ -3,13 +3,10 @@ from .views import CreateClientView, CreateAddressView, CreatePhoneView, ClientV
     EditPhoneView, DeletePhoneView, DeleteAddresView, SendSMSView, AllClientsView, PreSearchClientView, \
     SearchClientView, AddressGeoUpdateView, SendEmailView, SearchClientToReplaceView, SearchClientToMergeView, \
     ClientMergeView, CreateEmailView, EditEmailView, DeleteEmailView, InterventionsFromCustomerView, \
-    BudgetsFromCustomerView, EngineRepairsFromCustomerView, RepairsFromCustomerView, ClientWhatsAppTemplateView,\
-    PreUploadWhatsAppFile, GenerateAndSendPdfWithWhatsAppView
+    BudgetsFromCustomerView, EngineRepairsFromCustomerView, RepairsFromCustomerView
 
 urlpatterns = [
     url(r'^new/$', CreateClientView.as_view(), name="client-new"),
-    url(r'^whatsapp/templates/$', ClientWhatsAppTemplateView.as_view(), name="client-whatsapp-templates"),
-    url(r'^whatsapp/file/$', PreUploadWhatsAppFile.as_view(), name="client-whatsapp-file"),
     url(r'^view/(?P<pk>\d+)/$', ClientView.as_view(), name="client-view"),
     url(r'^view/(?P<pk>\d+)/interventions/$', InterventionsFromCustomerView.as_view(), name="client-view-interventions"),
     url(r'^view/(?P<pk>\d+)/budgets/$', BudgetsFromCustomerView.as_view(), name="client-view-budgets"),
@@ -30,7 +27,6 @@ urlpatterns = [
     url(r'^email/delete/(?P<pk>\d+)/$', DeleteEmailView.as_view(), name="client-email-delete"),
     url(r'^sms/send/$', SendSMSView.as_view(), name="client-sms-send"),
     url(r'^email/send/$', SendEmailView.as_view(), name="client-email-send"),
-    url(r'^whatsapp/pdf/$', GenerateAndSendPdfWithWhatsAppView.as_view(), name="client-whatsapp-pdf"),
     url(r'^all/$', AllClientsView.as_view(), name="client-all"),
     url(r'^psearch/$', PreSearchClientView.as_view(), name="client-psearch"),
     url(r'^search/$', SearchClientView.as_view(), name="client-search"),

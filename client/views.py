@@ -13,12 +13,7 @@ from django.views.generic import (
     View,
     TemplateView,
 )
-from client.models import Client, Address, Phone, SMS, Email, WhatsAppTemplate
-from client.utils import (
-    send_whatsapp_template,
-    generate_whatsapp_document_s3_key,
-    get_whatsapp_upload_signed_url,
-)
+from client.models import Client, Address, Phone, SMS, Email
 from core.utils import get_page_from_paginator
 from core.views import PreSearchView
 from engine.models import EngineRepair
@@ -28,7 +23,6 @@ from budget.models import BudgetStandard, BudgetRepair
 from core.tasks import (
     send_mail_client,
     send_mail_client_with_pdf,
-    send_whatsapp_client_with_pdf,
 )
 from async_messages import messages
 
@@ -394,17 +388,6 @@ class SendEmailView(View):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
 
 
-class GenerateAndSendPdfWithWhatsAppView(View):
-    def post(self, request, *args, **kwargs):
-        body = request.POST.get("whatsapp_placeholder", "")
-        phone_pk = request.POST.get("phone_field", "")
-        attachment_id = request.POST.get("attachment_id", "")
-
-        send_whatsapp_client_with_pdf(phone_pk, [body], request.user.pk, attachment_id)
-
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
-
-
 class AllClientsView(TemplateView):
     template_name = "list_client.html"
 
@@ -540,59 +523,3 @@ class ClientMergeView(TemplateView):
         context["client_new"] = Client.objects.get(pk=kwargs["pk2"])
         context["title"] = "Fusión de clientes - Confirmación"
         return context
-
-
-class PreUploadWhatsAppFile(View):
-    def post(self, request, *args, **kwargs):
-        filename = request.POST["whatsapp_file_name"]
-        key = generate_whatsapp_document_s3_key(filename)
-        body = {"key": key, "s3Data": get_whatsapp_upload_signed_url(key)}
-        return JsonResponse(body)
-
-
-class ClientWhatsAppTemplateView(View):
-    def get(self, request, *args, **kwargs):
-        templates = WhatsAppTemplate.objects.all()
-        template_dict = list(
-            map(
-                lambda t: model_to_dict(
-                    t, fields=[field.name for field in t._meta.fields]
-                ),
-                templates,
-            )
-        )
-        return JsonResponse(data=template_dict, safe=False)
-
-    def post(self, request, *args, **kwargs):
-        params = request.POST.copy()
-        try:
-            phone_pk = params.get("whatsapp_phone_pk")
-            template_pk = params.get("whatsapp_template_pk")
-            phone = Phone.objects.get(pk=phone_pk)
-            template = WhatsAppTemplate.objects.get(pk=template_pk)
-            placeholders = []
-            file_name = params.get("whatsapp_file_name")
-            s3_key = params.get("whatsapp_file_key")
-            for x in range(template.placeholders):
-                id = x + 1
-                p = str(params.get("whatsapp_placeholder_" + str(id), ""))
-                if p == "" or p is None:
-                    messages.warning(
-                        self.request.user, "Error enviando WhatsApp, campos incompletos"
-                    )
-                    return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
-                placeholders.append(p)
-
-            code, response = send_whatsapp_template(
-                template, placeholders, phone, file_name, s3_key
-            )
-            if 200 <= code < 300:
-                messages.success(self.request.user, "WhatsApp enviado correctamente")
-            else:
-                messages.warning(self.request.user, "Error enviando WhatsApp")
-        except:
-            messages.warning(
-                self.request.user, "Error enviando WhatsApp, campos incorrectos"
-            )
-
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
