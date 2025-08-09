@@ -133,62 +133,71 @@
                     </li>
                     {% if request.user.is_officer %}
                         <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span
+                            <a href="#"><i class="fa fa-clock-o fa-fw"></i> Consultar datos antiguos<span
                                     class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                <li>
+                                    <a target="_blank" href="https://mundiagua-legacy-fe.vercel.app">Acceder</a>
+                                </li>
+                            </ul>
+                        </li>
+{#                        <li>#}
+{#                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Reparaciones<span#}
+{#                                    class="fa arrow"></span></a>#}
+{#                            <ul class="nav nav-second-level">#}
 {#                                <li>#}
 {#                                    <a href="{% url 'repair:repair-search-client' %}">Nueva reparación</a>#}
 {#                                </li>#}
-                                <li>
-                                    <a href="{% url 'repair:repair-list' 'all' 0 0 0 %}">Todas las reparaciones</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'repair:repair-reports' %}">Informes</a>
-                                </li>
-                                <li class="sidebar-search">
-                                    <form method="post" action="{% url 'repair:repair-psearch' %}">
-                                        {% csrf_token %}
-                                        <div class="input-group custom-search-form">
-                                            <input type="text" class="form-control" placeholder="Buscar reparación"
-                                                   name="search_text" required>
-                                            <span class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                </span>
-                                        </div>
-                                    </form>
-
-                                    <!-- /input-group -->
-                                </li>
-
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-circle-o-notch fa-fw"></i> Reparaciones de motores<span
-                                    class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
+{#                                <li>#}
+{#                                    <a href="{% url 'repair:repair-list' 'all' 0 0 0 %}">Todas las reparaciones</a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="{% url 'repair:repair-reports' %}">Informes</a>#}
+{#                                </li>#}
+{#                                <li class="sidebar-search">#}
+{#                                    <form method="post" action="{% url 'repair:repair-psearch' %}">#}
+{#                                        {% csrf_token %}#}
+{#                                        <div class="input-group custom-search-form">#}
+{#                                            <input type="text" class="form-control" placeholder="Buscar reparación"#}
+{#                                                   name="search_text" required>#}
+{#                                            <span class="input-group-btn">#}
+{#                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>#}
+{#                                </span>#}
+{#                                        </div>#}
+{#                                    </form>#}
+{##}
+{#                                    <!-- /input-group -->#}
+{#                                </li>#}
+{##}
+{#                            </ul>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                            <a href="#"><i class="fa fa-circle-o-notch fa-fw"></i> Reparaciones de motores<span#}
+{#                                    class="fa arrow"></span></a>#}
+{#                            <ul class="nav nav-second-level">#}
 {#                                <li>#}
 {#                                    <a href="{% url 'engine:engine-search-client' %}">Nueva reparación</a>#}
 {#                                </li>#}
-                                <li>
-                                    <a href="{% url 'engine:engine-all' %}">Todas las reparaciones</a>
-                                </li>
-                                <li class="sidebar-search">
-                                    <form method="post" action="{% url 'engine:engine-psearch' %}">
-                                        {% csrf_token %}
-                                        <div class="input-group custom-search-form">
-                                            <input type="text" class="form-control" placeholder="Buscar reparación"
-                                                   name="search_text" required>
-                                            <span class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                </span>
-                                        </div>
-                                    </form>
-
-                                    <!-- /input-group -->
-                                </li>
-
-                            </ul>
-                        </li>
+{#                                <li>#}
+{#                                    <a href="{% url 'engine:engine-all' %}">Todas las reparaciones</a>#}
+{#                                </li>#}
+{#                                <li class="sidebar-search">#}
+{#                                    <form method="post" action="{% url 'engine:engine-psearch' %}">#}
+{#                                        {% csrf_token %}#}
+{#                                        <div class="input-group custom-search-form">#}
+{#                                            <input type="text" class="form-control" placeholder="Buscar reparación"#}
+{#                                                   name="search_text" required>#}
+{#                                            <span class="input-group-btn">#}
+{#                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>#}
+{#                                </span>#}
+{#                                        </div>#}
+{#                                    </form>#}
+{##}
+{#                                    <!-- /input-group -->#}
+{#                                </li>#}
+{##}
+{#                            </ul>#}
+{#                        </li>#}
                         <li>
                             <a href="#"><i class="fa fa-user fa-fw"></i> Clientes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
