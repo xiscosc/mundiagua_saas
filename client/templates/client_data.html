@@ -46,11 +46,6 @@
     <div class="panel-heading">Datos del cliente
         {% if request.user.is_officer %}
             <div class="pull-right">
-                {% if not creating_new_instance %}
-                    <button class="btn btn-xs btn-info btn-email btn-circle btn-circle-inline"><i
-                            class="fa fa-envelope"></i>
-                    </button>
-                {% endif %}
                 <a class="btn btn-xs btn-default btn-circle btn-circle-inline"
                    href="{% url 'client:client-view' client.pk %}"><i
                         class="fa fa-edit"></i> </a>
