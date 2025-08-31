@@ -7,20 +7,16 @@
                 <h4 class="modal-title" id="myModalLabel">Envío de SMS</h4>
             </div>
             <div class="modal-body">
-                <form id="form_sms" method="post" action="{% url 'client:client-sms-send' %}">
-                    {% csrf_token %}
-                    <textarea maxlength="160" class="form-control" placeholder="Escribe aquí tu SMS" name="sms_body"
-                              id="sms_body"></textarea>
-                    <input type="hidden" id="phone_pk" name="phone_pk"/>
-                    <input type="hidden" id="from_model" name="from_model"/>
-                    <input type="hidden" id="from_model_id" name="from_model_id"/>
-                </form>
+                <div class="alert alert-danger" role="alert"><strong>Alerta:</strong>
+                    El servicio de envío de SMS ha sido deshabilitado. Por favor, utilice WhatsApp para enviar mensajes a los clientes.
+                </div>
+
             </div>
             <div class="modal-footer">
-                <div style="float:left;color:#737373;font-style:italic">Carácteres restantes: <strong
+                {% comment %} <div style="float:left;color:#737373;font-style:italic">Carácteres restantes: <strong
                         id="sms_count">160</strong></div>
                 <button type="button" class="btn btn-default sms_close" data-dismiss="modal">Descartar</button>
-                <button type="button" class="btn btn-primary" id="sms_send">Enviar</button>
+                <button type="button" class="btn btn-primary" id="sms_send">Enviar</button> {% endcomment %}
             </div>
         </div>
     </div>

@@ -14,11 +14,13 @@
 {% endblock %}
 
 {% block telegrampanel %}
-    {% if not request.user.external_messaging_id %}
+    {% comment %} {% if not request.user.external_messaging_id %}
         <p>Usted no se encunetra registrado en Telegram</p>
         <p><a class="btn btn-success" href="{% url 'core:user-manage-telegram-link' %}">Iniciar registro</a></p>
     {% else %}
         <p>Usted se encunetra registrado en Telegram, si tiene problemas puede probar a desvincular sus dispositivos.</p>
         <p><a class="btn btn-primary" href="https://t.me/{{ telegran_name }}?start={{ request.user.external_messaging_id }}">Vincular nuevo dispositivo</a> <a class="btn btn-danger" href="{% url 'core:user-manage-telegram-unlink' %}">Desvincular todos los dispositivos</a></p>
-    {% endif %}
+    {% endif %} {% endcomment %}
+    <div class="alert alert-danger" role="alert"> Telegram ya no se encuentra disponible
+    </div>
 {% endblock %}
