@@ -88,7 +88,7 @@ PUBLIC_URLS = (
     r'privacy/',
     r'complete/*',
     r'admin/',
-    r'core/sms-gsm/notify',
+    # r'core/sms-gsm/notify',
 
     # API URLS ACCESS WILL BE MANAGED IN ANOTHER PLACE
     r'api/*'
@@ -231,16 +231,16 @@ NON_STAFF_VIEWS = ('intervention-list-own',
                    'user-manage',
                    'password-change',
                    'password-change-done',
-                   'sms-gsm-notify',
+                #    'sms-gsm-notify',
                    'release'
                    )
 
 TECHNICIAN_VIEWS = (
-    'sms-api-all',
-    'sms-api-sender',
-    'sms-api-id',
-    'sms-gsm',
-    'sms-gsm-sender',
+    # 'sms-api-all',
+    # 'sms-api-sender',
+    # 'sms-api-id',
+    # # 'sms-gsm',
+    # 'sms-gsm-sender',
 )
 
 MEDIA_URL = "/media/"
