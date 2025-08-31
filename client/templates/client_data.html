@@ -23,67 +23,6 @@
 </div>
 
 
-
-<div class="modal fade" id="modal_mail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Envío de correo electrónico</h4>
-            </div>
-            <form id="form_email" method="post" action="{% url 'client:client-email-send' %}">
-                <div class="modal-body">
-
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="email_field">Destinatario</label>
-                        <select class="form-control" name="email_field" id="email_field" required>
-                            {% for e in client.get_emails %}
-                                <option value="{{ e.pk }}">{{ e }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="email_subject">Remitente</label>
-                        {% if request.user.has_company_email %}
-                            <input type="text" class="form-control" disabled value="{{ request.user.get_full_name }} - {{ request.user.email }}">
-                        {% else %}
-                            <input type="text" class="form-control" disabled value="Consultas Mundiagua - consultas@mundiaguabalear.com">
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
-                        <label for="email_subject">Asunto</label>
-                        <input type="text" class="form-control" id="email_subject" name="email_subject"
-                               placeholder="Asunto" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email_body">Mensaje</label>
-                        <textarea class="form-control" rows="6" placeholder="Escribe aquí tu email" name="email_body"
-                                  id="email_body" required></textarea>
-                    </div>
-                    <div class="form-group" id="mail-attachment-group">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <strong>Adjunto:</strong> <i class="fa fa-file-pdf-o"></i> <i id="mail-attachment-name">test.pdf</i>
-                            </div>
-                        </div>
-                        <div class="alert alert-warning" role="alert"><strong>Alerta:</strong>
-                            El programa generará el documento PDF automáticamente. Esta acción no se puede deshacer. Si el presupuesto o reparación es modificado, deberá ser enviado al cliente otra vez.
-                        </div>
-                    </div>
-                    <input type="hidden" id="attachment_id" name="attachment_id" />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Descartar</button>
-                    <button type="button" class="btn btn-primary" id="email_send_button">Enviar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
 <div class="modal fade" id="modal_geo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
