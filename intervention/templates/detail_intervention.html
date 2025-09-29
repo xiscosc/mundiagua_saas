@@ -122,49 +122,6 @@
                         {% if intervention.has_links %}
 
                             <ul class="list-group" style="margin-bottom: 0px;">
-                                {% for ath in intervention.repairs_ath.all %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'repair:repair-ath-view' ath.pk %}"
-                                           class="btn btn-primary btn-xs">{{ ath }}</a> {{ ath.model|upper }}
-                                        | {{ ath.date|date:"d-m-Y" }} {{ ath.date|time:"H:i" }}
-                                        <div class="pull-right" style="display: inline-flex">
-                                            <a class="btn btn-danger btn-circle btn-circle-inline"
-                                               href="{% url 'repair:repair-unlink-intervention' ath.pk ath.type.value intervention.pk 0 %}"
-                                            >
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                            </a>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                                {% for idegis in intervention.repairs_idegis.all %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'repair:repair-idegis-view' idegis.pk %}"
-                                           class="btn btn-default btn-xs ">{{ idegis }}</a> {{ idegis.model|upper }}
-                                        | {{ idegis.date|date:"d-m-Y" }} {{ idegis.date|time:"H:i" }}
-                                        <div class="pull-right" style="display: inline-flex">
-                                            <a class="btn btn-danger btn-circle btn-circle-inline"
-                                               href="{% url 'repair:repair-unlink-intervention' idegis.pk idegis.type.value intervention.pk 0 %}"
-                                            >
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                            </a>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-
-                                {% for zodiac in intervention.repairs_zodiac.all %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'repair:repair-zodiac-view' zodiac.pk %}"
-                                           class="btn btn-zodiac btn-xs ">{{ zodiac }}</a> {{ zodiac.model|upper }}
-                                        | {{ zodiac.date|date:"d-m-Y" }} {{ zodiac.date|time:"H:i" }}
-                                        <div class="pull-right" style="display: inline-flex">
-                                            <a class="btn btn-danger btn-circle btn-circle-inline"
-                                               href="{% url 'repair:repair-unlink-intervention' zodiac.pk zodiac.type.value intervention.pk 0 %}"
-                                            >
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                            </a>
-                                        </div>
-                                    </li>
-                                {% endfor %}
                                 {% for budget in intervention.budgets.all %}
 
                                     <li class="list-group-item">
