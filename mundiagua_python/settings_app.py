@@ -15,7 +15,7 @@ IMAGE_NOT_FOUND = "base/img/image_not_available.png"
 
 # DATABASES
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DB_URL'), conn_max_age=0)
+    'default': dj_database_url.parse(os.environ.get('DB_URL'), conn_max_age=600)
 }
 
 # DOMAIN CONFIG
