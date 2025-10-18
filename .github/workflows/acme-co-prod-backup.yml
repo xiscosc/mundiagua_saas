@@ -34,7 +34,7 @@ jobs:
 
       - name: Run pg_dump
         run: |
-          $POSTGRES/pg_dump ${{ env.DATABASE_URL }} | gzip > "${{ env.GZIP_NAME }}"
+          $POSTGRES/pg_dump "${{ env.DATABASE_URL }}" | gzip > "${{ env.GZIP_NAME }}"
 
       - name: Upload to bucket
         run: |
