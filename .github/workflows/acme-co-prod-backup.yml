@@ -1,0 +1,41 @@
+name: acme-co-prod-backup
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Runs at 2AM GMT
+  workflow_dispatch:
+
+jobs:
+  db-backup:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DB_URL }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.SCALEWAY_AK }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCALEWAY_SK }}
+      S3_ENDPOINT_URL: ${{ secrets.BUCKET_ENDPOINT }}
+      S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      PG_VERSION: '17'
+
+    steps:
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+
+      - name: Set backup filename
+        run: |
+          GZIP_NAME="$(date +'%B-%d-%Y@%H:%M:%S').sql.gz"
+          echo "GZIP_NAME=${GZIP_NAME}" >> $GITHUB_ENV
+
+      - name: Run pg_dump
+        run: |
+          $POSTGRES/pg_dump ${{ env.DATABASE_URL }} | gzip > "${{ env.GZIP_NAME }}"
+
+      - name: Upload to bucket
+        run: |
+          aws s3 cp "${{ env.GZIP_NAME }}" "s3://${{ env.S3_BUCKET_NAME }}/${{ env.GZIP_NAME }}" --endpoint-url ${{ env.S3_ENDPOINT_URL }}
