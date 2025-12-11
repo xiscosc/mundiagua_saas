@@ -1,4 +1,4 @@
-name: acme-co-prod-backup
+name: mundiagua-saas-prod-backup
 
 on:
   schedule:
@@ -11,9 +11,9 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DB_URL }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.SCALEWAY_AK }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.SCALEWAY_SK }}
-      S3_ENDPOINT_URL: ${{ secrets.BUCKET_ENDPOINT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
       S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
       PG_VERSION: '17'
 
@@ -38,4 +38,4 @@ jobs:
 
       - name: Upload to bucket
         run: |
-          aws s3 cp "${{ env.GZIP_NAME }}" "s3://${{ env.S3_BUCKET_NAME }}/${{ env.GZIP_NAME }}" --endpoint-url ${{ env.S3_ENDPOINT_URL }}
+          aws s3 cp "${{ env.GZIP_NAME }}" "s3://${{ env.S3_BUCKET_NAME }}/mundiagua_saas/${{ env.GZIP_NAME }}"
